@@ -21,7 +21,7 @@ def switch_to_db (cursor, db_name):
     return True
 
 ########
-def store_or_update (cursor, table, fixed_fields, update_fields):
+def store_or_update (cursor, table, fixed_fields, update_fields, verbose=False):
 
     conditions = ""
     first = True
@@ -40,6 +40,12 @@ def store_or_update (cursor, table, fixed_fields, update_fields):
     qry = "select exists (select 1 from %s  where %s) "  % (table, conditions)
     rows   = search_db (cursor, qry)
     exists = rows and (type(rows[0][0]) is long) and (rows[0][0]==1)
+
+    if verbose:
+        print
+        print qry
+        print rows
+        print "exists ?", exists
 
 
     if exists and not update_fields: return True
@@ -91,7 +97,10 @@ def store_or_update (cursor, table, fixed_fields, update_fields):
         
     rows   = search_db (cursor, qry)
 
-
+    if verbose:
+        print
+        print qry
+        print rows
 
     if (rows):
         rows   = search_db (cursor, qry, verbose=True)
@@ -211,14 +220,14 @@ def search_db (cursor, qry, verbose=False):
 def connect_to_mysql (user=None, passwd=None, host=None, port=None):
     try:
         if (user is None):
-            db = MySQLdb.connect(user="root")
+            db = MySQLdb.connect(user="ivana")
         elif (host is None):
             db = MySQLdb.connect(user=user, passwd=passwd)
         else:
             db = MySQLdb.connect(user=user, passwd=passwd, host=host, port=port)
             
     except  MySQLdb.Error, e:
-        print "Error connecting to mysql as root (%s) " % (e.args[1])
+        print "Error connecting to mysql as %s" % (e.args[1])
         sys.exit(1)
  
     return db

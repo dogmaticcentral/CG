@@ -1,0 +1,119 @@
+head -n2 hgsc.bcm.edu_COAD.IlluminaGA_DNASeq.1.somatic.maf | tail -n1 | tr '\t' '\n' > maf.column_names
+
+
+awk '{printf "\t %s VARCHAR ( 20 ) NOT NULL, \n", $1}' maf.column_names >  maf_somatic_mutations_table.sql
+
+add to   maf_somatic_mutations_table.sql:
+
+  CREATE TABLE somatic_mutations (
+ 	   id INT NOT NULL AUTO_INCREMENT,
+
+  ... the contents of  maf_somatic_mutations_table.sql
+
+ PRIMARY KEY (id)
+);
+
+CAVEAT: the underscoring is not consistent int eh input files, so I am getting rid of it!
+
+
+modify the type and the NULL fields according to 
+https://wiki.nci.nih.gov/display/TCGA/Mutation+Annotation+Format+%28MAF%29+Specification#MutationAnnotationFormatMAFSpecification-DefinitionofopenaccessMAFdata
+
+can be  null:
+dbSNP_RS
+dbSNP_Val_Status
+Match_Norm_Seq_Allele1
+Match_Norm_Seq_Allele2
+Tumor_Validation_Allele1
+Tumor_Validation_Allele2
+Match_Norm_Validation_Allele1
+Match_Norm_Validation_Allele2
+Verification_Status
+Sequencing_Phase
+
+Score --< not used
+BAM_File --< not used
+
+also the last 10 fields  or so are not described in MAF specification, so I am allowing them to be 0
+
+I am taking the Tumer Sample Barcode to be the primary key
+
+
+in mysql
+create database COAD;
+ use  COAD;
+ source /fullpath/maf_somatic_mutations_table.sql;
+
+
+
+note:
+Explanation of some Validation Status-Mutation Status combinations
+
+Validation Status	Mutation Status	Explanation
+Valid
+Unknown
+a valid variant with unknown somatic status due to lack of data from matched normal tissue.
+Invalid
+None
+validation attempted, tumor and normal are homozygous reference (formerly described as Wildtype)
+Inconclusive
+Unknown
+validation failed, neither the genotype nor its somatic status is certain due to lack of data from matched normal tissue
+Inconclusive
+None
+validation failed, tumor genotype appears to be homozygous reference
+
+
+
+what is the meaning of MatchNormSeqAllele1? -- it loks like this might be a sequence, or any Allele fro that matter
+
+see for example
+HugoSymbol ARID1B
+EntrezGeneId 57492
+Center hgsc.bcm.edu
+NCBIBuild 37
+Chromosome 6
+Startposition 157522217
+Endposition 157522224
+Strand +
+VariantClassification Frame_Shift_Del
+VariantType DEL
+ReferenceAllele GACGATAT
+TumorSeqAllele1 GACGATAT
+TumorSeqAllele2 -
+dbSNPRS novel
+dbSNPValStatus 
+TumorSampleBarcode TCGA-A6-2672-01A-01W-0833-10
+MatchedNormSampleBarcode TCGA-A6-2672-10A-01W-0833-10
+MatchNormSeqAllele1 GACGATAT
+MatchNormSeqAllele2 GACGATAT
+TumorValidationAllele1 .
+TumorValidationAllele2 .
+MatchNormValidationAllele1 .
+MatchNormValidationAllele2 .
+VerificationStatus Unknown
+ValidationStatus Untested
+MutationStatus Somatic
+SequencingPhase Phase_I
+SequenceSource WXS
+ValidationMethod none
+Score 
+BAMfile 
+Sequencer SOLID
+TumorSampleUUID 0d5cff3f-6c2e-47c3-9686-fadceedc6ecc
+MatchedNormSampleUUID bbf1144f-9c82-490f-9037-26d8442f62f1
+TranscriptID NM_017519
+Exon exon17
+ChromChange c.4450_4457del
+AAChange p.1484_1486del
+COSMICCodon .
+COSMICGene .
+DrugTarget .
+
+
+
+a change has to be commited for certain types of storage engine
+
+InnoDB is transactional, ISAM is not.
+
+CREATE TABLE name  (...) ENGINE=MyISAM; to avoid the need to commit each time
