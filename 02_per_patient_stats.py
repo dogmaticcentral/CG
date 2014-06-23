@@ -43,7 +43,7 @@ def main():
     for  row in rows:
         tbarcode = row[0]
         # the fields are 
-        # project - tissue source site - participant -
+        # project - tissue source site (TSS)  - participant -
         # source.vial - portion.analyte  - plate - (sequenncing or charcterization center)
         fields = tbarcode.split('-')
         patient = '-'.join(fields[1:3])

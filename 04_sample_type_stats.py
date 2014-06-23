@@ -26,32 +26,29 @@ def main():
     print 
     ############################
 
-
-
     ############################
-    print "variant classification:"
-    qry = "select distinct(variantclassification) from somatic_mutations"
+    print "sample type breakdown:"
+    qry  = "select TumorSampleBarcode from somatic_mutations "
     rows = search_db(cursor, qry)
-    variants = [row[0] for row in  rows]
-    for variant in variants:
-        qry = "select count(1) from somatic_mutations where variantclassification='%s'" % variant
-        rows = search_db(cursor, qry)
-        print "\t", variant, rows[0][0], "cases"
-
-    ############################
-    print "variant subtype:"
-    for variant in ['SNP', 'DNP', 'TNP', 'ONP', 'INS', 'DEL', 'conosolidated']:
-        qry = "select count(1) from somatic_mutations where varianttype='%s'" % variant
-        rows = search_db(cursor, qry)
-        print "\t", variant, rows[0][0], "cases"
-       
-
-
-    cursor.close()
-    db.close()
-
-
+    count = {}
+    for  row in rows:
+        tbarcode = row[0]
+        # the fields are 
+        # project - tissue source site (TSS)  - participant -
+        # source.vial - portion.analyte  - plate - (sequenncing or charcterization center)
+        fields       = tbarcode.split('-')
+        sample_type  = fields[3][:2] # the first two digits fo the third field
+        if not count.has_key(sample_type):  count[sample_type] = 0
+        count[sample_type] += 1
+        
+    for sample_type, ct in count.iteritems():
+        print "\t %2s   %5d " % (sample_type, ct)
+    
+    
+            
 #########################################
 if __name__ == '__main__':
     main()
 
+
+    
