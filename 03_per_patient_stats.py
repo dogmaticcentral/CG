@@ -29,7 +29,7 @@ def main():
     ############################
     print "number of entries without tumor barcode:"
     qry  = "select count(1) from somatic_mutations "
-    qry += "where not TumorSampleBarcode like 'TCGA%'"
+    qry += "where not tumor_sample_barcode like 'TCGA%'"
     rows = search_db(cursor, qry)
     print "\t", rows[0][0]
     print 
@@ -38,13 +38,13 @@ def main():
     ############################
     print "sorting per-patient data ..."
     uniq_patients = {}
-    qry  = "select TumorSampleBarcode from somatic_mutations "
+    qry  = "select tumor_sample_barcode from somatic_mutations "
     rows = search_db(cursor, qry)
     for  row in rows:
         tbarcode = row[0]
         # the fields are 
         # project - tissue source site (TSS)  - participant -
-        # source.vial - portion.analyte  - plate - (sequenncing or charcterization center)
+        # source.vial - portion.analyte  - plate - (sequencing or charcterization center)
         fields = tbarcode.split('-')
         patient = '-'.join(fields[1:3])
         if not  uniq_patients.has_key(patient):

@@ -30,18 +30,18 @@ def main():
 
     ############################
     print "variant classification:"
-    qry = "select distinct(variantclassification) from somatic_mutations"
+    qry = "select distinct(variant_classification) from somatic_mutations"
     rows = search_db(cursor, qry)
     variants = [row[0] for row in  rows]
     for variant in variants:
-        qry = "select count(1) from somatic_mutations where variantclassification='%s'" % variant
+        qry = "select count(1) from somatic_mutations where variant_classification='%s'" % variant
         rows = search_db(cursor, qry)
         print "\t", variant, rows[0][0], "cases"
 
     ############################
     print "variant subtype:"
     for variant in ['SNP', 'DNP', 'TNP', 'ONP', 'INS', 'DEL', 'conosolidated']:
-        qry = "select count(1) from somatic_mutations where varianttype='%s'" % variant
+        qry = "select count(1) from somatic_mutations where variant_type='%s'" % variant
         rows = search_db(cursor, qry)
         print "\t", variant, rows[0][0], "cases"
        

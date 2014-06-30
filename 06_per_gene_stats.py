@@ -33,7 +33,7 @@ def main():
 
     ############################
     print "number of different genes:"
-    qry = "select distinct(hugoSymbol) from somatic_mutations"
+    qry = "select distinct(hugo_symbol) from somatic_mutations"
     rows = search_db(cursor, qry)
     genes = [row[0] for row in  rows]
     print "\t", len(genes)
@@ -43,18 +43,22 @@ def main():
     entries_per_gene = {}
     silent_per_gene  = {}
     for gene in genes:
-        qry = "select count(1) from somatic_mutations where hugoSymbol='%s'" % gene
+        qry = "select count(1) from somatic_mutations where hugo_symbol='%s'" % gene
         rows = search_db(cursor, qry)
         entries_per_gene[gene] = rows[0][0]
-        qry  += " and variantclassification='silent' "        
+        qry  += " and variant_classification='silent' "        
         rows = search_db(cursor, qry)
         silent_per_gene[gene] = rows[0][0]
 
-    sorted_genes =  sorted(genes, key= lambda x: entries_per_gene[x])
+    sorted_genes =  sorted(genes, key= lambda x: -entries_per_gene[x])
+    ct = 0
     for gene in sorted_genes:
         ratio = float(silent_per_gene[gene])/entries_per_gene[gene]
-        if ratio > 0.15: continue
-        print " %10s   %5d  %5d    %4.2f " % (gene, entries_per_gene[gene], silent_per_gene[gene], ratio)
+        if ratio > 0.25 or entries_per_gene[gene] < 5: continue
+        ct += 1
+        print " %4d   %10s   %5d  %5d    %4.2f   %5.2f%%" % (ct, gene, entries_per_gene[gene],
+                                                             silent_per_gene[gene], ratio,  float(ct)/len(genes)*100)
+        #print "  %4d  %10s   %5d  %5d  " % ( ct, gene, entries_per_gene[gene],   silent_per_gene[gene])
     print
 
 

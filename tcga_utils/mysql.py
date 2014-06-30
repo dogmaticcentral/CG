@@ -220,7 +220,7 @@ def search_db (cursor, qry, verbose=False):
 def connect_to_mysql (user=None, passwd=None, host=None, port=None):
     try:
         if (user is None):
-            db = MySQLdb.connect(user="ivana")
+            db = MySQLdb.connect(user="root")
         elif (host is None):
             db = MySQLdb.connect(user=user, passwd=passwd)
         else:

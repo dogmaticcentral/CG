@@ -28,7 +28,7 @@ def main():
 
     ############################
     print "sample type breakdown:"
-    qry  = "select TumorSampleBarcode from somatic_mutations "
+    qry  = "select tumor_sample_barcode from somatic_mutations "
     rows = search_db(cursor, qry)
     count = {}
     for  row in rows:
