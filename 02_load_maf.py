@@ -29,6 +29,7 @@ def store (cursor, header_fields, fields, usable_field):
     fixed_fields  = {}
     update_fields = {}
     
+    if (len(fields) != len(header_fields)): return
     for i in range( len(header_fields) ):
         if not usable_field[i]: continue
         field = fields[i]
@@ -73,56 +74,6 @@ def load_maf (cursor, db_name, existing_header_fields, maffile):
             store (cursor, header_fields, fields_clean, usable_field)
     inff.close()
 
-#########################################
-def make_somatic_mutations_table(cursor, db_name):
-
-    switch_to_db (cursor, db_name)
-    qry = "select database()"
-    rows = search_db(cursor, qry)
-    print qry
-    print rows
-
-    qry = "";
-    qry += "  CREATE TABLE somatic_mutations ("
-    qry += "  	 hugo_symbol VARCHAR (50) NOT NULL, "
-    qry += "	 aa_change BLOB, "
-    qry += "	 chromosome VARCHAR (20) NOT NULL, "
-    qry += "	 start_position INT  NOT NULL, "
-    qry += "	 end_position INT NOT NULL, "
-    qry += "	 strand VARCHAR (5) NOT NULL, "
-    qry += "	 variant_classification VARCHAR (50) NOT NULL, "
-    qry += "	 variant_type VARCHAR (20) NOT NULL, "
-    qry += "	 reference_allele BLOB NOT NULL, "
-    qry += "	 tumor_seq_allele1 BLOB NOT NULL, "
-    qry += "	 tumor_seq_allele2 BLOB NOT NULL, "
-    qry += "	 tumor_sample_barcode VARCHAR (50) NOT NULL, "
-    qry += "	 matched_norm_sample_barcode VARCHAR (50) NOT NULL, "
-    qry += "	 match_norm_seq_allele1 BLOB, "
-    qry += "	 match_norm_seq_allele2 BLOB, "
-    qry += "	 tumor_validation_allele1 BLOB, "
-    qry += "	 tumor_validation_allele2 BLOB, "
-    qry += "	 match_norm_validation_allele1 BLOB, "
-    qry += "	 match_norm_validation_allele2 BLOB, "
-    qry += "	 verification_status VARCHAR (20), "
-    qry += "	 validation_status VARCHAR (20) NOT NULL, "
-    qry += "	 mutation_status VARCHAR (50) NOT NULL"
-    qry += ") ENGINE=MyISAM"
-    rows = search_db(cursor, qry)
-    print qry
-    print rows
-
-    qry = "";
-    qry += "create index hugo_idx on somatic_mutations (hugo_symbol)"
-    rows = search_db(cursor, qry)
-    print qry
-    print rows
-
-    qry = "";
-    qry += "create index mutation_idx on somatic_mutations (tumor_sample_barcode, chromosome, strand, start_position)" 
-    rows = search_db(cursor, qry)
-    print qry
-    print rows
-
 
 
 #########################################
@@ -131,12 +82,12 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "COAD", "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
+    db_names  = ["COAD",  # after this we go alphabetically
+                 "ACC", "BLCA", "BRCA", "CESC",  "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
                  "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
                  "SKCM", "STAD", "THCA", "UCEC", "UCS"]
 
     # there seems to have been a problem with OV ... re-run
-
     db_names = ["OV"]
 
     for db_name in db_names:
@@ -145,23 +96,9 @@ def main():
         rows = search_db(cursor, qry)
         if not rows:
             print db_name, "not found"
-            qry = "create database " +  db_name
-            rows = search_db(cursor, qry)
-            print qry
-            print rows
-            make_somatic_mutations_table(cursor, db_name)
+            exit(1)
 
         print " ** ", db_name
-        switch_to_db (cursor, db_name)
-        qry = "show tables"
-        rows = search_db(cursor, qry)
-        print qry
-        print rows
-      
-        db_dir  = '/Users/ivana/databases/TCGA/'+db_name
-        ret      = commands.getoutput('find '+db_dir+' -name "*.maf"')
-        maf_files = ret.split('\n')
-
         switch_to_db (cursor, db_name)
 
         table = 'somatic_mutations'
@@ -174,6 +111,9 @@ def main():
 
         existing_header_fields = find_existing_fields(cursor, db_name)
 
+        db_dir  = '/Users/ivana/databases/TCGA/'+db_name
+        ret      = commands.getoutput('find ' + db_dir +' -name "*.maf"')
+        maf_files = ret.split('\n')
         for maffile in maf_files:
             print '\t loading:', maffile
             load_maf (cursor, db_name, existing_header_fields, maffile)
