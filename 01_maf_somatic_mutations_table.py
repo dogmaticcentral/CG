@@ -101,10 +101,11 @@ def main():
         table = 'somatic_mutations'
 
         if ( check_table_exists (cursor, db_name, table)):
-            #print table, " found in ", db_name
-            qry = "drop table somatic_mutations"
-            rows = search_db(cursor, qry)
-            make_somatic_mutations_table(cursor, db_name)
+            print table, " found in ", db_name
+            # if you really want to start from scratch, uncomment
+            #qry = "drop table somatic_mutations"
+            #rows = search_db(cursor, qry)
+            #make_somatic_mutations_table(cursor, db_name)
         else:
             print table, " not found in ", db_name
             exit(1)
