@@ -140,6 +140,7 @@ def mutations_per_gene (cursor, db_name):
     print "  %4s  %20s  %5s   %5s    %5s   %8s    %5s    %8s  %5s  %8s" % ( 'rank', 'name', 'tot',
                                                                      'indels',   'codon',                 
                                                                       'silent',  'pep len', 'expected',  'hits/expected', 'score')
+
     fract_expected = {}
     genes_filtered = []
     for gene in sorted_genes:
@@ -193,6 +194,7 @@ def main():
     db_names  = [ "ACC", "BLCA", "BRCA", "CESC", "COAD",  "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
                  "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
                  "SKCM", "STAD", "THCA", "UCEC", "UCS"]
+    db_names = ["COAD"]
     for db_name  in db_names:
         print '==================================='
         mutations_per_gene (cursor, db_name)
