@@ -108,6 +108,9 @@ def main():
         else:
             print table, " not found in ", db_name
             exit(1)
+        # if there is a nonexistent field from the ones that we require, drop the whole dataset
+        # (we want only the cses where the mutation is traceable back to the nucleotide position in cDNA,
+        # and for several 'blacklisted' dataset this is not the case)
 
         existing_header_fields = find_existing_fields(cursor, db_name)
 

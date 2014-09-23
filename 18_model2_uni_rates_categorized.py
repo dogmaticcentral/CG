@@ -8,6 +8,7 @@ import MySQLdb
 import commands
 from   tcga_utils.mysql   import  *
 from scipy import stats
+from scipy.stats import binom
 
 #########################################
 def retrieve_ensembl_id (cursor, gene):
@@ -99,73 +100,93 @@ def mutations_per_gene (cursor, db_name):
     ############################
     entries_per_gene = {}
     indel_per_gene   = {}
-    codon_mutations_per_gene     = {}
+    codon_mutations_per_gene   = {}
+    codon_mutations_per_sample = {}
+    codon_mutations_per_gene_per_sample = {}
+    total_length_per_sample = {}
     silent_per_gene  = {}
     peptide_length   = {}
-    ad_hoc_score = {}
-    total_length = 0
+    total_length     = 0
     total_hits = 0 
     gene2sample = {}
     for gene in genes:
         switch_to_db (cursor, db_name)
-        qry = "select variant_classification, variant_type, tumor_sample_barcode  from somatic_mutations where hugo_symbol='%s'" % gene
+        qry = "select variant_classification, variant_type, tumor_sample_barcode  "
+        qry += "tumor_seq_allele1, match_norm_seq_allele1,  tumor_seq_allele2, match_norm_seq_allele2 "
+        qry += "from somatic_mutations where hugo_symbol='%s'" % gene
         rows = search_db(cursor, qry)
         entries_per_gene[gene] = len(rows)
+        peptide_length[gene]   = get_peptide_length(cursor, gene)
 
         indel_per_gene[gene]  = 0
         silent_per_gene[gene] = 0
         codon_mutations_per_gene[gene] = 0
-        ad_hoc_score[gene] = 0
+        codon_mutations_per_gene_per_sample[gene] = {}
+        gene2sample[gene] = []
+        samples_seen = {}
         for row in rows:
             sample = row[2]
-            gene2sample[gene] = sample
+            if  not sample in codon_mutations_per_sample.keys():
+                codon_mutations_per_sample[sample]  = 0
+ 
+            if  not sample in codon_mutations_per_gene_per_sample[gene].keys():
+                codon_mutations_per_gene_per_sample[gene][sample] = 0
+
+            gene2sample[gene].append(sample) 
             [variant_classification, variant_type] = [x.lower() for x in row[:2]]
             if variant_type=='ins' or variant_type=='del':
                 indel_per_gene[gene] +=1
-                if mutations_in_sample[sample]:  ad_hoc_score[gene] += float(100)/mutations_in_sample[sample]
             elif  variant_classification in ['silent', 'missense_mutation','nonsense_mutation']:
-                codon_mutations_per_gene[gene]  += 1
+                codon_mutations_per_gene[gene]     += 1
+                codon_mutations_per_sample[sample] += 1
+                codon_mutations_per_gene_per_sample[gene][sample] += 1
                 if  variant_classification =='silent':
                     silent_per_gene[gene]  += 1
-                else:
-                    if mutations_in_sample[sample]:  ad_hoc_score[gene] += float(100)/mutations_in_sample[sample]
+            if not sample in samples_seen.keys():
+                if  not sample in total_length_per_sample.keys():
+                    total_length_per_sample[sample]  = 0
+                total_length_per_sample[sample] += 3*peptide_length[gene] 
 
+        total_length += 3*peptide_length[gene]
+        total_hits   += codon_mutations_per_gene[gene]
+        
+    number_of_samples = len (codon_mutations_per_sample.keys())
+    uniform_bg_mutation_rate    = float(total_hits)/total_length/number_of_samples
+    bg_mutation_rate_per_sample = {}
+    for sample in codon_mutations_per_sample.keys():
+        if not total_length_per_sample[sample]: 
+            print ">>>",  sample, total_length_per_sample[sample]
+            continue
+        bg_mutation_rate_per_sample[sample] = float(codon_mutations_per_sample[sample])/total_length
+        #print "%s  %8d  %8d   %8d  %5.3e" % ( sample, codon_mutations_per_sample[sample], mutations_in_sample[sample],
+        #                                total_length_per_sample[sample], bg_mutation_rate_per_sample[sample])
 
-        peptide_length[gene] = get_peptide_length(cursor, gene)
-        total_length += peptide_length[gene]
-        total_hits   += entries_per_gene[gene]
-
-    sorted_genes =  sorted(genes, key= lambda x: entries_per_gene[x])
     
-    if False:
-        bracket = {}
-        for i in range (21):
-            bracket[100*i] = 0
-        for sample in  mutations_in_sample.keys():
-            assigned = False
-            for i in range (20):
-                if mutations_in_sample[sample] < 100*i:
-                     bracket[100*i] += 1
-                     assigned = True
-                     break
-            if not assigned:
-                bracket[100*20] += 1
+    print  "total: %s samples,   %8d  %8d  %5.3e" % (number_of_samples, total_hits,  total_length, uniform_bg_mutation_rate)
 
-        for i in range (1,21):
-            print i*100, bracket[100*i]
-        exit(1)
-
-    pep_lengths = []
-    number_of_hits = []
-    for gene in sorted_genes:
+ 
+    model1 = []
+    model2 = []
+    number_of_hits_1 = []
+    number_of_hits_2 = []
+    for gene in genes:
         pep_len = peptide_length[gene]
         if not pep_len: continue
-        pep_lengths.append (pep_len)
-        number_of_hits.append (entries_per_gene[gene])
+        model1.append (3*pep_len*uniform_bg_mutation_rate)
+        number_of_hits_1.append (codon_mutations_per_gene[gene])
+       
+        # for model2 find expected number fo mutations in gene in sample, and sum them over all samples
+        expected_total_number_of_mutations = 0
+        for sample, mutation_rate in bg_mutation_rate_per_sample.iteritems():
+            if  sample in codon_mutations_per_gene_per_sample[gene].keys():
+                expected_number_of_mutations = 3*mutation_rate*pep_len;
+                model2.append (expected_number_of_mutations)
+                number_of_hits_2.append (codon_mutations_per_gene_per_sample[gene][sample])
 
-    [pearson_corr, p_val] = stats.pearsonr(pep_lengths, number_of_hits)
-    print "pearson_corr", pearson_corr
-    print "p_val", p_val
+    [pearson_corr, p_val] = stats.pearsonr(model1, number_of_hits_1)
+    print "pearson_corr, model1", pearson_corr
+    [pearson_corr, p_val] = stats.pearsonr(model2, number_of_hits_2)
+    print "pearson_corr, model2", pearson_corr
     return
 
     avg = {}
