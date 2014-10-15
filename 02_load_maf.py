@@ -9,6 +9,7 @@
 
 
 import MySQLdb
+from sets import Set
 from   tcga_utils.mysql   import  *
 import commands
 
@@ -48,7 +49,7 @@ def store (cursor, header_fields, fields, usable_field):
 
  
 #########################################
-def load_maf (cursor, db_name, existing_header_fields, maffile):
+def load_maf (cursor, db_name, required_fields, maffile):
     inff = open(maffile, "r")
     line_ct = 0
     for line in inff:
@@ -66,9 +67,18 @@ def load_maf (cursor, db_name, existing_header_fields, maffile):
 				     'aachange', 'amino_acid_change',
 				     'protein_change']:
                     header_fields[i] = 'aa_change'
-            
-            usable_field = map (lambda x: x in existing_header_fields, header_fields)
-            
+                elif header_fields[i] in ['cdna_change', 'chromchange', 
+                                          'c_position_wu', 'c_position']:
+                    header_fields[i] = 'cdna_change'
+
+            # difference: fields in usable_fields, but not in header_fields
+            if  len( Set(required_fields) - Set(header_fields) ) > 0:
+                print "   missing fields: ", Set(required_fields) - Set(header_fields) 
+                break
+
+            # note: usable_field is a list of booleans
+            usable_field  = map (lambda x: x in required_fields, header_fields)
+
         else:
             fields_clean = [x.replace("'", '') for x in fields]
             store (cursor, header_fields, fields_clean, usable_field)
@@ -87,8 +97,6 @@ def main():
                  "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
                  "SKCM", "STAD", "THCA", "UCEC", "UCS"]
 
-    # there seems to have been a problem with OV ... re-run
-    db_names = ["OV"]
 
     for db_name in db_names:
         # check db exists
@@ -109,17 +117,17 @@ def main():
             print table, " not found in ", db_name
             exit(1)
         # if there is a nonexistent field from the ones that we require, drop the whole dataset
-        # (we want only the cses where the mutation is traceable back to the nucleotide position in cDNA,
-        # and for several 'blacklisted' dataset this is not the case)
+        # (we want only the cases where the mutation is traceable back to the nucleotide position in cDNA,
+        # and for several 'blacklisted' datasets this is not the case)
 
-        existing_header_fields = find_existing_fields(cursor, db_name)
+        required_fields = find_existing_fields(cursor, db_name)
 
         db_dir  = '/Users/ivana/databases/TCGA/'+db_name
-        ret      = commands.getoutput('find ' + db_dir +' -name "*.maf"')
+        ret       = commands.getoutput('find ' + db_dir + ' -name "*.maf"')
         maf_files = ret.split('\n')
         for maffile in maf_files:
             print '\t loading:', maffile
-            load_maf (cursor, db_name, existing_header_fields, maffile)
+            load_maf (cursor, db_name, required_fields, maffile)
 
 
     cursor.close()

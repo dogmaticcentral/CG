@@ -28,6 +28,7 @@ def make_somatic_mutations_table(cursor, db_name):
     qry += "  	 hugo_symbol VARCHAR (50) NOT NULL, "
     qry += "     entrez_gene_id INT, "
     qry += "	 aa_change BLOB, "
+    qry += "	 cdna_change BLOB, "
     qry += "	 chromosome VARCHAR (20) NOT NULL, "
     qry += "	 start_position INT  NOT NULL, "
     qry += "	 end_position INT NOT NULL, "
@@ -61,6 +62,22 @@ def make_somatic_mutations_table(cursor, db_name):
 
     qry = "";
     qry += "create index mutation_idx on somatic_mutations (tumor_sample_barcode, chromosome, strand, start_position)" 
+    rows = search_db(cursor, qry)
+    print qry
+    print rows
+
+#########################################
+def add_column_to_somatic_mutations_table(cursor, db_name, new_column):
+
+    switch_to_db (cursor, db_name)
+    qry = "select database()"
+    rows = search_db(cursor, qry)
+    print qry
+    print rows
+
+    qry = "";
+    qry += "  ALTER TABLE somatic_mutations ADD COLUMN"
+    qry += "	%s  BLOB " % new_column
     rows = search_db(cursor, qry)
     print qry
     print rows
@@ -103,9 +120,10 @@ def main():
         if ( check_table_exists (cursor, db_name, table)):
             print table, " found in ", db_name
             # if you really want to start from scratch, uncomment
-            #qry = "drop table somatic_mutations"
-            #rows = search_db(cursor, qry)
-            #make_somatic_mutations_table(cursor, db_name)
+            qry = "drop table somatic_mutations"
+            rows = search_db(cursor, qry)
+            make_somatic_mutations_table(cursor, db_name)
+            #add_column_to_somatic_mutations_table(cursor, db_name, 'cdna_change')
         else:
             print table, " not found in ", db_name
             exit(1)

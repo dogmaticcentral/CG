@@ -64,6 +64,8 @@ def mutations_per_gene (cursor, db_name):
     print "%% number of entries:    %7d" %  no_entries
     ############################
 
+    if not no_entries: return
+
     ############################
     uniq_patients = {}
     qry  = "select tumor_sample_barcode from somatic_mutations "
@@ -140,7 +142,9 @@ def mutations_per_gene (cursor, db_name):
                 codon_mutations_per_gene_per_sample[gene][sample] += 1
                 if  variant_classification =='silent':
                     silent_per_gene[gene]  += 1
+
             if not sample in samples_seen.keys():
+                samples_seen[sample] = True
                 if  not sample in total_length_per_sample.keys():
                     total_length_per_sample[sample]  = 0
                 total_length_per_sample[sample] += 3*peptide_length[gene] 
@@ -149,30 +153,33 @@ def mutations_per_gene (cursor, db_name):
         total_hits   += codon_mutations_per_gene[gene]
         
     number_of_samples = len (codon_mutations_per_sample.keys())
-    uniform_bg_mutation_rate    = float(total_hits)/total_length/number_of_samples
+    uniform_bg_mutation_rate    = float(total_hits)/total_length
     bg_mutation_rate_per_sample = {}
     for sample in codon_mutations_per_sample.keys():
         if not total_length_per_sample[sample]: 
             print ">>>",  sample, total_length_per_sample[sample]
             continue
         bg_mutation_rate_per_sample[sample] = float(codon_mutations_per_sample[sample])/total_length
-        #print "%s  %8d  %8d   %8d  %5.3e" % ( sample, codon_mutations_per_sample[sample], mutations_in_sample[sample],
+        #print "\t %s  %8d  %8d   %8d  %5.3e" % ( sample, codon_mutations_per_sample[sample], mutations_in_sample[sample],
         #                                total_length_per_sample[sample], bg_mutation_rate_per_sample[sample])
 
     
-    print  "total: %s samples,   %8d  %8d  %5.3e" % (number_of_samples, total_hits,  total_length, uniform_bg_mutation_rate)
+    print  "total_hits,  total_length, uniform_bg_mutation_rate:  %8d  %8d  %5.3e" %\
+        ( total_hits,  total_length, uniform_bg_mutation_rate)
 
- 
+    if not total_hits: return
+
     model1 = []
     model2 = []
     number_of_hits_1 = []
     number_of_hits_2 = []
+
     for gene in genes:
         pep_len = peptide_length[gene]
         if not pep_len: continue
         model1.append (3*pep_len*uniform_bg_mutation_rate)
         number_of_hits_1.append (codon_mutations_per_gene[gene])
-       
+        # print " ** ", 3*pep_len*uniform_bg_mutation_rate, codon_mutations_per_gene[gene]
         # for model2 find expected number fo mutations in gene in sample, and sum them over all samples
         expected_total_number_of_mutations = 0
         for sample, mutation_rate in bg_mutation_rate_per_sample.iteritems():
@@ -185,6 +192,7 @@ def mutations_per_gene (cursor, db_name):
     print "pearson_corr, model1", pearson_corr
     [pearson_corr, p_val] = stats.pearsonr(model2, number_of_hits_2)
     print "pearson_corr, model2", pearson_corr
+
     return
 
     avg = {}
