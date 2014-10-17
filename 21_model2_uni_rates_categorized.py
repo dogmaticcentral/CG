@@ -11,10 +11,17 @@ from   tcga_utils.utils   import  *
 from scipy import stats
 from scipy.stats import binom
 
+from Bio.Seq      import Seq
+
+
 peptide_length = {}
 length_per_category  = {}
 silent_length_per_category  = {}
     
+# these are protein coding genes in mitochodnrion; there are more (tRNA, ribisomal RNA) not of interest here
+mitochondrial_genes = ["ENSG00000198888", "ENSG00000198763", "ENSG00000198804", "ENSG00000198712", 
+                      "ENSG00000228253", "ENSG00000198899", "ENSG00000198938", "ENSG00000198840", 
+                      "ENSG00000212907", "ENSG00000198886", "ENSG00000198786", "ENSG00000198695", "ENSG00000198727"]
 
 #########################################
 # what is the length of the peptide this gene translates to?
@@ -176,12 +183,13 @@ class Failure_counter:
         self.no_aa_from_to_match   = 0
         self.no_cdna_from_to_match = 0
         self.not_a_point_mutation  = 0
-        self.not_a_snp            = 0
-        self.nt_and_aa_positions_do_not_match  = 0
-        self.no_pos_match_to_canonical_ensembl = 0
+        self.not_a_snp             = 0
+        self.nt_and_aa_positions_do_not_match   = 0
+        self.no_pos_match_to_canonical_ensembl  = 0
         self.not_aa_match_to_canonical_ensembl  = 0
         self.not_nt_match_to_canonical_ensembl  = 0
-
+        self.aa_to_does_not_match_the_translation = 0
+        self.var_classification_failure = 0
     # print
     def __str__ (self):
         printstr = ""
@@ -193,6 +201,50 @@ class Failure_counter:
             printstr += "\n"
         return printstr
     
+category_dict = {}
+categories = []
+
+############################################
+def fill_category ():
+    
+    categories.extend(["AT_tsvn", "AT_tstn", "CG_tsvn", "CG_tstn", "CpG_tsvn", "CpG_tstn"])
+    
+    for from_nt in ['A', 'C', 'G', 'T']:
+        category_dict[from_nt] = {}
+        for to_nt in ['A', 'C', 'G', 'T']:
+           category_dict[from_nt][to_nt] = {}
+           category_dict[from_nt][to_nt][True]  = ""
+           category_dict[from_nt][to_nt][False] = ""
+    
+    category_dict['A']['A'][False] = ""
+    category_dict['A']['T'][False] = "AT_tsvn"
+    category_dict['A']['C'][False] = "AT_tsvn"
+    category_dict['A']['G'][False] = "AT_tstn"
+    
+    category_dict['T']['A'][False] = "AT_tsvn"
+    category_dict['T']['T'][False] = ""
+    category_dict['T']['C'][False] = "AT_tstn"
+    category_dict['T']['G'][False] = "AT_tsvn"
+    
+    category_dict['C']['A'][False] = "CG_tsvn"
+    category_dict['C']['T'][False] = "CG_tstn"
+    category_dict['C']['C'][False] = ""
+    category_dict['C']['G'][False] = "CG_tsvn"
+    
+    category_dict['C']['A'][True]  = "CpG_tsvn"
+    category_dict['C']['T'][True]  = "CpG_tstn"
+    category_dict['C']['C'][True]  = ""
+    category_dict['C']['G'][True]  = "CpG_tsvn"
+    
+    category_dict['G']['A'][False] = "CG_tstn"
+    category_dict['G']['T'][False] = "CG_tsvn"
+    category_dict['G']['C'][False] = "CG_tsvn"
+    category_dict['G']['G'][False] = ""
+    
+    category_dict['G']['A'][True] = "CpG_tstn"
+    category_dict['G']['T'][True] = "CpG_tsvn"
+    category_dict['G']['C'][True] = "CpG_tsvn"
+    category_dict['G']['G'][True] = ""
         
 
 ############################################
@@ -212,19 +264,19 @@ def parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_c
 
     if not aa_position_match:
         failure_counter.no_aa_pos_match += 1
-        return
+        return ""
 
     if not cdna_position_match:
         failure_counter.no_cdna_pos_match += 1
-        return
+        return ""
 
     if not aa_from_to_match:
         failure_counter.no_aa_from_to_match += 1
-        return
+        return ""
 
     if not cdna_from_to_match:
         failure_counter.no_cdna_from_to_match += 1
-        return
+        return ""
     # some curators believe that the actual value of aa or nt is not important
     # (like we have a reliable sequence info, so we need no double checking)
     if not  (len(aa_from_to_match.group(1))<=1  and len(aa_from_to_match.group(2)) <= 1) :
@@ -232,16 +284,14 @@ def parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_c
         #print
         #print "not a point mutation"
         #print ensembl_id, variant_classification, aa_change, cdna_change
-        #print "canonical according to ensembl:", ensembl_aa, ensembl_position, ensembl_codon
-        return
+        return ""
 
     if not  (len(cdna_from_to_match.group(1))<=1  and len(cdna_from_to_match.group(2)) <= 1) :
         failure_counter.not_a_snp  +=1 
         #print
         #print "not a snp"
         #print ensembl_id, variant_classification, aa_change, cdna_change
-        #print "canonical according to ensembl:", ensembl_aa, ensembl_position, ensembl_codon
-        return
+        return ""
 
     
     position_protein =  int (aa_position_match.group(1))
@@ -251,7 +301,7 @@ def parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_c
 
     if not pos_computes:
         failure_counter.nt_and_aa_positions_do_not_match += 1
-        return
+        return ""
 
     aa_from =  aa_from_to_match.group(1)
     aa_to   =  aa_from_to_match.group(2)
@@ -277,7 +327,7 @@ def parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_c
 
     if not ensembl_entry:
         failure_counter.no_pos_match_to_canonical_ensembl += 1
-        return
+        return ""
 
     ensembl_aa       =  position_pattern.match(ensembl_entry).group(1)
     ensembl_position =  int(position_pattern.match(field).group(2))
@@ -288,14 +338,63 @@ def parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_c
     if aa_from and ensembl_aa != aa_from:
         #print " !!!! ", qry0
         failure_counter.not_aa_match_to_canonical_ensembl += 1
-        return
+        return ""
     # 'index' goes from 0-2, position counts from 1
     tcga_index_in_codon = (position_dna+2)%3
     ensembl_nt = ensembl_codon[tcga_index_in_codon]
     if nt_from and ensembl_nt != nt_from:
         #print " !!!! ", qry0
         failure_counter.not_nt_match_to_canonical_ensembl += 1
-        return
+        return ""
+
+    # we'll deal with this later"
+    if not nt_from or not nt_to:
+        return ""
+
+    # does the nt mutation correpond to the variant_classification and reported aa change
+    mutated_codon = ""
+    for i in range(3):
+        if i==tcga_index_in_codon:
+            mutated_codon += nt_to
+        else:
+            mutated_codon += ensembl_codon[i]
+    
+    if ensembl_id in mitochondrial_genes:
+        mutated_aa = Seq(mutated_codon).translate(table="Vertebrate Mitochondrial").tostring()
+    else:
+        mutated_aa = Seq(mutated_codon).translate().tostring()
+    # tcga uses 'X', BioSeq uses '*'
+    if mutated_aa == '*':  mutated_aa = 'X';
+    
+    if mutated_aa != aa_to:
+        failure_counter.aa_to_does_not_match_the_translation += 1
+        return ""
+
+    # if we got to here, is there any chance we do not agree about the variant classification?
+    if (ensembl_aa == mutated_aa):
+        var_classification_check = 'silent'
+    elif  mutated_aa == 'X':
+        var_classification_check = 'nonsense_mutation'
+    else:
+        var_classification_check = 'missense_mutation'
+
+    if var_classification_check != variant_classification:
+        print "============================="
+        print ensembl_id, variant_classification, aa_change, cdna_change
+        print "cannonical according to ensembl:", ensembl_aa, ensembl_position, ensembl_codon
+        print "tcga_index_in_codon:", tcga_index_in_codon, "mutated codon:", mutated_codon,  "mutated aa:", mutated_aa
+        print "var_classification_check", var_classification_check
+        failure_counter.var_classification_failure += 1
+        return "" # mercifully, at least this does not seem to happen
+
+    # if we got to here, everything should be more-or-less in synch
+    if nt_from in ['C', 'G']:  return ""
+    # <<< HERE >>>> nead to read in the CpG positions for each gene 
+    print "============================="
+    print ensembl_id, variant_classification, aa_change, cdna_change
+    print "cannonical according to ensembl:", ensembl_aa, ensembl_position, ensembl_codon
+    print "tcga_index_in_codon:", tcga_index_in_codon, "mutated codon:", mutated_codon,  "mutated aa:", mutated_aa
+    print "category: ", nt_from, nt_to, category_dict[nt_from][nt_to][False]
        
 
 
@@ -365,7 +464,8 @@ def mutations_per_gene (cursor, db_name, genes, samples, mutations_in_sample):
     print "% silent_length_not_found:", silent_len_not_found
     print "% total_length", total_length
     for category in categories:
-        print "%%\t total_length  in category %s:  %d   silent: %d"  % (category,  total_length_per_category[category] ,  total_silent_length_per_category[category])
+        print "%%\t total_length  in category %s:  %d   silent: %d"  % \
+            (category,  total_length_per_category[category] ,  total_silent_length_per_category[category])
 
     ############################
     # total and silent number of mutations
@@ -391,9 +491,9 @@ def mutations_per_gene (cursor, db_name, genes, samples, mutations_in_sample):
     switch_to_db(cursor, db_name)
 
     failure_counter = Failure_counter()
-    ct = 0
+    fill_category()
     for ensembl_id, genes_w_this_ensembl in ensembl2gene.iteritems():
-        ct += 1
+        
         for gene in genes_w_this_ensembl:
 
             qry = "select aa_change, cdna_change, variant_classification  from somatic_mutations where hugo_symbol='%s'" % gene
@@ -407,8 +507,9 @@ def mutations_per_gene (cursor, db_name, genes, samples, mutations_in_sample):
                 aa_change   = row[0]
                 cdna_change = row[1]
 
-                parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_change, cdna_change, failure_counter, qry)
-        #if  ct == 1000: break
+                category = parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, 
+                                              aa_change, cdna_change, failure_counter, qry)
+                if not category: continue
     
     print failure_counter
     return
@@ -465,6 +566,9 @@ def main():
     db_names  = [ "ACC", "BLCA", "BRCA", "CESC", "COAD",  "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
                  "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
                  "SKCM", "STAD", "THCA", "UCEC", "UCS"]
+
+    
+    db_names  = ["COAD"]
 
     set_peptide_lengths(cursor) # fills peptide_length dictionary
     #check_number_of_mutations(cursor) $ looks like we pass this test
