@@ -17,7 +17,8 @@ from Bio.Seq      import Seq
 peptide_length = {}
 length_per_category  = {}
 silent_length_per_category  = {}
-    
+cpgs = {}    
+
 # these are protein coding genes in mitochodnrion; there are more (tRNA, ribisomal RNA) not of interest here
 mitochondrial_genes = ["ENSG00000198888", "ENSG00000198763", "ENSG00000198804", "ENSG00000198712", 
                       "ENSG00000228253", "ENSG00000198899", "ENSG00000198938", "ENSG00000198840", 
@@ -40,6 +41,20 @@ def set_peptide_lengths (cursor):
     else:
         print "error searching for protein lengths:"
         print qry
+
+#########################################
+#
+def read_cpgs(cursor):
+    qry = "select ensembl_id, cpgs from baseline.cpg_nucleotides" 
+    rows = search_db(cursor, qry)
+    if rows:
+        for row in rows:
+            [ensembl_id, cpgs_all] = row
+            cpgs[ensembl_id] =  cpgs_all
+    else:
+        print "error searching for cpgs:"
+        print qry
+    
 
 #########################################
 #
@@ -246,6 +261,26 @@ def fill_category ():
     category_dict['G']['C'][True] = "CpG_tsvn"
     category_dict['G']['G'][True] = ""
         
+############################################
+def check_cpg (ensembl_id, ensembl_position, ensembl_nt,  ensembl_codon, canonical_sequence):
+
+    is_cpg = False
+    if not cpgs.has_key(ensembl_id): return is_cpg
+
+    fields = cpgs[ensembl_id].split(';')
+    for field in fields:
+        if not field or not '|' in field: continue
+        [pos, nt, codon, context] = field.split ('|');
+        if int(pos) == int(ensembl_position):
+            if ensembl_nt != nt or ensembl_codon != codon:
+                print "error 567"
+                exit(1)
+            else:
+               is_cpg = True
+               break
+    
+    return is_cpg
+
 
 ############################################
 def parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_change, cdna_change, failure_counter, qry0):
@@ -330,10 +365,10 @@ def parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_c
         return ""
 
     ensembl_aa       =  position_pattern.match(ensembl_entry).group(1)
-    ensembl_position =  int(position_pattern.match(field).group(2))
+    ensembl_aa_position =  int(position_pattern.match(field).group(2))
     ensembl_codon    =  position_pattern.match(ensembl_entry).group(3)
 
-    #print "cannonical according to ensembl:", ensembl_aa, ensembl_position, ensembl_codon
+    #print "cannonical according to ensembl:", ensembl_aa, ensembl_aa_position, ensembl_codon
 
     if aa_from and ensembl_aa != aa_from:
         #print " !!!! ", qry0
@@ -351,7 +386,7 @@ def parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_c
     if not nt_from or not nt_to:
         return ""
 
-    # does the nt mutation correpond to the variant_classification and reported aa change
+    # does the nt mutation correspond to the variant_classification and reported aa change
     mutated_codon = ""
     for i in range(3):
         if i==tcga_index_in_codon:
@@ -381,21 +416,21 @@ def parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_c
     if var_classification_check != variant_classification:
         print "============================="
         print ensembl_id, variant_classification, aa_change, cdna_change
-        print "cannonical according to ensembl:", ensembl_aa, ensembl_position, ensembl_codon
+        print "cannonical according to ensembl:", ensembl_aa, ensembl_aa_position, ensembl_codon
         print "tcga_index_in_codon:", tcga_index_in_codon, "mutated codon:", mutated_codon,  "mutated aa:", mutated_aa
         print "var_classification_check", var_classification_check
         failure_counter.var_classification_failure += 1
         return "" # mercifully, at least this does not seem to happen
 
     # if we got to here, everything should be more-or-less in synch
-    if nt_from in ['C', 'G']:  return ""
-    # <<< HERE >>>> nead to read in the CpG positions for each gene 
-    print "============================="
-    print ensembl_id, variant_classification, aa_change, cdna_change
-    print "cannonical according to ensembl:", ensembl_aa, ensembl_position, ensembl_codon
-    print "tcga_index_in_codon:", tcga_index_in_codon, "mutated codon:", mutated_codon,  "mutated aa:", mutated_aa
-    print "category: ", nt_from, nt_to, category_dict[nt_from][nt_to][False]
-       
+    is_cpg = False
+    if ensembl_nt in ['C', 'G']:
+        ensembl_nt_position = 3*(ensembl_aa_position-1) + tcga_index_in_codon + 1
+        is_cpg = check_cpg (ensembl_id,  ensembl_nt_position, ensembl_nt,  ensembl_codon, canonical_sequence)
+
+    category =  category_dict[nt_from][nt_to][is_cpg]
+    
+    return category
 
 
 
@@ -469,11 +504,11 @@ def mutations_per_gene (cursor, db_name, genes, samples, mutations_in_sample):
 
     ############################
     # total and silent number of mutations
-    number_of_codon_mutations_per_gene = {}
+    number_of_codon_mutations_per_gene  = {}
     number_of_silent_mutations_per_gene = {}
     for category in categories:
-        number_of_codon_mutations_per_gene[category] = {}
-        number_of_silent_mutations_per_gene[category]  = {}
+        number_of_codon_mutations_per_gene[category]  = {}
+        number_of_silent_mutations_per_gene[category] = {}
         
 
     for category in categories:
@@ -492,6 +527,8 @@ def mutations_per_gene (cursor, db_name, genes, samples, mutations_in_sample):
 
     failure_counter = Failure_counter()
     fill_category()
+    read_cpgs(cursor)
+
     for ensembl_id, genes_w_this_ensembl in ensembl2gene.iteritems():
         
         for gene in genes_w_this_ensembl:
@@ -510,8 +547,20 @@ def mutations_per_gene (cursor, db_name, genes, samples, mutations_in_sample):
                 category = parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, 
                                               aa_change, cdna_change, failure_counter, qry)
                 if not category: continue
-    
+                total_number_of_codon_mutations[category]  += 1
+                number_of_codon_mutations_per_gene[category][ensembl_id]   += 1
+                if variant_classification == 'silent':
+                    total_number_of_silent_mutations[category] += 1
+                    number_of_silent_mutations_per_gene[category][ensembl_id] += 1
+                
     print failure_counter
+    for category in categories:
+        print "  %12s  total: %10d  silent: %10d " % (category, 
+                                                      total_number_of_codon_mutations[category], 
+                                                      total_number_of_silent_mutations[category])
+  
+
+
     return
   
     overall_mutation_rate = float(total_number_of_codon_mutations)/total_length;
