@@ -283,6 +283,28 @@ def check_cpg (ensembl_id, ensembl_position, ensembl_nt,  ensembl_codon, canonic
 
 
 ############################################
+#
+import random
+def assign_fudge_category():
+    r = random.randint(1,94766)
+    i = 0
+    if r <= 2164:
+        return "CpG_tsvn"
+    elif r <= 2164+7525:
+        return "AT_tsvn"
+    elif r <= 2164+7525+12856:
+        return "AT_tstn"
+    elif r <= 2164+7525+12856+15319:
+        return "CG_tsvn"
+    elif r <= 2164+7525+12856+15319+18454:
+        return "CG_tstn"
+    else:
+        return "CpG_tstn"
+
+   
+
+
+############################################
 def parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_change, cdna_change, failure_counter, qry0):
 
 
@@ -432,8 +454,32 @@ def parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, aa_c
     
     return category
 
+##########################################
+def resample (x, y):
+    # resample to fraction of the original sample
+    for fraction in  [int(len(x)/2),    int(len(x)/5),   int(len(x)/10), 
+                      int(len(x)/20),   int(len(x)/50),  int(len(x)/100),
+                      int(len(x)/200),  int(len(x)/500), int(len(x)/1000) ]:
+        print
+        print "resample to", fraction, "points"
+        min_corr = 100
+        max_corr = -100
+        for r in range(20):
+            indices = range( len(x) )
+            random.shuffle( indices )
+            resample_indices = indices[:fraction] 
+            x_r = [ x[j] for j in resample_indices]
+            y_r = [ y[j] for j in resample_indices]
+            [pearson_corr, p_val] = stats.pearsonr(x_r, y_r)
+            print "% resample ", r, "pearson_corr for  overall_mutation_rate", pearson_corr, " p_val", p_val
+            if max_corr < pearson_corr: max_corr = pearson_corr
+            if min_corr > pearson_corr: min_corr = pearson_corr
+        print "range: [", min_corr, ",", max_corr, "]"
 
 
+############################################
+############################################
+############################################
 ############################################
 def mutations_per_gene (cursor, db_name, genes, samples, mutations_in_sample):
 
@@ -475,32 +521,38 @@ def mutations_per_gene (cursor, db_name, genes, samples, mutations_in_sample):
 
 
     ############################
-    total_length        = 0
-
-    total_length_per_category        = {}
-    total_silent_length_per_category = {}
+    total_length        = {}
+    total_silent_length = {}
 
     for category in categories:
-        total_length_per_category[category]        = 0
-        total_silent_length_per_category[category] = 0
+        total_length[category]        = 0
+        total_silent_length[category] = 0
 
-    #print "% genes entered under different names:"
-    for ensembl_id, genes_w_this_ensembl in ensembl2gene.iteritems():
-        #if len(genes_w_this_ensembl) >= 2: 
-        #    print "%", ensembl_id, genes_w_this_ensembl
-        total_length        += peptide_length[ensembl_id]
-        
+    length_per_gene = {}
+    silent_length_per_gene = {}
+    for ensembl_id, genes_w_this_ensembl in ensembl2gene.iteritems():       
+        length_per_gene[ensembl_id] = 0
+        silent_length_per_gene[ensembl_id] = 0
         for category in categories:
-            total_length_per_category[category]         += length_per_category[category][ensembl_id]
-            total_silent_length_per_category[category]  += silent_length_per_category[category][ensembl_id]
+            total_length[category]         += length_per_category[category][ensembl_id]
+            total_silent_length[category]  += silent_length_per_category[category][ensembl_id]
+            length_per_gene[ensembl_id]    += length_per_category[category][ensembl_id]
+            silent_length_per_gene[ensembl_id] += silent_length_per_category[category][ensembl_id]
+    
+    overall_length = 0
+    overall_silent_length = 0
+    for category in categories:
+        overall_length += total_length[category] 
+        overall_silent_length += total_silent_length[category] 
 
     print "% number of unresolved gene names:", not_found
     print "% peptide_length_not_found:", peplen_not_found
     print "% silent_length_not_found:", silent_len_not_found
-    print "% total_length", total_length
+    print "% overall_length", overall_length
+    print "% overall_silent_length", overall_silent_length
     for category in categories:
         print "%%\t total_length  in category %s:  %d   silent: %d"  % \
-            (category,  total_length_per_category[category] ,  total_silent_length_per_category[category])
+            (category,  total_length[category] ,  total_silent_length[category])
 
     ############################
     # total and silent number of mutations
@@ -529,75 +581,120 @@ def mutations_per_gene (cursor, db_name, genes, samples, mutations_in_sample):
     fill_category()
     read_cpgs(cursor)
 
-    for ensembl_id, genes_w_this_ensembl in ensembl2gene.iteritems():
+    overall_per_gene = {}
+    overall_silent_per_gene = {}
+    for ensembl_id in ensembl2gene.keys():
+        overall_per_gene [ensembl_id] = 0
+        overall_silent_per_gene[ensembl_id] = 0
         
+    for ensembl_id, genes_w_this_ensembl in ensembl2gene.iteritems():      
         for gene in genes_w_this_ensembl:
-
-            qry = "select aa_change, cdna_change, variant_classification  from somatic_mutations where hugo_symbol='%s'" % gene
+            qry = "select aa_change, cdna_change, variant_classification from somatic_mutations where hugo_symbol='%s'" % gene
             rows = search_db(cursor, qry)
             if not rows: continue
-
             for row in rows:
                 variant_classification = row[2].lower()
                 if  not variant_classification in ['silent', 'missense_mutation','nonsense_mutation']: continue
-
                 aa_change   = row[0]
                 cdna_change = row[1]
-
+                # category =  assign_fudge_category ()
                 category = parse_cdna_change (cursor, db_name, ensembl_id, variant_classification, 
                                               aa_change, cdna_change, failure_counter, qry)
+
                 if not category: continue
                 total_number_of_codon_mutations[category]  += 1
                 number_of_codon_mutations_per_gene[category][ensembl_id]   += 1
+                
+                overall_per_gene [ensembl_id] += 1
+                
                 if variant_classification == 'silent':
                     total_number_of_silent_mutations[category] += 1
                     number_of_silent_mutations_per_gene[category][ensembl_id] += 1
-                
+                    overall_silent_per_gene[ensembl_id] += 1
+         
+    overall_codon_mutations = 0
+    overall_silent_mutations = 0           
+    for category in categories:
+        overall_codon_mutations += total_number_of_codon_mutations[category]
+        overall_silent_mutations += total_number_of_silent_mutations[category] 
+        
+        
+        
+        
     print failure_counter
+    
+    ################################################################################
+    print "uncategorized"
+    
+    overall_mutation_rate = float(overall_codon_mutations)/overall_length
+    overall_silent_rate   = float(overall_silent_mutations)/overall_silent_length
+    
+    print  "%% total_number_of_codon_mutations %d,  mutation rate: %5.2e,  silent rate: %5.2e" % \
+             (overall_codon_mutations, overall_mutation_rate, overall_silent_rate)
+    
+    print "% correlation between expected and observed number of mutations, "
+    
+    x = []
+    y = []
+    for ensembl_id in ensembl2gene.keys():
+        expected_number_of_mutations = length_per_gene[ensembl_id] * overall_mutation_rate
+        observed = overall_per_gene [ensembl_id] 
+        x.append(expected_number_of_mutations)
+        y.append(observed)
+    
+    [pearson_corr, p_val] = stats.pearsonr(x, y)
+    print "% pearson_corr for  overall_mutation_rate", pearson_corr
+    
+    x = []
+    y = []
+    for ensembl_id in ensembl2gene.keys():
+        expected_number_of_mutations = silent_length_per_gene[ensembl_id] * overall_silent_rate
+        observed = overall_silent_per_gene [ensembl_id] 
+        x.append(expected_number_of_mutations)
+        y.append(observed)
+    
+    [pearson_corr, p_val] = stats.pearsonr(x, y)
+    print "% pearson_corr for  silent_mutation_rate", pearson_corr
+      
+    
+    
+    ################################################################################
     for category in categories:
         print "  %12s  total: %10d  silent: %10d " % (category, 
                                                       total_number_of_codon_mutations[category], 
                                                       total_number_of_silent_mutations[category])
-  
+        overall_mutation_rate = float(total_number_of_codon_mutations[category])/total_length[category];
+        overall_silent_rate   = float(total_number_of_silent_mutations[category])/total_silent_length[category];
 
+        print  "%% total_number_of_codon_mutations %d,  mutation rate: %5.2e,  silent rate: %5.2e" %  \
+            (total_number_of_codon_mutations[category], overall_mutation_rate, overall_silent_rate)
 
-    return
-  
-    overall_mutation_rate = float(total_number_of_codon_mutations)/total_length;
-    overall_silent_rate   = float(total_number_of_silent_mutations)/total_silent_length;
-   
-    print  "%% total_number_of_codon_mutations %d,  mutation rate: %5.2e,  silent rate: %5.2e" %  \
-        (total_number_of_codon_mutations, overall_mutation_rate, overall_silent_rate)
+        if not total_number_of_codon_mutations: return
 
-    if not total_number_of_codon_mutations: return
+        print "% correlation between expected and observed number of mutations, "
 
-    print "% correlation between expected and observed number of mutations, "
-    print "% taking the rates to be uniform accross genes and across samples "
-    print "% (that is one mutation rate fo each cancer type) "
-    print "% interestingly enough, focusing on silent mutations only makes things worse"
+        x = []
+        y = []
+        for ensembl_id in ensembl2gene.keys():
+            expected_number_of_mutations = length_per_category[category][ensembl_id]*overall_mutation_rate
+            observed = number_of_codon_mutations_per_gene[category][ensembl_id]
+            x.append(expected_number_of_mutations)
+            y.append(observed)
 
-    x = []
-    y = []
-    for ensembl_id in ensembl2gene.keys():
-        expected_number_of_mutations = 3*peptide_length[ensembl_id]*overall_mutation_rate
-        observed = number_of_codon_mutations_per_gene[ensembl_id]
-        x.append(expected_number_of_mutations)
-        y.append(observed)
+        [pearson_corr, p_val] = stats.pearsonr(x, y)
+        print "% pearson_corr for  overall_mutation_rate", pearson_corr
 
-    [pearson_corr, p_val] = stats.pearsonr(x, y)
-    print "% pearson_corr for  overall_mutation_rate", pearson_corr
-       
-    x = []
-    y = []
-    for ensembl_id in ensembl2gene.keys():
-        expected_number_of_mutations = silent_length[ensembl_id]*overall_silent_rate
-        observed = number_of_silent_mutations_per_gene[ensembl_id]
-        x.append(expected_number_of_mutations)
-        y.append(observed)
+        x = []
+        y = []
+        for ensembl_id in ensembl2gene.keys():
+            expected_number_of_mutations = silent_length_per_category[category][ensembl_id]*overall_silent_rate
+            observed = number_of_silent_mutations_per_gene[category][ensembl_id]
+            x.append(expected_number_of_mutations)
+            y.append(observed)
 
-    [pearson_corr, p_val] = stats.pearsonr(x, y)
-    print "% pearson_corr for  silent_mutation_rate", pearson_corr
-     
+        [pearson_corr, p_val] = stats.pearsonr(x, y)
+        print "% pearson_corr for  silent_mutation_rate", pearson_corr
+
 
     
 
@@ -617,14 +714,21 @@ def main():
                  "SKCM", "STAD", "THCA", "UCEC", "UCS"]
 
     
-    db_names  = ["COAD"]
+    #db_names  = ["COAD"]
+    # cancer that look like they are driven by radnom point  mutations
+    # large number of patients, large number of mutations per gene, large chunk of the genome covered
+    # as a byproduct: higher rate of mutations in 
+    # even thoug I think I'll have to drop BRCA bcs they do not give me the precise mutation location
+    db_names = ["COAD", "HNSC", "KIRC", "LIHC", "LUAD", "REA", "SKCM", "STAD"]
 
     set_peptide_lengths(cursor) # fills peptide_length dictionary
     #check_number_of_mutations(cursor) $ looks like we pass this test
     set_silent_mutation_lengths(cursor) # fills peptide_length dictionary
    
     for db_name  in db_names:
+
         print '% ==================================='
+        
         ret = overall_stats (cursor, db_name)
         if not len(ret) == 3: continue
         [genes, samples, mutations_in_sample] = ret

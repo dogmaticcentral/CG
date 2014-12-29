@@ -29,9 +29,15 @@ def store (cursor, header_fields, fields, usable_field):
     
     fixed_fields  = {}
     update_fields = {}
+
+    # for some fiels, the length of the header row and the 
+    # data rows is not equal
+    # there isn't much I can do about it:
+    shorter =  len(header_fields) 
+    if  len(fields) <  shorter: 
+        shorter =  len(fields) 
     
-    if (len(fields) != len(header_fields)): return
-    for i in range( len(header_fields) ):
+    for i in range(shorter ):
         if not usable_field[i]: continue
         field = fields[i]
         header = header_fields[i]
@@ -52,6 +58,7 @@ def store (cursor, header_fields, fields, usable_field):
 def load_maf (cursor, db_name, required_fields, maffile):
     inff = open(maffile, "r")
     line_ct = 0
+    missing_fields = []
     for line in inff:
         if line[0]=='#': continue
         line = line.rstrip()
@@ -71,16 +78,20 @@ def load_maf (cursor, db_name, required_fields, maffile):
                                           'c_position_wu', 'c_position']:
                     header_fields[i] = 'cdna_change'
 
+            missing_fields =  list (Set(required_fields) - Set(header_fields) )
             # difference: fields in usable_fields, but not in header_fields
-            if  len( Set(required_fields) - Set(header_fields) ) > 0:
+            if  len(missing_fields) > 0:
                 print "   missing fields: ", Set(required_fields) - Set(header_fields) 
-                break
-
+            else:
+                print "   no fields missing"
+            header_fields += missing_fields
             # note: usable_field is a list of booleans
             usable_field  = map (lambda x: x in required_fields, header_fields)
 
         else:
             fields_clean = [x.replace("'", '') for x in fields]
+            for miss in missing_fields:
+                fields_clean.append("missing")
             store (cursor, header_fields, fields_clean, usable_field)
     inff.close()
 
@@ -92,7 +103,7 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    db_names  = ["COAD",  # after this we go alphabetically
+    db_names  = [ "COAD",  # after this we go alphabetically
                  "ACC", "BLCA", "BRCA", "CESC",  "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
                  "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
                  "SKCM", "STAD", "THCA", "UCEC", "UCS"]
@@ -100,11 +111,12 @@ def main():
 
     for db_name in db_names:
         # check db exists
-        qry = "show databases like '%s'" % db_name
-        rows = search_db(cursor, qry)
-        if not rows:
-            print db_name, "not found"
-            exit(1)
+        #qry = "show databases like '%s'" % db_name
+        #rows = search_db(cursor, qry)
+        #if not rows:
+        #    print db_name, "not found"
+        #    exit(1)
+        
 
         print " ** ", db_name
         switch_to_db (cursor, db_name)
@@ -116,10 +128,10 @@ def main():
         else:
             print table, " not found in ", db_name
             exit(1)
+
         # if there is a nonexistent field from the ones that we require, drop the whole dataset
         # (we want only the cases where the mutation is traceable back to the nucleotide position in cDNA,
         # and for several 'blacklisted' datasets this is not the case)
-
         required_fields = find_existing_fields(cursor, db_name)
 
         db_dir  = '/Users/ivana/databases/TCGA/'+db_name
@@ -129,7 +141,7 @@ def main():
             print '\t loading:', maffile
             load_maf (cursor, db_name, required_fields, maffile)
 
-
+ 
     cursor.close()
     db.close()
 

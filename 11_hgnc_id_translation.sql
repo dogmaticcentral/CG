@@ -1,3 +1,5 @@
+/* this refers to the  hgnc_id_translation.txt table in ~/database */
+/* it is supposed to go as on of the tables in basline database */
 CREATE TABLE `hgnc_id_translation` (
        `hgnc_id` int NOT NULL,
        `approved_symbol`  varchar(40)   DEFAULT NULL,

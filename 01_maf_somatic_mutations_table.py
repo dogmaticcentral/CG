@@ -122,11 +122,11 @@ def main():
             # if you really want to start from scratch, uncomment
             qry = "drop table somatic_mutations"
             rows = search_db(cursor, qry)
-            make_somatic_mutations_table(cursor, db_name)
-            #add_column_to_somatic_mutations_table(cursor, db_name, 'cdna_change')
         else:
             print table, " not found in ", db_name
-            exit(1)
+            
+        make_somatic_mutations_table(cursor, db_name)
+
 
 
     cursor.close()

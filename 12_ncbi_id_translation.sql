@@ -1,3 +1,5 @@
+/* the cooresponding file  in ~/database directory is called gene_info_human_ncbi.txt*
+/* tha table is supposed to go to baseline database */
 CREATE TABLE ncbi_id_translation (
   tax_id int NOT NULL, 
   gene_id INT NOT NULL, 

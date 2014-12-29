@@ -1,3 +1,5 @@
+/* from ~/databases/uniprot_human.idmapping.dat */
+/* to baseline database*/
 CREATE TABLE uniprot_id_translation (
   uniprot_id  varchar(10)   NOT NULL, 
   other_db    varchar(40)   DEFAULT NULL,

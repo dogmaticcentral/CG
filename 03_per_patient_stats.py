@@ -3,6 +3,7 @@
 import sys, os
 import MySQLdb
 from   tcga_utils.mysql   import  *
+from scipy import stats
 
 #########################################
 def main():
@@ -10,7 +11,7 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    db_name  = 'COAD'
+    db_name  = 'LUAD'
     table = 'somatic_mutations'
 
     switch_to_db (cursor, db_name)
@@ -58,6 +59,7 @@ def main():
     ############################
     # sort by the number of entries
     print "number of different samples per patient:"
+    sample_sizes = []
     patients_sorted = sorted(uniq_patients.keys(), key= lambda x: len( uniq_patients[x]) )
     for patient in patients_sorted:
         samples = uniq_patients[patient]
@@ -68,11 +70,19 @@ def main():
                 uniq_samples[sample] = 0
             uniq_samples[sample] += 1
         if len(uniq_samples) >1:
-            
-            for sample in  uniq_samples.keys():
-                print "\t", sample, uniq_samples[sample]
+            pass
+            #for sample in  uniq_samples.keys():
+            #    print "\t", sample, uniq_samples[sample]
+        else:
+            sample_sizes.append(len(samples))
            
-
+    print
+    print "histogram of the number of mutations"
+    [histo, low_range, binsize, extrapoints] = stats.histogram(sample_sizes, numbins=500)
+    prev = low_range
+    for entry in histo:
+        if entry: print " %6d  %6d   %5d " % ( int(prev), int(prev+binsize), int(entry))
+        prev += binsize
 
     cursor.close()
     db.close()
