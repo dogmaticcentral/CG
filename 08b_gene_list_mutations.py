@@ -9,6 +9,45 @@
 import sys, os
 import MySQLdb
 from   tcga_utils.mysql   import  *
+from random import randrange
+
+#########################################
+def simulation (M, Nr, Nb, l, number_of_iterations):
+    
+    avg_number_of_double_labeled = 0
+    pval = 0.0
+
+    if not number_of_iterations > 0:
+        return  [avg_number_of_double_labeled, pval]
+
+
+    for i in range(number_of_iterations):
+        #####
+        slots = []
+        for s in range(M):
+            slots.append({"r":0, "b":0})
+        number_of_double_labeled = 0
+        for j in range(Nr):
+            random_slot = randrange(M)
+            slots[random_slot]["r"] += 1
+        for j in range(Nb):
+            random_slot = randrange(M)
+            slots[random_slot]["b"] += 1
+
+        for s in range(M):
+            if slots[s]["r"]>0  and  slots[s]["b"]>0:
+                #print " %3d   %2d  %2d " %  (s, slots[s]["r"] ,  slots[s]["b"])
+                number_of_double_labeled += 1
+
+        #####
+        avg_number_of_double_labeled += number_of_double_labeled
+        if ( number_of_double_labeled <= l ): pval += 1.0
+
+    ##################################
+    avg_number_of_double_labeled /= float(number_of_iterations)
+    pval /= float(number_of_iterations)
+
+    return [avg_number_of_double_labeled, pval]
 
 #########################################
 def read_cancer_names ():
@@ -145,17 +184,30 @@ def main():
             ############################
             if mutations_found:
                 total_muts += len(rows)
-                mut_key = ""
+                all_mutated_genes_from_the_list = []
                 # make sure the key is always in the same order
                 for gene  in gene_list:
                     for mut in mutations_found:
                         [ hugo_symbol, variant_classification, aa_change] = mut
-                        if hugo_symbol == gene and not gene in mut_key:
-                            if mut_key: mut_key += "_" 
-                            mut_key +=  hugo_symbol
-                if not  mut_key in mut_breakdown.keys():
-                    mut_breakdown[mut_key] = 0
-                mut_breakdown[mut_key] += 1
+                        if hugo_symbol == gene and not gene in all_mutated_genes_from_the_list:
+                            all_mutated_genes_from_the_list.append(hugo_symbol)
+
+                if len(all_mutated_genes_from_the_list)==1:
+                    mut_key = all_mutated_genes_from_the_list[0]
+                    if not  mut_key in mut_breakdown.keys():
+                        mut_breakdown[mut_key] = 0
+                    mut_breakdown[mut_key] += 1
+
+                else:   # now disregard the triple and up mutants, and count them as a bunch of doubles
+
+                    for i in range (len(all_mutated_genes_from_the_list)):
+                        gene1 = all_mutated_genes_from_the_list[i]
+                        for j in range (i+1, len(all_mutated_genes_from_the_list)):
+                            gene2 = all_mutated_genes_from_the_list[j]
+                            mut_key = gene1 + "_" + gene2
+                            if not  mut_key in mut_breakdown.keys():
+                                mut_breakdown[mut_key] = 0
+                            mut_breakdown[mut_key] += 1
 
         pancan_samples += number_of_patients
         print "total", total_muts
@@ -176,8 +228,12 @@ def main():
      
             
     print "######################################"
-    print "pan-cancer: "
-    print " %8s   %4s   %8s  %4s    %15s    %s" %  ("gene1", "#muts1", "gene2", "#muts2", "co-appearance", "expected_no_of_co-appearances")
+    print "pan-cancer"
+    print "number of samples:", pancan_samples
+    print " %8s   %4s   %8s  %4s  %15s  %15s  %15s  %15s  %15s" %  ("gene1", "#muts1", "gene2", "#muts2", 
+                                                                "co-appearance", "expected no", "expected no", "pval", "1-pval")
+    print " %8s   %4s   %8s  %4s  %15s  %15s  %15s  %15s  %15s" %  ("", "", "", "", "", "of co-app (expr)", 
+                                                                      "of co-app (sim)", "", "")
     for i in range (len(gene_list)):
         for j in range (i+1,len(gene_list)):
             gene1 = gene_list[i] 
@@ -186,7 +242,11 @@ def main():
             appears_together = pancan_coappearance[mut_key]
             ct1 = pancan_ct[gene1] 
             ct2 = pancan_ct[gene2]
-            print " %8s   %4d   %8s  %4d    %15d    %15.2f" %  ( gene1, ct1, gene2, ct2,  appears_together, expected (ct1, ct2, pancan_samples))
+            number_of_iterations = 2*pancan_samples
+            [avg, prob]  = simulation (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
+            print " %8s   %4d   %8s  %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f" %  ( gene1, ct1, gene2, ct2, 
+                                                                               appears_together, expected (ct1, ct2, pancan_samples),
+                                                                               avg, prob, 1-prob )
     
     cursor.close()
     db.close()

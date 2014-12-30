@@ -17,7 +17,7 @@ def beta_binomial (n1, N1, n2, N2):
 def main():
 
     # number of balls in a bag
-    N   = 450
+    N    = 450
     # Blue of which are of the color blue, the rest are red
     Blue = 70
     
@@ -25,8 +25,8 @@ def main():
     # the probability  of succesfully pulling the ball out is mu
     mu = 0.01
 
-    # if we repeat the drawing experiment very many time, 
-    # what si the expected number of blue balls we'll manage to pull out?
+    # if we repeat the drawing experiment very many times, 
+    # what is the expected number of blue balls we'll manage to pull out?
     expected = 0
     for blue  in range (Blue+1):
         for n  in range (blue, N+1): # n is the number of balls drawn
