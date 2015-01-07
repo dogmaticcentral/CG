@@ -43,9 +43,9 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "COAD", "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
+    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD", "ESCA", "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
                  "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
-                 "SKCM", "STAD", "THCA", "UCEC", "UCS"]
+                 "SKCM", "STAD", "THCA", "UCEC", "UCS", "UVM"];
    
     table = 'somatic_mutations'
 
@@ -82,7 +82,7 @@ def main():
                 tot_number_of_mutations_in_sample = 0
             else:
                 tot_number_of_mutations_in_sample = rows[0][0]
-            print "%s  %15d  %10s  %20s  %15s  " % (tumor_sample_barcode, tot_number_of_mutations_in_sample, gene_symbol_1,
+            print " %15d  %10s  %20s  %15s  " % ( tot_number_of_mutations_in_sample, gene_symbol_1,
                                                variant_classification, aa_change),
             # do we have the second gene mutated in the same sample?
             qry = "select  variant_classification, aa_change"

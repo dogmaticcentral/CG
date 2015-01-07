@@ -1,10 +1,5 @@
 #!/usr/bin/python
-# needed the index on hugoSymbol for this to work with any speed:
-# create index hugo_idx on somatic_mutations (hugoSymbol);
-
-# extracting mutations ('catch' is the output from this script)
-# grep Missense catch | grep -v found | grep RPL5 | grep -v Silent | awk '{print $5}' | sed 's/p\.//g' | sed 's/[A-Z]//g' | awk '{printf "%d+", $1}' && echo
-
+#
 
 import sys, os
 import MySQLdb
@@ -15,10 +10,11 @@ from random import randrange
 def simulation (M, Nr, Nb, l, number_of_iterations):
     
     avg_number_of_double_labeled = 0
-    pval = 0.0
+    pval_le = 0.0  # probabilty of being less-or_equal-to
+    pval_ge = 0.0  # probabilty of being greater-or-equal-to
 
     if not number_of_iterations > 0:
-        return  [avg_number_of_double_labeled, pval]
+        return  [avg_number_of_double_labeled, pval_le, pval_ge]
 
 
     for i in range(number_of_iterations):
@@ -41,13 +37,15 @@ def simulation (M, Nr, Nb, l, number_of_iterations):
 
         #####
         avg_number_of_double_labeled += number_of_double_labeled
-        if ( number_of_double_labeled <= l ): pval += 1.0
+        if ( number_of_double_labeled <= l ): pval_le += 1.0
+        if ( number_of_double_labeled >= l ): pval_ge += 1.0
 
     ##################################
     avg_number_of_double_labeled /= float(number_of_iterations)
-    pval /= float(number_of_iterations)
+    pval_le /= float(number_of_iterations)
+    pval_ge /= float(number_of_iterations)
 
-    return [avg_number_of_double_labeled, pval]
+    return [avg_number_of_double_labeled, pval_le, pval_ge]
 
 #########################################
 def read_cancer_names ():
@@ -104,11 +102,12 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "COAD", "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
-                 "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
-                 "SKCM", "STAD", "THCA", "UCEC", "UCS"]
 
-   
+    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD", "ESCA", "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
+                 "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
+                 "SKCM", "STAD", "THCA", "UCEC", "UCS", "UVM"];
+
+  
     table = 'somatic_mutations'
 
     pancan_samples = 0
@@ -231,8 +230,8 @@ def main():
     print "pan-cancer"
     print "number of samples:", pancan_samples
     print " %8s   %4s   %8s  %4s  %15s  %15s  %15s  %15s  %15s" %  ("gene1", "#muts1", "gene2", "#muts2", 
-                                                                "co-appearance", "expected no", "expected no", "pval", "1-pval")
-    print " %8s   %4s   %8s  %4s  %15s  %15s  %15s  %15s  %15s" %  ("", "", "", "", "", "of co-app (expr)", 
+                                                                "co-appearance", "expected no", "expected no", "pval of <=", "pval of >=")
+    print " %8s   %4s   %8s  %4s  %15s        %15s  %15s  %15s  %15s" %  ("", "", "", "", "", "of co-app (expr)", 
                                                                       "of co-app (sim)", "", "")
     for i in range (len(gene_list)):
         for j in range (i+1,len(gene_list)):
@@ -243,10 +242,10 @@ def main():
             ct1 = pancan_ct[gene1] 
             ct2 = pancan_ct[gene2]
             number_of_iterations = 2*pancan_samples
-            [avg, prob]  = simulation (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
+            [avg, pval_le, pval_ge]  = simulation (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
             print " %8s   %4d   %8s  %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f" %  ( gene1, ct1, gene2, ct2, 
                                                                                appears_together, expected (ct1, ct2, pancan_samples),
-                                                                               avg, prob, 1-prob )
+                                                                               avg, pval_le, pval_ge )
     
     cursor.close()
     db.close()
