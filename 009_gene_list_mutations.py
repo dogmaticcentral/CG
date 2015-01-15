@@ -155,7 +155,7 @@ def main():
         number_of_patients =  len(uniq_patients)
         print "number of different patients:", number_of_patients
  
-        mut_breakdown = {}
+        co_appearance = {}
         mut_ct = {}
         for gene  in gene_list:
             mut_ct[gene] = 0
@@ -184,29 +184,23 @@ def main():
             if mutations_found:
                 total_muts += len(rows)
                 all_mutated_genes_from_the_list = []
-                # make sure the key is always in the same order
+                # find genes that are mutated, once or tice, doesn't matter
                 for gene  in gene_list:
                     for mut in mutations_found:
                         [ hugo_symbol, variant_classification, aa_change] = mut
                         if hugo_symbol == gene and not gene in all_mutated_genes_from_the_list:
                             all_mutated_genes_from_the_list.append(hugo_symbol)
 
-                if len(all_mutated_genes_from_the_list)==1:
-                    mut_key = all_mutated_genes_from_the_list[0]
-                    if not  mut_key in mut_breakdown.keys():
-                        mut_breakdown[mut_key] = 0
-                    mut_breakdown[mut_key] += 1
-
-                else:   # now disregard the triple and up mutants, and count them as a bunch of doubles
-
-                    for i in range (len(all_mutated_genes_from_the_list)):
-                        gene1 = all_mutated_genes_from_the_list[i]
-                        for j in range (i+1, len(all_mutated_genes_from_the_list)):
-                            gene2 = all_mutated_genes_from_the_list[j]
-                            mut_key = gene1 + "_" + gene2
-                            if not  mut_key in mut_breakdown.keys():
-                                mut_breakdown[mut_key] = 0
-                            mut_breakdown[mut_key] += 1
+                # now disregard the triple and up mutants, and count them as a bunch of doubles
+                # make sure the key is always in the same order
+                for i in range (len(all_mutated_genes_from_the_list)):
+                    gene1 = all_mutated_genes_from_the_list[i]
+                    for j in range (i+1, len(all_mutated_genes_from_the_list)):
+                        gene2 = all_mutated_genes_from_the_list[j]
+                        mut_key = gene1 + "_" + gene2
+                        if not  mut_key in co_appearance.keys():
+                            co_appearance[mut_key] = 0
+                        co_appearance[mut_key] += 1
 
         pancan_samples += number_of_patients
         print "total", total_muts
@@ -219,8 +213,8 @@ def main():
                 gene2 = gene_list[j]
                 mut_key = gene1 + "_"  + gene2
                 appears_together = 0
-                if mut_key in mut_breakdown.keys():
-                     appears_together = mut_breakdown[mut_key]
+                if mut_key in co_appearance.keys():
+                     appears_together = co_appearance[mut_key]
                 pancan_coappearance[mut_key] += appears_together
                 ct2 = mut_ct [gene2]
                 print " %8s   %4d   %8s  %4d    %15d    %15.2f" %  ( gene1, ct1, gene2, ct2,  appears_together, expected (ct1, ct2, number_of_patients))
