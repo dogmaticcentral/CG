@@ -38,6 +38,8 @@ sys_tfm
 *seqs_not_found
 *.txt
 scratch/
+old/
+*blah*
 
 # OS generated files #
 ######################

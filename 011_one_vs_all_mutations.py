@@ -9,6 +9,24 @@ from random import randrange, random
 from math import log10
 
 #########################################
+def read_intersting_genes ():
+    genes = []
+    #inf = open ("/Users/ivana/pypeworks/tcga/test.txt", "r")
+    inf = open ("/Users/ivana/pypeworks/tcga/pct_silent.txt", "r")
+    for line in inf:
+        line   = line.rstrip() 
+        if line[0] == '%': continue
+        (name, tot, non_silent, silent) = line.split ()
+        if int(tot) < 30 : continue
+        if float(non_silent) < 0.77: continue
+        genes.append(name)
+    inf.close()
+
+    return genes
+    
+
+
+#########################################
 def simulation (M, Nr, Nb, l, number_of_iterations):
     
     avg_number_of_double_labeled = 0
@@ -134,34 +152,15 @@ def main():
 
   
     table = 'somatic_mutations'
-    # find all genes that can be found in the databases
-    tmp_gene_list = set([])
-    for db_name in db_names:
-        switch_to_db (cursor, db_name)
-        qry = "select distinct(hugo_symbol) from somatic_mutations whenr"
-        rows = search_db(cursor, qry)
-        tmp_gene_list |= set([row[0] for row in  rows])
 
-    # cleanup
-    if True:
-        gene_list = []
-        switch_to_db (cursor, 'baseline')
-        for gene in tmp_gene_list:        
-            name = resolve_name (cursor, gene)
-            if not name: continue
-            #if random() < 0.01:
-            gene_list.append(gene)
-    else:
-        gene_list = ['TP53']
+
+    # read in  all genes that appear  the databases that we work with
+    # and slect ones where the fraction of non-silent mutations is > 0.76 (see script 010_ok_genes_in_ok_sample.py)
+    gene_list = read_intersting_genes()
     
-    if not gene_qry in gene_list: gene_list.append(gene_qry)
 
-    # ?? how many?
-    print len(gene_list)
-    print (gene_qry in gene_list)
-    # for  gene in  gene_list:
-    #     print gene
-    #exit(1)
+
+    if not gene_qry in gene_list: gene_list.append(gene_qry)
     
     cancers_in_which_gene_appears ={}
     for gene in gene_list:
@@ -177,20 +176,13 @@ def main():
     number_of_patients = {}
 
     for db_name in db_names:
-        print "######################################"
-        print db_name, full_name[db_name]
+        #print "######################################"
+        #print db_name, full_name[db_name]
         switch_to_db (cursor, db_name)
 
-        ############################
-        print "total number of entries:", 
-        qry = "select count(1) from " + table
-        rows = search_db(cursor, qry)
-        print  rows[0][0]
-
-        if not rows[0][0]: continue
 
         ############################
-        uniq_patients = {}
+        uniq_patients = []
         tbarcodes_per_patient = {}
         qry  = "select distinct  tumor_sample_barcode from somatic_mutations "
         rows = search_db(cursor, qry)
@@ -198,17 +190,36 @@ def main():
             tbarcode = row[0]
             # the fields are 
             # project - tissue source site (TSS)  - participant -
-            # source.vial - portion.analyte  - plate - (sequencing or charcterization center)
+            # sample.vial - portion.analyte  - plate - (sequencing or characterization center)
             fields = tbarcode.split('-')
             patient = '-'.join(fields[1:3])
-            if not  uniq_patients.has_key(patient):
-                uniq_patients[patient] = []
-                uniq_patients[patient].append('-'.join(fields[3:]))
+            if not patient in  uniq_patients:
+                uniq_patients.append(patient)
                 tbarcodes_per_patient[patient] = []
             tbarcodes_per_patient[patient].append(tbarcode)
 
-        number_of_patients[db_name] = len(uniq_patients)
-        print "number of different patients:", number_of_patients[db_name]
+            
+        ############################
+        # one more round: get rid of patients that have multiple samples
+        # there are relatively few of those and I don't know what they mean 
+        ok_patients = []
+        for patient in uniq_patients:
+            uninterpretable = False
+            sample = ""
+            for tbarcode in tbarcodes_per_patient[patient]:
+                fields = tbarcode.split('-')
+                new_sample = fields[3][:2]
+                if not sample:
+                    sample = new_sample
+                elif sample != new_sample:
+                    uninterpretable = True
+                    break
+            if uninterpretable: continue
+            ok_patients.append(patient)
+
+        number_of_patients[db_name] = len(ok_patients)
+        #print "number of different patients:", number_of_patients[db_name]
+ 
  
         co_appearance = {}
         mut_ct = {}
@@ -216,19 +227,18 @@ def main():
             mut_ct[gene] = 0
         total_muts = 0
         ############################
-        for patient in uniq_patients:
+        for patient in ok_patients:
             tbarcodes = tbarcodes_per_patient[patient]
             mutations_found = []
             for tbarcode in tbarcodes:
                 ############################
-                qry = "select  hugo_symbol, variant_classification, aa_change "
+                qry = "select hugo_symbol, variant_classification, aa_change "
                 qry += " from somatic_mutations"
                 qry += " where tumor_sample_barcode  = '%s' " % tbarcode
                 qry += " and not  variant_classification like '%s' " % "silent"
 
                 rows = search_db (cursor, qry)
                 if not rows: 
-                    print " >>>>>> "
                     continue
                 
                 for row in rows:
@@ -247,9 +257,9 @@ def main():
                     if not hugo_symbol in all_mutated_genes_from_the_list:
                         all_mutated_genes_from_the_list.append(hugo_symbol)
 
-                for gene2  in all_mutated_genes_from_the_list:
-                    if db_name not in cancers_in_which_gene_appears[gene2]:
-                         cancers_in_which_gene_appears[gene2].append(db_name)
+                for gene  in all_mutated_genes_from_the_list:
+                    if db_name not in cancers_in_which_gene_appears[gene]:
+                         cancers_in_which_gene_appears[gene].append(db_name)
 
 
                 # now disregard the triple and up mutants, and count them as a bunch of doubles
@@ -274,13 +284,14 @@ def main():
                 appears_together = co_appearance[mut_key]
                 pancan_coappearance[mut_key] += appears_together
                 ct2 = mut_ct [gene2]
-                #print " %8s   %4d   %8s  %4d    %15d    %15.2f" %  ( gene_qry, mut_ct [gene_qry], gene2, ct2,  appears_together, expected (mut_ct [gene_qry], ct2, number_of_patients))
+                #print " %8s   %4d   %8s  %4d    %15d    %15.2f" %  ( gene_qry, mut_ct [gene_qry], gene2, ct2,  
+                #appears_together, expected (mut_ct [gene_qry], ct2, number_of_patients))
         
-            
-    print "######################################"
-    print "pan-cancer"
-    print "number of samples:", pancan_samples
-    print " %8s   %4s   %8s  %4s  %15s  %15s  %15s  %15s  %15s" %  ("gene1", "#muts1", "gene2", "#muts2", 
+       
+    #print "######################################"
+    #print "pan-cancer"
+    #print "number of samples:", pancan_samples
+    print "%%  %8s   %4s   %8s  %4s  %15s  %15s  %15s  %15s  %15s" %  ("gene1", "#muts1", "gene2", "#muts2", 
                                                                 "co-appearance", "expected no", "expected no", "-log10(pval <=)", "-log10(pval >=)")
     print " %8s   %4s   %8s  %4s  %15s        %15s  %15s  %15s  %15s" %  ("", "", "", "", "", "of co-app (expr)", 
                                                                       "of co-app (sim)", "", "")
@@ -310,7 +321,7 @@ def main():
         expctd =  expected (ct1, ct2, effective_number_of_samples)
         #print " %8s   %4d   %8s  %4d  %15d  %15.2f    %15.2f " %  ( gene1, ct1, gene2, ct2, appears_together, expctd, float(expctd+1)/(appears_together+1))
         #print "\t\t\t 0.5 < float(expctd+1)/(appears_together+1) < 1.3 ?", 0.5 < float(expctd+1)/(appears_together+1) < 1.3
-        #if  0.5 < float(expctd+1)/(appears_together+1) < 1.3: continue
+        if  2.0/3.0 < float(expctd+1)/(appears_together+1) < 3.0/2.0: continue
         number_of_iterations = 5*effective_number_of_samples
         #[avg, pval_le, pval_ge]  = simulation (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
         #print avg, pval_le, pval_ge
@@ -319,10 +330,10 @@ def main():
         [avg, eval_le, eval_ge] = [float(x) for x in subprocess.check_output(cmd, shell=True).split()]
 
         #if (pval_le > 0.02 and pval_ge > 0.001): continue
-        if (eval_le <3 and eval_ge <4): continue
+        if (eval_le <3 and eval_ge <3): continue
         under_pval += 1
-        print "  %8s   %4d   %8s  %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f   (%d out of %d , %d) " %  \
-            ( gene1, ct1, gene2, ct2, appears_together, expctd, avg, eval_le, eval_ge,  under_pval,  ct, effective_number_of_samples)
+        print "  %8s   %4d   %8s  %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f " %  \
+            ( gene1, ct1, gene2, ct2, appears_together, expctd, avg, eval_le, eval_ge)
     
     cursor.close()
     db.close()
