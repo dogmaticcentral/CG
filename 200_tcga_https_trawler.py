@@ -5,12 +5,10 @@
 # html parser: http://www.crummy.com/software/BeautifulSoup/, 
 # see also http://stackoverflow.com/questions/11709079/parsing-html-python
 #
-# downloading from http to a file (using urllib):
-# http://stackoverflow.com/questions/19602931/basic-http-file-downloading-and-saving-to-disk-in-python
 #
 import requests
 from BeautifulSoup import BeautifulSoup
-import urllib
+
 # Set security warning to always go off by default.
 import warnings
 
@@ -21,7 +19,7 @@ def get_page_text (httpaddr):
     return http_req.text
 
 
-not_intersting = ['bio', 'pathology_reports', 'diagnostic_images', 'tissue_images',
+not_interesting = ['bio', 'pathology_reports', 'diagnostic_images', 'tissue_images',
                   'mirnaseq', 'miRNASeq', 'mirna', 
                   'methylation', 'protein_exp', 'mutations', 'mutations_protected', 
                   'rnaseqv2', 'cdna', 'cna', 'bisulfiteseq', 'rnaseq', 'totalrnaseqv2',
@@ -44,15 +42,12 @@ def recursive_descent (name_pieces):
             if 'tar.gz' in new_name_piece[-6:] and not 'mage-tab' in new_name_piece:
                 print "".join(name_pieces[1:]), ":  ", 
                 print new_name_piece
-                # here comes the downloading part
-                # dwnldfile = urllib.URLopener()
-                # dwnldfile.retrieve(tcga_http + new_name_piece, $local_dir + "/" + new_name_piece)
             continue
 
         # here we are picking the type of data we are looking for
         # the whole databse is such a mess I do not know how to look for
         # the data type I need in a more robust way
-        if new_name_piece[:-1] in not_intersting: continue
+        if new_name_piece[:-1] in not_interesting: continue
             
         name_pieces.append(new_name_piece)
         recursive_descent (name_pieces)
