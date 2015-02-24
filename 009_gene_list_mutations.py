@@ -170,6 +170,7 @@ def main():
                 qry += " from somatic_mutations"
                 qry += " where tumor_sample_barcode  = '%s' " % tbarcode
                 qry += " and not  variant_classification like '%s' " % "silent"
+                qry += " and not  variant_classification like '%s' " % "RNA"
 
                 rows = search_db (cursor, qry)
                 if not rows: 
@@ -184,7 +185,7 @@ def main():
             if mutations_found:
                 total_muts += len(rows)
                 all_mutated_genes_from_the_list = []
-                # find genes that are mutated, once or tice, doesn't matter
+                # find genes that are mutated, once or twice, doesn't matter
                 for gene  in gene_list:
                     for mut in mutations_found:
                         [ hugo_symbol, variant_classification, aa_change] = mut
@@ -203,7 +204,7 @@ def main():
                         co_appearance[mut_key] += 1
 
         pancan_samples += number_of_patients
-        print "total", total_muts
+        print "number of functional mutations (not silent and not 'RNA')", total_muts
         print " %8s   %4s   %8s  %4s    %15s    %s" %  ("gene1", "#muts1", "gene2", "#muts2", "co-appearance", "expected_no_of_co-appearances")
         for i in range (len(gene_list)):
             gene1 = gene_list[i] 

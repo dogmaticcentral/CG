@@ -50,8 +50,9 @@ def store_or_update (cursor, table, fixed_fields, update_fields, verbose=False):
 
     if exists and not update_fields: return True
 
+
     if exists: # if it exists, update
-        
+        if verbose: print "exists; update"
         qry = "update %s set " % table
         first = True
         for field, value in update_fields.iteritems():
@@ -69,6 +70,7 @@ def store_or_update (cursor, table, fixed_fields, update_fields, verbose=False):
         qry += " where %s " % conditions
 
     else: # if not, make a new one
+        if verbose: print "does not exist; make new one"
 
         qry = "insert into %s " % table
         qry += "("
@@ -90,6 +92,8 @@ def store_or_update (cursor, table, fixed_fields, update_fields, verbose=False):
                 qry += " null "
             elif type(value) is int:
                 qry += " %d" % value
+            elif type(value) is float:
+                qry += " %f" % value
             else:
                 qry += " \'%s\'" % value
             first = False
@@ -99,8 +103,8 @@ def store_or_update (cursor, table, fixed_fields, update_fields, verbose=False):
 
     if verbose:
         print
-        print qry
-        print rows
+        print " ** ", qry
+        print " ** ", rows
 
     if (rows):
         rows   = search_db (cursor, qry, verbose=True)
