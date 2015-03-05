@@ -63,6 +63,47 @@ def shutdown (cursor, cursor2, db, db2):
     db.close()
 
 #########################################
+def is_sane(sample_file, seqregion_name2id, genes_per_region, gene_coordinates):
+
+    inf = open(sample_file)
+    header = []
+    chrom_idx = 1
+    from_idx  = 2
+    to_idx    = 3
+    within = 0
+
+    for line in inf:
+        if not header:
+            header = line.rstrip().replace (" ", "").split("\t")
+            for must_have in ['Chromosome', 'Start', 'End', 'Segment_Mean']:
+                if not must_have in header:
+                    print must_have, "field not found in header of ", sample_file
+                    exit(1)
+            chrom_idx = header.index('Chromosome')
+            from_idx  = header.index('Start')
+            to_idx    = header.index('End')
+            seg_idx   = header.index('Segment_Mean')
+            continue
+
+        fields = line.rstrip().replace (" ", "").split("\t")
+        [chromosome, start, end,  seg_mean] =  [fields[chrom_idx], fields[from_idx], fields[to_idx], fields[seg_idx]]
+        # picking the cutoff:
+        # pow (2, 0.1) = 1.07,  pow (2, -0.1) = 0.93
+        # pow (2, 0.2) = 1.15,  pow (2, -0.1) = 0.87
+        if ( abs(float(seg_mean)) < 0.1) : continue
+        seq_region_id = seqregion_name2id[chromosome]
+        for gene_id in genes_per_region[seq_region_id]:
+            [seq_region_start, seq_region_end] = gene_coordinates[gene_id]
+            if ( seq_region_end < int(start) or  int(end) < seq_region_start): continue
+            within += 1
+                    
+    print within, sample_file
+    inf.close()
+
+    return (within<5000)
+
+
+#########################################
 def main():
     
     tcga_dir = '/Users/ivana/databases/TCGA'
@@ -105,10 +146,10 @@ def main():
 
     seqregion_name2id = get_seq_region_ids(cursor)
 
-
     for db_name in db_names:
         print "######################################"
         print db_name, full_name[db_name]
+        start_db = time()
         switch_to_db (cursor_tcga, db_name)
 
         path = tcga_dir + "/" + db_name + "/" +  "CNV_SNP_Array"
@@ -146,6 +187,11 @@ def main():
         samples_per_gene = {}
         fold_change_per_gene = {}
         for sample_file in sample_files:
+
+            # do sanity check for the whole file
+            # if more than a, say 5000 genes are reported as having significant cnv, drop the whole sample
+            if not is_sane(sample_file, seqregion_name2id, genes_per_region, gene_coordinates): continue
+
             ct += 1
             #if not ct%10: 
             start_time = time()
@@ -159,6 +205,7 @@ def main():
             chrom_idx = 1
             from_idx  = 2
             to_idx    = 3
+
             for line in inf:
                 if not header:
                     header = line.rstrip().replace (" ", "").split("\t")
@@ -177,7 +224,7 @@ def main():
                 # picking the cutoff:
                 # pow (2, 0.1) = 1.07,  pow (2, -0.1) = 0.93
                 # pow (2, 0.2) = 1.15,  pow (2, -0.1) = 0.87
-                if ( abs(float(seg_mean)) < 0.1) : continue
+                if ( abs(float(seg_mean)) < 0.1): continue
                 
                 seg_mean = "%.2f" % float(seg_mean)
 
@@ -187,16 +234,6 @@ def main():
 
                 #####################
                 seq_region_id = seqregion_name2id[chromosome]
-
-                # first some sanity checking:
-                within = 0
-                for gene_id in genes_per_region[seq_region_id]:
-                    [seq_region_start, seq_region_end] = gene_coordinates[gene_id]
-                    if ( seq_region_end < int(start) or  int(end) < seq_region_start): continue
-                    within += 1
- 
-                    if  within >= 0.5*len(genes_per_region[seq_region_id]): 
-                    continue
 
                 for gene_id in genes_per_region[seq_region_id]:
                     
@@ -211,18 +248,15 @@ def main():
                         samples_per_gene[gene_id]    += ";%s" % ct
                         fold_change_per_gene[gene_id] += ";" + seg_mean
                
-            if ct == 40: break
-            print "\t\t time: %8.3f" % (time()-start_time);
+            print "\t\t time: %8.3f" % (time()-start_time)
 
 
-        print "number of genes seen:", len(genes_seen)
-        for gene_id in genes_seen:
-            print gene_id, "   ", samples_per_gene[gene_id], "   "  , fold_change_per_gene[gene_id]  
+        print db_name, "number of genes seen:", len(genes_seen), "in  %8.3f s" % (time()-start_db)
+        #for gene_id in genes_seen:
+        #    print gene_id, "   ", samples_per_gene[gene_id], "   "  , fold_change_per_gene[gene_id]  
             
 
-        exit(1)
-
-
+ 
     shutdown (cursor, cursor2, db, db2)
 
 

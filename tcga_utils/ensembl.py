@@ -5,6 +5,41 @@ from   mysql import search_db, switch_to_db
 from   exon  import Exon
 import commands
 
+
+#########################################
+def  get_seq_region_ids(cursor):
+
+    seqregion_name2id = {}
+
+    qry  = "select seq_region.name, seq_region.seq_region_id from seq_region, "
+    qry += "coord_system where coord_system.coord_system_id = seq_region.coord_system_id "
+    qry += "and coord_system.attrib='default_version' "
+    rows = search_db (cursor, qry)
+    if ( not rows):
+        print "bleep?"
+        exit(1)
+    for row in rows:
+        seqregion_name2id[ str(row[0]) ] = row[1]
+    return seqregion_name2id
+
+#########################################
+def  get_seq_region_names(cursor):
+
+    seqregion_id2name = {}
+
+    qry  = "select seq_region.name, seq_region.seq_region_id from seq_region, "
+    qry += "coord_system where coord_system.coord_system_id = seq_region.coord_system_id "
+    qry += "and coord_system.attrib='default_version' "
+    rows = search_db (cursor, qry)
+    if ( not rows):
+        print "bleep?"
+        exit(1)
+    for row in rows:
+        seqregion_id2name[ row[1] ] = row[0]
+    return seqregion_id2name
+
+
+
 #########################################
 def get_species_shorthand(cursor, species):
     

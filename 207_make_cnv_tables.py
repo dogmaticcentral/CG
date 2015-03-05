@@ -25,7 +25,7 @@ def make_cnv_table(cursor):
             return False
 
 
-    for column_name in ['nocnv_seg_mean', 'source_set']:
+    for column_name in ['source_ids', 'log_fold_changes', 'num_probes', 'ranges']:
         qry = "ALTER TABLE %s  ADD  %s blob " %  (table, column_name)
         rows = search_db (cursor, qry)
         if (rows):
@@ -35,6 +35,18 @@ def make_cnv_table(cursor):
 
 
 #########################################
+def make_cnv_source_table(cursor):    
+    table = 'cnv_source_ids'
+    
+    qry  = "CREATE TABLE  %s " % table
+    qry += "(source_id INT(10), source_name VARCHAR(200), PRIMARY KEY (source_id) )"
+    rows = search_db (cursor, qry)
+    if (rows):
+        print qry
+        return False
+
+    
+    return True
     
     
 
@@ -60,6 +72,19 @@ def main():
             #search_db (cursor, qry)
             print 'cnv_snp found; creating index'
             create_index (cursor, db_name, 'stable_id_index', 'cnv_snp', ['gene_stable_id'])
+
+        if not check_table_exists (cursor, db_name, 'cnv_source_ids'):
+            print 'cnv_source_ids not found; making one'
+            if not make_cnv_source_table(cursor):
+                print 'error making cnv_source_ids'
+                exit(1)
+            pass
+        else:
+            #qry = "drop table cnv_source_ids"
+            #search_db (cursor, qry)
+            print "cnv_source_ids found"
+            pass
+
     cursor.close()
     db.close()
 
