@@ -46,7 +46,7 @@ def main():
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD", "ESCA", "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
                  "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
                  "SKCM", "STAD", "THCA", "UCEC", "UCS", "UVM"];
-   
+    db_names  = ["UCEC"]
     table = 'somatic_mutations'
 
     for db_name in db_names:
@@ -72,16 +72,18 @@ def main():
             print 'no mutations found in ', gene_symbol_1
             continue
         print "%15s  %10s  %20s  %15s" % ('#muts_in_sample', 'name1', 'variant1', 'aa_change1'),
-        print "%10s  %20s  %15s "  % ('name2', 'variant2', 'aa_change2')
+        print "%10s  %20s  %15s  %s"  % ('name2', 'variant2', 'aa_change2', 'tumor_sample_barcode')
         for row in rows:
             [variant_classification, aa_change, tumor_sample_barcode] = row
             # how many mutations in this particular sample?
             qry = "select count(1) from somatic_mutations where tumor_sample_barcode = '%s'" % tumor_sample_barcode
-            rows = search_db(cursor, qry)
-            if not rows: 
+            rows2 = search_db(cursor, qry)
+            if not rows2: 
                 tot_number_of_mutations_in_sample = 0
             else:
-                tot_number_of_mutations_in_sample = rows[0][0]
+                tot_number_of_mutations_in_sample = rows2[0][0]
+
+            print "     %s " % tumor_sample_barcode,
             print " %15d  %10s  %20s  %15s  " % ( tot_number_of_mutations_in_sample, gene_symbol_1,
                                                variant_classification, aa_change),
             # do we have the second gene mutated in the same sample?
@@ -89,16 +91,17 @@ def main():
             qry += " from somatic_mutations"
             qry += " where  hugo_symbol = '%s' " % gene_symbol_2
             qry += " and  tumor_sample_barcode  = '%s' " % tumor_sample_barcode
-            rows = search_db (cursor, qry)
-            if not rows: 
+            rows2 = search_db (cursor, qry)
+            if not rows2: 
                 print "   %s  %20s " %  (gene_symbol_2, 'No mutations found')
             else:
-                [variant_classification_2, aa_change_2] = rows[0]
+                [variant_classification_2, aa_change_2] = rows2[0]
                 print "   %s  %20s  %15s" % ( gene_symbol_2, variant_classification_2, aa_change_2)
-                for row in rows[1:]:
-                    [variant_classification_2, aa_change_2] = row
+                for row2 in rows2[1:]:
+                    [variant_classification_2, aa_change_2] = row2
                     print " "*70,
                     print " %s  %20s  %15s" % ( gene_symbol_2, variant_classification_2, aa_change_2)
+                
         print 
         ############################
 

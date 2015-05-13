@@ -48,7 +48,7 @@ def main():
 
     seqregion_id2name = get_seq_region_names(cursor)
 
-    if 0:
+    if False:
         qry = "select gene_id, stable_id, description from gene where  biotype='protein_coding' "
         qry += " and description like '%ribosomal protein L%' "
         rows = search_db (cursor, qry)
@@ -58,24 +58,32 @@ def main():
             exit(1)
 
         qry = "select gene_id, stable_id, description from gene where  biotype='protein_coding' "
-        qry += " and description like '%ribosomal protein L%' "
-        rows2 = search_db (cursor, qry)
+        qry += " and description like '%ribosomal protein S%' "
+        rows2= search_db (cursor, qry)
         if not rows2:
             print "qry failed: "
             print qry
             exit(1)
+
+        rows += rows2
+
     else:
-        qry = "select gene_id, stable_id, description from gene where  biotype='protein_coding' "
-        qry += " and description like '%breast cancer 1%' "
+        #qry = "select gene_id, stable_id, description from gene where  biotype='protein_coding' "
+        #qry += " and description like '%breast cancer 1%' "
+        #qry += " and description like 'tumor protein p53%' "
+        qry = "select gene_id, stable_id, description from gene where gene_id=758569"
         rows = search_db (cursor, qry)
         if not rows:
             print "qry failed: "
             print qry
             exit(1)
 
+
     for row in rows:
-        output =  "\n\n######################################\n"
+
         [gene_id, stable_id, description] = row
+        if 'mitochondrial' in description: continue
+        output =  "\n\n######################################\n"
         output += " %s, %s, %s \n" % ( gene_id, stable_id, description)
 
         qry = "select seq_region_id, seq_region_start, seq_region_end from gene where gene_id = %d " % gene_id

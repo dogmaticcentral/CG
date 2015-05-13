@@ -6,6 +6,9 @@ import MySQLdb
 from tcga_utils.mysql   import  *
 from tcga_utils.ensembl  import  *
 from time      import  time
+
+import collections
+
 #########################################
 def read_cancer_names ():
     full_name= {}
@@ -36,22 +39,31 @@ def store (cursor, stable_id, source, seg_mean):
 
     return True
 
-    
 #########################################
-def  get_seq_region_ids(cursor):
+def store_genes_seen(cursor_tcga, gene_stable, genes_seen, samples_per_gene, fold_change_per_gene, num_probes_per_gene, range_per_gene):
 
-    seqregion_name2id = {}
+    for gene_id in genes_seen:
+        samples = samples_per_gene[gene_id].rsplit(';')
+        if len(samples) <= 1: continue
 
-    qry  = "select seq_region.name, seq_region.seq_region_id from seq_region, "
-    qry += "coord_system where coord_system.coord_system_id = seq_region.coord_system_id "
-    qry += "and coord_system.attrib='default_version' "
-    rows = search_db (cursor, qry)
-    if ( not rows):
-        print "bleep?"
-        exit(1)
-    for row in rows:
-        seqregion_name2id[ str(row[0]) ] = row[1]
-    return seqregion_name2id
+        fold_changes =  fold_change_per_gene[gene_id].rsplit(';')
+        num_pbs      =  num_probes_per_gene[gene_id].rsplit(';')
+        ranges       =  range_per_gene[gene_id].rsplit(';')
+        for i in range (len(samples)):
+            
+            start, end = ranges[i].rsplit("-")
+            start = int(start)
+            end   = int(end)
+
+
+        fixed_fields  = {'gene_stable_id': gene_stable[gene_id]}
+        update_fields = {'source_ids': samples_per_gene[gene_id], 
+                         'log_fold_changes': fold_change_per_gene[gene_id], 
+                         'num_probes': num_probes_per_gene[gene_id], 
+                         'ranges': range_per_gene[gene_id]}
+        store_or_update (cursor_tcga, 'cnv_snp', fixed_fields, update_fields, verbose=False)
+  
+    return True
 
 #########################################
 def shutdown (cursor, cursor2, db, db2):
@@ -86,7 +98,7 @@ def is_sane(sample_file, seqregion_name2id, genes_per_region, gene_coordinates):
             continue
 
         fields = line.rstrip().replace (" ", "").split("\t")
-        [chromosome, start, end,  seg_mean] =  [fields[chrom_idx], fields[from_idx], fields[to_idx], fields[seg_idx]]
+        [chromosome, start, end, seg_mean] =  [fields[chrom_idx], fields[from_idx], fields[to_idx], fields[seg_idx]]
         # picking the cutoff:
         # pow (2, 0.1) = 1.07,  pow (2, -0.1) = 0.93
         # pow (2, 0.2) = 1.15,  pow (2, -0.1) = 0.87
@@ -97,7 +109,6 @@ def is_sane(sample_file, seqregion_name2id, genes_per_region, gene_coordinates):
             if ( seq_region_end < int(start) or  int(end) < seq_region_start): continue
             within += 1
                     
-    print within, sample_file
     inf.close()
 
     return (within<5000)
@@ -128,6 +139,7 @@ def main():
     start_time = time()
     genes_per_region = {}
     gene_coordinates = {}
+    gene_stable = {}
     for gene_id in gene_ids:
         qry = "select seq_region_id, seq_region_start, seq_region_end from gene where gene_id = %d " % gene_id
         rows = search_db (cursor, qry)
@@ -141,6 +153,8 @@ def main():
         if not genes_per_region.has_key (seq_region_id): genes_per_region[seq_region_id] = []
         genes_per_region[seq_region_id].append(gene_id)
         gene_coordinates[gene_id] = [seq_region_start, seq_region_end] 
+        gene_stable[gene_id] = gene2stable (cursor, gene_id)
+        
         
     print "all coords found  and grouped,  time: %8.3f" % (time()-start_time);
 
@@ -158,8 +172,6 @@ def main():
             print path, "not found"
             continue
 
-        print path, "ok"
-        
         diferent_samples_count  = 0
         uniq_samples = []
         sample_files = []
@@ -179,25 +191,32 @@ def main():
                             sample_files.append(path2 + "/" + fnm)
                             diferent_samples_count += 1
 
-        print "number of different samples ", diferent_samples_count
         ct = 0
         
         genes_seen = []
-        source_id = {}
+        ct2source_name = {}
         samples_per_gene = {}
         fold_change_per_gene = {}
+        num_probes_per_gene = {}
+        range_per_gene = {}
+        
         for sample_file in sample_files:
 
             # do sanity check for the whole file
-            # if more than a, say 5000 genes are reported as having significant cnv, drop the whole sample
+            # if more than a, 200 genes are reported as having significant cnv, drop the whole sample
+            # the 200 cutoff comes from inspection of the output of 210_*.py - more than 1/2 sample cases in that bracket
             if not is_sane(sample_file, seqregion_name2id, genes_per_region, gene_coordinates): continue
 
             ct += 1
-            #if not ct%10: 
             start_time = time()
             source = sample_file.split ('/')[-1]
-            source_id[source] = ct
-            print source, ct, "out of ", len(sample_files)
+            ct2source_name[str(ct)] = source
+            
+            fixed_fields  = {'source_id':ct, 'source_name':source}
+            update_fields = {}
+            store_or_update (cursor_tcga, 'cnv_source_ids', fixed_fields, update_fields, verbose=False)
+            if not ct%100: 
+                print source, ct, "out of ", len(sample_files)
 
 
             inf = open(sample_file)
@@ -209,7 +228,7 @@ def main():
             for line in inf:
                 if not header:
                     header = line.rstrip().replace (" ", "").split("\t")
-                    for must_have in ['Chromosome', 'Start', 'End', 'Segment_Mean']:
+                    for must_have in ['Chromosome', 'Start', 'End', 'Segment_Mean', 'Num_Probes']:
                         if not must_have in header:
                             print must_have, "field not found in header of ", sample_file
                             exit(1)
@@ -217,10 +236,12 @@ def main():
                     from_idx  = header.index('Start')
                     to_idx    = header.index('End')
                     seg_idx   = header.index('Segment_Mean')
+                    num_idx   = header.index('Num_Probes')
                     continue
 
                 fields = line.rstrip().replace (" ", "").split("\t")
-                [chromosome, start, end,  seg_mean] =  [fields[chrom_idx], fields[from_idx], fields[to_idx], fields[seg_idx]]
+                
+                [chromosome, start, end,  num_probes, seg_mean] =  [fields[chrom_idx], fields[from_idx], fields[to_idx], fields[num_idx], fields[seg_idx]]
                 # picking the cutoff:
                 # pow (2, 0.1) = 1.07,  pow (2, -0.1) = 0.93
                 # pow (2, 0.2) = 1.15,  pow (2, -0.1) = 0.87
@@ -242,22 +263,26 @@ def main():
                     if not gene_id in genes_seen:  
                         genes_seen.append(gene_id)
                         # we are using ct as source identifier
-                        samples_per_gene[gene_id] = "%s" % ct
+                        samples_per_gene[gene_id]     = "%s" % ct
                         fold_change_per_gene[gene_id] = seg_mean
+                        num_probes_per_gene[gene_id]  = num_probes
+                        range_per_gene[gene_id]       = start + "-" + end
                     else:
-                        samples_per_gene[gene_id]    += ";%s" % ct
+                        samples_per_gene[gene_id]     += ";%s" % ct
                         fold_change_per_gene[gene_id] += ";" + seg_mean
-               
-            print "\t\t time: %8.3f" % (time()-start_time)
-
+                        num_probes_per_gene[gene_id]  += ";" + num_probes
+                        range_per_gene[gene_id]       += ";" + start + "-" + end
+              
+            #print "\t\t time: %8.3f" % (time()-start_time)
 
         print db_name, "number of genes seen:", len(genes_seen), "in  %8.3f s" % (time()-start_db)
-        #for gene_id in genes_seen:
-        #    print gene_id, "   ", samples_per_gene[gene_id], "   "  , fold_change_per_gene[gene_id]  
-            
+        store_genes_seen(cursor_tcga, gene_stable, genes_seen, samples_per_gene, fold_change_per_gene, num_probes_per_gene, range_per_gene)
 
- 
-    shutdown (cursor, cursor2, db, db2)
+
+        db.commit()
+        db2.commit()
+
+    shutdown (cursor, cursor_tcga, db, db2)
 
 
 

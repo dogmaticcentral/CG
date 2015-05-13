@@ -16,7 +16,7 @@ def main():
                  "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
                  "SKCM", "STAD", "THCA", "UCEC", "UCS", "UVM"];
     table = 'somatic_mutations'
-
+    total_number_of_somatic_mutations_in_TCGA = 0
     
     for db_name in db_names:
 
@@ -27,6 +27,7 @@ def main():
         qry = "select count(1) from " + table
         rows = search_db(cursor, qry)
         print db_name, table, ", number of entries:", rows[0][0]
+        total_number_of_somatic_mutations_in_TCGA += int(rows[0][0])
         ############################
 
         ############################
@@ -101,9 +102,11 @@ def main():
         [histo, low_range, binsize, extrapoints] = stats.histogram(sample_sizes, numbins=500)
         prev = low_range
         for entry in histo:
-            if entry: print " %6d  %6d   %5d " % ( int(prev), int(prev+binsize), int(entry))
+            if entry: print " %6d  %6d   %5d " % (int(prev), int(prev+binsize), int(entry))
             prev += binsize
-
+    print
+    print 'number of somatic mutations in TCGA:', total_number_of_somatic_mutations_in_TCGA
+    print
     cursor.close()
     db.close()
 

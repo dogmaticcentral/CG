@@ -41,7 +41,10 @@ def store (cursor, header_fields, fields, usable_field):
         if not usable_field[i]: continue
         field = fields[i]
         header = header_fields[i]
-        if (header in ['tumor_sample_barcode', 'chromosome', 'strand', 'start_position'] ):
+        # if we first bump into data set without aa_code info, we just store it;
+        # in the following script we'll resolve it and keep the more  more informative
+        # field from each entry
+        if (header in ['tumor_sample_barcode', 'chromosome', 'aa_code', 'start_position'] ):
             fixed_fields[header] = field
         else:
             update_fields[header] = field
@@ -103,9 +106,9 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD", "ESCA", "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
-                 "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
-                 "SKCM", "STAD", "THCA", "UCEC", "UCS", "UVM"];
+    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD","ESCA", "FPPP", "GBM", "HNSC", "KICH" ,"KIRC","KIRP",
+                 "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
+                 "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
     for db_name in db_names:
         # check db exists

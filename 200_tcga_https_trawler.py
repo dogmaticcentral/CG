@@ -21,9 +21,18 @@ def get_page_text (httpaddr):
 
 not_interesting = ['bio', 'pathology_reports', 'diagnostic_images', 'tissue_images',
                   'mirnaseq', 'miRNASeq', 'mirna', 
-                  'methylation', 'protein_exp', 'mutations', 'mutations_protected', 
+                  'methylation', 'protein_exp',  'mutations_protected', 
                   'rnaseqv2', 'cdna', 'cna', 'bisulfiteseq', 'rnaseq', 'totalrnaseqv2',
                   'transcriptome', 'microsat_i', 'exon', 'tracerel']
+
+looking_for_mutations = True
+
+if  looking_for_mutations:
+    not_interesting.append('snp') # we are looking for somatic mutations
+else:
+    not_interesting.append('mutations') # we are looking for snps
+
+
 
 #########################################
 def recursive_descent (name_pieces):
@@ -38,7 +47,8 @@ def recursive_descent (name_pieces):
         if 'Parent Directory' in link.getText(): continue
         new_name_piece = link.get('href')
         if 'http' in  new_name_piece: continue
-        if new_name_piece[-1] != '/': 
+        if new_name_piece[-1] != '/' : 
+            if looking_for_mutations and not 'Level_2' in new_name_piece: continue
             if 'tar.gz' in new_name_piece[-6:] and not 'mage-tab' in new_name_piece:
                 print "".join(name_pieces[1:]), ":  ", 
                 print new_name_piece

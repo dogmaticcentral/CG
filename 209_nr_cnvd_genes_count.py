@@ -33,7 +33,6 @@ def store (cursor, stable_id, source, seg_mean):
         exit(1)
         return False
    
-
     return True
 
     
@@ -97,7 +96,7 @@ def is_sane(sample_file, seqregion_name2id, genes_per_region, gene_coordinates):
             if ( seq_region_end < int(start) or  int(end) < seq_region_start): continue
             within += 1
                     
-    print within, sample_file
+    #print within, sample_file
     inf.close()
 
     return (within<5000)
@@ -158,7 +157,7 @@ def main():
             print path, "not found"
             continue
 
-        print path, "ok"
+        #print path, "ok"
         
         diferent_samples_count  = 0
         uniq_samples = []
@@ -197,7 +196,7 @@ def main():
             start_time = time()
             source = sample_file.split ('/')[-1]
             source_id[source] = ct
-            print source, ct, "out of ", len(sample_files)
+            #print source, ct, "out of ", len(sample_files)
 
 
             inf = open(sample_file)
@@ -245,19 +244,21 @@ def main():
                         samples_per_gene[gene_id] = "%s" % ct
                         fold_change_per_gene[gene_id] = seg_mean
                     else:
-                        samples_per_gene[gene_id]    += ";%s" % ct
+                        samples_per_gene[gene_id]     += ";%s" % ct
                         fold_change_per_gene[gene_id] += ";" + seg_mean
                
-            print "\t\t time: %8.3f" % (time()-start_time)
+            #print "\t\t time: %8.3f" % (time()-start_time)
 
 
         print db_name, "number of genes seen:", len(genes_seen), "in  %8.3f s" % (time()-start_db)
         #for gene_id in genes_seen:
         #    print gene_id, "   ", samples_per_gene[gene_id], "   "  , fold_change_per_gene[gene_id]  
             
+        gene_id = 758569
+        print gene_id, "   ", samples_per_gene[gene_id], "   ", fold_change_per_gene[gene_id]
 
- 
-    shutdown (cursor, cursor2, db, db2)
+
+    shutdown (cursor, cursor_tcga, db, db2)
 
 
 

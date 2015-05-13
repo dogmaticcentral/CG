@@ -25,21 +25,22 @@ import urllib, os, subprocess
 
 #########################################
 def check_and_make(path):
-     if not os.path.exists(path):
-         print path, "not found, making", path
-         os.makedirs(path)
-     elif not os.path.isdir(path):
-         print ">>> PROBLEM <<<<< ", path,  "is not directory ?"
-         exit(1)
+    if not os.path.exists(path):
+        print path, "not found, making", path
+        os.makedirs(path)
+    elif not os.path.isdir(path):
+        print ">>> PROBLEM <<<<< ", path,  "is not directory ?"
+        exit(1)
 
 #########################################
 def main():
-    
-    root = 'https://tcga-data.nci.nih.gov/tcgafiles/ftp_auth/distro_ftpusers/anonymous/tumor'
-    
-    local_dir = '/Users/ivana/databases/TCGA'
 
-    file_names = open('snp_files.txt')
+    root = 'https://tcga-data.nci.nih.gov/tcgafiles/ftp_auth/distro_ftpusers/anonymous/tumor'
+
+    local_dir = '/Users/ivana/databases/TCGA'
+    updating_somatic_mutations = True
+
+    file_names = open('mutation_files.txt')
     all_files = {}
     for line in [x.rstrip().replace(' ','')  for x in file_names]:
         [directory, filename] = line.split(':')
@@ -48,6 +49,7 @@ def main():
         all_files[directory].append(filename)
     file_names.close()
 
+    # TCGA has all revisions dumped in the same directory - see which one is the newest
     newest_revision = {}
     dir_for_data = {}
     for directory, files in all_files.iteritems():
@@ -59,48 +61,66 @@ def main():
             exp_identifier = '.'.join(fields[:-4])
             #print "\t", exp_identifier,  revision
             if not newest_revision[directory].has_key(exp_identifier) \
-               or newest_revision[directory][exp_identifier] < revision:
+                    or newest_revision[directory][exp_identifier] < revision:
                 newest_revision[directory][exp_identifier] = revision
             #I'm not going to do do anything about the possbility that the
             # same exp data ended up in different directories - I'm just going to crash in that case
             if not dir_for_data.has_key(exp_identifier):
                 dir_for_data[exp_identifier] = directory
             elif  dir_for_data[exp_identifier] != directory:
-                print ">>> PROBLEM <<<<<same data set in different dirs ?"
+                print ">>> PROBLEM <<<<< same data set in different dirs ?"
                 print exp_identifier, dir_for_data[exp_identifier], directory
-    
+
+
     count = 0 # check on the tcga webpage how many
     for directory in newest_revision.keys():
+        print directory
+        for exp_identifier, revision in newest_revision[directory].iteritems():
+            print "\t", exp_identifier, revision
+
         fields = directory.split('/')
         tumor_short = fields[0].upper()
         if tumor_short == 'READ': tumor_short = 'REA'
 
         path = local_dir + "/" + tumor_short
         check_and_make(path)
-        path +=  "/CNV_SNP_Array"
+        if updating_somatic_mutations:
+            path += '/Somatic_Mutations'
+        else:
+            path +=  "/CNV_SNP_Array"
+
         check_and_make(path)
 
-        print directory, tumor_short, path
         for exp_identifier, revision in newest_revision[directory].iteritems():
             unzipped = ".".join([exp_identifier, str(revision), '0'])
             if  os.path.exists( path + "/" + unzipped):
-                print "found", unzipped
-                continue                
+                print "\tfound", unzipped
+                continue
+
+            print "\tnew:  ", unzipped
+            # unzip the new file
             filename = ".".join([exp_identifier, str(revision), '0', 'tar', 'gz' ])
             if  os.path.exists( path + "/" + filename):
                 print "found", filename, path
-                cmd = "tar -zxf " +  path +  "/" + filename + " -C " + path 
-                print cmd
+                cmd = "tar -zxf " +  path +  "/" + filename + " -C " + path
                 retval = subprocess.call(cmd, shell=True)
                 if retval==0: os.remove ( path +  "/" + filename)
-                continue                
-            
+                continue
+
+            # if we got to here, the version of this file does not exist, zipped or unzipped
+            # we are proceeding to download
             full_url = root + "/" + directory + "/" + filename
             count += 1
-            print count, path + "/" + filename
-            # here comes the downloading part
+            print "downloading from ", full_url, " to ",  path + "/" + filename
             dwnldfile = urllib.URLopener()
             dwnldfile.retrieve(full_url, path + "/" + filename)
+
+            # is there an older revision of the same set of data by any chance?
+            # lets move that to a new script, this is becoming to busy ...
+
+
+
+
 
     print
     print "total: ", count

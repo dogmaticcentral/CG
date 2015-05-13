@@ -12,31 +12,35 @@ def  expression_stats(cursor, family_name_root):
     rows = search_db(cursor, qry)
  
     if not rows:
-        print 'no returnn for'
+        print 'no return for'
         print qry
         return
     count = {}
     avg   = {}
+    avg_sq   = {}
     histogram  = {}
     for row in rows:
         [symbol, fold_change] = row
-        if not count.has_key(symbol): count[symbol] = 0
+        if not count.has_key(symbol):   count[symbol] = 0
         if not avg.has_key(symbol):     avg[symbol] = 0
+        if not avg_sq.has_key(symbol):  avg_sq[symbol] = 0
         if not histogram.has_key(symbol): 
             histogram[symbol] = {}
-            for i in range (-4, 5):
+            for i in range (-8, 9):
                  histogram[symbol][i] = 0
         count[symbol] += 1
-        avg[symbol] += fold_change
-        for i in range (-4,4):
-            if fold_change < i :
+        avg[symbol]    += fold_change
+        avg_sq[symbol] += fold_change*fold_change
+        for i in range (-8,8):
+            if fold_change < i*.25 :
                 histogram[symbol][i] += 1
                 break
-        if fold_change >=4:
-             histogram[symbol][4] += 1
+        if fold_change >=2:
+             histogram[symbol][8] += 1
  
     for [symbol, ct] in count.iteritems():
         avg[symbol] /= ct
+        avg_sq[symbol] /= ct
 
     symbols_sorted = sorted(count.keys(), key= lambda x: x )
 
@@ -44,6 +48,7 @@ def  expression_stats(cursor, family_name_root):
     for symbol in symbols_sorted:
         print '\t\t"%s" : {' % symbol
         print '\t\t\t"avg" : "%.2f",' % avg[symbol]
+        print '\t\t\t"avg2" : "%.2f",' % avg_sq[symbol]
         hist = histogram[symbol]
         print '\t\t\t"hist" : {'
         first = True
