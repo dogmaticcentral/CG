@@ -1,6 +1,7 @@
 import MySQLdb, commands, re, os, time
 from mysql import *
 
+#########################################
 def hugo2ensembl (cursor, hugo_id):
     
     ensembl_id = ""
@@ -26,3 +27,19 @@ def hugo2ensembl (cursor, hugo_id):
                         return possible_ensembl
  
     return ""
+
+
+#########################################
+def read_cancer_names ():
+    full_name= {}
+    inf = open ("/Users/ivana/pypeworks/tcga/cancer_names.txt", "r")
+    for line in inf:
+        line   = line.rstrip()
+        field = line.split ("\t")
+        if field[0] == 'READ':
+            field[0] = 'REA'
+        full_name[field[0]] = field[1]
+    inf.close()
+
+    return full_name
+
