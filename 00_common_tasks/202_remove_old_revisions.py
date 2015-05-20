@@ -35,13 +35,14 @@ def main():
     for tumor_short in os.listdir(local_dir):
         if 'usable' in tumor_short: continue
         print tumor_short
-        path = local_dir + "/" + tumor_short + "/" + "Somatic_Mutations"
+        path = local_dir + "/" + tumor_short + "/" + "Expression_Genes"
         if not os.path.exists(path): continue
         experiment_latest_revision = {}
         for data_set in os.listdir(path):
             # lets have this unzipped first
             if '.tar.gz' in data_set: continue
             fields = data_set.split ('.')
+            print fields
             revision = int(fields[-2])
             exp_identifier = '.'.join(fields[:-2])
             if not exp_identifier in experiment_latest_revision.keys():
@@ -59,51 +60,6 @@ def main():
             print data_set, "has newer revision:", experiment_latest_revision[exp_identifier]
             shutil.rmtree(path + "/" + data_set)
 
-    # count = 0 # check on the tcga webpage how many
-    # for directory in newest_revision.keys():
-    #     print directory
-    #     for exp_identifier, revision in newest_revision[directory].iteritems():
-    #         print "\t", exp_identifier, revision
-    #
-    #     fields = directory.split('/')
-    #     tumor_short = fields[0].upper()
-    #     if tumor_short == 'READ': tumor_short = 'REA'
-    #
-    #     path = local_dir + "/" + tumor_short
-    #     check_and_make(path)
-    #     if updating_somatic_mutations:
-    #         path += '/Somatic_Mutations'
-    #     else:
-    #         path +=  "/CNV_SNP_Array"
-    #
-    #     check_and_make(path)
-    #
-    #     for exp_identifier, revision in newest_revision[directory].iteritems():
-    #         unzipped = ".".join([exp_identifier, str(revision), '0'])
-    #         if  os.path.exists( path + "/" + unzipped):
-    #             print "\tfound", unzipped
-    #             continue
-    #
-    #         print "\tnew:  ", unzipped
-    #         # unzip the new file
-    #         filename = ".".join([exp_identifier, str(revision), '0', 'tar', 'gz' ])
-    #         if  os.path.exists( path + "/" + filename):
-    #             print "found", filename, path
-    #             cmd = "tar -zxf " +  path +  "/" + filename + " -C " + path
-    #             retval = subprocess.call(cmd, shell=True)
-    #             if retval==0: os.remove ( path +  "/" + filename)
-    #             continue
-    #
-    #         # if we got to here, the version of this file does not exist, zipped or unzipped
-    #         # we are proceeding to download
-    #         full_url = root + "/" + directory + "/" + filename
-    #         count += 1
-    #         print "downloading from ", full_url, " to ",  path + "/" + filename
-    #         dwnldfile = urllib.URLopener()
-    #         dwnldfile.retrieve(full_url, path + "/" + filename)
-    #
-    #         # is there an older revision of the same set of data by any chance?
-    #         # lets move that to a new script, this is becoming to busy ...
 
 
 

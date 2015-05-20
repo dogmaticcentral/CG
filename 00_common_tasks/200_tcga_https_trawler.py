@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -u
 #
 #  requests lib http://docs.python-requests.org/en/latest/
 #
@@ -12,27 +12,34 @@ from BeautifulSoup import BeautifulSoup
 # Set security warning to always go off by default.
 import warnings
 
+not_interesting = ['bio', 'pathology_reports', 'diagnostic_images', 'tissue_images',
+                  'mirnaseq', 'miRNASeq', 'mirna',  'transcriptome',
+                  'methylation', 'protein_exp',  'mutations_protected', 
+                   'cdna', 'cna', 'bisulfiteseq', 'rnaseqv2','totalrnaseqv2',
+                   'microsat_i', 'exon', 'tracerel']
+
+target_set = 'expression'
+
+# apparently 'transcriptome' is a code word for array based gene expression in TCGA,
+# and the method has been somwhat discredited lately
+
+if  target_set == 'mutations': # we are looking for somatic mutations
+    not_interesting += ['snp', 'rnaseq']
+elif target_set == 'cnv':
+    not_interesting += ['mutations', 'rnaseq']
+elif target_set == 'expression':
+    not_interesting += ['mutations', 'snp']
+else:
+    print "target set", target_set, " not recognized"
+
+
+
+##########################################
 def get_page_text (httpaddr):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         http_req  = requests.get(httpaddr)
     return http_req.text
-
-
-not_interesting = ['bio', 'pathology_reports', 'diagnostic_images', 'tissue_images',
-                  'mirnaseq', 'miRNASeq', 'mirna', 
-                  'methylation', 'protein_exp',  'mutations_protected', 
-                  'rnaseqv2', 'cdna', 'cna', 'bisulfiteseq', 'rnaseq', 'totalrnaseqv2',
-                  'transcriptome', 'microsat_i', 'exon', 'tracerel']
-
-looking_for_mutations = True
-
-if  looking_for_mutations:
-    not_interesting.append('snp') # we are looking for somatic mutations
-else:
-    not_interesting.append('mutations') # we are looking for snps
-
-
 
 #########################################
 def recursive_descent (name_pieces):
@@ -47,18 +54,34 @@ def recursive_descent (name_pieces):
         if 'Parent Directory' in link.getText(): continue
         new_name_piece = link.get('href')
         if 'http' in  new_name_piece: continue
-        if new_name_piece[-1] != '/' : 
-            if looking_for_mutations and not 'Level_2' in new_name_piece: continue
-            if 'tar.gz' in new_name_piece[-6:] and not 'mage-tab' in new_name_piece:
-                print "".join(name_pieces[1:]), ":  ", 
-                print new_name_piece
-            continue
 
         # here we are picking the type of data we are looking for
         # the whole databse is such a mess I do not know how to look for
         # the data type I need in a more robust way
+        #print new_name_piece[:-1], "not interesting?",  new_name_piece[:-1] in not_interesting
         if new_name_piece[:-1] in not_interesting: continue
-            
+        if target_set == 'mutations':
+            if 'Level_1' in new_name_piece: continue
+            if 'Level_3' in new_name_piece: continue
+        else:
+            if 'Level_1' in new_name_piece: continue
+            if 'Level_2' in new_name_piece: continue
+
+        if new_name_piece[-1] != '/' :
+
+            if target_set == 'expression':
+                if 'trimmed.annotated.gene.quantification.txt' in new_name_piece:
+                    print "".join(name_pieces[1:]), ":  ",
+                    print new_name_piece
+
+
+            elif 'tar.gz' in new_name_piece[-6:] and not 'mage-tab' in new_name_piece:
+                print "".join(name_pieces[1:]), ":  ",
+                print new_name_piece
+
+
+            continue
+
         name_pieces.append(new_name_piece)
         recursive_descent (name_pieces)
         name_pieces.pop()
@@ -68,7 +91,9 @@ def recursive_descent (name_pieces):
 #########################################
 def main():
     
-    name_pieces = ['https://tcga-data.nci.nih.gov/tcgafiles/ftp_auth/distro_ftpusers/anonymous/tumor/']
+    main_url = 'https://tcga-data.nci.nih.gov/tcgafiles/ftp_auth/distro_ftpusers/anonymous/tumor/'
+    # recursive descent is well, a recursion, which we seed with the core url string
+    name_pieces = [main_url]
     recursive_descent (name_pieces)
     
 

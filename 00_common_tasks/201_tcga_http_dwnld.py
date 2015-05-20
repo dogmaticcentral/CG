@@ -1,5 +1,6 @@
 #!/usr/bin/python
 #
+# run twice to unzip!
 #
 # downloading from http to a file (using urllib):
 # http://stackoverflow.com/questions/19602931/basic-http-file-downloading-and-saving-to-disk-in-python
@@ -23,6 +24,9 @@
 
 import urllib, os, subprocess
 
+target_set = 'expression'
+
+
 #########################################
 def check_and_make(path):
     if not os.path.exists(path):
@@ -40,7 +44,7 @@ def main():
     local_dir = '/Users/ivana/databases/TCGA'
     updating_somatic_mutations = True
 
-    file_names = open('mutation_files.txt')
+    file_names = open('expression_files.txt')
     all_files = {}
     for line in [x.rstrip().replace(' ','')  for x in file_names]:
         [directory, filename] = line.split(':')
@@ -84,10 +88,14 @@ def main():
 
         path = local_dir + "/" + tumor_short
         check_and_make(path)
-        if updating_somatic_mutations:
+        if  target_set == 'mutations': # we are looking for somatic mutations
             path += '/Somatic_Mutations'
-        else:
+        elif target_set == 'cnv':
             path +=  "/CNV_SNP_Array"
+        elif target_set == 'expression':
+            path += '/Expression_Genes'
+        else:
+            print "target set", target_set, " not recognized"
 
         check_and_make(path)
 
@@ -111,7 +119,7 @@ def main():
             # we are proceeding to download
             full_url = root + "/" + directory + "/" + filename
             count += 1
-            print "downloading from ", full_url, " to ",  path + "/" + filename
+            print "downloading ", filename, " to ",  path
             dwnldfile = urllib.URLopener()
             dwnldfile.retrieve(full_url, path + "/" + filename)
 

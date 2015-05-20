@@ -75,11 +75,10 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    db_names  = ["COAD",  # after this we go alphabetically
-                 "ACC", "BLCA", "BRCA", "CESC",  "GBM", "HNSC", "KICH", "KIRC", "KIRP", 
-                 "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA", # READ is reseved word
-                 "SKCM", "STAD", "THCA", "UCEC", "UCS"]
-    source = 'mdanderson'
+    db_names  = ["BRCA","COAD","GBM","KIRC","KIRP","LAML","LGG","LUAD","LUSC","OV","REA","UCEC"]
+    db_names  = ["COAD","GBM","KIRC","KIRP","LAML","LGG","LUAD","LUSC","OV","REA","UCEC"]
+
+
     for db_name in db_names:
         # check db exists
         qry = "show databases like '%s'" % db_name
@@ -101,7 +100,7 @@ def main():
 
  
         db_dir  = '/Users/ivana/databases/TCGA/%s/Expression_Genes' % db_name
-        cmd = 'ls ' + db_dir + "/%s*/*.txt" % source
+        cmd = 'ls ' + db_dir + "/*/*.txt"
         ret = commands.getoutput(cmd)
         if 'No such' in ret: 
             print ret
@@ -110,7 +109,11 @@ def main():
         expression_files = ret.split('\n')
         for expr_file in expression_files:
             print '\t loading:', expr_file
-            load_expression_file (cursor, db_name,  expr_file, source)
+            cmd = 'head ' + expr_file
+            ret = commands.getoutput(cmd)
+            print ret
+            print
+            #load_expression_file (cursor, db_name,  expr_file, source)
         exit(1)
 
     cursor.close()
