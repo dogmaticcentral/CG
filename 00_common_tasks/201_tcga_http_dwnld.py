@@ -24,8 +24,9 @@
 
 import urllib, os, subprocess
 
-target_set = 'expression'
-
+target_set = 'mutations'
+# expression has its own download script
+# it is a bit different bcs there we are downloading individual files rather than tarballs (which we do here)
 
 #########################################
 def check_and_make(path):

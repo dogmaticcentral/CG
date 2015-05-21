@@ -21,7 +21,8 @@ not_interesting = ['bio', 'pathology_reports', 'diagnostic_images', 'tissue_imag
 target_set = 'expression'
 
 # apparently 'transcriptome' is a code word for array based gene expression in TCGA,
-# and the method has been somwhat discredited lately
+# and the method has been somewhat discredited lately
+# this script can be used to download transcriptome (array based expression) data
 
 if  target_set == 'mutations': # we are looking for somatic mutations
     not_interesting += ['snp', 'rnaseq']
