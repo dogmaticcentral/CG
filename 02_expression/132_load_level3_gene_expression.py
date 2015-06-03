@@ -76,8 +76,6 @@ def main():
     cursor = db.cursor()
 
     db_names  = ["BRCA","COAD","GBM","KIRC","KIRP","LAML","LGG","LUAD","LUSC","OV","REA","UCEC"]
-    db_names  = ["COAD","GBM","KIRC","KIRP","LAML","LGG","LUAD","LUSC","OV","REA","UCEC"]
-
 
     for db_name in db_names:
         # check db exists
@@ -100,9 +98,10 @@ def main():
 
  
         db_dir  = '/Users/ivana/databases/TCGA/%s/Expression_Genes' % db_name
+
         cmd = 'ls ' + db_dir + "/*/*.txt"
         ret = commands.getoutput(cmd)
-        if 'No such' in ret: 
+        if 'No such' in ret:
             print ret
             continue
         if not ret: continue

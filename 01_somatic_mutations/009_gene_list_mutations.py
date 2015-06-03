@@ -1,10 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/python -u
 #
 
-import sys, os
-import MySQLdb
+import os
+from time import time
+import commands
 from   tcga_utils.mysql   import  *
-from random import randrange
+from random import randrange, sample
 
 #########################################
 def simulation (M, Nr, Nb, l, number_of_iterations):
@@ -85,12 +86,10 @@ def expected (a, b, n):
 #########################################
 def main():
 
-    if len(sys.argv) < 2:
-        print  "usage: %s <gene symbol 1>  <gene symbol 2> ..." % sys.argv[0]
-        exit(1)
-
-    gene_list = [ x.upper() for x in sys.argv[1:] ]
-    print gene_list
+    if len(sys.argv) == 1:
+        tp53_mode = True
+    else:
+        tp53_mode = False
   
     full_name = read_cancer_names ()
 
@@ -111,25 +110,53 @@ def main():
     pancan_samples = 0
     pancan_ct = {}
     pancan_coappearance = {}
-    for i in range (len(gene_list)):
-        gene1 = gene_list[i] 
+    
+    if tp53_mode:
+
+        print "number of different genes:"
+        switch_to_db(cursor, 'baseline')
+        qry = "select distinct approved_symbol from hgnc_id_translation where locus_type = 'gene with protein product' "
+        rows = search_db(cursor, qry)
+        gene_list = [row[0] for row in  rows if row[0] != "TP53"]
+        print "\t db_name", len(gene_list)
+
+        #gene_list = gene_list[:30]
+        #gene_list = sample(gene_list, 500)
+        gene1 = 'TP53'
         pancan_ct[gene1] = 0
-        for j in range (i+1,len(gene_list)):
+        for j in range (len(gene_list)):
             gene2 = gene_list[j]
+            pancan_ct[gene2] = 0
             mut_key = gene1 + "_"  + gene2
             pancan_coappearance[mut_key] = 0
+
+    else:
+        gene_list = [ x.upper() for x in sys.argv[1:] ]
+        print gene_list
+        for i in range (len(gene_list)):
+            gene1 = gene_list[i] 
+            pancan_ct[gene1] = 0
+            for j in range (i+1,len(gene_list)):
+                gene2 = gene_list[j]
+                mut_key = gene1 + "_"  + gene2
+                pancan_coappearance[mut_key] = 0
 
     for db_name in db_names:
         print "######################################"
         print db_name, full_name[db_name]
+        start = time()
+        if tp53_mode:
+            outf = open ("coapp_tables/%s_tp53_coapps.table" % db_name, "w")
+        else:
+            outf = open ("coapp_tables/%s_coapps.table" % db_name, "w")
         switch_to_db (cursor, db_name)
 
         ############################
         print "total number of entries:", 
         qry = "select count(1) from " + table
         rows = search_db(cursor, qry)
-        print  rows[0][0]
-
+        db_entries =  rows[0][0]
+        print db_entries
         if not rows[0][0]: continue
 
         ############################
@@ -141,6 +168,7 @@ def main():
         number_of_patients =  len(rows)
         print "number of different patients:", number_of_patients
 
+
         for row in rows:
             short_barcodes.append(row[0])
 
@@ -148,6 +176,8 @@ def main():
         mut_ct = {}
         for gene  in gene_list:
             mut_ct[gene] = 0
+        if tp53_mode: mut_ct['TP53'] = 0
+
         total_muts = 0
         ############################
         for sample_barcode_short in short_barcodes:
@@ -161,72 +191,124 @@ def main():
             rows = search_db (cursor, qry)
             if not rows: continue
 
-            mutations_found = []
+            mutations_found = {}
             for row in rows:
                 [ hugo_symbol, variant_classification, aa_change] = row
-                if hugo_symbol in gene_list:
-                    mutations_found.append (row)
+                if hugo_symbol in gene_list + ['TP53']:
+                    # find genes that are mutated, once or twice, doesn't matter
+                    mutations_found[hugo_symbol] = True
+                    # here keep track of the actual number of mutations
                     mut_ct[hugo_symbol] += 1
             ############################
             if mutations_found:
                 total_muts += len(rows)
-                all_mutated_genes_from_the_list = []
-                # find genes that are mutated, once or twice, doesn't matter
-                for gene  in gene_list:
-                    for mut in mutations_found:
-                        [ hugo_symbol, variant_classification, aa_change] = mut
-                        if hugo_symbol == gene and not gene in all_mutated_genes_from_the_list:
-                            all_mutated_genes_from_the_list.append(hugo_symbol)
 
-                # now disregard the triple and up mutants, and count them as a bunch of doubles
                 # make sure the key is always in the same order
-                for i in range (len(all_mutated_genes_from_the_list)):
-                    gene1 = all_mutated_genes_from_the_list[i]
-                    for j in range (i+1, len(all_mutated_genes_from_the_list)):
-                        gene2 = all_mutated_genes_from_the_list[j]
-                        mut_key = gene1 + "_" + gene2
-                        if not  mut_key in co_appearance.keys():
-                            co_appearance[mut_key] = 0
-                        co_appearance[mut_key] += 1
+                if tp53_mode:
+                    if mutations_found.has_key('TP53'):
+                        for gene2 in  mutations_found.keys():
+                            mut_key = gene1 + "_" + gene2
+                            if not  mut_key in co_appearance.keys():
+                                co_appearance[mut_key] = 0
+                            co_appearance[mut_key] += 1
+
+                else:
+                    all_mutated_genes_from_the_list = mutations_found.keys();
+                    for i in range (len(all_mutated_genes_from_the_list)):
+                        gene1 = all_mutated_genes_from_the_list[i]
+                        for j in range (i+1, len(all_mutated_genes_from_the_list)):
+                            gene2 = all_mutated_genes_from_the_list[j]
+                            mut_key = gene1 + "_" + gene2
+                            if not  mut_key in co_appearance.keys():
+                                co_appearance[mut_key] = 0
+                            co_appearance[mut_key] += 1
 
         pancan_samples += number_of_patients
-        print "number of functional mutations (not silent and not 'RNA')", total_muts
-        print " %8s   %4s   %8s  %4s    %15s    %s" %  ("gene1", "#muts1", "gene2", "#muts2", "co-appearance", "expected_no_of_co-appearances")
-        for i in range (len(gene_list)):
-            gene1 = gene_list[i] 
+        print >> outf, "number of different patients:", number_of_patients
+        print >> outf, "total number of entries:", db_entries
+        print >> outf, "number of functional mutations (not silent and not 'RNA')", total_muts
+        print >> outf, " %8s   %4s   %8s  %4s    %15s    %s" %  ("gene1", "#muts1", "gene2", "#muts2", "co-appearance", "expected_no_of_co-appearances")
+        if tp53_mode:
+            gene1 = 'TP53'
             ct1 = mut_ct [gene1]
             pancan_ct[gene1] += ct1
-            for j in range (i+1,len(gene_list)):
+            for j in range (len(gene_list)):
                 gene2 = gene_list[j]
-                mut_key = gene1 + "_"  + gene2
+                mut_key = gene1 + "_" + gene2
                 appears_together = 0
                 if mut_key in co_appearance.keys():
-                     appears_together = co_appearance[mut_key]
+                    appears_together = co_appearance[mut_key]
                 pancan_coappearance[mut_key] += appears_together
                 ct2 = mut_ct [gene2]
-                print " %8s   %4d   %8s  %4d    %15d    %15.2f" %  ( gene1, ct1, gene2, ct2,  appears_together, expected (ct1, ct2, number_of_patients))
-     
-            
+                pancan_ct[gene2] += ct2
+                print >> outf,  " %8s   %4d   %8s  %4d    %15d    %15.2f" %  ( gene1, ct1, gene2, ct2,  appears_together, expected (ct1, ct2, number_of_patients))
+
+        else:
+            for i in range (len(gene_list)):
+                gene1 = gene_list[i]
+                ct1 = mut_ct [gene1]
+                pancan_ct[gene1] += ct1
+                for j in range (i+1,len(gene_list)):
+                    gene2   = gene_list[j]
+                    mut_key = gene1 + "_" + gene2
+                    appears_together = 0
+                    if mut_key in co_appearance.keys():
+                         appears_together = co_appearance[mut_key]
+                    pancan_coappearance[mut_key] += appears_together
+                    ct2 = mut_ct [gene2]
+                    print >> outf,  " %8s   %4d   %8s  %4d    %15d    %15.2f" %  ( gene1, ct1, gene2, ct2,  appears_together, expected (ct1, ct2, number_of_patients))
+
+        outf.close()
+        print "db done in %8.2f min" % ( (time() - start)/60 )
+
+
+    if tp53_mode:
+        outf = open ("coapp_tables/pancan_tp53_coapps.table", "w")
+    else:
+        outf = open ("coapp_tables/pancan_coapps.table", "w")
+
     print "######################################"
     print "pan-cancer"
-    print "number of samples:", pancan_samples
-    print " %8s   %4s   %8s  %4s  %15s  %15s  %15s  %15s  %15s" %  ("gene1", "#muts1", "gene2", "#muts2", 
+    print >> outf, "number of samples:", pancan_samples
+    print >> outf, " %8s   %4s   %8s  %4s  %15s  %15s  %15s  %15s  %15s" %  ("gene1", "#muts1", "gene2", "#muts2",
                                                                 "co-appearance", "expected no", "expected no", "pval of <=", "pval of >=")
-    print " %8s   %4s   %8s  %4s  %15s        %15s  %15s  %15s  %15s" %  ("", "", "", "", "", "of co-app (expr)", 
+    print >> outf, " %8s   %4s   %8s  %4s  %15s        %15s  %15s  %15s  %15s" %  ("", "", "", "", "", "of co-app (expr)",
                                                                       "of co-app (sim)", "", "")
-    for i in range (len(gene_list)):
-        for j in range (i+1,len(gene_list)):
-            gene1 = gene_list[i] 
+    if tp53_mode:
+        gene11 = 'TP53'
+        ct1 = pancan_ct[gene1]
+        start = time()
+        for j in range (len(gene_list)):
             gene2 = gene_list[j]
             mut_key = gene1 + "_"  + gene2
             appears_together = pancan_coappearance[mut_key]
-            ct1 = pancan_ct[gene1] 
             ct2 = pancan_ct[gene2]
             number_of_iterations = 2*pancan_samples
-            [avg, pval_le, pval_ge]  = simulation (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
-            print " %8s   %4d   %8s  %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f" %  ( gene1, ct1, gene2, ct2, 
-                                                                               appears_together, expected (ct1, ct2, pancan_samples),
-                                                                               avg, pval_le, pval_ge )
+            #[avg, pval_le, pval_ge]  = simulation (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
+            cmd = "coapp_sim  %d  %d    %d  %d   %d   "  % (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
+            [avg, pval_le, pval_ge] = [float(x) for x in commands.getoutput(cmd).split()]
+            print >> outf, " %8s   %4d   %8s  %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f" %  ( gene1, ct1, gene2, ct2,
+                                                                                     appears_together, expected (ct1, ct2, pancan_samples),
+                                                                                     avg, pval_le, pval_ge )
+            if not j%10:
+                print " %4d  time:  %8.2f min" % (j, (time()-start)/60 )
+                start = time()
+    else:
+        for i in range (len(gene_list)):
+            gene1 = gene_list[i]
+            ct1 = pancan_ct[gene1]
+            for j in range (i+1,len(gene_list)):
+                gene2 = gene_list[j]
+                mut_key = gene1 + "_"  + gene2
+                appears_together = pancan_coappearance[mut_key]
+                ct2 = pancan_ct[gene2]
+                number_of_iterations = 2*pancan_samples
+                #[avg, pval_le, pval_ge]  = simulation (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
+                cmd = "coapp_sim  %d  %d    %d  %d   %d   "  % (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
+                [avg, pval_le, pval_ge] = [float(x) for x in commands.getoutput(cmd).split()]
+                print >> outf,  " %8s   %4d   %8s  %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f" %  ( gene1, ct1, gene2, ct2,
+                                                                                         appears_together, expected (ct1, ct2, pancan_samples),
+                                                                                         avg, pval_le, pval_ge )
     
     cursor.close()
     db.close()

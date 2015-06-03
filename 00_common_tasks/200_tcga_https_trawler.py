@@ -20,9 +20,14 @@ not_interesting = ['bio', 'pathology_reports', 'diagnostic_images', 'tissue_imag
 
 target_set = 'expression'
 
+# this script can be used to locate data files to be downloaded by 201_tcga_http_dnwld.data
+############################
+# to download rnaseq based expression data use 02_expression/100_rnaseq_http_dwnld.py
+############################
 # apparently 'transcriptome' is a code word for array based gene expression in TCGA,
 # and the method has been somewhat discredited lately
-# this script can be used to download transcriptome (array based expression) data
+############################
+
 
 if  target_set == 'mutations': # we are looking for somatic mutations
     not_interesting += ['snp', 'rnaseq']
