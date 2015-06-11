@@ -2,16 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2d681dd4-a870-4ef7-918f-7878a1825460" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/02_expression/200_rnaseq_data_set_inspect.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/00_common_tasks/205_annotation_read_and_store.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/02_expression/200_rnseq_expression_table.py" afterPath="$PROJECT_DIR$/02_expression/210_rnaseq_expression_table.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/02_expression/202_load_rnaseq_gene_expression.py" afterPath="$PROJECT_DIR$/02_expression/220_load_rnaseq_gene_expression.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/02_expression/204_rnaseq_expression_overview.py" afterPath="$PROJECT_DIR$/02_expression/224_rnaseq_expression_overview.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/01_somatic_mutations/010_three_way_anticorr.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/01_somatic_mutations/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/02_expression/__init__.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/02_expression/200_rnaseq_data_set_inspect.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/02_expression/catch" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/02_expression/thinking_about_distros" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/03_copy_number_variation/205_check_coordinates.py" afterPath="$PROJECT_DIR$/04_copy_number_variation/205_check_coordinates.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/03_copy_number_variation/207_make_cnv_tables.py" afterPath="$PROJECT_DIR$/04_copy_number_variation/207_make_cnv_tables.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/03_copy_number_variation/209_nr_cnvd_genes_count.py" afterPath="$PROJECT_DIR$/04_copy_number_variation/209_nr_cnvd_genes_count.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/03_copy_number_variation/212_load_cnv_into_mysql.py" afterPath="$PROJECT_DIR$/04_copy_number_variation/212_load_cnv_into_mysql.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/03_copy_number_variation/214_single_gene_cnv_stats.py" afterPath="$PROJECT_DIR$/04_copy_number_variation/214_single_gene_cnv_stats.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/03_copy_number_variation/216_all_genes_cnv_stats.py" afterPath="$PROJECT_DIR$/04_copy_number_variation/216_all_genes_cnv_stats.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/01_somatic_mutations/002a_load_maf.py" afterPath="$PROJECT_DIR$/01_somatic_mutations/002a_load_maf.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/01_somatic_mutations/008_gene_pair_mutations.py" afterPath="$PROJECT_DIR$/01_somatic_mutations/008_gene_pair_mutations.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/01_somatic_mutations/009_gene_list_mutations.py" afterPath="$PROJECT_DIR$/01_somatic_mutations/009_gene_list_mutations.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/02_expression/132_load_level3_gene_expression.py" afterPath="$PROJECT_DIR$/02_expression/132_load_level3_gene_expression.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/00_common_tasks/200_tcga_https_trawler.py" afterPath="$PROJECT_DIR$/00_common_tasks/200_tcga_https_trawler.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/tcga.iml" afterPath="$PROJECT_DIR$/.idea/tcga.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/02_expression/100_rnseq_http_dwnld.py" afterPath="$PROJECT_DIR$/02_expression/100_rnseq_http_dwnld.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/02_expression/210_rnaseq_expression_table.py" afterPath="$PROJECT_DIR$/02_expression/210_rnaseq_expression_table.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/02_expression/220_load_rnaseq_gene_expression.py" afterPath="$PROJECT_DIR$/02_expression/220_load_rnaseq_gene_expression.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tcga_utils/mysql.py" afterPath="$PROJECT_DIR$/tcga_utils/mysql.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="tcga.iws" />
@@ -33,51 +42,56 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="200_rnaseq_data_set_inspect.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/02_expression/200_rnaseq_data_set_inspect.py">
+      <file leaf-file-name="210_rnaseq_expression_table.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/02_expression/210_rnaseq_expression_table.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="36" column="52" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="52" />
-              <folding>
-                <element signature="e#585#599#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="008_gene_pair_mutations.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/008_gene_pair_mutations.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7958478">
+              <caret line="47" column="14" selection-start-line="47" selection-start-column="14" selection-end-line="47" selection-end-column="14" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="009_gene_list_mutations.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/009_gene_list_mutations.py">
+      <file leaf-file-name="220_load_rnaseq_gene_expression.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/02_expression/220_load_rnaseq_gene_expression.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.48712206">
-              <caret line="40" column="60" selection-start-line="40" selection-start-column="60" selection-end-line="40" selection-end-column="60" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="157" column="0" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
               <folding>
-                <element signature="e#24#33#0" expanded="true" />
+                <element signature="e#585#594#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="006_per_gene_stats.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/006_per_gene_stats.py">
+      <file leaf-file-name="mysql.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/02_expression/tcga_utils/mysql.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="39" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-              <folding />
+              <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+              <folding>
+                <element signature="e#63#196#0" expanded="false" />
+                <element signature="e#248#393#0" expanded="false" />
+                <element signature="e#4178#4891#0" expanded="false" />
+                <element signature="e#5017#5347#0" expanded="false" />
+                <element signature="e#5452#5756#0" expanded="false" />
+                <element signature="e#5860#6216#0" expanded="false" />
+                <element signature="e#6273#6838#0" expanded="false" />
+                <element signature="e#6923#7324#0" expanded="false" />
+                <element signature="e#7393#7710#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -105,7 +119,6 @@
         <option value="$PROJECT_DIR$/00_common_tasks/202_remove_old_revisions.py" />
         <option value="$PROJECT_DIR$/02_expression/133_family_expression_overview.py" />
         <option value="$PROJECT_DIR$/00_common_tasks/201_tcga_http_dwnld.py" />
-        <option value="$PROJECT_DIR$/02_expression/100_rnseq_http_dwnld.py" />
         <option value="$PROJECT_DIR$/02_expression/200_rnseq_expression_table.py" />
         <option value="$PROJECT_DIR$/02_expression/202_load_rnaseq_gene_expression.py" />
         <option value="$PROJECT_DIR$/02_expression/204_rnaseq_expression_overview.py" />
@@ -113,9 +126,21 @@
         <option value="$PROJECT_DIR$/00_common_tasks/205_annotation_read_and_store.py" />
         <option value="$PROJECT_DIR$/02_expression/132_load_level3_gene_expression.py" />
         <option value="$PROJECT_DIR$/02_expression/110_data_set_inspect.py" />
-        <option value="$PROJECT_DIR$/02_expression/200_rnaseq_data_set_inspect.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/012_p53_against_all.py" />
+        <option value="$PROJECT_DIR$/02_expression/100_rnseq_http_dwnld.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/002a_load_maf.py" />
+        <option value="$PROJECT_DIR$/02_expression/202_rnaseq_norm_attempt.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/008_gene_pair_mutations.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/009_gene_list_mutations.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/010_three_way_anticorr.py" />
+        <option value="$PROJECT_DIR$/02_expression/200_rnaseq_data_set_inspect.py" />
+        <option value="$PROJECT_DIR$/02_expression/200_rnaseq_distribution_description.py" />
+        <option value="$PROJECT_DIR$/02_expression/200_rnseq_distro_table.py" />
+        <option value="$PROJECT_DIR$/02_expression/201_rnaseq_distro_descr.py" />
+        <option value="$PROJECT_DIR$/03_mutations_expression_collated/010_gene_pair_mut_plus_exp.py" />
+        <option value="$PROJECT_DIR$/02_expression/tcga_utils/mysql.py" />
+        <option value="$PROJECT_DIR$/02_expression/210_rnaseq_expression_table.py" />
+        <option value="$PROJECT_DIR$/02_expression/220_load_rnaseq_gene_expression.py" />
       </list>
     </option>
   </component>
@@ -123,10 +148,10 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="266" />
-    <option name="y" value="24" />
-    <option name="width" value="1528" />
-    <option name="height" value="1016" />
+    <option name="x" value="309" />
+    <option name="y" value="47" />
+    <option name="width" value="1303" />
+    <option name="height" value="990" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -185,34 +210,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tcga" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tcga" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="01_somatic_mutations" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tcga" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tcga" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="00_common_tasks" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
     </panes>
@@ -225,12 +222,15 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/01_somatic_mutations" />
       <recent name="$PROJECT_DIR$/02_expression" />
+      <recent name="$PROJECT_DIR$/01_somatic_mutations" />
+      <recent name="$PROJECT_DIR$/01_somatic_mutations/tcga_utils" />
+      <recent name="$PROJECT_DIR$/02_expression/tcga_utils" />
       <recent name="$PROJECT_DIR$/00_common_tasks" />
-      <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/01_somatic_mutations" />
+      <recent name="$PROJECT_DIR$/02_expression" />
       <recent name="$PROJECT_DIR$/01_somatic_mutations/old" />
     </key>
   </component>
@@ -372,15 +372,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="266" y="24" width="1528" height="1016" extended-state="1" />
+    <frame x="309" y="47" width="1303" height="990" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21531413" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25172678" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952183" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -388,12 +387,13 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -412,9 +412,9 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25510204" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952183" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -437,18 +437,59 @@
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="4" />
+      <option name="time" value="14" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/02_expression/200_rnaseq_data_set_inspect.py">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_three_way_anticorr.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="28" column="38" selection-start-line="28" selection-start-column="38" selection-end-line="28" selection-end-column="38" />
           <folding>
-            <element signature="e#585#599#0" expanded="true" />
+            <element signature="e#91#105#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/009_gene_list_mutations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="335" column="0" selection-start-line="335" selection-start-column="0" selection-end-line="335" selection-end-column="0" />
+          <folding>
+            <element signature="e#24#33#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/008_gene_pair_mutations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="70" column="64" selection-start-line="70" selection-start-column="64" selection-end-line="70" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/009_gene_list_mutations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="59" column="38" selection-start-line="59" selection-start-column="38" selection-end-line="59" selection-end-column="38" />
+          <folding>
+            <element signature="e#24#33#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/100_rnseq_http_dwnld.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="91" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/002a_load_maf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="276" column="0" selection-start-line="276" selection-start-column="0" selection-end-line="276" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -456,9 +497,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="74" column="37" selection-start-line="74" selection-start-column="20" selection-end-line="74" selection-end-column="37" />
-          <folding>
-            <element signature="e#585#599#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -480,9 +518,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="108" column="28" selection-start-line="108" selection-start-column="17" selection-end-line="108" selection-end-column="28" />
-          <folding>
-            <element signature="e#585#599#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -511,9 +546,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="108" column="28" selection-start-line="108" selection-start-column="17" selection-end-line="108" selection-end-column="28" />
-          <folding>
-            <element signature="e#585#599#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -602,20 +634,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/02_expression/133_family_expression_overview.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.9395604">
-          <caret line="59" column="32" selection-start-line="59" selection-start-column="32" selection-end-line="59" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/00_common_tasks/201_tcga_http_dwnld.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="109" selection-start-line="28" selection-start-column="109" selection-end-line="28" selection-end-column="109" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/old/000_common_header_fields.pl">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -627,20 +645,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.18131869">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/02_expression/210_rnaseq_expression_table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="56" column="13" selection-start-line="56" selection-start-column="13" selection-end-line="56" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/02_expression/100_rnseq_http_dwnld.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="80" column="51" selection-start-line="80" selection-start-column="51" selection-end-line="80" selection-end-column="51" />
         </state>
       </provider>
     </entry>
@@ -672,23 +676,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/02_expression/224_rnaseq_expression_overview.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="139" column="55" selection-start-line="139" selection-start-column="55" selection-end-line="139" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/02_expression/220_load_rnaseq_gene_expression.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="74" column="37" selection-start-line="74" selection-start-column="20" selection-end-line="74" selection-end-column="37" />
-          <folding>
-            <element signature="e#585#599#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.project">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -698,37 +685,147 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/006_per_gene_stats.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state vertical-scroll-proportion="0.45352742">
           <caret line="39" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/02_expression/200_rnaseq_data_set_inspect.py">
+    <entry file="file://$PROJECT_DIR$/00_common_tasks/201_tcga_http_dwnld.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.21052632">
+          <caret line="28" column="109" selection-start-line="28" selection-start-column="109" selection-end-line="28" selection-end-column="109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="52" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="52" />
-          <folding>
-            <element signature="e#585#599#0" expanded="true" />
-          </folding>
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/008_gene_pair_mutations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.017564403">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/007_mutations_in_a_specific_gene.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.27985948">
+          <caret line="49" column="25" selection-start-line="49" selection-start-column="25" selection-end-line="49" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/100_rnseq_http_dwnld.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.75409836">
+          <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="91" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/009_gene_list_mutations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.48712206">
-          <caret line="40" column="60" selection-start-line="40" selection-start-column="60" selection-end-line="40" selection-end-column="60" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="335" column="0" selection-start-line="335" selection-start-column="0" selection-end-line="335" selection-end-column="0" />
           <folding>
-            <element signature="e#24#33#0" expanded="true" />
+            <element signature="e#24#33#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/133_family_expression_overview.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="59" column="32" selection-start-line="59" selection-start-column="32" selection-end-line="59" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/224_rnaseq_expression_overview.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="128" column="66" selection-start-line="128" selection-start-column="66" selection-end-line="128" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/200_rnseq_distro_table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.15675676">
+          <caret line="18" column="38" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_three_way_anticorr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33297297">
+          <caret line="28" column="40" selection-start-line="28" selection-start-column="40" selection-end-line="28" selection-end-column="40" />
+          <folding>
+            <element signature="e#91#105#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/002a_load_maf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="248" column="0" selection-start-line="238" selection-start-column="0" selection-end-line="248" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/201_rnaseq_distro_descr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="30" column="19" selection-start-line="22" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03_mutations_expression_collated/010_gene_pair_mut_plus_exp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/tcga_utils/mysql.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+          <folding>
+            <element signature="e#63#196#0" expanded="false" />
+            <element signature="e#248#393#0" expanded="false" />
+            <element signature="e#4178#4891#0" expanded="false" />
+            <element signature="e#5017#5347#0" expanded="false" />
+            <element signature="e#5452#5756#0" expanded="false" />
+            <element signature="e#5860#6216#0" expanded="false" />
+            <element signature="e#6273#6838#0" expanded="false" />
+            <element signature="e#6923#7324#0" expanded="false" />
+            <element signature="e#7393#7710#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/220_load_rnaseq_gene_expression.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="157" column="0" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+          <folding>
+            <element signature="e#585#594#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/210_rnaseq_expression_table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7958478">
+          <caret line="47" column="14" selection-start-line="47" selection-start-column="14" selection-end-line="47" selection-end-column="14" />
+          <folding />
         </state>
       </provider>
     </entry>

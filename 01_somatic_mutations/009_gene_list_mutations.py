@@ -84,6 +84,17 @@ def expected (a, b, n):
     return expected
 
 #########################################
+def mkey (gene1, gene2):
+    mut_key = ""
+    if gene1 < gene2: # alphabetical
+        mut_key = gene1 + "_" + gene2
+    else:
+        mut_key = gene2 + "_" + gene1
+
+    return mut_key
+
+
+#########################################
 def main():
 
     if len(sys.argv) == 1:
@@ -94,7 +105,7 @@ def main():
     full_name = read_cancer_names ()
 
     # unbuffered output
-    sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+    #sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
     
     db     = connect_to_mysql()
@@ -127,7 +138,7 @@ def main():
         for j in range (len(gene_list)):
             gene2 = gene_list[j]
             pancan_ct[gene2] = 0
-            mut_key = gene1 + "_"  + gene2
+            mut_key = mkey(gene1, gene2)
             pancan_coappearance[mut_key] = 0
 
     else:
@@ -138,17 +149,18 @@ def main():
             pancan_ct[gene1] = 0
             for j in range (i+1,len(gene_list)):
                 gene2 = gene_list[j]
-                mut_key = gene1 + "_"  + gene2
+                mut_key = mkey(gene1, gene2)
                 pancan_coappearance[mut_key] = 0
 
     for db_name in db_names:
         print "######################################"
         print db_name, full_name[db_name]
         start = time()
-        if tp53_mode:
-            outf = open ("coapp_tables/%s_tp53_coapps.table" % db_name, "w")
-        else:
-            outf = open ("coapp_tables/%s_coapps.table" % db_name, "w")
+        outf = sys.stdout
+        #if tp53_mode:
+        #    outf = open ("coapp_tables/%s_tp53_coapps.table" % db_name, "w")
+        #else:
+        #    outf = open ("coapp_tables/%s_coapps.table" % db_name, "w")
         switch_to_db (cursor, db_name)
 
         ############################
@@ -166,7 +178,6 @@ def main():
         rows = search_db(cursor, qry)
 
         number_of_patients =  len(rows)
-        print "number of different patients:", number_of_patients
 
 
         for row in rows:
@@ -174,9 +185,28 @@ def main():
 
         co_appearance = {}
         mut_ct = {}
+        patients_per_gene = {}
         for gene  in gene_list:
             mut_ct[gene] = 0
-        if tp53_mode: mut_ct['TP53'] = 0
+            patients_per_gene[gene] = 0
+
+        if tp53_mode:
+            mut_ct['TP53'] = 0
+            patients_per_gene['TP53'] = 0
+
+        if tp53_mode:
+            gene1 = 'TP53'
+            for j in range (len(gene_list)):
+                gene2   = gene_list[j]
+                mut_key = mkey(gene1, gene2)
+                co_appearance[mut_key] = 0
+        else:
+            for i in range (len(gene_list)):
+                gene1 = gene_list[i]
+                for j in range (i+1, len(gene_list)):
+                    gene2   = gene_list[j]
+                    mut_key = mkey (gene1, gene2)
+                    co_appearance[mut_key] = 0
 
         total_muts = 0
         ############################
@@ -199,17 +229,20 @@ def main():
                     mutations_found[hugo_symbol] = True
                     # here keep track of the actual number of mutations
                     mut_ct[hugo_symbol] += 1
+
+
             ############################
             if mutations_found:
+
                 total_muts += len(rows)
+                for hugo_symbol in mutations_found.keys():
+                    patients_per_gene[hugo_symbol] += 1
 
                 # make sure the key is always in the same order
                 if tp53_mode:
                     if mutations_found.has_key('TP53'):
                         for gene2 in  mutations_found.keys():
-                            mut_key = gene1 + "_" + gene2
-                            if not  mut_key in co_appearance.keys():
-                                co_appearance[mut_key] = 0
+                            mut_key = mkey (gene1, gene2)
                             co_appearance[mut_key] += 1
 
                 else:
@@ -218,54 +251,55 @@ def main():
                         gene1 = all_mutated_genes_from_the_list[i]
                         for j in range (i+1, len(all_mutated_genes_from_the_list)):
                             gene2 = all_mutated_genes_from_the_list[j]
-                            mut_key = gene1 + "_" + gene2
-                            if not  mut_key in co_appearance.keys():
-                                co_appearance[mut_key] = 0
+                            mut_key = mkey (gene1, gene2)
                             co_appearance[mut_key] += 1
 
         pancan_samples += number_of_patients
         print >> outf, "number of different patients:", number_of_patients
         print >> outf, "total number of entries:", db_entries
         print >> outf, "number of functional mutations (not silent and not 'RNA')", total_muts
-        print >> outf, " %8s   %4s   %8s  %4s    %15s    %s" %  ("gene1", "#muts1", "gene2", "#muts2", "co-appearance", "expected_no_of_co-appearances")
+        print >> outf, " %8s   %4s   %4s   %8s  %4s   %4s    %15s    %s" %  ("gene1", "#pts1", "#muts1", "gene2", "#pts2", "#muts2", "co-appearance", "expected_no_of_co-appearances")
         if tp53_mode:
             gene1 = 'TP53'
             ct1 = mut_ct [gene1]
+            pt1 = patients_per_gene[gene1]
             pancan_ct[gene1] += ct1
+
             for j in range (len(gene_list)):
-                gene2 = gene_list[j]
-                mut_key = gene1 + "_" + gene2
-                appears_together = 0
-                if mut_key in co_appearance.keys():
-                    appears_together = co_appearance[mut_key]
-                pancan_coappearance[mut_key] += appears_together
+                gene2   = gene_list[j]
+                mut_key = mkey (gene1, gene2)
+                pancan_coappearance[mut_key] += co_appearance[mut_key]
                 ct2 = mut_ct [gene2]
+                if not ct2: continue
+                pt2 = patients_per_gene[gene2]
                 pancan_ct[gene2] += ct2
-                print >> outf,  " %8s   %4d   %8s  %4d    %15d    %15.2f" %  ( gene1, ct1, gene2, ct2,  appears_together, expected (ct1, ct2, number_of_patients))
+                print >> outf,  "%8s   %4d   %4d   %8s  %4d    %4d  " %  (gene1, pt1, ct1, gene2, pt2, ct2),
+                print >> outf,  "%15d    %15.2f" %  (co_appearance[mut_key], expected (ct1, ct2, number_of_patients))
 
         else:
             for i in range (len(gene_list)):
                 gene1 = gene_list[i]
                 ct1 = mut_ct [gene1]
+                pt1 = patients_per_gene[gene1]
                 pancan_ct[gene1] += ct1
                 for j in range (i+1,len(gene_list)):
                     gene2   = gene_list[j]
-                    mut_key = gene1 + "_" + gene2
-                    appears_together = 0
-                    if mut_key in co_appearance.keys():
-                         appears_together = co_appearance[mut_key]
-                    pancan_coappearance[mut_key] += appears_together
+                    mut_key = mkey (gene1, gene2)
+                    pancan_coappearance[mut_key] += co_appearance[mut_key]
                     ct2 = mut_ct [gene2]
-                    print >> outf,  " %8s   %4d   %8s  %4d    %15d    %15.2f" %  ( gene1, ct1, gene2, ct2,  appears_together, expected (ct1, ct2, number_of_patients))
+                    pt2 = patients_per_gene[gene2]
+                    print >> outf,  "%8s   %4d   %4d   %8s  %4d    %4d  " %  (gene1, pt1, ct1, gene2, pt2, ct2),
+                    print >> outf,  "%15d    %15.2f" %  ( co_appearance[mut_key], expected (ct1, ct2, number_of_patients))
 
-        outf.close()
+        #outf.close()
         print "db done in %8.2f min" % ( (time() - start)/60 )
 
 
-    if tp53_mode:
-        outf = open ("coapp_tables/pancan_tp53_coapps.table", "w")
-    else:
-        outf = open ("coapp_tables/pancan_coapps.table", "w")
+    outf = sys.stdout
+    #if tp53_mode:
+    #    outf = open ("coapp_tables/pancan_tp53_coapps.table", "w")
+    #else:
+    #    outf = open ("coapp_tables/pancan_coapps.table", "w")
 
     print "######################################"
     print "pan-cancer"
@@ -280,7 +314,7 @@ def main():
         start = time()
         for j in range (len(gene_list)):
             gene2 = gene_list[j]
-            mut_key = gene1 + "_"  + gene2
+            mut_key = mkey (gene1, gene2)
             appears_together = pancan_coappearance[mut_key]
             ct2 = pancan_ct[gene2]
             number_of_iterations = 2*pancan_samples
@@ -299,7 +333,7 @@ def main():
             ct1 = pancan_ct[gene1]
             for j in range (i+1,len(gene_list)):
                 gene2 = gene_list[j]
-                mut_key = gene1 + "_"  + gene2
+                mut_key = mkey (gene1, gene2)
                 appears_together = pancan_coappearance[mut_key]
                 ct2 = pancan_ct[gene2]
                 number_of_iterations = 2*pancan_samples

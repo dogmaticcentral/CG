@@ -28,7 +28,7 @@ def main():
                  "KIRP","LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    table = 'somatic_mutations'
+
 
     for db_name in db_names:
         print "######################################"
@@ -36,12 +36,37 @@ def main():
         switch_to_db (cursor, db_name)
 
         ############################
-        print "total number of entries:", 
+        table = 'rnaseq_rpkm'
+        if not check_table_exists (cursor, db_name, table):
+            print table, "not found"
+            continue
+        print "total number of entries in %s:" % table,
         qry = "select count(1) from " + table
         rows = search_db(cursor, qry)
         print  rows[0][0]
-
         if not rows[0][0]: continue
+
+        table = 'somatic_mutations'
+        print "total number of entries in %s:" % table,
+        qry = "select count(1) from " + table
+        rows = search_db(cursor, qry)
+        print  rows[0][0]
+        if not rows[0][0]: continue
+
+        ############################
+        # for how many patients do we have info about mutations and expression?
+        qry  = "select distinct sample_barcode_short from somatic_mutations"
+        rows = search_db (cursor, qry)
+        patients_w_mutations = set([row[0] for row in rows])
+
+        qry  = "select distinct sample_barcode_short from rnaseq_rpkm"
+        rows = search_db (cursor, qry)
+        patients_w_expression = set([row[0] for row in rows])
+
+        print "number of samples with mutation   info:", len(patients_w_mutations)
+        print "number of samples with expression info:", len(patients_w_expression)
+
+        continue
 
         ############################
         qry = "select  variant_classification, aa_change, sample_barcode_short "
@@ -49,7 +74,7 @@ def main():
         qry += "where  hugo_symbol = '%s' " % gene_symbol_1
         rows = search_db (cursor, qry)
         if not rows: 
-            print 'no mutations found in ', gene_symbol_1
+            print 'no mutations found in', gene_symbol_1
             continue
         print "%10s %15s  %10s  %20s  %15s" % ('sample id ', '#muts_in_sample', 'name1', 'variant1', 'aa_change1'),
         print "%10s  %20s  %15s"  % ('name2', 'variant2', 'aa_change2')

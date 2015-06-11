@@ -21,6 +21,50 @@ def switch_to_db (cursor, db_name):
     return True
 
 ########
+def store_without_checking(cursor, table, fields, verbose=False):
+    qry = "insert into %s " % table
+    qry += "("
+    first = True
+    for field in fields.keys(): # again will have to check for the type here
+        if (not first):
+            qry += ", "
+        qry += field
+        first = False
+    qry += ")"
+
+    qry += " values "
+    qry += "("
+    first = True
+    for value in fields.values(): # again will have to check for the type here
+        if (not first):
+            qry += ", "
+        if  value is None:
+            qry += " null "
+        elif type(value) is int:
+            qry += " %d" % value
+        elif type(value) is float:
+            qry += " %f" % value
+        else:
+            qry += " \'%s\'" % value
+        first = False
+    qry += ")"
+
+
+    rows   = search_db (cursor, qry)
+    if verbose:
+        print
+        print " ** ", qry
+        print " ** ", rows
+
+    if (rows):
+        rows   = search_db (cursor, qry, verbose=True)
+        print rows
+        return False
+
+    return True
+
+
+########
 def store_or_update (cursor, table, fixed_fields, update_fields, verbose=False):
 
     conditions = ""

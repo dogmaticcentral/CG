@@ -40,7 +40,6 @@ def main():
     root = 'https://tcga-data.nci.nih.gov/tcgafiles/ftp_auth/distro_ftpusers/anonymous/tumor'
 
     local_dir = '/Users/ivana/databases/TCGA'
-    updating_somatic_mutations = True
 
     file_names = open('expression_files.txt')
     all_files = {}
@@ -75,44 +74,9 @@ def main():
         path += '/Expression_Genes'
         check_and_make(path)
 
-        # now, do we have any paired sets tumor/normal
-        barcode_per_patient = {}
-        file_per_barcode = {}
         for file in all_files[latest_revision_dir]:
-            fields = file.split('.')
-            barcode = fields[1]
-            if not file_per_barcode.has_key(barcode): file_per_barcode[barcode] = []
-            file_per_barcode[barcode].append(file)
-            fields =  barcode.split ('-')
-            patient =  '-'.join(fields[1:3])
-            the_rest_of_barcode= '-'.join(fields[3:])
-            if not barcode_per_patient.has_key(patient): barcode_per_patient[patient] = []
-            if the_rest_of_barcode not in barcode_per_patient[patient]:
-                barcode_per_patient[patient].append(the_rest_of_barcode)
 
-        for_download = []
-        for patient, barcodes in barcode_per_patient.iteritems():
-            if len(barcodes) > 1:
-                have_normal  = False
-                have_primary = False
-                for bc in barcodes:
-                    if bc[:2]=='11': have_normal = True
-                    if bc[:2] in ['01', '03', '09']: have_primary = True
-
-                if have_normal and have_primary:
-                    if True:
-                        for bc in barcodes:
-                            full_barcode = "TCGA-%s-%s" % (patient, bc)
-                            for file in file_per_barcode[full_barcode]:
-                                for_download.append(file)
-
-        if not for_download: continue
-        print
-        print tumor_short, "files to download:", len(for_download)
-
-        for file in for_download:
-
-            full_url = root + "/" + latest_revision_dir + "/" + file
+            full_url   = root + "/" + latest_revision_dir + "/" + file
             local_path = path + "/" + latest_revision_dir.split('/')[-1]
             check_and_make(local_path)
 

@@ -7,12 +7,16 @@
 # (rather if tumor_seq_allele1 == tumor_seq_allele2 != match_norm_seq_allele1  and tumor_seq_allele2 != match_norm_seq_allele2
 # then I have somehting like that)
 
+
 import MySQLdb
 from   tcga_utils.mysql   import  *
 
-#########################################
-def make_gene_expression_table(cursor, db_name):
 
+
+#########################################
+def make_gene_distro_table(cursor, db_name):
+
+    table = 'rnaseq_distro_description'
     switch_to_db (cursor, db_name)
     qry = "select database()"
     rows = search_db(cursor, qry)
@@ -20,42 +24,30 @@ def make_gene_expression_table(cursor, db_name):
     print rows
 
     qry = "";
-    qry += "  CREATE TABLE rnaseq_rpkm ("
-    qry += "  	 symbol CHAR (50) NOT NULL, "
-    qry += "	 tumor_sample_barcode CHAR (50) DEFAULT NULL, "
-    qry += "	 sample_barcode_short CHAR (50) DEFAULT NULL, "
-    qry += "	 rpkm FLOAT (10,2) DEFAULT NULL, "
-    qry += "	 source_code INT DEFAULT NULL, "
-    qry += "	 experiment_id VARCHAR(100)"
-    qry += ") ENGINE=InnoDB"
-    rows = search_db(cursor, qry)
-    print qry
-    print rows
-
-#########################################
-def create_indices_rpkm(cursor, db_name, table):
-    # recalculating indices on each insert is killing the thing, so we do it separately
-    qry = "";
-    qry += "create index ste_idx on rnaseq_rpkm (symbol, tumor_sample_barcode, experiment_id)"
+    qry += "  CREATE TABLE %s ("  % table
+    qry += "  	 symbol VARCHAR (50) NOT NULL, "
+    qry += "	 number_of_points INT  DEFAULT NULL, "
+    qry += "	 min FLOAT (10,2) DEFAULT NULL, "
+    qry += "	 max FLOAT (10,2) DEFAULT NULL, "
+    qry += "	 mean FLOAT (10,2) DEFAULT NULL, "
+    qry += "	 stdev FLOAT (10,2) DEFAULT NULL, "
+    qry += "	 skewness FLOAT (10,2) DEFAULT NULL, "
+    qry += "	 kurtosis FLOAT (10,2) DEFAULT NULL"
+    qry += ") ENGINE=MyISAM"
     rows = search_db(cursor, qry)
     print qry
     print rows
 
     qry = "";
-    qry += "create index st_idx on rnaseq_rpkm (symbol, tumor_sample_barcode)"
+    qry += "create index hugo_idx on %s (symbol)" % table
     rows = search_db(cursor, qry)
     print qry
     print rows
 
-    qry = "";
-    qry += "create index sample_idx on rnaseq_rpkm (sample_barcode_short)"
-    rows = search_db(cursor, qry)
-    print qry
-    print rows
 
 
 #########################################
-def modify_gene_expression_table(cursor, db_name):
+def modify_gene_distro_table(cursor, db_name):
 
     switch_to_db (cursor, db_name)
     qry = "select database()"
@@ -74,16 +66,14 @@ def modify_gene_expression_table(cursor, db_name):
     print rows
     
 
+
 #########################################
 def main():
     
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    create_indices = False
-    drop_old_tables = True
-
-    db_names  = ["BLCA","BRCA","COAD","HNSC","KIRC","KIRP","LIHC","LUAD","LUSC","REA","UCEC"]
+    db_names  = ["BRCA", "COAD", "GBM", "KIRC", "KIRP", "LAML", "LGG", "LUAD", "LUSC", "OV", "REA", "UCEC"]
 
     for db_name in db_names:
         # check db exists
@@ -103,19 +93,18 @@ def main():
         print qry
         print rows
       
-        table = 'rnaseq_rpkm'
+        table = 'rnaseq_distro_description'
 
         if ( check_table_exists (cursor, db_name, table)):
             print table, " found in ", db_name
-            if drop_old_tables:
-                qry = "drop table rnaseq_rpkm"
-                rows = search_db(cursor, qry)
-                make_gene_expression_table(cursor, db_name)
-            #modify_gene_expression_table(cursor, db_name)
-            if create_indices: create_indices_rpkm(cursor, db_name, table)
+            # if you really want to start from scratch, uncomment
+            #qry = "drop table %s" % table
+            #rows = search_db(cursor, qry)
+            #make_gene_distro_table(cursor, db_name)
+            #modify_gene_distro_table(cursor, db_name)
         else:
             print table, " not found in ", db_name
-            make_gene_expression_table(cursor, db_name)
+            make_gene_distro_table(cursor, db_name)
 
     cursor.close()
     db.close()

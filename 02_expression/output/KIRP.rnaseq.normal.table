@@ -1,0 +1,3 @@
+         symbol  pts     min         max           mean    stdev   skew         kurt      left  right 
+summary for parent directory /Users/ivana/databases/TCGA/KIRP/Expression_Genes/unc.edu_KIRP.IlluminaHiSeq_RNASeq.Level_3.1.1.0
+tot 0, weak 0,  weak with tail 0,   normal 0,   not_skewed 0, renormalizable: 0,  wide: 0,  other: 0

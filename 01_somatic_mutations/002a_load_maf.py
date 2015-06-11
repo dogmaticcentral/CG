@@ -243,7 +243,7 @@ def load_maf (cursor, db_name, required_fields, maffile, table):
             source  = elements[3][:-1]
             # source can signa additional or metastatic tumors from the same patient
             # to keep our life simple we'll just stick to primary tumors
-            # indicates by source code 01, 03, 08, or 09
+            # indicated by source code 01, 03, 08, or 09
             if not source in source_codes: continue
             sample_barcode_short = '-'.join(elements[1:3] + [source]) # get rid of the 'vial' character
 
