@@ -41,6 +41,7 @@ scratch/
 old/
 *blah*
 coapp_tables/
+output/
 
 # OS generated files #
 ######################
