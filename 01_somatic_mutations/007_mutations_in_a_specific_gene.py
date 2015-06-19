@@ -69,7 +69,7 @@ def main():
             else:
                 tot_number_of_mutations_in_sample = rows[0][0]
             #if aa_change and 'P72' in aa_change:
-            print "\t\t %10s  %20s  %10s  %6d" % ( hugo_symbol, variant_classification, aa_change, 
+            print "\t\t %10s  %20s  %10s  %6d" % (hugo_symbol, variant_classification, aa_change,
                                                    tot_number_of_mutations_in_sample)
         print 
         ############################

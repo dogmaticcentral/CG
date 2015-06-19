@@ -27,7 +27,7 @@ def make_gene_expression_table(cursor, db_name):
     qry += "	 rpkm FLOAT (10,2) DEFAULT NULL, "
     qry += "	 source_code INT DEFAULT NULL, "
     qry += "	 experiment_id VARCHAR(100)"
-    qry += ") ENGINE=InnoDB"
+    qry += ") ENGINE=MyISAM"
     rows = search_db(cursor, qry)
     print qry
     print rows
@@ -36,16 +36,11 @@ def make_gene_expression_table(cursor, db_name):
 def create_indices_rpkm(cursor, db_name, table):
     # recalculating indices on each insert is killing the thing, so we do it separately
     qry = "";
-    qry += "create index ste_idx on rnaseq_rpkm (symbol, tumor_sample_barcode, experiment_id)"
+    qry += "create index symbol_code_idx on rnaseq_rpkm (symbol, source_code)"
     rows = search_db(cursor, qry)
     print qry
     print rows
 
-    qry = "";
-    qry += "create index st_idx on rnaseq_rpkm (symbol, tumor_sample_barcode)"
-    rows = search_db(cursor, qry)
-    print qry
-    print rows
 
     qry = "";
     qry += "create index sample_idx on rnaseq_rpkm (sample_barcode_short)"
@@ -80,8 +75,8 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    create_indices = False
-    drop_old_tables = True
+    create_indices  = True
+    drop_old_tables = False
 
     db_names  = ["BLCA","BRCA","COAD","HNSC","KIRC","KIRP","LIHC","LUAD","LUSC","REA","UCEC"]
 

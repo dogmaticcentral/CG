@@ -29,7 +29,6 @@ def check_barcode(cursor, barcode):
 
     return True
 
-
 #########################################
 def store (cursor, header_fields, fields):
 
@@ -130,6 +129,7 @@ def average_and_load (cursor, db_name, header_fields, barcode, files):
             fields = line.split ('\t')
             if len(fields) != 4: continue # I don't know what this is in that case
             fields_clean = [x.replace("'", '') for x in fields]
+            # TODO add symbol name resolution here
             symbol = fields_clean[0].split('|')[0]
             rpkm = float (fields_clean [-1])
             if not values.has_key(symbol): values[symbol] = []
@@ -166,10 +166,11 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    db_names  = ["BLCA","BRCA","COAD","HNSC","KIRC","KIRP","LIHC","LUAD","LUSC","UCEC"]
+    db_names  = ["BLCA","BRCA","COAD","HNSC","KIRC","KIRP","LIHC","LUAD","LUSC","REA","UCEC"]
 
-    # NOTE <<<<>>>>> duplicate checking is disabled on the db level - this
-    # has to be done on an empyt database !!!!!
+    print "NOTE <<<<>>>>> duplicate checking is disabled on the db level - this"
+    print "has to be done on an empyt database !!!!!"
+    exit(1)
 
     for db_name in db_names:
         # check db exists

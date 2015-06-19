@@ -25,24 +25,33 @@ def make_gene_distro_table(cursor, db_name):
 
     qry = "";
     qry += "  CREATE TABLE %s ("  % table
-    qry += "  	 symbol VARCHAR (50) NOT NULL, "
+    qry += "  	 symbol CHAR (50) NOT NULL, "
     qry += "	 number_of_points INT  DEFAULT NULL, "
     qry += "	 min FLOAT (10,2) DEFAULT NULL, "
     qry += "	 max FLOAT (10,2) DEFAULT NULL, "
     qry += "	 mean FLOAT (10,2) DEFAULT NULL, "
     qry += "	 stdev FLOAT (10,2) DEFAULT NULL, "
     qry += "	 skewness FLOAT (10,2) DEFAULT NULL, "
-    qry += "	 kurtosis FLOAT (10,2) DEFAULT NULL"
+    qry += "	 kurtosis FLOAT (10,2) DEFAULT NULL,"
+    qry += "	 distro CHAR (50) DEFAULT NULL,"
+    qry += "	 KL_pval FLOAT (10,2) DEFAULT NULL, "
+    qry += "	 left_cut  INT DEFAULT NULL, "
+    qry += "	 right_cut INT DEFAULT NULL, "
+    qry += "     shape FLOAT (10,2) DEFAULT NULL,"
+    qry += "     location FLOAT (10,2) DEFAULT NULL,"
+    qry += "     scale FLOAT (10,2) DEFAULT NULL,"
+    qry += "     interval_endpoints BLOB"
     qry += ") ENGINE=MyISAM"
     rows = search_db(cursor, qry)
     print qry
     print rows
 
-    qry = "";
-    qry += "create index hugo_idx on %s (symbol)" % table
-    rows = search_db(cursor, qry)
-    print qry
-    print rows
+    if True:
+        qry = "";
+        qry += "create index hugo_idx on %s (symbol)" % table
+        rows = search_db(cursor, qry)
+        print qry
+        print rows
 
 
 
@@ -73,7 +82,7 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    db_names  = ["BRCA", "COAD", "GBM", "KIRC", "KIRP", "LAML", "LGG", "LUAD", "LUSC", "OV", "REA", "UCEC"]
+    db_names  = ["BLCA","BRCA","COAD", "HNSC", "KIRC","KIRP","LIHC","LUAD","LUSC","REA","UCEC"]
 
     for db_name in db_names:
         # check db exists
@@ -85,14 +94,14 @@ def main():
             rows = search_db(cursor, qry)
             print qry
             print rows
-  
+
         print " ** ", db_name
         switch_to_db (cursor, db_name)
         qry = "show tables"
         rows = search_db(cursor, qry)
         print qry
         print rows
-      
+
         table = 'rnaseq_distro_description'
 
         if ( check_table_exists (cursor, db_name, table)):
