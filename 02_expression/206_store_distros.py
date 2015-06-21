@@ -304,8 +304,11 @@ def process_data_set (cursor, db_name, gene_list):
         scaling[sample_id] = scaling_factor
 
     #toyset = sample(gene_list, 100)
+    toyset = ['TP53', 'RPL5', 'RPL11', "RPL22", 'WNT11', 'WLS', "PORCN", 'MDM2',
+              'CDKN2A', 'ACTN', 'ACTB', 'LEP', 'GPR161', 'CDK2', 'HIF1A',
+              'ERBB2', 'PTEN','CDKN2A', 'LTN1','NEMF', 'NMD3','EIF6'] # melanoma
 
-    for symbol in gene_list:
+    for symbol in toyset:
         ct += 1
         if not ct%1000: print "%d done in %5.2fs" % (ct, time() - start)
         if use_normal_tissue:
@@ -399,11 +402,11 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    db_names  = ["BLCA",  "HNSC", "KIRC", "KIRP", "LIHC", "LUAD", "LUSC", "REA", "UCEC", "BRCA", "COAD"]
-    #db_names  = ["BRCA"]
+    db_names  = ["BLCA", "BRCA", "COAD", "HNSC", "KIRC", "KIRP", "LIHC", "LUAD", "LUSC", "REA", "UCEC"]
+    db_names  = ["BRCA", "COAD", "KIRC", "KIRP", "LIHC", "LUAD", "LUSC", "REA", "UCEC"]
     # gene names
     gene_list = []
-    if True:
+    if False:
         switch_to_db(cursor, 'baseline')
         qry = "select distinct approved_symbol from hgnc_id_translation where locus_type = 'gene with protein product' "
         rows = search_db(cursor, qry)

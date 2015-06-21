@@ -2,15 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2d681dd4-a870-4ef7-918f-7878a1825460" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/02_expression/202_normalize_data.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/02_expression/206_store_distros.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/02_expression/200_rnseq_distro_table.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/02_expression/201_rnaseq_distro_descr.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/02_expression/205_rnaseq_norm_attempt.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/02_expression/210_rnaseq_expression_table.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/02_expression/220_load_rnaseq_gene_expression.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/02_expression/mean_vals" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/01_somatic_mutations/007_mutations_in_a_specific_gene.py" afterPath="$PROJECT_DIR$/01_somatic_mutations/007_mutations_in_a_specific_gene.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/01_somatic_mutations/007_patient_freqs.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/01_somatic_mutations/007_mutations_in_a_specific_gene.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/01_somatic_mutations/008_gene_pair_mutations.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/01_somatic_mutations/009_gene_list_mutations.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/01_somatic_mutations/010_three_way_anticorr.py" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/01_somatic_mutations/004_mutation_type_stats.py" afterPath="$PROJECT_DIR$/01_somatic_mutations/004_mutation_type_stats.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/02_expression/204_play_with_distros.py" afterPath="$PROJECT_DIR$/02_expression/204_play_with_distros.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/02_expression/206_store_distros.py" afterPath="$PROJECT_DIR$/02_expression/206_store_distros.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="tcga.iws" />
@@ -32,34 +31,26 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="202_normalize_data.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/02_expression/202_normalize_data.py">
+      <file leaf-file-name="007_patient_freqs.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/007_patient_freqs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="84" column="6" selection-start-line="84" selection-start-column="6" selection-end-line="84" selection-end-column="6" />
+            <state vertical-scroll-proportion="0.4315476">
+              <caret line="75" column="41" selection-start-line="75" selection-start-column="41" selection-end-line="75" selection-end-column="41" />
               <folding>
-                <element signature="e#794#808#0" expanded="true" />
+                <element signature="e#150#164#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="205_rnaseq_distro_table.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/02_expression/205_rnaseq_distro_table.py">
+      <file leaf-file-name="010_mutations_in_a_specific_gene.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_mutations_in_a_specific_gene.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="111" column="13" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="132_load_level3_gene_expression.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/02_expression/132_load_level3_gene_expression.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="36" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-              <folding />
+              <caret line="21" column="36" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="36" />
+              <folding>
+                <element signature="e#147#161#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -68,28 +59,10 @@
         <entry file="file://$PROJECT_DIR$/02_expression/204_play_with_distros.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="385" column="86" selection-start-line="385" selection-start-column="86" selection-end-line="385" selection-end-column="86" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="206_store_distros.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/02_expression/206_store_distros.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.9886507">
-              <caret line="238" column="39" selection-start-line="238" selection-start-column="39" selection-end-line="238" selection-end-column="39" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="200_rnaseq_expression_table.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/02_expression/200_rnaseq_expression_table.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="33" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-              <folding />
+              <caret line="464" column="0" selection-start-line="464" selection-start-column="0" selection-end-line="464" selection-end-column="0" />
+              <folding>
+                <element signature="e#794#808#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -109,8 +82,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/201_tcga_http_dwnld.py" />
-        <option value="$PROJECT_DIR$/202_remove_old_revisions.py" />
         <option value="$PROJECT_DIR$/002c_damage_ctrl_2.py" />
         <option value="$PROJECT_DIR$/002_load_maf.py" />
         <option value="$PROJECT_DIR$/002b_damage_ctrl.py" />
@@ -159,6 +130,9 @@
         <option value="$PROJECT_DIR$/02_expression/205_rnaseq_distro_table.py" />
         <option value="$PROJECT_DIR$/02_expression/204_play_with_distros.py" />
         <option value="$PROJECT_DIR$/02_expression/206_store_distros.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/004_mutation_type_stats.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/tcga_utils/007_patient_freqs.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/007_patient_freqs.py" />
       </list>
     </option>
   </component>
@@ -166,10 +140,10 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="248" />
-    <option name="y" value="53" />
-    <option name="width" value="1359" />
-    <option name="height" value="916" />
+    <option name="x" value="10" />
+    <option name="y" value="55" />
+    <option name="width" value="1420" />
+    <option name="height" value="795" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -227,6 +201,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tcga" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tcga" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="01_somatic_mutations" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
@@ -240,9 +228,9 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/01_somatic_mutations/tcga_utils" />
       <recent name="$PROJECT_DIR$/02_expression" />
       <recent name="$PROJECT_DIR$/01_somatic_mutations" />
-      <recent name="$PROJECT_DIR$/01_somatic_mutations/tcga_utils" />
       <recent name="$PROJECT_DIR$/02_expression/tcga_utils" />
       <recent name="$PROJECT_DIR$/00_common_tasks" />
     </key>
@@ -390,15 +378,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="248" y="53" width="1359" height="916" extended-state="0" />
-    <editor active="true" />
+    <frame x="10" y="55" width="1420" height="795" extended-state="1" />
+    <editor active="false" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32886723" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24135394" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23098591" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952183" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -459,40 +447,17 @@
           <line>42</line>
           <option name="timeStamp" value="37" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/02_expression/204_play_with_distros.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="39" />
+      <option name="time" value="42" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_three_way_anticorr.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="38" selection-start-line="28" selection-start-column="38" selection-end-line="28" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/009_gene_list_mutations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="335" column="0" selection-start-line="335" selection-start-column="0" selection-end-line="335" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/008_gene_pair_mutations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="70" column="64" selection-start-line="70" selection-start-column="64" selection-end-line="70" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/009_gene_list_mutations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="59" column="38" selection-start-line="59" selection-start-column="38" selection-end-line="59" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/02_expression/100_rnseq_http_dwnld.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -662,13 +627,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/008_gene_pair_mutations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.017564403">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/02_expression/100_rnseq_http_dwnld.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.75409836">
@@ -690,24 +648,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_three_way_anticorr.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33297297">
-          <caret line="28" column="40" selection-start-line="28" selection-start-column="40" selection-end-line="28" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/03_mutations_expression_collated/010_gene_pair_mut_plus_exp.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/009_gene_list_mutations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3617021">
-          <caret line="132" column="0" selection-start-line="126" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -759,34 +703,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/004_mutation_type_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005_sample_type_stats.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/006_per_gene_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/007_mutations_in_a_specific_gene.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="71" column="74" selection-start-line="71" selection-start-column="74" selection-end-line="71" selection-end-column="74" />
           <folding />
         </state>
       </provider>
@@ -807,9 +727,49 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/02_expression/202_normalize_data.py">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/004_mutation_type_stats.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+          <caret line="86" column="0" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/003_per_patient_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.2888284">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/206_store_distros.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.65122616">
+          <caret line="310" column="25" selection-start-line="310" selection-start-column="25" selection-end-line="310" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/132_load_level3_gene_expression.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5517711">
+          <caret line="36" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/205_rnaseq_distro_table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.9386921">
+          <caret line="111" column="13" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_expression/202_normalize_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.1621253">
           <caret line="84" column="6" selection-start-line="84" selection-start-column="6" selection-end-line="84" selection-end-column="6" />
           <folding>
             <element signature="e#794#808#0" expanded="true" />
@@ -817,35 +777,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/02_expression/205_rnaseq_distro_table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="111" column="13" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/02_expression/132_load_level3_gene_expression.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/02_expression/204_play_with_distros.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="385" column="86" selection-start-line="385" selection-start-column="86" selection-end-line="385" selection-end-column="86" />
+          <caret line="464" column="0" selection-start-line="464" selection-start-column="0" selection-end-line="464" selection-end-column="0" />
+          <folding>
+            <element signature="e#794#808#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/006_per_gene_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.90625">
+          <caret line="52" column="70" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="70" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/02_expression/206_store_distros.py">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_mutations_in_a_specific_gene.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.9886507">
-          <caret line="238" column="39" selection-start-line="238" selection-start-column="39" selection-end-line="238" selection-end-column="39" />
-          <folding />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="36" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="36" />
+          <folding>
+            <element signature="e#147#161#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/007_patient_freqs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4315476">
+          <caret line="75" column="41" selection-start-line="75" selection-start-column="41" selection-end-line="75" selection-end-column="41" />
+          <folding>
+            <element signature="e#150#164#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

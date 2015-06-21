@@ -274,7 +274,7 @@ def process_data_set (cursor, db_name, gene_list, outf):
         #scaling[sample_id] = 1.0
         scaling[sample_id] = scaling_factor
 
-    toyset = ['TP53', 'RPL5', 'RPL11', 'WNT11', 'WLS', 'MDM2', 'CDKNA', 'ACTN', 'ACTB', 'LEP']
+    toyset = ['TP53', 'RPL5', 'RPL11', "RPL22", 'WNT11', 'WLS', 'MDM2', 'CDKN2A', 'ACTN', 'ACTB', 'LEP']
     toyset = [ 'GPR161'] # overexpressed in breast cancer
     toyset = [ 'CDK2'] # overexpressed in COAD (should be, but is not
     toyset = [ 'HIF1A'] # cancers in general
