@@ -27,9 +27,8 @@ from random import sample
 output            = True
 to_file           = False
 use_normal_tissue = False
-store_in_db       = False
 
-if store_in_db: use_normal_tissue = False # at least until we create a separate table
+
 # tumor: ['01', '03', '08', '09']
 # normal: ['10', '11', '12', '14']
 
@@ -64,19 +63,6 @@ def  blurb (symbol, description, comment, outf, cursor):
             print >> outf,"%10.2f   %6.2f   %5.2f   %8.2f"   %  (mean, sqrt(variance), skewness, kurtosis),
             print >> outf,"   %5.3f  %5.3f " %  (left, right)
             #print >> outf, comment
-
-    # if we are storing, do that here too
-    if store_in_db:
-        fixed_fields  = {'symbol':symbol}
-        update_fields = {'number_of_points':nobs, 'min':min, 'max':max, 'mean':mean,
-                         'stdev':sqrt(variance), 'skewness':skewness, 'kurtosis':kurtosis, 'normaltest':normaltest}
-
-        ok = store_or_update (cursor, 'rnaseq_distro_description', fixed_fields, update_fields)
-        if not ok:
-            print 'store failure:'
-            print fixed_fields
-            print update_fields
-            exit(1)
 
 
 
@@ -274,15 +260,15 @@ def process_data_set (cursor, db_name, gene_list, outf):
         #scaling[sample_id] = 1.0
         scaling[sample_id] = scaling_factor
 
-    toyset = ['TP53', 'RPL5', 'RPL11', "RPL22", 'WNT11', 'WLS', 'MDM2', 'CDKN2A', 'ACTN', 'ACTB', 'LEP']
+    toyset = [ "RPL22", 'WNT11', 'WLS', 'MDM2', 'CDKN2A', 'ACTN', 'ACTB', 'LEP']
     toyset = [ 'GPR161'] # overexpressed in breast cancer
     toyset = [ 'CDK2'] # overexpressed in COAD (should be, but is not
     toyset = [ 'HIF1A'] # cancers in general
     toyset = ['ERBB2'] # brca
     toyset = ['PTEN'] # brca -loss
     toyset = ['CDKN2A'] # melanoma
-    toyset = sample(gene_list, 100)
-
+    #toyset = sample(gene_list, 100)
+    toyset = ['TP53', 'RPL5', 'RPL11', 'WNT7A', 'MDM2']
 
 
     for symbol in toyset:
@@ -391,7 +377,6 @@ def process_data_set (cursor, db_name, gene_list, outf):
         val_array = val_array[left_cut:right_cut] # note array cut from this point on
         if not val_array: val_array = val_array_orig
 
-        if left_cut < 10: continue
         # for concise description of gamma fn using the nomenclature comparapble to scipy.stats, see
         # http://www.itl.nist.gov/div898/handbook/eda/section3/eda366b.htm
         # the fitting function returns alpha, locus,and beta values
@@ -401,9 +386,9 @@ def process_data_set (cursor, db_name, gene_list, outf):
             title += ", \"normal\""
         else:
             title += ", tumor"
-        ax1.set_title (title)
-        ax1.set_xlabel('RPKM')
-        ax1.set_ylabel('Number of cases (binned)')
+        ax1.set_title (title, fontsize = 24)
+        ax1.set_xlabel('RPKM', fontsize = 22)
+        ax1.set_ylabel('Number of cases (binned)', fontsize = 22)
         x = np.linspace(0, orig_max+1, 100)
 
         orig_max += 1 # the numerics can and will get in trouble otherwise
@@ -457,7 +442,12 @@ def process_data_set (cursor, db_name, gene_list, outf):
         if val_right: ax1.hist(val_right, bins,  normed=False, histtype='stepfilled', alpha=0.2, color='r')
 
         plt.ylim(0, np.amax(histogram)*1.1)
-        plt.show()
+
+        filename = "%s_%s.png" % (db_name, symbol)
+        if filename:
+            plt.savefig(filename)
+        else:
+            plt.show()
 
 
 
@@ -473,7 +463,7 @@ def main():
     #db_names  = ["BRCA"]
     # gene names
     gene_list = []
-    if True:
+    if False:
         switch_to_db(cursor, 'baseline')
         qry = "select distinct approved_symbol from hgnc_id_translation where locus_type = 'gene with protein product' "
         rows = search_db(cursor, qry)

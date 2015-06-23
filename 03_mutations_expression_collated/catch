@@ -1,0 +1,1972 @@
+######################################
+ACC Adrenocortical carcinoma
+rnaseq_rpkm not found
+######################################
+BLCA Bladder Urothelial Carcinoma
+total number of entries in rnaseq_rpkm: 1373701
+total number of entries in somatic_mutations: 165086
+number of samples with mutation   info: 412
+number of samples with expression info: 67
+intersection: 56
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+BT-A20U-01     139        TP53      127.11       2.44    <0.01     Missense_Mutation,p.R273C
+                          RPL5      826.95       1.02    >0.10     none
+                         RPL11     1137.30       0.87    >0.10     none
+                          MDM2       10.27       0.29    >0.10     none
+
+
+BT-A20W-01     160        TP53      146.93       2.82    <0.01     none
+                          RPL5      984.27       1.22    >0.10     none
+                         RPL11     1824.53       1.39    >0.10     none
+                          MDM2        9.40       0.27    >0.10     none
+
+
+BT-A0S7-01      98        TP53      125.28       2.41    <0.01     none
+                          RPL5     2051.09       2.54    <0.05     none
+                         RPL11     2397.84       1.83    >0.10     none
+                          MDM2      151.40       4.34    <0.01     none
+
+
+DK-A1A7-01     328        TP53       57.58       1.11    >0.10     none
+                          RPL5      736.25       0.91    >0.10     none
+                         RPL11     3600.78       2.74    <0.05     none
+                          MDM2      153.67       4.40    <0.01     none
+
+
+G2-A2EK-01     117        TP53       89.34       1.72    <0.01     none
+                          RPL5      799.43       0.99    >0.10     none
+                         RPL11     1458.19       1.11    >0.10     none
+                          MDM2      492.52      14.12    <0.01     none
+
+
+DK-A2I1-01    1231        TP53       12.40       0.24    <0.10     Nonsense_Mutation,p.Q192*
+                          RPL5      851.62       1.06    >0.10     none
+                         RPL11     2913.60       2.22    <0.10     none
+                          MDM2        6.94       0.20    <0.05     none
+
+
+DK-A1A3-01     849        TP53       28.79       0.55    >0.10     Missense_Mutation,p.C242F; Nonsense_Mutation,p.Q192*
+                          RPL5      596.42       0.74    >0.10     none
+                         RPL11     2919.89       2.22    <0.10     none
+                          MDM2        8.35       0.24    >0.10     none
+
+
+DK-A1AC-01    2050        TP53      138.58       2.66    <0.01     Missense_Mutation,p.E271K; Nonsense_Mutation,p.Q375*
+                          RPL5      862.38       1.07    >0.10     none
+                         RPL11     1113.29       0.85    >0.10     none
+                          MDM2        9.27       0.27    >0.10     none
+
+
+BT-A20J-01     678        TP53       56.65       1.09    >0.10     Missense_Mutation,p.E171K; Missense_Mutation,p.W146S
+                          RPL5     2144.10       2.66    <0.05     none
+                         RPL11     1030.41       0.78    >0.10     none
+                          MDM2       16.09       0.46    >0.10     none
+
+
+C4-A0F6-01     298        TP53       59.42       1.14    >0.10     none
+                          RPL5      786.60       0.97    >0.10     none
+                         RPL11     1343.15       1.02    >0.10     none
+                          MDM2      173.21       4.96    <0.01     none
+
+
+DK-A1AE-01     191        TP53      129.02       2.48    <0.01     none
+                          RPL5     1193.71       1.48    >0.10     none
+                         RPL11     1520.59       1.16    >0.10     none
+                          MDM2       18.86       0.54    >0.10     none
+
+
+DK-A2HX-01     186        TP53       27.74       0.53    >0.10     none
+                          RPL5      515.06       0.64    >0.10     none
+                         RPL11      834.70       0.64    >0.10     none
+                          MDM2      103.48       2.97    <0.01     none
+
+
+######################################
+BRCA Breast invasive carcinoma
+total number of entries in rnaseq_rpkm: 18104135
+total number of entries in somatic_mutations: 101181
+number of samples with mutation   info: 990
+number of samples with expression info: 883
+intersection: 768
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+BH-A0E2-01      43        TP53       61.61       1.24    >0.10     none
+                          RPL5      431.43       0.64    >0.10     none
+                         RPL11      881.87       0.91    >0.10     none
+                          MDM2      165.58       9.03    <0.01     none
+
+
+A8-A08X-01      28        TP53      106.04       2.14    <0.01     Missense_Mutation,p.C176F
+                          RPL5      718.60       1.06    >0.10     none
+                         RPL11     1194.64       1.23    >0.10     none
+                          MDM2        6.41       0.35    <0.05     none
+
+
+EW-A1J6-01      68        TP53       57.15       1.15    >0.10     none
+                          RPL5      545.48       0.81    >0.10     none
+                         RPL11      561.84       0.58    >0.10     none
+                          MDM2       37.45       2.04    <0.01     none
+
+
+BH-A1F8-01     168        TP53       51.07       1.03    >0.10     none
+                          RPL5      210.79       0.31    <0.01     none
+                         RPL11      263.48       0.27    <0.01     none
+                          MDM2       38.69       2.11    <0.01     none
+
+
+AN-A0FZ-01      55        TP53       35.07       0.71    >0.10     none
+                          RPL5      456.53       0.68    >0.10     none
+                         RPL11      811.13       0.84    >0.10     none
+                          MDM2       93.36       5.09    <0.01     none
+
+
+A2-A0D3-01      38        TP53      102.53       2.07    <0.01     none
+                          RPL5      836.71       1.24    >0.10     none
+                         RPL11     1286.89       1.33    >0.10     none
+                          MDM2       12.72       0.69    >0.10     none
+
+
+B6-A0I5-01      43        TP53       80.03       1.61    <0.10     none
+                          RPL5     1738.42       2.58    <0.05     none
+                         RPL11     2601.83       2.68    <0.01     none
+                          MDM2        9.27       0.51    >0.10     none
+
+
+AC-A2QH-01      67        TP53      165.72       3.34    <0.01     Missense_Mutation,p.D281Y
+                          RPL5     1009.67       1.50    >0.10     none
+                         RPL11     1540.82       1.59    >0.10     none
+                          MDM2       11.00       0.60    >0.10     none
+
+
+BH-A0E0-01      42        TP53       87.85       1.77    <0.05     Missense_Mutation,p.R175H
+                          RPL5     1399.51       2.07    <0.10     none
+                         RPL11     2209.55       2.28    <0.01     none
+                          MDM2        8.90       0.49    >0.10     none
+
+
+BH-A0BM-01      54        TP53       30.65       0.62    >0.10     none
+                          RPL5     1313.77       1.95    <0.10     none
+                         RPL11     2011.11       2.07    <0.05     none
+                          MDM2       13.53       0.74    >0.10     none
+
+
+E2-A10C-01     417        TP53       47.41       0.96    >0.10     none
+                          RPL5      518.40       0.77    >0.10     none
+                         RPL11      780.04       0.80    >0.10     none
+                          MDM2       56.58       3.09    <0.01     none
+
+
+A1-A0SJ-01      56        TP53       31.43       0.63    >0.10     none
+                          RPL5      429.86       0.64    >0.10     none
+                         RPL11      750.25       0.77    >0.10     none
+                          MDM2      115.81       6.32    <0.01     none
+
+
+BH-A1EW-01      28        TP53       45.54       0.92    >0.10     none
+                          RPL5      315.02       0.47    >0.10     none
+                         RPL11      656.95       0.68    >0.10     none
+                          MDM2      104.12       5.68    <0.01     none
+
+
+E2-A15J-01      32        TP53       85.65       1.73    <0.05     none
+                          RPL5     1346.80       2.00    <0.10     none
+                         RPL11     2089.17       2.15    <0.05     none
+                          MDM2       10.15       0.55    >0.10     none
+
+
+AR-A0TU-01     116        TP53      120.69       2.43    <0.01     none
+                          RPL5     1574.64       2.33    <0.05     none
+                         RPL11     1119.69       1.15    >0.10     none
+                          MDM2        9.33       0.51    >0.10     none
+
+
+A2-A1FV-01      66        TP53       24.55       0.49    >0.10     none
+                          RPL5     1950.50       2.89    <0.05     none
+                         RPL11     1193.48       1.23    >0.10     none
+                          MDM2       20.27       1.11    >0.10     none
+
+
+A2-A0ER-01      51        TP53       26.93       0.54    >0.10     none
+                          RPL5      658.39       0.98    >0.10     none
+                         RPL11      980.81       1.01    >0.10     none
+                          MDM2       40.67       2.22    <0.01     none
+
+
+AN-A0FY-01      76        TP53      112.72       2.27    <0.01     Missense_Mutation,p.V173M
+                          RPL5      749.85       1.11    >0.10     none
+                         RPL11      942.67       0.97    >0.10     none
+                          MDM2       11.17       0.61    >0.10     none
+
+
+B6-A0I2-01      63        TP53       13.49       0.27    <0.10     Frame_Shift_Ins,p.I161fs
+                          RPL5     2176.36       3.22    <0.01     none
+                         RPL11     1703.30       1.76    <0.10     none
+                          MDM2        8.69       0.47    >0.10     none
+
+
+E2-A14W-01     108        TP53       41.61       0.84    >0.10     none
+                          RPL5      686.68       1.02    >0.10     none
+                         RPL11      808.19       0.83    >0.10     none
+                          MDM2       78.26       4.27    <0.01     none
+
+
+AN-A0FK-01      57        TP53      102.32       2.06    <0.01     none
+                          RPL5      343.29       0.51    >0.10     none
+                         RPL11      561.50       0.58    >0.10     none
+                          MDM2       15.10       0.82    >0.10     none
+
+
+B6-A0I6-01     137        TP53       13.86       0.28    <0.10     none
+                          RPL5     1352.50       2.00    <0.10     none
+                         RPL11     1271.92       1.31    >0.10     none
+                          MDM2       12.94       0.71    >0.10     none
+
+
+C8-A1HN-01      55        TP53       49.13       0.99    >0.10     none
+                          RPL5      461.05       0.68    >0.10     none
+                         RPL11      672.77       0.69    >0.10     none
+                          MDM2      338.98      18.49    <0.01     none
+
+
+A2-A0D1-01      82        TP53       17.91       0.36    >0.10     Nonsense_Mutation,p.Q331*
+                          RPL5     1366.51       2.02    <0.10     none
+                         RPL11     2405.02       2.48    <0.01     none
+                          MDM2        5.31       0.29    <0.01     none
+
+
+C8-A12M-01      68        TP53       86.89       1.75    <0.05     none
+                          RPL5      867.90       1.29    >0.10     none
+                         RPL11      829.15       0.85    >0.10     none
+                          MDM2       57.53       3.14    <0.01     none
+
+
+B6-A0IA-01      62        TP53       42.48       0.86    >0.10     none
+                          RPL5     1217.30       1.80    >0.10     none
+                         RPL11     2235.41       2.30    <0.01     none
+                          MDM2       18.17       0.99    >0.10     none
+
+
+AR-A0TR-01      39        TP53       26.51       0.53    >0.10     none
+                          RPL5      914.94       1.36    >0.10     none
+                         RPL11      951.15       0.98    >0.10     none
+                          MDM2       41.88       2.29    <0.01     none
+
+
+BH-A18T-01      82        TP53      130.33       2.63    <0.01     Missense_Mutation,p.Y107D
+                          RPL5      881.87       1.31    >0.10     none
+                         RPL11      927.45       0.96    >0.10     none
+                          MDM2       22.49       1.23    >0.10     none
+
+
+A1-A0SF-01      48        TP53       47.12       0.95    >0.10     none
+                          RPL5      814.74       1.21    >0.10     none
+                         RPL11     2073.79       2.14    <0.05     none
+                          MDM2       13.09       0.71    >0.10     none
+
+
+AR-A24K-01      44        TP53       10.47       0.21    <0.05     Frame_Shift_Ins,p.R110fs
+                          RPL5     1637.20       2.43    <0.05     none
+                         RPL11     1970.19       2.03    <0.05     none
+                          MDM2       18.51       1.01    >0.10     none
+
+
+A2-A0SY-01     154        TP53       43.37       0.87    >0.10     none
+                          RPL5     1343.92       1.99    <0.10     none
+                         RPL11     2010.67       2.07    <0.05     none
+                          MDM2       11.92       0.65    >0.10     none
+
+
+A2-A0CM-01      64        TP53      102.63       2.07    <0.01     Frame_Shift_Del,p.E204fs
+                          RPL5      559.98       0.83    >0.10     none
+                         RPL11      651.87       0.67    >0.10     none
+                          MDM2       13.88       0.76    >0.10     none
+
+
+A8-A06T-01      51        TP53       46.34       0.93    >0.10     none
+                          RPL5      300.08       0.44    <0.10     none
+                         RPL11      560.94       0.58    >0.10     none
+                          MDM2       46.03       2.51    <0.01     none
+
+
+AR-A2LR-01      63        TP53       13.29       0.27    <0.10     Frame_Shift_Del,p.C242fs
+                          RPL5     1149.08       1.70    >0.10     none
+                         RPL11     1663.51       1.71    <0.10     none
+                          MDM2       47.66       2.60    <0.01     none
+
+
+A8-A06Q-01     253        TP53       59.35       1.20    >0.10     Missense_Mutation,p.C238Y
+                          RPL5      878.26       1.30    >0.10     none
+                         RPL11     1023.94       1.06    >0.10     none
+                          MDM2       49.19       2.68    <0.01     none
+
+
+AO-A129-01     102        TP53      131.65       2.65    <0.01     Missense_Mutation,p.R175H
+                          RPL5     1083.61       1.61    >0.10     none
+                         RPL11     1147.24       1.18    >0.10     none
+                          MDM2        7.93       0.43    <0.10     none
+
+
+AO-A03P-01      62        TP53       84.49       1.70    <0.10     none
+                          RPL5      914.09       1.35    >0.10     none
+                         RPL11     1486.00       1.53    >0.10     none
+                          MDM2       45.17       2.46    <0.01     none
+
+
+AO-A03R-01      52        TP53       42.03       0.85    >0.10     Missense_Mutation,p.L265R
+                          RPL5     1063.51       1.58    >0.10     none
+                         RPL11     2029.70       2.09    <0.05     none
+                          MDM2       10.90       0.59    >0.10     none
+
+
+E2-A1LI-01      35        TP53      128.78       2.60    <0.01     none
+                          RPL5     1181.68       1.75    >0.10     none
+                         RPL11     1065.27       1.10    >0.10     none
+                          MDM2       12.87       0.70    >0.10     none
+
+
+B6-A0RG-01      69        TP53       46.64       0.94    >0.10     none
+                          RPL5      408.14       0.60    >0.10     none
+                         RPL11      844.03       0.87    >0.10     none
+                          MDM2       47.25       2.58    <0.01     none
+
+
+AN-A0AK-01    1315        TP53      105.42       2.12    <0.01     none
+                          RPL5      551.35       0.82    >0.10     none
+                         RPL11     1040.21       1.07    >0.10     none
+                          MDM2       25.00       1.36    <0.05     Frame_Shift_Del,p.L321fs
+
+
+AN-A0FJ-01     105        TP53        9.88       0.20    <0.05     Frame_Shift_Ins,p.V157fs; Silent,p.T155
+                          RPL5     1531.35       2.27    <0.05     none
+                         RPL11     1104.12       1.14    >0.10     none
+                          MDM2       13.08       0.71    >0.10     none
+
+
+E9-A244-01     107        TP53      102.00       2.06    <0.01     Missense_Mutation,p.R175H
+                          RPL5     1224.85       1.81    >0.10     none
+                         RPL11     1370.99       1.41    >0.10     none
+                          MDM2       23.43       1.28    <0.10     none
+
+
+A1-A0SB-01      26        TP53      136.36       2.75    <0.01     none
+                          RPL5     2218.27       3.29    <0.01     none
+                         RPL11     2505.44       2.58    <0.01     none
+                          MDM2       18.17       0.99    >0.10     none
+
+
+E2-A14Z-01      79        TP53       59.70       1.20    >0.10     Missense_Mutation,p.R282W
+                          RPL5     2498.12       3.70    <0.01     none
+                         RPL11     1071.40       1.10    >0.10     none
+                          MDM2        8.30       0.45    >0.10     none
+
+
+AR-A24Q-01     179        TP53      164.23       3.31    <0.01     Missense_Mutation,p.R175H
+                          RPL5      633.89       0.94    >0.10     none
+                         RPL11      804.64       0.83    >0.10     none
+                          MDM2       13.22       0.72    >0.10     none
+
+
+A8-A08F-01     140        TP53       32.80       0.66    >0.10     none
+                          RPL5      264.31       0.39    <0.05     none
+                         RPL11      676.58       0.70    >0.10     none
+                          MDM2       63.24       3.45    <0.01     none
+
+
+E9-A1NE-01      45        TP53       29.14       0.59    >0.10     none
+                          RPL5      490.09       0.73    >0.10     none
+                         RPL11      808.62       0.83    >0.10     none
+                          MDM2       49.36       2.69    <0.01     none
+
+
+EW-A1P8-01      63        TP53      127.73       2.57    <0.01     none
+                          RPL5      947.46       1.40    >0.10     none
+                         RPL11      788.83       0.81    >0.10     none
+                          MDM2        6.60       0.36    <0.05     none
+
+
+A2-A1FX-01      24        TP53       65.49       1.32    >0.10     none
+                          RPL5      397.61       0.59    >0.10     none
+                         RPL11      664.36       0.68    >0.10     none
+                          MDM2       36.94       2.02    <0.01     none
+
+
+B6-A0RQ-01      27        TP53       57.90       1.17    >0.10     none
+                          RPL5     1369.28       2.03    <0.10     none
+                         RPL11     1813.59       1.87    <0.05     none
+                          MDM2       16.08       0.88    >0.10     none
+
+
+EW-A1P4-01      78        TP53      125.52       2.53    <0.01     Missense_Mutation,p.H179R
+                          RPL5      566.76       0.84    >0.10     none
+                         RPL11      930.67       0.96    >0.10     none
+                          MDM2        7.13       0.39    <0.05     none
+
+
+A2-A04U-01      65        TP53        8.54       0.17    <0.05     Frame_Shift_Del,p.G108fs; Missense_Mutation,p.Y107C
+                          RPL5     2019.20       2.99    <0.01     none
+                         RPL11     2689.09       2.77    <0.01     none
+                          MDM2       12.33       0.67    >0.10     none
+
+
+A2-A259-01      40        TP53      114.86       2.31    <0.01     none
+                          RPL5      702.19       1.04    >0.10     none
+                         RPL11     1220.87       1.26    >0.10     none
+                          MDM2       19.84       1.08    >0.10     none
+
+
+B6-A0WX-01      49        TP53      180.44       3.64    <0.01     Missense_Mutation,p.R248W; Nonsense_Mutation,p.L114*
+                          RPL5     1526.73       2.26    <0.05     none
+                         RPL11     1049.01       1.08    >0.10     none
+                          MDM2       18.45       1.01    >0.10     none
+
+
+AQ-A04J-01      66        TP53      100.47       2.02    <0.01     Missense_Mutation,p.L111P
+                          RPL5      830.56       1.23    >0.10     none
+                         RPL11      917.94       0.95    >0.10     none
+                          MDM2       10.65       0.58    >0.10     none
+
+
+AO-A126-01      29        TP53       40.96       0.83    >0.10     none
+                          RPL5     1752.62       2.60    <0.05     none
+                         RPL11     2220.94       2.29    <0.01     none
+                          MDM2       12.96       0.71    >0.10     none
+
+
+E9-A22G-01     127        TP53       12.17       0.25    <0.05     Frame_Shift_Ins,p.E270fs
+                          RPL5      887.57       1.31    >0.10     none
+                         RPL11     2128.81       2.19    <0.05     none
+                          MDM2       21.32       1.16    >0.10     none
+
+
+BH-A1F5-01      44        TP53       67.28       1.36    >0.10     none
+                          RPL5      419.55       0.62    >0.10     none
+                         RPL11      396.23       0.41    <0.10     none
+                          MDM2       47.03       2.57    <0.01     none
+
+
+AQ-A04L-01      79        TP53       28.43       0.57    >0.10     Missense_Mutation,p.H193R
+                          RPL5     1602.96       2.37    <0.05     none
+                         RPL11     2491.19       2.57    <0.01     none
+                          MDM2       12.34       0.67    >0.10     none
+
+
+B6-A0IQ-01      76        TP53       20.78       0.42    >0.10     Nonsense_Mutation,p.R213*
+                          RPL5     1528.97       2.27    <0.05     none
+                         RPL11     2172.87       2.24    <0.01     none
+                          MDM2        8.33       0.45    >0.10     none
+
+
+AN-A0AM-01      69        TP53       56.52       1.14    >0.10     none
+                          RPL5      522.38       0.77    >0.10     none
+                         RPL11     1131.80       1.17    >0.10     none
+                          MDM2      159.63       8.71    <0.01     none
+
+
+AR-A1AH-01     108        TP53       10.06       0.20    <0.05     Frame_Shift_Del,p.G108fs
+                          RPL5     2548.48       3.78    <0.01     none
+                         RPL11      882.69       0.91    >0.10     none
+                          MDM2       17.08       0.93    >0.10     none
+
+
+B6-A0X0-01      29        TP53      137.72       2.78    <0.01     none
+                          RPL5     1169.99       1.73    >0.10     none
+                         RPL11     2110.73       2.18    <0.05     none
+                          MDM2        9.52       0.52    >0.10     none
+
+
+A1-A0SK-01     189        TP53      202.50       4.08    <0.01     Missense_Mutation,p.M133K
+                          RPL5     1054.60       1.56    >0.10     none
+                         RPL11     1603.66       1.65    <0.10     none
+                          MDM2       15.48       0.84    >0.10     none
+
+
+A2-A0EX-01      35        TP53       45.87       0.92    >0.10     none
+                          RPL5     1514.09       2.24    <0.05     none
+                         RPL11     2128.60       2.19    <0.05     none
+                          MDM2       12.95       0.71    >0.10     none
+
+
+A2-A0T5-01    1574        TP53      101.45       2.04    <0.01     none
+                          RPL5     1405.35       2.08    <0.10     none
+                         RPL11     1973.26       2.03    <0.05     none
+                          MDM2        9.25       0.50    >0.10     none
+
+
+E9-A1R3-01      41        TP53       64.68       1.30    >0.10     none
+                          RPL5      564.03       0.84    >0.10     none
+                         RPL11      770.24       0.79    >0.10     none
+                          MDM2       66.84       3.65    <0.01     none
+
+
+A8-A090-01      45        TP53       21.96       0.44    >0.10     none
+                          RPL5      286.33       0.42    <0.10     none
+                         RPL11      443.10       0.46    >0.10     none
+                          MDM2       42.59       2.32    <0.01     none
+
+
+B6-A0IJ-01     158        TP53      115.86       2.33    <0.01     Missense_Mutation,p.Y220C
+                          RPL5     1263.20       1.87    <0.10     none
+                         RPL11     1218.02       1.26    >0.10     none
+                          MDM2       27.74       1.51    <0.05     none
+
+
+A8-A07O-01      53        TP53       13.87       0.28    <0.10     Splice_Site,e3+1
+                          RPL5     1472.39       2.18    <0.05     none
+                         RPL11     1580.46       1.63    <0.10     none
+                          MDM2       15.07       0.82    >0.10     none
+
+
+C8-A27B-01     171        TP53      137.87       2.78    <0.01     Missense_Mutation,p.H193R
+                          RPL5     1093.67       1.62    >0.10     none
+                         RPL11      579.22       0.60    >0.10     none
+                          MDM2       18.34       1.00    >0.10     none
+
+
+B6-A0WV-01      46        TP53       52.02       1.05    >0.10     none
+                          RPL5      391.93       0.58    >0.10     none
+                         RPL11      659.56       0.68    >0.10     none
+                          MDM2       38.94       2.12    <0.01     none
+
+
+BH-A204-01      53        TP53      151.43       3.05    <0.01     none
+                          RPL5      741.41       1.10    >0.10     none
+                         RPL11      401.19       0.41    <0.10     none
+                          MDM2       20.37       1.11    >0.10     none
+
+
+AO-A1KP-01      35        TP53      115.24       2.32    <0.01     none
+                          RPL5      532.55       0.79    >0.10     none
+                         RPL11      599.58       0.62    >0.10     none
+                          MDM2       18.14       0.99    >0.10     none
+
+
+BH-A0HW-01      64        TP53       38.34       0.77    >0.10     none
+                          RPL5      630.37       0.93    >0.10     none
+                         RPL11      741.10       0.76    >0.10     none
+                          MDM2       37.07       2.02    <0.01     none
+
+
+A2-A04T-01      93        TP53      120.71       2.43    <0.01     Missense_Mutation,p.R273H; Missense_Mutation,p.D208G
+                          RPL5     1358.54       2.01    <0.10     none
+                         RPL11     1469.42       1.51    >0.10     none
+                          MDM2       25.39       1.39    <0.05     none
+
+
+A2-A25D-01      71        TP53       31.03       0.63    >0.10     none
+                          RPL5     1340.62       1.99    <0.10     none
+                         RPL11     2426.23       2.50    <0.01     none
+                          MDM2        9.93       0.54    >0.10     none
+
+
+C8-A12U-01      61        TP53       85.46       1.72    <0.05     none
+                          RPL5      513.63       0.76    >0.10     none
+                         RPL11      802.37       0.83    >0.10     none
+                          MDM2       74.86       4.08    <0.01     none
+
+
+AO-A0J9-01     146        TP53       86.93       1.75    <0.05     none
+                          RPL5     1792.72       2.66    <0.05     none
+                         RPL11     1784.70       1.84    <0.05     none
+                          MDM2       14.42       0.79    >0.10     none
+
+
+E2-A1B6-01      17        TP53       47.47       0.96    >0.10     Nonsense_Mutation,p.R342*
+                          RPL5      826.09       1.22    >0.10     none
+                         RPL11     2141.51       2.21    <0.05     none
+                          MDM2        9.72       0.53    >0.10     none
+
+
+AR-A251-01     186        TP53      132.17       2.66    <0.01     Missense_Mutation,p.E285K
+                          RPL5      545.45       0.81    >0.10     none
+                         RPL11      790.17       0.81    >0.10     none
+                          MDM2       15.42       0.84    >0.10     none
+
+
+E9-A1NA-01     107        TP53       35.81       0.72    >0.10     none
+                          RPL5     1408.94       2.09    <0.10     none
+                         RPL11      763.92       0.79    >0.10     none
+                          MDM2       26.43       1.44    <0.05     none
+
+
+BH-A0B1-01      76        TP53       32.13       0.65    >0.10     none
+                          RPL5      410.86       0.61    >0.10     none
+                         RPL11      548.68       0.57    >0.10     none
+                          MDM2       66.64       3.64    <0.01     none
+
+
+E2-A158-01      96        TP53       68.77       1.39    >0.10     Missense_Mutation,p.I195T
+                          RPL5     2649.32       3.92    <0.01     none
+                         RPL11     2558.79       2.64    <0.01     none
+                          MDM2       13.79       0.75    >0.10     Missense_Mutation,p.V2L
+
+
+E9-A1N8-01      53        TP53       15.09       0.30    <0.10     Frame_Shift_Ins,p.T256fs
+                          RPL5     1496.30       2.22    <0.05     none
+                         RPL11     1812.26       1.87    <0.05     none
+                          MDM2       11.29       0.62    >0.10     none
+
+
+BH-A1FM-01      66        TP53       56.94       1.15    >0.10     none
+                          RPL5      509.58       0.75    >0.10     none
+                         RPL11      470.31       0.48    >0.10     none
+                          MDM2       47.65       2.60    <0.01     none
+
+
+AR-A0U0-01      70        TP53       99.78       2.01    <0.01     Missense_Mutation,p.L194R
+                          RPL5      355.40       0.53    >0.10     none
+                         RPL11      619.86       0.64    >0.10     none
+                          MDM2       10.83       0.59    >0.10     none
+
+
+AO-A1KR-01      84        TP53      104.81       2.11    <0.01     none
+                          RPL5     1258.95       1.87    >0.10     none
+                         RPL11     4272.81       4.40    <0.01     none
+                          MDM2        7.09       0.39    <0.05     none
+
+
+BH-A18G-01    1517        TP53       99.10       2.00    <0.01     none
+                          RPL5     1420.08       2.10    <0.10     none
+                         RPL11     2036.90       2.10    <0.05     none
+                          MDM2       18.12       0.99    >0.10     none
+
+
+AR-A24L-01      62        TP53       31.28       0.63    >0.10     none
+                          RPL5      441.63       0.65    >0.10     none
+                         RPL11      403.92       0.42    <0.10     none
+                          MDM2       37.73       2.06    <0.01     none
+
+
+E2-A14R-01     171        TP53       99.85       2.01    <0.01     Missense_Mutation,p.I195T
+                          RPL5     1912.50       2.83    <0.05     none
+                         RPL11     1838.26       1.89    <0.05     none
+                          MDM2       13.74       0.75    >0.10     none
+
+
+BH-A0AV-01      79        TP53      112.76       2.27    <0.01     Missense_Mutation,p.R248Q
+                          RPL5      886.67       1.31    >0.10     none
+                         RPL11      769.83       0.79    >0.10     none
+                          MDM2        8.80       0.48    >0.10     none
+
+
+C8-A1HO-01      39        TP53       43.77       0.88    >0.10     none
+                          RPL5      628.72       0.93    >0.10     none
+                         RPL11     1029.03       1.06    >0.10     none
+                          MDM2       81.71       4.46    <0.01     none
+
+
+BH-A0E6-01      62        TP53       14.82       0.30    <0.10     Frame_Shift_Ins,p.N238fs
+                          RPL5     1703.36       2.52    <0.05     none
+                         RPL11     1734.91       1.79    <0.10     none
+                          MDM2        9.43       0.51    >0.10     none
+
+
+A1-A0SO-01     290        TP53      130.79       2.64    <0.01     Missense_Mutation,p.Y220C
+                          RPL5      482.83       0.72    >0.10     none
+                         RPL11      454.35       0.47    >0.10     none
+                          MDM2        9.01       0.49    >0.10     none
+
+
+BH-A0HK-01     142        TP53       38.88       0.78    >0.10     none
+                          RPL5     1543.06       2.29    <0.05     none
+                         RPL11     2902.79       2.99    <0.01     none
+                          MDM2        9.71       0.53    >0.10     none
+
+
+A2-A25E-01      76        TP53       40.59       0.82    >0.10     none
+                          RPL5      489.34       0.72    >0.10     none
+                         RPL11      664.69       0.69    >0.10     none
+                          MDM2       63.65       3.47    <0.01     none
+
+
+D8-A147-01     148        TP53      107.29       2.16    <0.01     Missense_Mutation,p.C176F
+                          RPL5      963.81       1.43    >0.10     none
+                         RPL11      742.68       0.77    >0.10     none
+                          MDM2       14.02       0.77    >0.10     none
+
+
+E2-A1B5-01      26        TP53       54.52       1.10    >0.10     none
+                          RPL5     1323.24       1.96    <0.10     none
+                         RPL11     2342.20       2.41    <0.01     none
+                          MDM2       21.61       1.18    >0.10     none
+
+
+C8-A26Z-01      58        TP53       29.36       0.59    >0.10     none
+                          RPL5      291.56       0.43    <0.10     none
+                         RPL11      642.99       0.66    >0.10     none
+                          MDM2       38.91       2.12    <0.01     none
+
+
+A2-A0SX-01      45        TP53      138.60       2.79    <0.01     Missense_Mutation,p.G199V
+                          RPL5      724.50       1.07    >0.10     none
+                         RPL11     1607.89       1.66    <0.10     none
+                          MDM2       11.13       0.61    >0.10     none
+
+
+A2-A04V-01      71        TP53       50.52       1.02    >0.10     none
+                          RPL5     1509.43       2.24    <0.05     none
+                         RPL11     2145.18       2.21    <0.05     none
+                          MDM2       13.39       0.73    >0.10     none
+
+
+A8-A09D-01      55        TP53       73.71       1.49    >0.10     none
+                          RPL5      375.92       0.56    >0.10     none
+                         RPL11      983.39       1.01    >0.10     none
+                          MDM2       85.47       4.66    <0.01     none
+
+
+A2-A0CV-01      35        TP53       43.23       0.87    >0.10     none
+                          RPL5     1151.33       1.71    >0.10     none
+                         RPL11     2015.48       2.08    <0.05     none
+                          MDM2       16.81       0.92    >0.10     none
+
+
+AN-A0AS-01      52        TP53       50.25       1.01    >0.10     In_Frame_Del,p.R110in_frame_del
+                          RPL5     1816.74       2.69    <0.05     none
+                         RPL11     1728.87       1.78    <0.10     none
+                          MDM2       19.70       1.07    >0.10     none
+
+
+C8-A1HJ-01     136        TP53       13.72       0.28    <0.10     Nonsense_Mutation,p.R196*
+                          RPL5     1543.38       2.29    <0.05     none
+                         RPL11      778.26       0.80    >0.10     none
+                          MDM2        9.30       0.51    >0.10     none
+
+
+A2-A0CP-01      97        TP53       79.86       1.61    <0.10     none
+                          RPL5     1149.85       1.70    >0.10     none
+                         RPL11     2090.17       2.15    <0.05     none
+                          MDM2       11.63       0.63    >0.10     none
+
+
+BH-A1FG-01      34        TP53       30.72       0.62    >0.10     none
+                          RPL5      466.25       0.69    >0.10     none
+                         RPL11      959.55       0.99    >0.10     none
+                          MDM2       37.00       2.02    <0.01     none
+
+
+A2-A0D0-01      96        TP53        9.37       0.19    <0.05     Nonsense_Mutation,p.R196*
+                          RPL5     1743.93       2.58    <0.05     none
+                         RPL11     2534.87       2.61    <0.01     none
+                          MDM2        9.29       0.51    >0.10     none
+
+
+E2-A1LS-01     104        TP53       53.65       1.08    >0.10     Missense_Mutation,p.E286K
+                          RPL5     1044.59       1.55    >0.10     none
+                         RPL11     2387.91       2.46    <0.01     none
+                          MDM2       15.97       0.87    >0.10     none
+
+
+A7-A0CD-01      41        TP53       32.18       0.65    >0.10     none
+                          RPL5      609.49       0.90    >0.10     none
+                         RPL11      944.77       0.97    >0.10     none
+                          MDM2       42.67       2.33    <0.01     none
+
+
+AO-A1KO-01      49        TP53       69.96       1.41    >0.10     none
+                          RPL5     1731.94       2.57    <0.05     none
+                         RPL11     1963.67       2.02    <0.05     none
+                          MDM2       17.70       0.97    >0.10     none
+
+
+E2-A15O-01      52        TP53      151.82       3.06    <0.01     none
+                          RPL5      480.58       0.71    >0.10     none
+                         RPL11      442.87       0.46    >0.10     none
+                          MDM2       22.66       1.24    >0.10     none
+
+
+A8-A0A7-01     104        TP53       38.18       0.77    >0.10     none
+                          RPL5      549.38       0.81    >0.10     none
+                         RPL11     1134.78       1.17    >0.10     none
+                          MDM2       77.24       4.21    <0.01     none
+
+
+######################################
+CESC Cervical squamous cell carcinoma and endocervical adenocarcinoma
+rnaseq_rpkm not found
+######################################
+CHOL Cholangiocarcinoma
+rnaseq_rpkm not found
+######################################
+COAD Colon adenocarcinoma
+total number of entries in rnaseq_rpkm: 3936575
+total number of entries in somatic_mutations: 125504
+number of samples with mutation   info: 270
+number of samples with expression info: 192
+intersection: 63
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+CM-5341-01     167        TP53       41.38       0.62    <0.10     Missense_Mutation,p.R248Q; Missense_Mutation,p.R158H
+                          RPL5     3691.90       3.78    <0.01     none
+                         RPL11     2305.53       2.38    <0.05     none
+                          MDM2        6.21       0.74    >0.10     none
+
+
+CM-4746-01     863        TP53       95.62       1.43    >0.10     Missense_Mutation,p.R248Q
+                          RPL5     1409.22       1.44    <0.10     none
+                         RPL11     2051.10       2.12    <0.05     none
+                          MDM2        3.04       0.36    <0.10     none
+
+
+AA-3560-01      59        TP53       18.63       0.28    <0.01     Frame_Shift_Del,p.212_212del
+                          RPL5     2252.27       2.31    <0.01     none
+                         RPL11     2297.14       2.37    <0.05     none
+                          MDM2        3.40       0.41    >0.10     none
+
+
+AA-3542-01     200        TP53       48.77       0.73    >0.10     none
+                          RPL5     2255.53       2.31    <0.01     none
+                         RPL11     1705.18       1.76    <0.10     none
+                          MDM2        1.98       0.24    <0.01     none
+
+
+AA-A00J-01    1055        TP53       79.02       1.18    >0.10     none
+                          RPL5      868.45       0.89    >0.10     none
+                         RPL11     1401.43       1.45    >0.10     none
+                          MDM2       23.18       2.77    <0.01     none
+
+
+AA-3516-01     923        TP53       81.70       1.22    >0.10     none
+                          RPL5      840.79       0.86    >0.10     none
+                         RPL11      802.09       0.83    >0.10     none
+                          MDM2       16.77       2.01    <0.01     none
+
+
+AA-3531-01      73        TP53      149.39       2.24    <0.01     Missense_Mutation,p.C238Y
+                          RPL5     1100.38       1.13    >0.10     none
+                         RPL11      481.25       0.50    <0.10     none
+                          MDM2        2.85       0.34    <0.10     none
+
+
+AA-3527-01      90        TP53      137.53       2.06    <0.01     none
+                          RPL5     1098.26       1.12    >0.10     none
+                         RPL11      858.43       0.89    >0.10     none
+                          MDM2        3.24       0.39    >0.10     none
+
+
+######################################
+ESCA Esophageal carcinoma
+rnaseq_rpkm not found
+######################################
+GBM Glioblastoma multiforme
+rnaseq_rpkm not found
+######################################
+HNSC Head and Neck squamous cell carcinoma
+total number of entries in rnaseq_rpkm: 6027882
+total number of entries in somatic_mutations: 144312
+number of samples with mutation   info: 526
+number of samples with expression info: 294
+intersection: 261
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+CR-6472-01     614        TP53        8.76       0.21    <0.01     none
+                          RPL5      833.20       1.57    <0.10     none
+                         RPL11     1228.70       1.59    >0.10     none
+                          MDM2       24.42       2.05    <0.10     none
+
+
+CV-5442-01     399        TP53       38.79       0.93    >0.10     none
+                          RPL5     1165.17       2.19    <0.01     none
+                         RPL11     1655.08       2.14    <0.05     none
+                          MDM2        9.88       0.83    >0.10     none
+
+
+CV-6962-01     234        TP53      104.92       2.51    >0.10     Missense_Mutation,p.H193R
+                          RPL5      918.87       1.73    <0.05     none
+                         RPL11     1319.60       1.70    <0.10     none
+                          MDM2       15.80       1.32    >0.10     none
+
+
+CV-7414-01     392        TP53      125.53       3.01    <0.10     Missense_Mutation,p.E285K
+                          RPL5      215.31       0.41    <0.01     none
+                         RPL11      610.24       0.79    >0.10     none
+                          MDM2        8.81       0.74    >0.10     none
+
+
+CV-5973-01     110        TP53       34.75       0.83    >0.10     Missense_Mutation,p.R282W
+                          RPL5     1073.57       2.02    <0.01     none
+                         RPL11     2165.98       2.80    <0.01     none
+                          MDM2        7.26       0.61    >0.10     none
+
+
+CR-6480-01     186        TP53       89.56       2.15    >0.10     none
+                          RPL5      233.53       0.44    <0.05     none
+                         RPL11      340.63       0.44    <0.05     none
+                          MDM2       41.02       3.44    <0.05     none
+
+
+CR-7402-01    1424        TP53      107.57       2.58    >0.10     Missense_Mutation,p.R267P
+                          RPL5      434.46       0.82    >0.10     none
+                         RPL11      508.28       0.66    >0.10     none
+                          MDM2       10.34       0.87    >0.10     Missense_Mutation,p.G18R
+
+
+CN-4730-01     255        TP53        2.92       0.07    <0.01     none
+                          RPL5     1205.43       2.27    <0.01     none
+                         RPL11     1721.24       2.22    <0.05     none
+                          MDM2        7.79       0.65    >0.10     none
+
+
+CV-7418-01     273        TP53       87.50       2.10    >0.10     Missense_Mutation,p.R249S
+                          RPL5      331.17       0.62    >0.10     none
+                         RPL11      468.66       0.60    >0.10     none
+                          MDM2       15.59       1.31    >0.10     none
+
+
+CV-7430-01     298        TP53       60.36       1.45    >0.10     Missense_Mutation,p.Y126C
+                          RPL5      760.97       1.43    >0.10     none
+                         RPL11      523.45       0.68    >0.10     none
+                          MDM2       23.89       2.00    <0.10     none
+
+
+CN-4728-01     233        TP53       23.53       0.56    <0.10     Frame_Shift_Del,p.P58fs
+                          RPL5      394.26       0.74    >0.10     none
+                         RPL11      730.47       0.94    >0.10     none
+                          MDM2       38.51       3.23    <0.05     none
+
+
+CR-6478-01     199        TP53       45.98       1.10    >0.10     Missense_Mutation,p.H179R
+                          RPL5      298.09       0.56    >0.10     none
+                         RPL11      775.19       1.00    >0.10     none
+                          MDM2       26.51       2.22    <0.10     none
+
+
+BA-5555-01     226        TP53      105.81       2.54    >0.10     Missense_Mutation,p.Y236C
+                          RPL5      413.18       0.78    >0.10     none
+                         RPL11      511.85       0.66    >0.10     none
+                          MDM2        8.51       0.71    >0.10     none
+
+
+BB-4228-01     105        TP53      127.04       3.04    <0.10     none
+                          RPL5      985.46       1.85    <0.05     none
+                         RPL11      823.51       1.06    >0.10     none
+                          MDM2       16.75       1.40    >0.10     none
+
+
+DQ-7592-01     136        TP53       32.27       0.77    >0.10     Missense_Mutation,p.Y236D
+                          RPL5      391.18       0.74    >0.10     none
+                         RPL11      455.41       0.59    >0.10     none
+                          MDM2       25.80       2.16    <0.10     none
+
+
+CR-6470-01      74        TP53      121.66       2.92    <0.10     none
+                          RPL5      466.21       0.88    >0.10     none
+                         RPL11      666.20       0.86    >0.10     none
+                          MDM2       25.56       2.14    <0.10     none
+
+
+CN-6018-01     160        TP53      101.60       2.43    >0.10     Missense_Mutation,p.R248W
+                          RPL5      338.87       0.64    >0.10     none
+                         RPL11      565.86       0.73    >0.10     none
+                          MDM2        8.55       0.72    >0.10     none
+
+
+BB-4223-01     429        TP53      105.27       2.52    >0.10     none
+                          RPL5      709.97       1.34    >0.10     none
+                         RPL11      829.36       1.07    >0.10     none
+                          MDM2       18.67       1.56    >0.10     none
+
+
+CR-6467-01      94        TP53      135.64       3.25    <0.10     none
+                          RPL5      452.83       0.85    >0.10     none
+                         RPL11      681.55       0.88    >0.10     none
+                          MDM2       20.74       1.74    >0.10     none
+
+
+CV-7406-01     353        TP53       49.93       1.20    >0.10     none
+                          RPL5      475.15       0.89    >0.10     none
+                         RPL11     1014.34       1.31    >0.10     none
+                          MDM2       28.35       2.37    <0.10     none
+
+
+CQ-6221-01     179        TP53      100.65       2.41    >0.10     Missense_Mutation,p.V272M
+                          RPL5      520.34       0.98    >0.10     none
+                         RPL11      458.77       0.59    >0.10     none
+                          MDM2       14.73       1.23    >0.10     none
+
+
+CN-5374-01     278        TP53       64.21       1.54    >0.10     none
+                          RPL5     1098.11       2.07    <0.01     none
+                         RPL11     1749.21       2.26    <0.05     none
+                          MDM2       27.35       2.29    <0.10     none
+
+
+CR-5243-01     126        TP53      123.45       2.96    <0.10     none
+                          RPL5      309.70       0.58    >0.10     none
+                         RPL11      535.94       0.69    >0.10     none
+                          MDM2       25.54       2.14    <0.10     none
+
+
+BA-5559-01     140        TP53      100.71       2.41    >0.10     none
+                          RPL5      376.08       0.71    >0.10     none
+                         RPL11      471.32       0.61    >0.10     none
+                          MDM2       21.00       1.76    >0.10     none
+
+
+CN-6023-01     167        TP53       68.71       1.65    >0.10     Missense_Mutation,p.G245S
+                          RPL5      372.41       0.70    >0.10     none
+                         RPL11      554.53       0.72    >0.10     none
+                          MDM2       25.37       2.12    <0.10     none
+
+
+BA-5153-01     107        TP53      121.15       2.90    <0.10     none
+                          RPL5      321.64       0.61    >0.10     none
+                         RPL11      382.61       0.49    <0.05     none
+                          MDM2       19.78       1.66    >0.10     none
+
+
+CV-7100-01      56        TP53       96.54       2.31    >0.10     none
+                          RPL5      526.88       0.99    >0.10     none
+                         RPL11      772.73       1.00    >0.10     none
+                          MDM2       11.86       0.99    >0.10     none
+
+
+BA-4074-01     250        TP53       44.83       1.07    >0.10     Missense_Mutation,p.E258D
+                          RPL5     1639.01       3.08    <0.01     none
+                         RPL11      949.09       1.23    >0.10     none
+                          MDM2       15.22       1.27    >0.10     none
+
+
+CV-7253-01     287        TP53       15.32       0.37    <0.01     Missense_Mutation,p.E271V
+                          RPL5     1065.25       2.00    <0.01     none
+                         RPL11     1479.14       1.91    <0.05     none
+                          MDM2        8.95       0.75    >0.10     none
+
+
+BA-4075-01     299        TP53       10.22       0.24    <0.01     Splice_Site,p.A307_splice
+                          RPL5     1560.05       2.94    <0.01     none
+                         RPL11      884.12       1.14    >0.10     none
+                          MDM2        6.56       0.55    >0.10     Missense_Mutation,p.I446V
+
+
+CV-6935-01     361        TP53      102.06       2.45    >0.10     Missense_Mutation,p.C242S
+                          RPL5      495.51       0.93    >0.10     none
+                         RPL11      715.55       0.92    >0.10     none
+                          MDM2       11.01       0.92    >0.10     none
+
+
+CV-6948-01     300        TP53       23.65       0.57    <0.10     Splice_Site,p.A307_splice; Frame_Shift_Del,p.G302fs
+                          RPL5      847.81       1.60    <0.05     none
+                         RPL11     1078.43       1.39    >0.10     none
+                          MDM2       25.46       2.13    <0.10     none
+
+
+HD-7832-01     181        TP53      101.20       2.43    >0.10     none
+                          RPL5      385.31       0.73    >0.10     none
+                         RPL11      714.30       0.92    >0.10     none
+                          MDM2       10.25       0.86    >0.10     none
+
+
+CV-7438-01     216        TP53       12.25       0.29    <0.01     Nonsense_Mutation,p.R213*
+                          RPL5      587.94       1.11    >0.10     none
+                         RPL11      918.08       1.19    >0.10     none
+                          MDM2       80.65       6.75    <0.01     none
+
+
+CR-7368-01     339        TP53      100.75       2.41    >0.10     Missense_Mutation,p.R248Q
+                          RPL5      257.32       0.48    <0.05     none
+                         RPL11      471.67       0.61    >0.10     none
+                          MDM2       13.02       1.09    >0.10     none
+
+
+CV-6441-01     341        TP53       25.87       0.62    >0.10     none
+                          RPL5     1289.68       2.43    <0.01     none
+                         RPL11     2080.47       2.69    <0.01     none
+                          MDM2       13.46       1.13    >0.10     none
+
+
+CR-7383-01     241        TP53       17.87       0.43    <0.01     Splice_Site,p.Q331_splice
+                          RPL5      619.41       1.17    >0.10     none
+                         RPL11     1221.27       1.58    >0.10     none
+                          MDM2       31.76       2.66    <0.05     none
+
+
+CR-7399-01     447        TP53       84.40       2.02    >0.10     Missense_Mutation,p.P278S; Missense_Mutation,p.R213L
+                          RPL5      476.89       0.90    >0.10     none
+                         RPL11      959.26       1.24    >0.10     none
+                          MDM2        9.99       0.84    >0.10     none
+
+
+HD-7754-01     128        TP53       78.39       1.88    >0.10     none
+                          RPL5      280.92       0.53    <0.10     none
+                         RPL11      321.95       0.42    <0.01     none
+                          MDM2       31.57       2.64    <0.05     none
+
+
+CV-6436-01     120        TP53       43.88       1.05    >0.10     Missense_Mutation,p.R273H
+                          RPL5     1389.50       2.61    <0.01     none
+                         RPL11     3119.46       4.03    <0.01     none
+                          MDM2        7.96       0.67    >0.10     none
+
+
+BB-4225-01     145        TP53      139.08       3.33    <0.05     none
+                          RPL5      569.73       1.07    >0.10     none
+                         RPL11      650.40       0.84    >0.10     none
+                          MDM2       14.89       1.25    >0.10     none
+
+
+DQ-7588-01     178        TP53        2.01       0.05    <0.01     Frame_Shift_Del,p.H178fs
+                          RPL5     1147.61       2.16    <0.01     none
+                         RPL11     1728.47       2.23    <0.05     none
+                          MDM2        4.60       0.38    <0.01     Silent,missing
+
+
+CR-5250-01     132        TP53      100.84       2.42    >0.10     none
+                          RPL5      480.31       0.90    >0.10     none
+                         RPL11      573.19       0.74    >0.10     none
+                          MDM2       20.05       1.68    >0.10     none
+
+
+CR-6487-01     202        TP53      164.01       3.93    <0.05     none
+                          RPL5      576.23       1.08    >0.10     none
+                         RPL11      830.62       1.07    >0.10     none
+                          MDM2       14.75       1.24    >0.10     none
+
+
+######################################
+KICH Kidney Chromophobe
+rnaseq_rpkm not found
+######################################
+KIRC Kidney renal clear cell carcinoma
+total number of entries in rnaseq_rpkm: 11092102
+total number of entries in somatic_mutations: 57488
+number of samples with mutation   info: 456
+number of samples with expression info: 539
+intersection: 430
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+BP-4761-01      89        TP53       49.71       1.75    <0.01     none
+                          RPL5      853.38       1.20    >0.10     none
+                         RPL11     1844.15       2.00    <0.05     none
+                          MDM2       39.65       2.21    <0.01     none
+
+
+CZ-5465-01     173        TP53       24.44       0.86    >0.10     none
+                          RPL5     1436.03       2.02    <0.01     none
+                         RPL11     1888.48       2.05    <0.05     none
+                          MDM2       21.68       1.21    >0.10     none
+
+
+BP-4988-01      93        TP53       30.43       1.07    >0.10     none
+                          RPL5      675.29       0.95    >0.10     none
+                         RPL11     1135.79       1.23    >0.10     none
+                          MDM2       42.94       2.40    <0.01     none
+
+
+AK-3458-01      63        TP53       17.56       0.62    <0.10     none
+                          RPL5     2673.93       3.75    <0.01     none
+                         RPL11     1545.69       1.68    <0.10     none
+                          MDM2       21.87       1.22    >0.10     none
+
+
+B0-4813-01      67        TP53       22.01       0.77    >0.10     none
+                          RPL5      856.66       1.20    >0.10     none
+                         RPL11     1908.43       2.07    <0.05     none
+                          MDM2       14.87       0.83    >0.10     none
+
+
+B8-4146-01      76        TP53       14.64       0.51    <0.01     none
+                          RPL5      668.10       0.94    >0.10     none
+                         RPL11      445.12       0.48    <0.05     none
+                          MDM2       42.59       2.38    <0.01     none
+
+
+B0-5100-01      66        TP53       48.75       1.71    <0.01     none
+                          RPL5     1459.22       2.05    <0.01     none
+                         RPL11     1645.24       1.79    <0.05     none
+                          MDM2        6.94       0.39    <0.05     none
+
+
+BP-4770-01     185        TP53       12.62       0.44    <0.01     Splice_Site,p.S261_splice
+                          RPL5     1270.33       1.78    <0.01     none
+                         RPL11     1955.10       2.12    <0.05     none
+                          MDM2        7.77       0.43    <0.05     none
+
+
+B0-4842-01      75        TP53       59.94       2.11    <0.01     none
+                          RPL5      617.33       0.87    >0.10     none
+                         RPL11     1225.90       1.33    >0.10     none
+                          MDM2       17.89       1.00    >0.10     none
+
+
+AK-3451-01     159        TP53       15.58       0.55    <0.05     none
+                          RPL5     1572.46       2.21    <0.01     none
+                         RPL11     1265.07       1.37    >0.10     none
+                          MDM2       14.11       0.79    >0.10     none
+
+
+BP-5169-01      94        TP53       29.04       1.02    >0.10     none
+                          RPL5     1308.95       1.84    <0.01     none
+                         RPL11     1909.97       2.07    <0.05     none
+                          MDM2       17.44       0.97    >0.10     none
+
+
+AK-3428-01      79        TP53       30.34       1.07    >0.10     none
+                          RPL5     1697.02       2.38    <0.01     none
+                         RPL11     1248.53       1.36    >0.10     none
+                          MDM2       27.39       1.53    <0.05     none
+
+
+BP-5170-01      90        TP53       29.04       1.02    >0.10     none
+                          RPL5     1308.95       1.84    <0.01     none
+                         RPL11     1909.97       2.07    <0.05     none
+                          MDM2       17.44       0.97    >0.10     none
+
+
+B8-4154-01     111        TP53       21.17       0.74    >0.10     none
+                          RPL5     2052.52       2.88    <0.01     none
+                         RPL11     1264.19       1.37    >0.10     none
+                          MDM2       16.95       0.95    >0.10     none
+
+
+B0-5084-01      69        TP53       68.04       2.39    <0.01     none
+                          RPL5     1294.25       1.82    <0.01     none
+                         RPL11     1661.23       1.80    <0.05     none
+                          MDM2       16.39       0.91    >0.10     none
+
+
+CZ-5989-01      68        TP53       19.29       0.68    >0.10     none
+                          RPL5      797.86       1.12    >0.10     none
+                         RPL11      480.20       0.52    <0.10     none
+                          MDM2       88.71       4.95    <0.01     none
+
+
+BP-4759-01     113        TP53       30.59       1.08    >0.10     none
+                          RPL5      901.46       1.27    >0.10     none
+                         RPL11     1849.90       2.01    <0.05     none
+                          MDM2       11.78       0.66    >0.10     none
+
+
+BP-4964-01     125        TP53       26.58       0.93    >0.10     none
+                          RPL5      909.40       1.28    >0.10     none
+                         RPL11     1152.36       1.25    >0.10     none
+                          MDM2       39.34       2.20    <0.01     none
+
+
+CZ-5986-01      89        TP53       27.16       0.95    >0.10     none
+                          RPL5      960.34       1.35    >0.10     none
+                         RPL11     1074.41       1.17    >0.10     none
+                          MDM2       47.77       2.67    <0.01     none
+
+
+A3-3319-01     693        TP53       29.98       1.05    >0.10     Missense_Mutation,p.G245D
+                          RPL5      455.18       0.64    >0.10     none
+                         RPL11      796.60       0.86    >0.10     none
+                          MDM2       39.11       2.18    <0.01     none
+
+
+B2-4099-01     197        TP53       32.72       1.15    >0.10     none
+                          RPL5     1661.33       2.33    <0.01     none
+                         RPL11      835.24       0.91    >0.10     none
+                          MDM2       15.52       0.87    >0.10     none
+
+
+CW-6090-01     141        TP53       32.10       1.13    >0.10     none
+                          RPL5     1440.80       2.02    <0.01     none
+                         RPL11     2252.84       2.45    <0.01     none
+                          MDM2       25.82       1.44    <0.10     none
+
+
+AK-3427-01     645        TP53       18.16       0.64    <0.10     none
+                          RPL5     1791.27       2.51    <0.01     none
+                         RPL11      606.43       0.66    >0.10     none
+                          MDM2       10.20       0.57    >0.10     Frame_Shift_Ins,p.N211fs
+
+
+BP-4799-01      26        TP53       28.25       0.99    >0.10     none
+                          RPL5      743.22       1.04    >0.10     none
+                         RPL11      944.47       1.03    >0.10     none
+                          MDM2       35.90       2.00    <0.01     none
+
+
+B4-5832-01     111        TP53       17.27       0.61    <0.05     none
+                          RPL5      688.98       0.97    >0.10     none
+                         RPL11      276.70       0.30    <0.01     none
+                          MDM2      104.66       5.84    <0.01     none
+
+
+BP-4329-01      52        TP53       23.49       0.83    >0.10     none
+                          RPL5     1121.39       1.57    <0.05     none
+                         RPL11     2127.51       2.31    <0.01     none
+                          MDM2       11.35       0.63    >0.10     none
+
+
+AK-3436-01     105        TP53       16.32       0.57    <0.05     none
+                          RPL5     1570.07       2.20    <0.01     none
+                         RPL11     1788.32       1.94    <0.05     none
+                          MDM2       17.99       1.00    >0.10     none
+
+
+######################################
+KIRP Kidney renal papillary cell carcinoma
+total number of entries in rnaseq_rpkm: 328047
+total number of entries in somatic_mutations: 31624
+number of samples with mutation   info: 169
+number of samples with expression info: 16
+intersection: 15
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+B3-4104-01     225        TP53       66.90       1.76       na     Nonsense_Mutation,p.W91*
+                          RPL5      924.10       1.52       na     none
+                         RPL11     1375.87       2.17       na     none
+                          MDM2       35.05       1.79       na     none
+
+
+######################################
+LAML Acute Myeloid Leukemia
+rnaseq_rpkm not found
+######################################
+LGG Brain Lower Grade Glioma
+rnaseq_rpkm not found
+######################################
+LIHC Liver hepatocellular carcinoma
+total number of entries in rnaseq_rpkm: 533078
+total number of entries in somatic_mutations: 87510
+number of samples with mutation   info: 202
+number of samples with expression info: 26
+intersection: 16
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+BC-A10Z-01     434        TP53        8.55       0.46       na     none
+                          RPL5      324.20       0.74       na     none
+                         RPL11      425.40       0.73       na     none
+                          MDM2       25.31       2.08       na     none
+
+
+BC-A112-01     857        TP53       29.69       1.60       na     none
+                          RPL5      995.37       2.27       na     Missense_Mutation,missing
+                         RPL11      751.82       1.29       na     none
+                          MDM2       10.60       0.87       na     none
+
+
+DD-A11B-01     305        TP53       28.19       1.52       na     none
+                          RPL5      138.20       0.31       na     none
+                         RPL11      218.38       0.38       na     none
+                          MDM2       35.35       2.91       na     none
+
+
+######################################
+LUAD Lung adenocarcinoma
+total number of entries in rnaseq_rpkm: 3341989
+total number of entries in somatic_mutations: 227995
+number of samples with mutation   info: 546
+number of samples with expression info: 163
+intersection: 125
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+50-6597-01      95        TP53       82.32       2.13    <0.05     none
+                          RPL5      584.11       0.69    >0.10     none
+                         RPL11     1879.64       1.93    <0.10     none
+                          MDM2      124.73       6.44    <0.01     none
+
+
+64-1680-01     304        TP53       42.31       1.09    >0.10     none
+                          RPL5     2061.46       2.44    <0.05     none
+                         RPL11     1404.38       1.44    >0.10     none
+                          MDM2       12.15       0.63    >0.10     none
+
+
+50-5935-01     153        TP53       79.77       2.06    <0.05     none
+                          RPL5      511.38       0.61    >0.10     none
+                         RPL11      874.18       0.90    >0.10     none
+                          MDM2       12.10       0.63    >0.10     none
+
+
+95-7043-01    1354        TP53      124.19       3.21    <0.01     Missense_Mutation,p.R158L
+                          RPL5      511.61       0.61    >0.10     none
+                         RPL11      935.39       0.96    >0.10     none
+                          MDM2        6.18       0.32    <0.05     none
+
+
+55-6982-01     305        TP53       26.16       0.68    >0.10     none
+                          RPL5      317.00       0.38    <0.05     none
+                         RPL11      601.34       0.62    >0.10     none
+                          MDM2       89.48       4.62    <0.01     none
+
+
+44-5645-01      76        TP53       54.81       1.42    >0.10     Nonsense_Mutation,p.Q354*
+                          RPL5      652.27       0.77    >0.10     none
+                         RPL11     1077.74       1.10    >0.10     none
+                          MDM2       45.07       2.33    <0.01     none
+
+
+55-6986-01      33        TP53       83.94       2.17    <0.05     none
+                          RPL5     1145.74       1.36    >0.10     none
+                         RPL11     1473.18       1.51    >0.10     none
+                          MDM2       29.35       1.52    <0.10     none
+
+
+05-4422-01      74        TP53       84.40       2.18    <0.05     none
+                          RPL5      456.13       0.54    >0.10     none
+                         RPL11      497.39       0.51    <0.10     none
+                          MDM2       15.34       0.79    >0.10     none
+
+
+35-3615-01     437        TP53       66.04       1.71    <0.10     none
+                          RPL5     2167.66       2.57    <0.05     none
+                         RPL11     1900.61       1.95    <0.10     none
+                          MDM2       16.60       0.86    >0.10     Frame_Shift_Ins,p.N211fs
+
+
+49-4488-01     393        TP53       10.89       0.28    <0.10     Splice_Site,p.T125_splice
+                          RPL5     3468.81       4.11    <0.01     none
+                         RPL11      841.91       0.86    >0.10     none
+                          MDM2       14.27       0.74    >0.10     none
+
+
+35-4123-01     375        TP53       11.24       0.29    >0.10     Nonsense_Mutation,p.W146*
+                          RPL5     1861.39       2.21    <0.05     none
+                         RPL11      902.19       0.92    >0.10     none
+                          MDM2        7.64       0.39    >0.10     none
+
+
+64-1676-01    1032        TP53        9.17       0.24    <0.10     Frame_Shift_Del,p.C229fs
+                          RPL5     1757.39       2.08    <0.05     none
+                         RPL11     1424.78       1.46    >0.10     none
+                          MDM2        8.17       0.42    >0.10     Frame_Shift_Ins,p.N211fs
+
+
+55-6984-01      36        TP53       37.10       0.96    >0.10     none
+                          RPL5      728.57       0.86    >0.10     none
+                         RPL11     1044.03       1.07    >0.10     none
+                          MDM2       74.91       3.87    <0.01     none
+
+
+75-5122-01     203        TP53       49.61       1.28    >0.10     none
+                          RPL5      590.73       0.70    >0.10     none
+                         RPL11      671.43       0.69    >0.10     none
+                          MDM2       62.07       3.21    <0.01     none
+
+
+64-1678-01     720        TP53       10.68       0.28    <0.10     Splice_Site,p.E224_splice; Frame_Shift_Del,p.V143fs
+                          RPL5     3636.68       4.31    <0.01     none
+                         RPL11     2949.22       3.02    <0.01     none
+                          MDM2       11.27       0.58    >0.10     none
+
+
+05-4418-01     352        TP53       26.11       0.67    >0.10     none
+                          RPL5      894.38       1.06    >0.10     none
+                         RPL11      921.02       0.94    >0.10     none
+                          MDM2       52.52       2.71    <0.01     none
+
+
+49-6744-01     335        TP53       33.80       0.87    >0.10     none
+                          RPL5      579.76       0.69    >0.10     none
+                         RPL11     1161.36       1.19    >0.10     none
+                          MDM2       40.56       2.10    <0.05     none
+
+
+50-5942-01     104        TP53       52.64       1.36    >0.10     none
+                          RPL5     1443.80       1.71    <0.10     none
+                         RPL11     2449.38       2.51    <0.05     none
+                          MDM2       11.81       0.61    >0.10     none
+
+
+05-4420-01     390        TP53       30.77       0.79    >0.10     Missense_Mutation,p.R280I
+                          RPL5     1741.81       2.06    <0.05     none
+                         RPL11      889.98       0.91    >0.10     none
+                          MDM2       12.08       0.62    >0.10     none
+
+
+49-4514-01     409        TP53      127.47       3.29    <0.01     Missense_Mutation,p.R175H
+                          RPL5      837.43       0.99    >0.10     none
+                         RPL11     1427.42       1.46    >0.10     none
+                          MDM2       12.68       0.66    >0.10     none
+
+
+05-5428-01     490        TP53       29.65       0.77    >0.10     Missense_Mutation,p.C238Y
+                          RPL5     4949.26       5.86    <0.01     none
+                         RPL11     2407.99       2.47    <0.05     none
+                          MDM2        6.72       0.35    <0.10     none
+
+
+91-6831-01     376        TP53       60.47       1.56    >0.10     Missense_Mutation,p.G334V
+                          RPL5      615.99       0.73    >0.10     none
+                         RPL11      840.52       0.86    >0.10     none
+                          MDM2      215.55      11.13    <0.01     none
+
+
+49-6745-01     184        TP53       48.96       1.26    >0.10     none
+                          RPL5      594.31       0.70    >0.10     none
+                         RPL11      820.28       0.84    >0.10     none
+                          MDM2       92.05       4.75    <0.01     none
+
+
+67-3773-01     185        TP53       23.86       0.62    >0.10     none
+                          RPL5     2433.64       2.88    <0.01     none
+                         RPL11     1445.84       1.48    >0.10     none
+                          MDM2       17.53       0.91    >0.10     none
+
+
+######################################
+LUSC Lung squamous cell carcinoma
+total number of entries in rnaseq_rpkm: 4920720
+total number of entries in somatic_mutations: 69673
+number of samples with mutation   info: 178
+number of samples with expression info: 239
+intersection: 178
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+33-4538-01     236        TP53      116.17       2.38    <0.01     Missense_Mutation,p.H214R
+                          RPL5      508.04       0.63    >0.10     none
+                         RPL11      512.50       0.66    >0.10     none
+                          MDM2       16.10       1.11    >0.10     none
+
+
+66-2755-01     254        TP53      150.20       3.08    <0.01     Missense_Mutation,p.R273P
+                          RPL5      675.72       0.84    >0.10     none
+                         RPL11      679.88       0.88    >0.10     none
+                          MDM2       12.79       0.88    >0.10     none
+
+
+18-3421-01     634        TP53       53.75       1.10    >0.10     Missense_Mutation,p.V172G
+                          RPL5     2084.96       2.59    <0.05     none
+                         RPL11      952.40       1.23    >0.10     none
+                          MDM2       14.80       1.02    >0.10     none
+
+
+56-6546-01     406        TP53       69.98       1.43    <0.05     Missense_Mutation,p.H179Y
+                          RPL5      968.33       1.20    >0.10     none
+                         RPL11     1591.20       2.05    <0.10     none
+                          MDM2       17.43       1.20    >0.10     none
+
+
+22-5480-01     187        TP53      138.90       2.85    <0.01     Missense_Mutation,p.R110L
+                          RPL5     1732.13       2.15    <0.10     none
+                         RPL11     2000.72       2.58    <0.05     none
+                          MDM2       10.42       0.72    >0.10     none
+
+
+33-4532-01     471        TP53      122.17       2.50    <0.01     Missense_Mutation,p.M237I
+                          RPL5     1125.61       1.40    >0.10     none
+                         RPL11     1036.00       1.33    >0.10     none
+                          MDM2       12.58       0.86    >0.10     none
+
+
+33-6737-01     527        TP53       27.78       0.57    <0.05     Missense_Mutation,p.T284P; Missense_Mutation,p.L111Q
+                          RPL5     1321.68       1.64    >0.10     none
+                         RPL11     1827.48       2.35    <0.05     none
+                          MDM2       15.79       1.08    >0.10     none
+
+
+34-5234-01     231        TP53       15.32       0.31    <0.01     none
+                          RPL5     3036.92       3.77    <0.01     none
+                         RPL11     1552.33       2.00    <0.10     none
+                          MDM2       14.03       0.96    >0.10     none
+
+
+56-1622-01     257        TP53       94.84       1.94    <0.01     Missense_Mutation,p.R337L
+                          RPL5      303.07       0.38    <0.01     none
+                         RPL11      411.38       0.53    >0.10     none
+                          MDM2       29.99       2.06    <0.05     none
+
+
+22-5477-01     215        TP53       79.56       1.63    <0.01     Missense_Mutation,p.V157F
+                          RPL5      455.96       0.57    >0.10     none
+                         RPL11      442.32       0.57    >0.10     none
+                          MDM2       42.92       2.95    <0.01     none
+
+
+21-5787-01     491        TP53       47.06       0.96    >0.10     Missense_Mutation,p.C176Y
+                          RPL5     1647.49       2.04    <0.10     none
+                         RPL11     1568.57       2.02    <0.10     none
+                          MDM2       10.14       0.70    >0.10     none
+
+
+33-4583-01     647        TP53      136.45       2.80    <0.01     Missense_Mutation,p.R249W; Missense_Mutation,p.R158L
+                          RPL5      632.31       0.78    >0.10     none
+                         RPL11      878.84       1.13    >0.10     none
+                          MDM2       13.21       0.91    >0.10     none
+
+
+43-6771-01     239        TP53       56.11       1.15    >0.10     none
+                          RPL5      811.85       1.01    >0.10     none
+                         RPL11     1537.68       1.98    <0.10     none
+                          MDM2       33.85       2.33    <0.01     none
+
+
+34-5929-01     245        TP53      201.35       4.13    <0.01     Missense_Mutation,p.R282W
+                          RPL5      568.49       0.70    >0.10     none
+                         RPL11     1153.19       1.48    >0.10     none
+                          MDM2       15.64       1.07    >0.10     none
+
+
+85-6175-01      82        TP53       63.25       1.30    >0.10     none
+                          RPL5      591.88       0.73    >0.10     none
+                         RPL11      773.84       1.00    >0.10     none
+                          MDM2       35.65       2.45    <0.01     none
+
+
+66-2757-01     301        TP53      114.63       2.35    <0.01     Missense_Mutation,p.L111R
+                          RPL5      974.95       1.21    >0.10     none
+                         RPL11      638.78       0.82    >0.10     none
+                          MDM2       12.03       0.83    >0.10     none
+
+
+18-3406-01     408        TP53       32.28       0.66    <0.05     Missense_Mutation,p.V216E
+                          RPL5     1811.96       2.25    <0.10     none
+                         RPL11     1202.17       1.55    >0.10     none
+                          MDM2       15.38       1.06    >0.10     none
+
+
+33-4582-01     248        TP53       23.79       0.49    <0.01     Missense_Mutation,p.P278S
+                          RPL5      810.43       1.00    >0.10     none
+                         RPL11      966.72       1.24    >0.10     none
+                          MDM2       30.86       2.12    <0.01     Missense_Mutation,p.C447S
+
+
+37-4135-01     346        TP53       10.18       0.21    <0.01     Nonsense_Mutation,p.E68*
+                          RPL5     3021.32       3.75    <0.01     none
+                         RPL11      997.59       1.28    >0.10     none
+                          MDM2       10.64       0.73    >0.10     none
+
+
+18-5595-01     290        TP53      156.21       3.20    <0.01     none
+                          RPL5      895.43       1.11    >0.10     none
+                         RPL11     1086.07       1.40    >0.10     none
+                          MDM2       19.57       1.34    >0.10     none
+
+
+22-5485-01     251        TP53      159.10       3.26    <0.01     In_Frame_Ins,p.162_163insI
+                          RPL5      472.11       0.59    >0.10     none
+                         RPL11      636.61       0.82    >0.10     none
+                          MDM2       12.71       0.87    >0.10     none
+
+
+43-3920-01     544        TP53       43.91       0.90    >0.10     Missense_Mutation,p.H193L
+                          RPL5     1754.07       2.17    <0.10     none
+                         RPL11      557.18       0.72    >0.10     none
+                          MDM2       19.17       1.32    >0.10     none
+
+
+21-1078-01      94        TP53      107.47       2.20    <0.01     none
+                          RPL5     1361.03       1.69    >0.10     none
+                         RPL11     1272.69       1.64    >0.10     none
+                          MDM2       13.00       0.89    >0.10     none
+
+
+18-5592-01     344        TP53      108.62       2.23    <0.01     Missense_Mutation,p.H179L
+                          RPL5      487.68       0.60    >0.10     none
+                         RPL11      587.68       0.76    >0.10     none
+                          MDM2        5.81       0.40    <0.01     none
+
+
+66-2793-01     367        TP53      105.84       2.17    <0.01     Missense_Mutation,p.H179L
+                          RPL5     1006.01       1.25    >0.10     Missense_Mutation,p.T154I
+                         RPL11      449.40       0.58    >0.10     none
+                          MDM2       16.91       1.16    >0.10     none
+
+
+66-2794-01     184        TP53      132.26       2.71    <0.01     Missense_Mutation,p.P278R
+                          RPL5      564.96       0.70    >0.10     none
+                         RPL11      467.72       0.60    >0.10     none
+                          MDM2       16.98       1.17    >0.10     none
+
+
+60-2723-01     323        TP53       13.13       0.27    <0.01     Splice_Site,p.E224_splice
+                          RPL5      960.37       1.19    >0.10     none
+                         RPL11      789.77       1.02    >0.10     none
+                          MDM2       56.68       3.89    <0.01     none
+
+
+34-5241-01       5        TP53       11.78       0.24    <0.01     none
+                          RPL5     1036.44       1.29    >0.10     none
+                         RPL11      888.96       1.14    >0.10     none
+                          MDM2       67.99       4.67    <0.01     none
+
+
+51-4081-01     237        TP53      108.46       2.22    <0.01     Missense_Mutation,p.R273L; Missense_Mutation,p.G154V
+                          RPL5      407.16       0.50    >0.10     none
+                         RPL11      456.38       0.59    >0.10     none
+                          MDM2       13.37       0.92    >0.10     none
+
+
+18-3410-01     492        TP53      141.66       2.90    <0.01     Missense_Mutation,p.R213G
+                          RPL5      785.09       0.97    >0.10     none
+                         RPL11      416.79       0.54    >0.10     none
+                          MDM2       31.44       2.16    <0.01     none
+
+
+43-6770-01     269        TP53      111.98       2.30    <0.01     Missense_Mutation,p.Y205C
+                          RPL5      690.07       0.86    >0.10     none
+                         RPL11      627.33       0.81    >0.10     none
+                          MDM2       15.53       1.07    >0.10     none
+
+
+######################################
+OV Ovarian serous cystadenocarcinoma
+rnaseq_rpkm not found
+######################################
+PAAD Pancreatic adenocarcinoma
+rnaseq_rpkm not found
+######################################
+PCPG Pheochromocytoma and Paraganglioma
+rnaseq_rpkm not found
+######################################
+PRAD Prostate adenocarcinoma
+rnaseq_rpkm not found
+######################################
+REA Rectum adenocarcinoma
+total number of entries in rnaseq_rpkm: 1476216
+total number of entries in somatic_mutations: 34259
+number of samples with mutation   info: 116
+number of samples with expression info: 72
+intersection: 34
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+AG-3583-01      60        TP53      131.67       1.73    <0.05     none
+                          RPL5     2067.37       2.11    <0.01     none
+                         RPL11      616.80       0.64    >0.10     none
+                          MDM2        9.45       1.51    >0.10     none
+
+
+AG-A015-01      64        TP53      109.98       1.44    >0.10     none
+                          RPL5     1079.13       1.10    >0.10     none
+                         RPL11     1788.73       1.85    <0.10     none
+                          MDM2       17.54       2.81    <0.01     none
+
+
+AG-3586-01      71        TP53       79.18       1.04    >0.10     none
+                          RPL5     1276.77       1.30    >0.10     none
+                         RPL11     1273.32       1.32    >0.10     Silent,p.I173I
+                          MDM2       13.40       2.15    <0.05     none
+
+
+AG-3574-01      43        TP53       73.55       0.96    >0.10     none
+                          RPL5     1439.59       1.47    <0.05     none
+                         RPL11     1468.12       1.52    >0.10     none
+                          MDM2       20.09       3.22    <0.01     none
+
+
+AG-3602-01      46        TP53       26.89       0.35    >0.10     Missense_Mutation,p.G154C
+                          RPL5     3011.77       3.07    <0.01     none
+                         RPL11     1606.41       1.66    >0.10     none
+                          MDM2        3.19       0.51    >0.10     none
+
+
+AG-A016-01      58        TP53      155.00       2.03    <0.01     Missense_Mutation,p.R175H
+                          RPL5      737.81       0.75    >0.10     none
+                         RPL11      994.58       1.03    >0.10     none
+                          MDM2        3.93       0.63    >0.10     none
+
+
+AG-3605-01      60        TP53       73.60       0.96    >0.10     none
+                          RPL5     2434.93       2.48    <0.01     none
+                         RPL11     1512.62       1.56    >0.10     none
+                          MDM2        5.57       0.89    >0.10     none
+
+
+AG-3575-01      50        TP53       28.44       0.37    >0.10     Missense_Mutation,p.L194H
+                          RPL5     1828.72       1.86    <0.01     none
+                         RPL11      949.26       0.98    >0.10     none
+                          MDM2       15.90       2.55    <0.01     none
+
+
+AG-A002-01    7210        TP53       66.71       0.87    >0.10     none
+                          RPL5      584.61       0.60    <0.05     none
+                         RPL11      808.18       0.84    >0.10     Missense_Mutation,p.F166L
+                          MDM2       14.34       2.30    <0.05     none
+
+
+AG-A00C-01      67        TP53       58.61       0.77    >0.10     none
+                          RPL5     1141.56       1.16    >0.10     none
+                         RPL11     2149.64       2.22    <0.05     none
+                          MDM2        4.24       0.68    >0.10     none
+
+
+######################################
+SARC Sarcoma
+rnaseq_rpkm not found
+######################################
+SKCM Skin Cutaneous Melanoma
+rnaseq_rpkm not found
+######################################
+STAD Stomach adenocarcinoma
+rnaseq_rpkm not found
+######################################
+TGCT Testicular Germ Cell Tumors
+rnaseq_rpkm not found
+######################################
+THCA Thyroid carcinoma
+rnaseq_rpkm not found
+######################################
+THYM Thymoma
+rnaseq_rpkm not found
+######################################
+UCEC Uterine Corpus Endometrial Carcinoma
+total number of entries in rnaseq_rpkm: 6970939
+total number of entries in somatic_mutations: 211732
+number of samples with mutation   info: 248
+number of samples with expression info: 340
+intersection: 241
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+BS-A0UJ-01    2032        TP53      106.84       1.25    >0.10     none
+                          RPL5     1250.61       1.46    >0.10     none
+                         RPL11     2489.08       2.08    <0.05     none
+                          MDM2        8.71       0.76    >0.10     Missense_Mutation,p.D385G; Silent,p.E398
+
+
+A5-A0GE-01      73        TP53      127.28       1.49    >0.10     none
+                          RPL5     1690.56       1.97    <0.10     none
+                         RPL11     1945.50       1.63    >0.10     none
+                          MDM2       23.21       2.02    >0.10     none
+
+
+BG-A0W1-01     131        TP53       63.44       0.74    >0.10     none
+                          RPL5      950.22       1.11    >0.10     none
+                         RPL11     1393.76       1.17    >0.10     none
+                          MDM2       34.18       2.98    <0.05     none
+
+
+A5-A0VP-01    1645        TP53       49.40       0.58    >0.10     none
+                          RPL5      376.77       0.44    <0.10     none
+                         RPL11      512.85       0.43    <0.10     none
+                          MDM2       27.07       2.36    <0.10     none
+
+
+A5-A0RA-01     119        TP53      100.57       1.18    >0.10     none
+                          RPL5      832.29       0.97    >0.10     none
+                         RPL11     1396.00       1.17    >0.10     none
+                          MDM2       29.19       2.54    <0.05     none
+
+
+D1-A16O-01     112        TP53       65.63       0.77    >0.10     none
+                          RPL5      888.71       1.04    >0.10     none
+                         RPL11     1603.11       1.34    >0.10     none
+                          MDM2       26.82       2.34    <0.10     none
+
+
+BG-A0W2-01     100        TP53       85.17       1.00    >0.10     none
+                          RPL5     1768.33       2.06    <0.05     none
+                         RPL11     1580.81       1.32    >0.10     none
+                          MDM2       12.00       1.05    >0.10     none
+
+
+A5-A0R9-01     114        TP53       86.44       1.01    >0.10     none
+                          RPL5     2126.34       2.48    <0.05     none
+                         RPL11     2291.75       1.92    <0.05     none
+                          MDM2        9.28       0.81    >0.10     none
+
+
+BS-A0WQ-01      82        TP53       93.61       1.10    >0.10     none
+                          RPL5     1883.53       2.20    <0.05     none
+                         RPL11     2201.77       1.84    <0.10     none
+                          MDM2       12.39       1.08    >0.10     none
+
+
+AP-A0LQ-01      99        TP53       86.37       1.01    >0.10     none
+                          RPL5     1543.00       1.80    <0.10     none
+                         RPL11     1687.60       1.41    >0.10     none
+                          MDM2       46.61       4.06    <0.01     none
+
+
+BS-A0V6-01     120        TP53       76.99       0.90    >0.10     none
+                          RPL5      887.26       1.03    >0.10     none
+                         RPL11     1561.20       1.31    >0.10     none
+                          MDM2       32.32       2.82    <0.05     none
+
+
+DI-A0WH-01    1848        TP53      114.60       1.34    >0.10     none
+                          RPL5     2240.50       2.61    <0.01     none
+                         RPL11     3562.11       2.98    <0.01     none
+                          MDM2        5.51       0.48    >0.10     none
+
+
+BG-A0M2-01      81        TP53       44.66       0.52    <0.10     none
+                          RPL5      997.15       1.16    >0.10     none
+                         RPL11     1319.46       1.10    >0.10     none
+                          MDM2       52.82       4.60    <0.01     none
+
+
+D1-A16E-01     112        TP53       77.09       0.90    >0.10     none
+                          RPL5      520.23       0.61    >0.10     none
+                         RPL11      947.28       0.79    >0.10     none
+                          MDM2       24.69       2.15    <0.10     none
+
+
+B5-A11O-01     382        TP53       84.33       0.99    >0.10     none
+                          RPL5      716.23       0.83    >0.10     none
+                         RPL11     1031.03       0.86    >0.10     none
+                          MDM2       23.68       2.06    <0.10     none
+
+
+AP-A0LF-01     367        TP53      188.96       2.21    <0.01     Missense_Mutation,p.R273S
+                          RPL5      694.22       0.81    >0.10     none
+                         RPL11     1000.75       0.84    >0.10     none
+                          MDM2        6.93       0.60    >0.10     none
+
+
+B5-A11W-01      81        TP53       69.96       0.82    >0.10     none
+                          RPL5      607.83       0.71    >0.10     none
+                         RPL11     1213.26       1.01    >0.10     none
+                          MDM2       28.51       2.48    <0.05     none
+
+
+BG-A0VT-01      93        TP53       95.39       1.12    >0.10     none
+                          RPL5     1766.14       2.06    <0.05     none
+                         RPL11     2506.95       2.10    <0.05     none
+                          MDM2        8.79       0.77    >0.10     none
+
+
+B5-A121-01      37        TP53       90.12       1.06    >0.10     none
+                          RPL5     1015.09       1.18    >0.10     none
+                         RPL11     1279.18       1.07    >0.10     none
+                          MDM2       26.34       2.29    <0.10     none
+
+
+B5-A11J-01     454        TP53       80.75       0.95    >0.10     Missense_Mutation,p.G244S
+                          RPL5      844.67       0.98    >0.10     none
+                         RPL11     1259.65       1.05    >0.10     none
+                          MDM2       28.41       2.47    <0.05     none
+
+
+AP-A0LO-01      87        TP53      126.32       1.48    >0.10     none
+                          RPL5     2488.50       2.90    <0.01     none
+                         RPL11     3269.74       2.73    <0.01     none
+                          MDM2        6.66       0.58    >0.10     none
+
+
+B5-A1MU-01      59        TP53      260.73       3.05    <0.01     Missense_Mutation,p.H193P
+                          RPL5      501.13       0.58    >0.10     none
+                         RPL11      720.55       0.60    >0.10     none
+                          MDM2        6.61       0.58    >0.10     none
+
+
+D1-A0ZR-01     139        TP53       46.16       0.54    >0.10     none
+                          RPL5      407.58       0.48    <0.10     none
+                         RPL11      619.88       0.52    >0.10     none
+                          MDM2       24.39       2.12    <0.10     none
+
+
+D1-A17A-01     425        TP53      107.49       1.26    >0.10     none
+                          RPL5      611.10       0.71    >0.10     none
+                         RPL11     1192.21       1.00    >0.10     none
+                          MDM2       23.52       2.05    <0.10     Missense_Mutation,p.S413N
+
+
+AP-A0LN-01      99        TP53      108.26       1.27    >0.10     none
+                          RPL5     1741.37       2.03    <0.05     none
+                         RPL11     2224.04       1.86    <0.10     none
+                          MDM2        7.51       0.65    >0.10     none
+
+
+BK-A0CA-01      83        TP53       94.17       1.10    >0.10     none
+                          RPL5      865.35       1.01    >0.10     none
+                         RPL11     1150.83       0.96    >0.10     none
+                          MDM2       29.08       2.53    <0.05     none
+
+
+D1-A0ZS-01     610        TP53      191.40       2.24    <0.01     none
+                          RPL5      826.41       0.96    >0.10     none
+                         RPL11      969.36       0.81    >0.10     none
+                          MDM2       14.37       1.25    >0.10     none
+
+
+D1-A0ZQ-01     120        TP53       68.42       0.80    >0.10     none
+                          RPL5      732.60       0.85    >0.10     none
+                         RPL11      616.61       0.52    >0.10     none
+                          MDM2       26.83       2.34    <0.10     none
+
+
+D1-A167-01    1998        TP53      180.59       2.12    <0.01     none
+                          RPL5      939.91       1.10    >0.10     none
+                         RPL11      883.09       0.74    >0.10     Silent,p.D171
+                          MDM2       12.13       1.06    >0.10     none
+
+
+######################################
+UCS Uterine Carcinosarcoma
+rnaseq_rpkm not found
+######################################
+UVM Uveal Melanoma
+rnaseq_rpkm not found

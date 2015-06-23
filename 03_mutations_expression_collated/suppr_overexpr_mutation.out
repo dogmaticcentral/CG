@@ -1,0 +1,907 @@
+######################################
+ACC Adrenocortical carcinoma
+rnaseq_rpkm not found
+######################################
+BLCA Bladder Urothelial Carcinoma
+total number of entries in rnaseq_rpkm: 1373701
+total number of entries in somatic_mutations: 165086
+number of samples with mutation   info: 412
+number of samples with expression info: 67
+intersection: 56
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+=======================================================================
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 overexpressed)
+RPL5 fisher:  0.80  8.05e-01
+
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 overexpressed)
+RPL5 fisher:  1.25  6.98e-01
+
+fisher.test(matrix(c(1, 30, 1, 24),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 suppressed)
+RPL5 fisher:   inf  5.54e-01
+
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 suppressed)
+RPL5 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(1, 30, 0, 25),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 overexpressed)
+RPL11 fisher:   inf  5.54e-01
+
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 overexpressed)
+RPL11 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(1, 30, 0, 25),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 suppressed)
+RPL11 fisher:  0.80  8.05e-01
+
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 suppressed)
+RPL11 fisher:  1.25  6.98e-01
+
+fisher.test(matrix(c(1, 30, 1, 24),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 overexpressed)
+MDM2 fisher:   inf  1.13e-02
+
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 overexpressed)
+MDM2 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(7, 24, 0, 25),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 suppressed)
+MDM2 fisher:  0.38  9.17e-01
+
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 suppressed)
+MDM2 fisher:  2.61  4.18e-01
+
+fisher.test(matrix(c(1, 30, 2, 23),nrow=2,ncol=2),alternative="greater")
+
+
+######################################
+BRCA Breast invasive carcinoma
+total number of entries in rnaseq_rpkm: 18104135
+total number of entries in somatic_mutations: 101181
+number of samples with mutation   info: 990
+number of samples with expression info: 883
+intersection: 768
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+=======================================================================
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 overexpressed)
+RPL5 fisher:  0.32  9.99e-01
+
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 overexpressed)
+RPL5 fisher:  3.11  3.64e-03
+
+fisher.test(matrix(c(11, 505, 16, 236),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 suppressed)
+RPL5 fisher:  2.37  8.02e-02
+
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 suppressed)
+RPL5 fisher:  0.42  9.72e-01
+
+fisher.test(matrix(c(19, 497, 4, 248),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 overexpressed)
+RPL11 fisher:  0.68  9.27e-01
+
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 overexpressed)
+RPL11 fisher:  1.47  1.23e-01
+
+fisher.test(matrix(c(30, 486, 21, 231),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 suppressed)
+RPL11 fisher:  1.35  4.20e-01
+
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 suppressed)
+RPL11 fisher:  0.74  7.81e-01
+
+fisher.test(matrix(c(11, 505, 4, 248),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 overexpressed)
+MDM2 fisher:  5.53  1.95e-09
+
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 overexpressed)
+MDM2 fisher:  0.18  1.00e+00
+
+fisher.test(matrix(c(96, 420, 10, 242),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 suppressed)
+MDM2 fisher:  0.25  9.99e-01
+
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 suppressed)
+MDM2 fisher:  3.96  2.83e-03
+
+fisher.test(matrix(c(7, 509, 13, 239),nrow=2,ncol=2),alternative="greater")
+
+
+######################################
+CESC Cervical squamous cell carcinoma and endocervical adenocarcinoma
+rnaseq_rpkm not found
+######################################
+CHOL Cholangiocarcinoma
+rnaseq_rpkm not found
+######################################
+COAD Colon adenocarcinoma
+total number of entries in rnaseq_rpkm: 3936575
+total number of entries in somatic_mutations: 125504
+number of samples with mutation   info: 270
+number of samples with expression info: 192
+intersection: 63
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+=======================================================================
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 overexpressed)
+RPL5 fisher:  0.59  8.50e-01
+
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 overexpressed)
+RPL5 fisher:  1.68  4.94e-01
+
+fisher.test(matrix(c(2, 37, 2, 22),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 suppressed)
+RPL5 fisher:   inf  6.19e-01
+
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 suppressed)
+RPL5 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(1, 38, 0, 24),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 overexpressed)
+RPL11 fisher:  0.00  1.00e+00
+
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 overexpressed)
+RPL11 fisher:   inf  5.10e-02
+
+fisher.test(matrix(c(0, 39, 3, 21),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 suppressed)
+RPL11 fisher:   inf  6.19e-01
+
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 suppressed)
+RPL11 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(1, 38, 0, 24),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 overexpressed)
+MDM2 fisher:  5.94  7.13e-02
+
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 overexpressed)
+MDM2 fisher:  0.17  9.91e-01
+
+fisher.test(matrix(c(8, 31, 1, 23),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 suppressed)
+MDM2 fisher:  1.92  5.06e-01
+
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 suppressed)
+MDM2 fisher:  0.52  8.62e-01
+
+fisher.test(matrix(c(3, 36, 1, 23),nrow=2,ncol=2),alternative="greater")
+
+
+######################################
+ESCA Esophageal carcinoma
+rnaseq_rpkm not found
+######################################
+GBM Glioblastoma multiforme
+rnaseq_rpkm not found
+######################################
+HNSC Head and Neck squamous cell carcinoma
+total number of entries in rnaseq_rpkm: 6027882
+total number of entries in somatic_mutations: 144312
+number of samples with mutation   info: 526
+number of samples with expression info: 294
+intersection: 261
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+=======================================================================
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 overexpressed)
+RPL5 fisher:  2.47  5.61e-02
+
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 overexpressed)
+RPL5 fisher:  0.40  9.81e-01
+
+fisher.test(matrix(c(9, 70, 9, 173),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 suppressed)
+RPL5 fisher:  0.28  9.63e-01
+
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 suppressed)
+RPL5 fisher:  3.59  1.86e-01
+
+fisher.test(matrix(c(1, 78, 8, 174),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 overexpressed)
+RPL11 fisher:  3.01  9.83e-02
+
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 overexpressed)
+RPL11 fisher:  0.33  9.76e-01
+
+fisher.test(matrix(c(5, 74, 4, 178),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 suppressed)
+RPL11 fisher:  1.40  4.56e-01
+
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 suppressed)
+RPL11 fisher:  0.72  8.04e-01
+
+fisher.test(matrix(c(3, 76, 5, 177),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 overexpressed)
+MDM2 fisher:  3.55  1.65e-01
+
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 overexpressed)
+MDM2 fisher:  0.28  9.70e-01
+
+fisher.test(matrix(c(3, 76, 2, 180),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 suppressed)
+MDM2 fisher:  0.65  8.14e-01
+
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 suppressed)
+MDM2 fisher:  1.54  4.54e-01
+
+fisher.test(matrix(c(2, 77, 7, 175),nrow=2,ncol=2),alternative="greater")
+
+
+######################################
+KICH Kidney Chromophobe
+rnaseq_rpkm not found
+######################################
+KIRC Kidney renal clear cell carcinoma
+total number of entries in rnaseq_rpkm: 11092102
+total number of entries in somatic_mutations: 57488
+number of samples with mutation   info: 456
+number of samples with expression info: 539
+intersection: 430
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+=======================================================================
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 overexpressed)
+RPL5 fisher:   inf  3.45e-01
+
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 overexpressed)
+RPL5 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(29, 386, 0, 15),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 suppressed)
+RPL5 fisher:  0.31  9.56e-01
+
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 suppressed)
+RPL5 fisher:  3.22  3.02e-01
+
+fisher.test(matrix(c(9, 406, 1, 14),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 overexpressed)
+RPL11 fisher:   inf  5.21e-01
+
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 overexpressed)
+RPL11 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(18, 397, 0, 15),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 suppressed)
+RPL11 fisher:  0.53  8.97e-01
+
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 suppressed)
+RPL11 fisher:  1.90  4.39e-01
+
+fisher.test(matrix(c(15, 400, 1, 14),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 overexpressed)
+MDM2 fisher:  1.53  5.59e-01
+
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 overexpressed)
+MDM2 fisher:  0.65  7.92e-01
+
+fisher.test(matrix(c(41, 374, 1, 14),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 suppressed)
+MDM2 fisher:  0.06  1.00e+00
+
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 suppressed)
+MDM2 fisher: 17.04  2.56e-03
+
+fisher.test(matrix(c(6, 409, 3, 12),nrow=2,ncol=2),alternative="greater")
+
+
+######################################
+KIRP Kidney renal papillary cell carcinoma
+total number of entries in rnaseq_rpkm: 328047
+total number of entries in somatic_mutations: 31624
+number of samples with mutation   info: 169
+number of samples with expression info: 16
+intersection: 15
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+=======================================================================
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 overexpressed)
+RPL5 fisher:   nan  1.00e+00
+
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 overexpressed)
+RPL5 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 14, 0, 1),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 suppressed)
+RPL5 fisher:   nan  1.00e+00
+
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 suppressed)
+RPL5 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 14, 0, 1),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 overexpressed)
+RPL11 fisher:   nan  1.00e+00
+
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 overexpressed)
+RPL11 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 14, 0, 1),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 suppressed)
+RPL11 fisher:   nan  1.00e+00
+
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 suppressed)
+RPL11 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 14, 0, 1),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 overexpressed)
+MDM2 fisher:   nan  1.00e+00
+
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 overexpressed)
+MDM2 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 14, 0, 1),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 suppressed)
+MDM2 fisher:   nan  1.00e+00
+
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 suppressed)
+MDM2 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 14, 0, 1),nrow=2,ncol=2),alternative="greater")
+
+
+######################################
+LAML Acute Myeloid Leukemia
+rnaseq_rpkm not found
+######################################
+LGG Brain Lower Grade Glioma
+rnaseq_rpkm not found
+######################################
+LIHC Liver hepatocellular carcinoma
+total number of entries in rnaseq_rpkm: 533078
+total number of entries in somatic_mutations: 87510
+number of samples with mutation   info: 202
+number of samples with expression info: 26
+intersection: 16
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+=======================================================================
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 overexpressed)
+RPL5 fisher:   nan  1.00e+00
+
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 overexpressed)
+RPL5 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 13, 0, 3),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 suppressed)
+RPL5 fisher:   nan  1.00e+00
+
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 suppressed)
+RPL5 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 13, 0, 3),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 overexpressed)
+RPL11 fisher:   nan  1.00e+00
+
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 overexpressed)
+RPL11 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 13, 0, 3),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 suppressed)
+RPL11 fisher:   nan  1.00e+00
+
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 suppressed)
+RPL11 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 13, 0, 3),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 overexpressed)
+MDM2 fisher:   nan  1.00e+00
+
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 overexpressed)
+MDM2 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 13, 0, 3),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 suppressed)
+MDM2 fisher:   nan  1.00e+00
+
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 suppressed)
+MDM2 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 13, 0, 3),nrow=2,ncol=2),alternative="greater")
+
+
+######################################
+LUAD Lung adenocarcinoma
+total number of entries in rnaseq_rpkm: 3341989
+total number of entries in somatic_mutations: 227995
+number of samples with mutation   info: 546
+number of samples with expression info: 163
+intersection: 125
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+=======================================================================
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 overexpressed)
+RPL5 fisher:  0.63  8.46e-01
+
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 overexpressed)
+RPL5 fisher:  1.59  3.70e-01
+
+fisher.test(matrix(c(4, 65, 5, 51),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 suppressed)
+RPL5 fisher:   inf  8.92e-02
+
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 suppressed)
+RPL5 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(4, 65, 0, 56),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 overexpressed)
+RPL11 fisher:  0.40  9.13e-01
+
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 overexpressed)
+RPL11 fisher:  2.52  4.22e-01
+
+fisher.test(matrix(c(1, 68, 2, 54),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 suppressed)
+RPL11 fisher:  0.26  9.62e-01
+
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 suppressed)
+RPL11 fisher:  3.85  2.35e-01
+
+fisher.test(matrix(c(1, 68, 3, 53),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 overexpressed)
+MDM2 fisher:  4.58  3.60e-02
+
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 overexpressed)
+MDM2 fisher:  0.22  9.94e-01
+
+fisher.test(matrix(c(10, 59, 2, 54),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 suppressed)
+MDM2 fisher:  0.00  1.00e+00
+
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 suppressed)
+MDM2 fisher:   inf  3.79e-02
+
+fisher.test(matrix(c(0, 69, 4, 52),nrow=2,ncol=2),alternative="greater")
+
+
+######################################
+LUSC Lung squamous cell carcinoma
+total number of entries in rnaseq_rpkm: 4920720
+total number of entries in somatic_mutations: 69673
+number of samples with mutation   info: 178
+number of samples with expression info: 239
+intersection: 178
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+=======================================================================
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 overexpressed)
+RPL5 fisher:  1.49  5.85e-01
+
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 overexpressed)
+RPL5 fisher:  0.67  8.42e-01
+
+fisher.test(matrix(c(1, 44, 2, 131),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 suppressed)
+RPL5 fisher:  0.00  1.00e+00
+
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 suppressed)
+RPL5 fisher:   inf  1.25e-01
+
+fisher.test(matrix(c(0, 45, 7, 126),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 overexpressed)
+RPL11 fisher:  0.00  1.00e+00
+
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 overexpressed)
+RPL11 fisher:   inf  5.57e-01
+
+fisher.test(matrix(c(0, 45, 2, 131),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 suppressed)
+RPL11 fisher:  0.00  1.00e+00
+
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 suppressed)
+RPL11 fisher:   inf  5.57e-01
+
+fisher.test(matrix(c(0, 45, 2, 131),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 overexpressed)
+MDM2 fisher:  3.15  1.13e-01
+
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 overexpressed)
+MDM2 fisher:  0.32  9.74e-01
+
+fisher.test(matrix(c(4, 41, 4, 129),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 suppressed)
+MDM2 fisher:  0.98  6.92e-01
+
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 suppressed)
+MDM2 fisher:  1.02  7.35e-01
+
+fisher.test(matrix(c(1, 44, 3, 130),nrow=2,ncol=2),alternative="greater")
+
+
+######################################
+OV Ovarian serous cystadenocarcinoma
+rnaseq_rpkm not found
+######################################
+PAAD Pancreatic adenocarcinoma
+rnaseq_rpkm not found
+######################################
+PCPG Pheochromocytoma and Paraganglioma
+rnaseq_rpkm not found
+######################################
+PRAD Prostate adenocarcinoma
+rnaseq_rpkm not found
+######################################
+REA Rectum adenocarcinoma
+total number of entries in rnaseq_rpkm: 1476216
+total number of entries in somatic_mutations: 34259
+number of samples with mutation   info: 116
+number of samples with expression info: 72
+intersection: 34
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+=======================================================================
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 overexpressed)
+RPL5 fisher:  1.50  5.18e-01
+
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 overexpressed)
+RPL5 fisher:  0.67  8.10e-01
+
+fisher.test(matrix(c(4, 16, 2, 12),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 suppressed)
+RPL5 fisher:  2.29  4.49e-01
+
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 suppressed)
+RPL5 fisher:  0.44  8.96e-01
+
+fisher.test(matrix(c(3, 17, 1, 13),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 overexpressed)
+RPL11 fisher:   inf  5.88e-01
+
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 overexpressed)
+RPL11 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(1, 19, 0, 14),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 suppressed)
+RPL11 fisher:   inf  5.88e-01
+
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 suppressed)
+RPL11 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(1, 19, 0, 14),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 overexpressed)
+MDM2 fisher:  4.33  1.90e-01
+
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 overexpressed)
+MDM2 fisher:  0.23  9.71e-01
+
+fisher.test(matrix(c(5, 15, 1, 13),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 suppressed)
+MDM2 fisher:   nan  1.00e+00
+
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 suppressed)
+MDM2 fisher:   nan  1.00e+00
+
+fisher.test(matrix(c(0, 20, 0, 14),nrow=2,ncol=2),alternative="greater")
+
+
+######################################
+SARC Sarcoma
+rnaseq_rpkm not found
+######################################
+SKCM Skin Cutaneous Melanoma
+rnaseq_rpkm not found
+######################################
+STAD Stomach adenocarcinoma
+rnaseq_rpkm not found
+######################################
+TGCT Testicular Germ Cell Tumors
+rnaseq_rpkm not found
+######################################
+THCA Thyroid carcinoma
+rnaseq_rpkm not found
+######################################
+THYM Thymoma
+rnaseq_rpkm not found
+######################################
+UCEC Uterine Corpus Endometrial Carcinoma
+total number of entries in rnaseq_rpkm: 6970939
+total number of entries in somatic_mutations: 211732
+number of samples with mutation   info: 248
+number of samples with expression info: 340
+intersection: 241
+sample id    #muts         name        rpkm   expr/mean     pval     variant(s)
+=======================================================================
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 overexpressed)
+RPL5 fisher:   inf  8.73e-02
+
+hypothesis: overexpression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 overexpressed)
+RPL5 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(7, 164, 0, 70),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL5 suppressed)
+RPL5 fisher:   inf  3.55e-01
+
+hypothesis: suppression of RPL5 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL5 suppressed)
+RPL5 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(3, 168, 0, 70),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 overexpressed)
+RPL11 fisher:   inf  1.77e-01
+
+hypothesis: overexpression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 overexpressed)
+RPL11 fisher:  0.00  1.00e+00
+
+fisher.test(matrix(c(5, 166, 0, 70),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: wt is more likely to have RPL11 suppressed)
+RPL11 fisher:  0.40  9.25e-01
+
+hypothesis: suppression of RPL11 is equally likely for wt and mut p53
+(alternative: mut is more likely to have RPL11 suppressed)
+RPL11 fisher:  2.49  3.31e-01
+
+fisher.test(matrix(c(2, 169, 2, 68),nrow=2,ncol=2),alternative="greater")
+
+
+=======================================================================
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 overexpressed)
+MDM2 fisher:  2.95  2.70e-01
+
+hypothesis: overexpression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 overexpressed)
+MDM2 fisher:  0.34  9.39e-01
+
+fisher.test(matrix(c(7, 164, 1, 69),nrow=2,ncol=2),alternative="greater")
+
+=======================================================================
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: wt is more likely to have MDM2 suppressed)
+MDM2 fisher:  0.06  1.00e+00
+
+hypothesis: suppression of MDM2 is equally likely for wt and mut p53
+(alternative: mut is more likely to have MDM2 suppressed)
+MDM2 fisher: 15.94  2.75e-03
+
+fisher.test(matrix(c(1, 170, 6, 64),nrow=2,ncol=2),alternative="greater")
+
+
+######################################
+UCS Uterine Carcinosarcoma
+rnaseq_rpkm not found
+######################################
+UVM Uveal Melanoma
+rnaseq_rpkm not found

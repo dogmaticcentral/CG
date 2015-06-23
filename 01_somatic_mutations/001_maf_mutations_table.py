@@ -118,13 +118,20 @@ def main():
 
         if ( check_table_exists (cursor, db_name, mutations_table)):
             print mutations_table, " found in ", db_name
-            # if you really want to start from scratch, uncomment
-            qry = "drop table %s "  % mutations_table
+
+            qry = ""
+            qry += "create index variant_idx on %s (hugo_symbol, variant_classification)" % mutations_table
             rows = search_db(cursor, qry)
+            print qry
+            print rows
+
+            # if you really want to start from scratch, uncomment
+            #qry = "drop table %s "  % mutations_table
+            #rows = search_db(cursor, qry)
         else:
             print mutations_table, " not found in ", db_name
             
-        make_mutations_table(cursor, db_name, mutations_table)
+        #make_mutations_table(cursor, db_name, mutations_table)
 
 
 
