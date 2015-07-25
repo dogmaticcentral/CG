@@ -6,7 +6,7 @@ from time import time
 import commands
 from   tcga_utils.mysql   import  *
 from random import randrange, sample
-
+from scipy import stats
 #########################################
 def simulation (M, Nr, Nb, l, number_of_iterations):
     
@@ -93,7 +93,6 @@ def mkey (gene1, gene2):
 
     return mut_key
 
-
 #########################################
 def main():
 
@@ -104,76 +103,84 @@ def main():
   
     full_name = read_cancer_names ()
 
-    # unbuffered output
-    #sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
-
-    
     db     = connect_to_mysql()
     cursor = db.cursor()
-
 
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD","ESCA",  "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP","LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
+    #db_names = ["ACC", "UCS"]
+
     table = 'somatic_mutations'
 
     pancan_samples = 0
+    pancan_ct_gene1 = {}
     pancan_ct = {}
+    pancan_pt_gene1 = {}
+    pancan_pt = {}
     pancan_coappearance = {}
-    
+    number_of_samples_in_dbs_in_which_both_appear = {}
     if tp53_mode:
 
-        print "number of different genes:"
+        gene_list = ['RPL11', 'RPL5', 'MDM2']
+
+        #print "number of different genes:"
         switch_to_db(cursor, 'baseline')
         qry = "select distinct approved_symbol from hgnc_id_translation where locus_type = 'gene with protein product' "
         rows = search_db(cursor, qry)
         gene_list = [row[0] for row in  rows if row[0] != "TP53"]
-        print "\t db_name", len(gene_list)
+        print "total genes:", len(gene_list)
 
         #gene_list = gene_list[:30]
         #gene_list = sample(gene_list, 500)
         gene1 = 'TP53'
         pancan_ct[gene1] = 0
+        pancan_pt[gene1] = 0
         for j in range (len(gene_list)):
             gene2 = gene_list[j]
+            pancan_ct_gene1[gene2] = 0
+            pancan_pt_gene1[gene2] = 0
             pancan_ct[gene2] = 0
+            pancan_pt[gene2] = 0
             mut_key = mkey(gene1, gene2)
             pancan_coappearance[mut_key] = 0
-
+            number_of_samples_in_dbs_in_which_both_appear[gene2] = 0
     else:
         gene_list = [ x.upper() for x in sys.argv[1:] ]
-        print gene_list
+        #print gene_list
         for i in range (len(gene_list)):
             gene1 = gene_list[i] 
             pancan_ct[gene1] = 0
+            pancan_pt[gene1] = 0
             for j in range (i+1,len(gene_list)):
                 gene2 = gene_list[j]
                 mut_key = mkey(gene1, gene2)
                 pancan_coappearance[mut_key] = 0
 
     for db_name in db_names:
-        print "######################################"
-        print db_name, full_name[db_name]
+        header = "\n"
+
+        header += "######################################" + "\n"
+        header += " %s  %s " % (db_name, full_name[db_name])
+        header += "\n"
+
         start = time()
-        outf = sys.stdout
-        #if tp53_mode:
-        #    outf = open ("coapp_tables/%s_tp53_coapps.table" % db_name, "w")
-        #else:
-        #    outf = open ("coapp_tables/%s_coapps.table" % db_name, "w")
+        #outf = sys.stdout
+        if tp53_mode:
+            outf = open ("coapp_tables/%s_tp53_coapps.table" % db_name, "w")
+        else:
+            outf = open ("coapp_tables/%s_coapps.table" % db_name, "w")
         switch_to_db (cursor, db_name)
 
         ############################
-        print "total number of entries:", 
         qry = "select count(1) from " + table
         rows = search_db(cursor, qry)
         db_entries =  rows[0][0]
-        print db_entries
         if not rows[0][0]: continue
 
         ############################
         short_barcodes = []
-        tbarcodes_per_patient = {}
         qry  = "select distinct  sample_barcode_short from somatic_mutations "
         rows = search_db(cursor, qry)
 
@@ -242,6 +249,7 @@ def main():
                 if tp53_mode:
                     if mutations_found.has_key('TP53'):
                         for gene2 in  mutations_found.keys():
+                            if gene2=='TP53': continue
                             mut_key = mkey (gene1, gene2)
                             co_appearance[mut_key] += 1
 
@@ -255,26 +263,59 @@ def main():
                             co_appearance[mut_key] += 1
 
         pancan_samples += number_of_patients
-        print >> outf, "number of different patients:", number_of_patients
-        print >> outf, "total number of entries:", db_entries
-        print >> outf, "number of functional mutations (not silent and not 'RNA')", total_muts
-        print >> outf, " %8s   %4s   %4s   %8s  %4s   %4s    %15s    %s" %  ("gene1", "#pts1", "#muts1", "gene2", "#pts2", "#muts2", "co-appearance", "expected_no_of_co-appearances")
+        header +=  "number of different patients: " + str(number_of_patients)+ "\n"
+        header +=  "total number of entries: " + str(db_entries)+ "\n"
+        header +=  "number of functional mutations (not silent and not 'RNA') " + str(total_muts)+ "\n"
+        header +=  " %8s   %4s   %4s %8s  %4s   %4s  %15s  %10s  %10s %10s  " %  ("gene1", "#pts1", "#muts1", "gene2",
+                                                                                     "#pts2", "#muts2", "co-appearance",
+                                                                                     "expct_co-app", "pval <=", "pval >=")
+        #header += "\n"
+        outstr = ""
         if tp53_mode:
             gene1 = 'TP53'
             ct1 = mut_ct [gene1]
             pt1 = patients_per_gene[gene1]
-            pancan_ct[gene1] += ct1
+            if not pt1: continue
+            if float(pt1)/number_of_patients < 0.001: continue
 
             for j in range (len(gene_list)):
                 gene2   = gene_list[j]
                 mut_key = mkey (gene1, gene2)
                 pancan_coappearance[mut_key] += co_appearance[mut_key]
+                appears_together = co_appearance[mut_key]
                 ct2 = mut_ct [gene2]
                 if not ct2: continue
                 pt2 = patients_per_gene[gene2]
+                if float(pt2)/number_of_patients < 0.001: continue
+
+                # the number of times gene1 appears in tumors in which both gene1 and gene2 appear
+                pancan_ct_gene1[gene2] += ct1
+                pancan_pt_gene1[gene2] += pt1
+
                 pancan_ct[gene2] += ct2
-                print >> outf,  "%8s   %4d   %4d   %8s  %4d    %4d  " %  (gene1, pt1, ct1, gene2, pt2, ct2),
-                print >> outf,  "%15d    %15.2f" %  (co_appearance[mut_key], expected (ct1, ct2, number_of_patients))
+                pancan_pt[gene2] += pt2
+
+                number_of_samples_in_dbs_in_which_both_appear [gene2] += number_of_patients
+
+                expctd = float(pt1)/pancan_samples*pt2
+                if abs((expctd - appears_together)/expctd) < 0.1: continue
+                a = pt2 -  appears_together                     # rpl5 mutated and p53 wt
+                b = pancan_samples - pt1 - pt2 + appears_together # rpl5 wt and p53 wt (in pt1 andp2 we subtracted the overlap twice
+                c = appears_together                        # rpl5 mutated and p53 mutated
+                d = pt1 - appears_together                    # rpl5 wt and p53  mutated
+                if expctd > appears_together:
+                    # pval to have smaller overlap than expected - that is greater overalp with wt p53 type
+                    [odds,pval] = stats.fisher_exact([[a, b], [c, d]], "greater")
+                    pval_lt = pval
+                    pval_gt = 1.0
+                else:
+                    [odds,pval] = stats.fisher_exact([[a, b], [c, d]], "less")
+                    pval_lt = 1.0
+                    pval_gt = pval
+
+                outstr +=  "%8s   %4d   %4d   %8s  %4d    %4d  " %  (gene1, pt1, ct1, gene2, pt2, ct2)
+                outstr +=  "%15d    %10.2f   %10.4f  %10.4f" %  ( co_appearance[mut_key], expctd, pval_lt, pval_gt)
+                outstr += "\n"
 
         else:
             for i in range (len(gene_list)):
@@ -282,68 +323,110 @@ def main():
                 ct1 = mut_ct [gene1]
                 pt1 = patients_per_gene[gene1]
                 pancan_ct[gene1] += ct1
+                pancan_pt[gene1] += pt1
                 for j in range (i+1,len(gene_list)):
                     gene2   = gene_list[j]
                     mut_key = mkey (gene1, gene2)
                     pancan_coappearance[mut_key] += co_appearance[mut_key]
+                    ovlp = co_appearance[mut_key]
+                    number_of_iterations = 2*number_of_patients
                     ct2 = mut_ct [gene2]
+                    if not ct2: continue
                     pt2 = patients_per_gene[gene2]
-                    print >> outf,  "%8s   %4d   %4d   %8s  %4d    %4d  " %  (gene1, pt1, ct1, gene2, pt2, ct2),
-                    print >> outf,  "%15d    %15.2f" %  ( co_appearance[mut_key], expected (ct1, ct2, number_of_patients))
+                    # cmd = "coapp_sim  %d  %d    %d  %d   %d   "  % (number_of_patients, pt1, pt2, ovlp, number_of_iterations)
+                    # [avg, pval_le, pval_ge] = [float(x) for x in commands.getoutput(cmd).split()]#
+                    a = pt2 - ovlp                     # rpl5 mutated and p53 wt
+                    b = number_of_patients - pt1 - pt2 + ovlp # rpl5 wt and p53 wt (in pt1 andp2 we subtracted the overlap twice
+                    c = ovlp                           # rpl5 mutated and p53 mutated
+                    d = pt1 - ovlp                     # rpl5 wt and p53  mutated
+                    [odds,pval] = stats.fisher_exact([[a, b], [c, d]], "greater")
+                    outstr += "%8s   %4d   %4d    %8s  %4d  %4d" %  (gene1, pt1, ct1, gene2, pt2, ct2)
+                    outstr += "%15d    %10.2f    %10.2f" %  ( co_appearance[mut_key], float(pt1)/number_of_patients*pt2, pval)
+                    outstr += "\n"
+        if outstr:
+            print >> outf, header
+            print >> outf, outstr
+        outf.close()
+        print db_name, "done in %8.2f min" % ( (time() - start)/60 )
 
-        #outf.close()
-        print "db done in %8.2f min" % ( (time() - start)/60 )
 
+    #outf = sys.stdout
+    if tp53_mode:
+        outf = open ("coapp_tables/pancan_tp53_coapps.table", "w")
+    else:
+        outf = open ("coapp_tables/pancan_coapps.table", "w")
 
-    outf = sys.stdout
-    #if tp53_mode:
-    #    outf = open ("coapp_tables/pancan_tp53_coapps.table", "w")
-    #else:
-    #    outf = open ("coapp_tables/pancan_coapps.table", "w")
+    print >> outf, "######################################"
+    print >> outf, "pan-cancer"
+    print >> outf, " %8s   %4s   %4s %8s  %4s   %4s  %15s %15s %10s %10s  " %  ("gene1", "#pts1", "#muts1", "gene2",
+                                                                                "#pts2", "#muts2", "co-appearance",
+                                                                                 "expct_co-app", "pval <=", "pval >=")
 
-    print "######################################"
-    print "pan-cancer"
-    print >> outf, "number of samples:", pancan_samples
-    print >> outf, " %8s   %4s   %8s  %4s  %15s  %15s  %15s  %15s  %15s" %  ("gene1", "#muts1", "gene2", "#muts2",
-                                                                "co-appearance", "expected no", "expected no", "pval of <=", "pval of >=")
-    print >> outf, " %8s   %4s   %8s  %4s  %15s        %15s  %15s  %15s  %15s" %  ("", "", "", "", "", "of co-app (expr)",
-                                                                      "of co-app (sim)", "", "")
     if tp53_mode:
         gene11 = 'TP53'
         ct1 = pancan_ct[gene1]
+        pt1 = pancan_pt[gene1]
+
         start = time()
         for j in range (len(gene_list)):
+
             gene2 = gene_list[j]
             mut_key = mkey (gene1, gene2)
             appears_together = pancan_coappearance[mut_key]
+
+            number_of_patients = number_of_samples_in_dbs_in_which_both_appear[gene2]
+
+            ct1 = pancan_ct_gene1[gene2]
+            pt1 = pancan_pt_gene1[gene2]
+            if not pt1  or float(pt1)/number_of_patients < 0.001: continue
+
             ct2 = pancan_ct[gene2]
-            number_of_iterations = 2*pancan_samples
-            #[avg, pval_le, pval_ge]  = simulation (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
-            cmd = "coapp_sim  %d  %d    %d  %d   %d   "  % (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
-            [avg, pval_le, pval_ge] = [float(x) for x in commands.getoutput(cmd).split()]
-            print >> outf, " %8s   %4d   %8s  %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f" %  ( gene1, ct1, gene2, ct2,
-                                                                                     appears_together, expected (ct1, ct2, pancan_samples),
-                                                                                     avg, pval_le, pval_ge )
-            if not j%10:
-                print " %4d  time:  %8.2f min" % (j, (time()-start)/60 )
-                start = time()
+            pt2 = pancan_pt[gene2]
+            if not pt2 or float(pt2)/number_of_patients < 0.001: continue
+
+            expctd = float(pt1)/number_of_patients*pt2
+            if abs((expctd - appears_together)/expctd) < 0.1: continue
+            a = pt2 -  appears_together                     # rpl5 mutated and p53 wt
+            b = number_of_patients - pt1 - pt2 + appears_together # rpl5 wt and p53 wt (in pt1 andp2 we subtracted the overlap twice
+            c = appears_together                        # rpl5 mutated and p53 mutated
+            d = pt1 - appears_together                    # rpl5 wt and p53  mutated
+            if expctd > appears_together:
+                [odds,pval] = stats.fisher_exact([[a, b], [c, d]], "greater")
+                pval_lt = pval
+                pval_gt = 1.0
+            else:
+                [odds,pval] = stats.fisher_exact([[a, b], [c, d]], "less")
+                pval_lt = 1.0
+                pval_gt = pval
+            print >> outf,  "%8s   %4d   %4d   %8s  %4d    %4d  " %  (gene1, pt1, ct1, gene2, pt2, ct2),
+            print >> outf,  "%15d    %10.2f   %10.4f  %10.4f" %  ( appears_together, expctd, pval_lt, pval_gt)
+            #if not j%10:
+            #    print " %4d  time:  %8.2f min" % (j, (time()-start)/60 )
+            #    start = time()
     else:
         for i in range (len(gene_list)):
             gene1 = gene_list[i]
             ct1 = pancan_ct[gene1]
+            pt1 = pancan_pt[gene1]
             for j in range (i+1,len(gene_list)):
                 gene2 = gene_list[j]
                 mut_key = mkey (gene1, gene2)
                 appears_together = pancan_coappearance[mut_key]
                 ct2 = pancan_ct[gene2]
-                number_of_iterations = 2*pancan_samples
+                pt2 = pancan_pt[gene2]
+                number_of_iterations = 4*pancan_samples
                 #[avg, pval_le, pval_ge]  = simulation (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
-                cmd = "coapp_sim  %d  %d    %d  %d   %d   "  % (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
-                [avg, pval_le, pval_ge] = [float(x) for x in commands.getoutput(cmd).split()]
-                print >> outf,  " %8s   %4d   %8s  %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f" %  ( gene1, ct1, gene2, ct2,
-                                                                                         appears_together, expected (ct1, ct2, pancan_samples),
-                                                                                         avg, pval_le, pval_ge )
-    
+                #cmd = "coapp_sim  %d  %d    %d  %d   %d   "  % (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
+                #[avg, pval_le, pval_ge] = [float(x) for x in commands.getoutput(cmd).split()]
+                a = pt2 -  appears_together                     # rpl5 mutated and p53 wt
+                b = pancan_samples - pt1 - pt2 + appears_together # rpl5 wt and p53 wt (in pt1 andp2 we subtracted the overlap twice
+                c = appears_together                        # rpl5 mutated and p53 mutated
+                d = pt1 - appears_together                    # rpl5 wt and p53  mutated
+                [odds,pval] = stats.fisher_exact([[a, b], [c, d]], "greater")
+
+                print >> outf,  "%8s   %4d   %4d   %8s  %4d    %4d  " %  (gene1, pt1, ct1, gene2, pt2, ct2),
+                print >> outf,  "%15d    %10.2f   %10.2f" %  (appears_together, float(pt1)/pancan_samples*pt2, pval)
+
     cursor.close()
     db.close()
 

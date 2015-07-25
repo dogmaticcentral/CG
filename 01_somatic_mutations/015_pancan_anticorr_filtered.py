@@ -54,15 +54,17 @@ def main():
     infile = open ("coapp_tables/pancan_tp53_coapps.table", "r")
     for line in infile.readlines()[3:]:
         spl = line.split()
-        if len(spl) < 9: continue
-        [gene1, no_muts1, gene2, no_muts2, coapps, exp_coapp_analytic, exp_coapp_sim, pval_less, pval_gt] = spl
+        if len(spl) < 10: continue
+        [gene1, no_muts1, no_pts1,  gene2, no_muts2, no_pts2, coapps, exp_coapp_analytic, pval_less, pval_gt] = spl
         pval_less = float(pval_less)
-        if pval_less > 0.1: continue
+        pval_gt   = float(pval_gt)
+        if pval_gt > 0.05: continue
+        #if pval_less > 0.05: continue
         [silent_ct, non_silent_ct] = silent_proportion (cursor, db_names, gene2)
         if not non_silent_ct: continue
         if float(silent_ct)/non_silent_ct > 0.15: continue
-        print " %5s  %4d  %12s  %4d    %4d   %7.2f    %.4f " % (gene1, int(no_muts1), gene2, int(no_muts2),
-                                                           int(coapps), float(exp_coapp_analytic), float(pval_less))
+        print " %5s  %4d  %12s  %4d   %5.2f   %4d  %7.2f    %.4f " % (gene1, int(no_pts1), gene2, int(no_pts2), float(silent_ct)/non_silent_ct,
+                                                                    int(coapps), float(exp_coapp_analytic), float(pval_gt))
 
 
     cursor.close()

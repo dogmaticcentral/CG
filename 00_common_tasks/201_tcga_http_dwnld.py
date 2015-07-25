@@ -16,7 +16,9 @@
 #In general, BCRs use a serial index equivalent to a batch number while other center 
 #types start serial index series from 1.
 #
-#A revision number can indicate the number of times an archive has been revised (starting from 0) and submitted to the DCC. However, the only requirement for revision numbers is that the revision number of the new archive is to be higher than that of the archive being replaced. Files that have been changed or added are captured in the changes and additions files, respectively
+#A revision number can indicate the number of times an archive has been revised (starting from 0) and submitted to the DCC.
+# However, the only requirement for revision numbers is that the revision number of the new archive is to be higher than that
+# of the archive being replaced. Files that have been changed or added are captured in the changes and additions files, respectively
 #
 #  the series number should always be 0.
 #
@@ -44,8 +46,10 @@ def main():
 
     local_dir = '/Users/ivana/databases/TCGA'
     updating_somatic_mutations = True
-
-    file_names = open('expression_files.txt')
+    if target_set == 'mutations':
+        file_names = open('../01_somatic_mutations/mutation_files.txt')
+    else:
+        file_names = open('expression_files.txt')
     all_files = {}
     for line in [x.rstrip().replace(' ','')  for x in file_names]:
         [directory, filename] = line.split(':')

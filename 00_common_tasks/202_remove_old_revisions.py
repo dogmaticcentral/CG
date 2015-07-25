@@ -34,8 +34,9 @@ def main():
 
     for tumor_short in os.listdir(local_dir):
         if 'usable' in tumor_short: continue
+        if 'auto' in tumor_short: continue
         print tumor_short
-        path = local_dir + "/" + tumor_short + "/" + "Expression_Genes"
+        path = local_dir + "/" + tumor_short + "/" + "Somatic_Mutations"
         if not os.path.exists(path): continue
         experiment_latest_revision = {}
         for data_set in os.listdir(path):

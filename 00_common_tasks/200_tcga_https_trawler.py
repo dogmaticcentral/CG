@@ -18,7 +18,7 @@ not_interesting = ['bio', 'pathology_reports', 'diagnostic_images', 'tissue_imag
                    'cdna', 'cna', 'bisulfiteseq', 'rnaseqv2','totalrnaseqv2',
                    'microsat_i', 'exon', 'tracerel']
 
-target_set = 'expression'
+target_set = 'mutations'
 
 # this script can be used to locate data files to be downloaded by 201_tcga_http_dnwld.data
 ############################

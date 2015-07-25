@@ -89,10 +89,10 @@ def main():
     cursor = db.cursor()
 
     mutations_table = 'metastatic_mutations'
-
-    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD","ESCA", "FPPP", "GBM", "HNSC", "KICH" ,"KIRC","KIRP",
-                 "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
+    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
+                 "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
+
     # I don't want to start this by mistake - remove comment and put in db names as needed
     db_names  = []
 
@@ -119,11 +119,6 @@ def main():
         if ( check_table_exists (cursor, db_name, mutations_table)):
             print mutations_table, " found in ", db_name
 
-            qry = ""
-            qry += "create index variant_idx on %s (hugo_symbol, variant_classification)" % mutations_table
-            rows = search_db(cursor, qry)
-            print qry
-            print rows
 
             # if you really want to start from scratch, uncomment
             #qry = "drop table %s "  % mutations_table
@@ -131,7 +126,12 @@ def main():
         else:
             print mutations_table, " not found in ", db_name
             
-        #make_mutations_table(cursor, db_name, mutations_table)
+            make_mutations_table(cursor, db_name, mutations_table)
+            qry = ""
+            qry += "create index variant_idx on %s (hugo_symbol, variant_classification)" % mutations_table
+            rows = search_db(cursor, qry)
+            print qry
+            print rows
 
 
 

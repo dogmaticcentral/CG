@@ -6,7 +6,10 @@ from time import time
 import commands
 from   tcga_utils.mysql   import  *
 from random import randrange, sample
+from scipy  import stats
 
+use_metastatic =  True
+verbose        =  False
 #########################################
 def simulation (M, Nr, Nb, l, number_of_iterations):
     
@@ -63,6 +66,7 @@ def read_cancer_names ():
     return full_name
     
 
+#########################################
 def expected (a, b, n):
     expected = 0
     # probability that there are  no mutations of  type a
@@ -93,49 +97,33 @@ def mkey (gene1, gene2):
 
     return mut_key
 
-
 #########################################
-def coappearance_stats (cursor, db_list, gene_list, full_name):
+def coappearance_stats (cursor, db_list, primary_samples, metastatic_samples, gene_list, full_name):
 
     pancan_samples = 0
     pancan_ct = {}
+    pancan_pt = {}
     pancan_coappearance = {}
 
     for i in range (len(gene_list)):
         gene1 = gene_list[i]
         pancan_ct[gene1] = 0
+        pancan_pt[gene1] = 0
         for j in range (i+1,len(gene_list)):
             gene2 = gene_list[j]
             mut_key = mkey(gene1, gene2)
             pancan_coappearance[mut_key] = 0
 
     for db_name in db_list:
-        print "######################################"
-        print db_name, full_name[db_name]
+
+        if verbose:
+            print "######################################"
+            print db_name, full_name[db_name]
         start = time()
         outf = sys.stdout
         switch_to_db (cursor, db_name)
 
         ############################
-        print "total number of entries:",
-        qry = "select count(1) from  somatic_mutations"
-
-        rows = search_db(cursor, qry)
-        db_entries =  rows[0][0]
-        print db_entries
-        if not rows[0][0]: continue
-
-        ############################
-        short_barcodes = []
-        tbarcodes_per_patient = {}
-        qry  = "select distinct  sample_barcode_short from somatic_mutations "
-        rows = search_db(cursor, qry)
-
-        number_of_patients =  len(rows)
-
-        for row in rows:
-            short_barcodes.append(row[0])
-
         co_appearance = {}
         mut_ct = {}
         patients_per_gene = {}
@@ -153,13 +141,21 @@ def coappearance_stats (cursor, db_list, gene_list, full_name):
         total_muts = 0
 
         ############################
-        for sample_barcode_short in short_barcodes:
+        all_samples = primary_samples[db_name][:]
+        if use_metastatic:
+            all_samples += metastatic_samples[db_name]
+        number_of_patients = len(all_samples)
+
+        for sample_barcode_short in all_samples:
             ############################
             qry = "select  hugo_symbol, variant_classification, aa_change "
-            qry += " from somatic_mutations"
+            if use_metastatic and sample_barcode_short in metastatic_samples[db_name]:
+                qry += "from metastatic_mutations"
+            else:
+                qry += " from somatic_mutations"
             qry += " where sample_barcode_short  = '%s' " %  sample_barcode_short
-            qry += " and not  variant_classification like '%s' " % "silent"
-            qry += " and not  variant_classification like '%s' " % "RNA"
+            qry += " and not variant_classification in ('Silent', 'RNA') "
+
 
             rows = search_db (cursor, qry)
             if not rows: continue
@@ -167,7 +163,7 @@ def coappearance_stats (cursor, db_list, gene_list, full_name):
             mutations_found = {}
             for row in rows:
                 [ hugo_symbol, variant_classification, aa_change] = row
-                if hugo_symbol in gene_list + ['TP53']:
+                if hugo_symbol in gene_list:
                     # find genes that are mutated, once or twice, doesn't matter
                     mutations_found[hugo_symbol] = True
                     # here keep track of the actual number of mutations
@@ -190,81 +186,125 @@ def coappearance_stats (cursor, db_list, gene_list, full_name):
                         co_appearance[mut_key] += 1
 
         pancan_samples += number_of_patients
-        print >> outf, "number of different patients:", number_of_patients
-        print >> outf, "total number of entries:", db_entries
-        print >> outf, "number of functional mutations (not silent and not 'RNA')", total_muts
-        print >> outf, " %8s   %4s   %4s   %8s  %4s   %4s    %15s    %s" %  ("gene1", "#pts1", "#muts1",
-	      	       	  "gene2", "#pts2", "#muts2", "co-appearance", "expected_no_of_co-appearances")
+        if verbose:
+            print >> outf, "number of different patients:", number_of_patients
+            print >> outf, "number of functional mutations in codons (not silent and not 'RNA')", total_muts
+            print >> outf, " %8s   %4s   %4s   %8s  %4s   %4s    %15s    %s" %  ("gene1", "#pts1", "#muts1",
+                          "gene2", "#pts2", "#muts2", "co-appearance", "expected_no_of_co-appearances")
 
         for i in range (len(gene_list)):
             gene1 = gene_list[i]
             ct1 = mut_ct [gene1]
             pt1 = patients_per_gene[gene1]
             pancan_ct[gene1] += ct1
+            pancan_pt[gene1] += pt1
             for j in range (i+1,len(gene_list)):
                 gene2   = gene_list[j]
                 mut_key = mkey (gene1, gene2)
                 pancan_coappearance[mut_key] += co_appearance[mut_key]
                 ct2 = mut_ct [gene2]
                 pt2 = patients_per_gene[gene2]
-                print >> outf,  "%8s   %4d   %4d   %8s  %4d    %4d  " %  (gene1, pt1, ct1, gene2, pt2, ct2),
-                print >> outf,  "%15d    %15.2f" %  ( co_appearance[mut_key], expected (ct1, ct2, number_of_patients))
+                if verbose:
+                    print >> outf,  "%8s   %4d   %4d   %8s  %4d    %4d  " %  (gene1, pt1, ct1, gene2, pt2, ct2),
+                    print >> outf,  "%15d    %15.2f" %  ( co_appearance[mut_key], expected (ct1, ct2, number_of_patients))
 
-        print "db done in %8.2f min" % ( (time() - start)/60 )
-
-    print "######################################"
-    print "pan-cancer"
+        if verbose: print "db done in %8.2f min" % ( (time() - start)/60 )
+    if verbose:
+        print "######################################"
+        print "pan-cancer"
     print >> outf, "number of samples:", pancan_samples
-    print >> outf, " %8s   %4s   %8s  %4s  %15s  %15s  %15s  %15s  %15s" %  ("gene1", "#muts1", "gene2", "#muts2",
-                                                                "co-appearance", "expected no", "expected no", "pval of <=", "pval of >=")
-    print >> outf, " %8s   %4s   %8s  %4s  %15s        %15s  %15s  %15s  %15s" %  ("", "", "", "", "", "of co-app (expr)","of co-app (sim)", "", "")
+    print >> outf, " %8s   %4s  %4s   %8s  %4s  %4s   %15s  %15s  %15s  %15s  %15s  %15s" %  ("gene1", "#muts1", "#pts1", "gene2", "#muts2", "#pts2",
+                                                                "co-appearance", "expected no", "expected no", "pval of <=", "pval of >=", "pval fisher")
+    print >> outf, " %8s   %4s  %4s   %8s  %4s  %4s   %15s        %15s  %15s  %15s  %15s  %15s" %  ("", "", "", "", "", "", "", "of co-app (expr)","of co-app (sim)", "", "", "")
 
     for i in range (len(gene_list)):
         gene1 = gene_list[i]
         ct1 = pancan_ct[gene1]
+        pt1 = pancan_pt[gene1]
         for j in range (i+1,len(gene_list)):
             gene2 = gene_list[j]
             mut_key = mkey (gene1, gene2)
             appears_together = pancan_coappearance[mut_key]
             ct2 = pancan_ct[gene2]
+            pt2 = pancan_pt[gene2]
             number_of_iterations = 2*pancan_samples
             #[avg, pval_le, pval_ge]  = simulation (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
             cmd = "coapp_sim  %d  %d    %d  %d   %d   "  % (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
             [avg, pval_le, pval_ge] = [float(x) for x in commands.getoutput(cmd).split()]
-            print >> outf,  " %8s   %4d   %8s  %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f" %  ( gene1, ct1, gene2, ct2,
+            a = pt2 -  appears_together                     # rpl5 mutated and p53 wt
+            b = pancan_samples - pt1 - pt2 + appears_together # rpl5 wt and p53 wt (in pt1 andp2 we subtracted the overlap twice
+            c = appears_together                        # rpl5 mutated and p53 mutated
+            d = pt1 - appears_together                    # rpl5 wt and p53  mutated
+            [odds,pval_fisher] = stats.fisher_exact([[a, b], [c, d]], "greater")
+            print >> outf,  " %8s   %4d  %4d   %8s  %4d %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f   %15.4f"  % ( gene1, ct1, pt1, gene2, ct2, pt2,
                                                                                                appears_together, expected (ct1, ct2, pancan_samples),
-                                                                                               avg, pval_le, pval_ge )
+                                                                                               avg, pval_le, pval_ge, pval_fisher)
 
 
 #########################################
-def mut_freqs (cursor, db_name, gene):
-    non_silent_ct = 0
-    silent_ct     = 0
-
+def find_uniq_metastatic (cursor, db_name):
     switch_to_db (cursor, db_name)
-    qry  = "select count(1) from somatic_mutations "
-    qry += "where hugo_symbol='%s' " % gene
-    qry += "and variant_classification in ('Missense_Mutation', 'Nonstop_Mutation', 'Nonsense_Mutation')"
-    rows = search_db(cursor, qry)
-    if not rows:
-        non_silent_ct += 0
-    else:
-        non_silent_ct += rows[0][0]
 
-    qry  = "select count(1) from somatic_mutations "
-    qry += "where hugo_symbol='%s' " % gene
-    qry += "and variant_classification='silent'"
-    rows = search_db(cursor, qry)
-    if not rows:
-        silent_ct += 0
-    else:
-        silent_ct += rows[0][0]
-
+    primary_samples = []
+    meta_samples    = []
+    duplicates      = []
     qry  = "select distinct  sample_barcode_short from somatic_mutations "
     rows = search_db(cursor, qry)
-    number_of_patients =  len(rows)
+    primary_samples = [row[0] for row in rows]
 
-    return [silent_ct, non_silent_ct, number_of_patients]
+    primary_sample_patients = [x[:-3] for x in primary_samples]
+    if use_metastatic:
+        # find patients from metastatic that do not have the primary tissue counterpart
+        qry  = "select distinct  sample_barcode_short from metastatic_mutations "
+        rows = search_db(cursor, qry)
+        meta_samples = []
+        if rows:
+            meta_samples = [row[0] for row in rows if row[0][:-3] not in primary_sample_patients]
+            duplicates   = [row[0] for row in rows if row[0][:-3]  in primary_sample_patients]
+
+    return [primary_samples, meta_samples, duplicates]
+
+#########################################
+def get_count(cursor, qry):
+
+    count = 0
+    rows = search_db(cursor, qry)
+    if not rows:
+        count = 0
+    else:
+        count = rows[0][0]
+
+    return count
+
+#########################################
+def mut_freqs (cursor, db_name, metastatic_samples, duplicate_primary_meta_samples, gene):
+    non_silent_ct = 0
+    silent_ct     = 0
+    switch_to_db (cursor, db_name)
+
+    qry  = "select count(1) from somatic_mutations "
+    qry += "where hugo_symbol='%s' " % gene
+
+    qry_non    =  qry + "and not variant_classification in ('Silent', 'RNA') "
+    non_silent_ct += get_count(cursor,qry_non)
+
+    qry_silent =  qry + "and variant_classification in ('Silent', 'RNA')"
+    silent_ct += get_count(cursor,qry_silent)
+
+    if use_metastatic and metastatic_samples:
+        qry  = "select count(1) from metastatic_mutations "
+        qry += "where hugo_symbol='%s' " % gene
+        if duplicate_primary_meta_samples:
+            duplicates_string = ', '.join( duplicate_primary_meta_samples)
+            qry += "and not find_in_set(sample_barcode_short, '%s') " % duplicates_string
+
+        qry_non    =  qry + "and not variant_classification in ('Silent', 'RNA') "
+        non_silent_ct += get_count(cursor,qry_non)
+
+        qry_silent =  qry + "and variant_classification in ('Silent', 'RNA')"
+        silent_ct += get_count(cursor,qry_silent)
+
+    return [silent_ct, non_silent_ct]
 
 #########################################
 def main():
@@ -289,25 +329,38 @@ def main():
 
     gene_list = [ x.upper() for x in sys.argv[1:] ]
 
+    primary_samples = {}
+    meta_samples    = {}
+    duplicates      = {}
+    for db_name in db_names:
+        [primary_samples[db_name], meta_samples[db_name], duplicates[db_name]] = find_uniq_metastatic(cursor, db_name)
+
+
     non_silent_freq = {}
     for gene in gene_list:
         non_silent_freq[gene] = {}
         for db_name in db_names:
-            [silent_ct, non_silent_ct,  number_of_patients] =  mut_freqs(cursor, db_name, gene)
+            [silent_ct, non_silent_ct] =  mut_freqs(cursor, db_name, meta_samples[db_name], duplicates[db_name], gene)
+            number_of_patients = len(primary_samples[db_name])
+            if use_metastatic: number_of_patients += len(meta_samples)
             non_silent_freq[gene][db_name] = float(non_silent_ct)/number_of_patients
-            print  "%5s  %5s  %5d  %4d  %4d  %5.3f " % (gene,  db_name, number_of_patients, non_silent_ct, number_of_patients, non_silent_freq[gene][db_name] )
+            #if verbose: print  "%5s  %5s  %5d  %4d  %4d  %5.3f " % (gene,  db_name, number_of_patients, non_silent_ct, number_of_patients, non_silent_freq[gene][db_name] )
 
     # filter databases to have the requisite  minimal frequency of functional mutations
     # in both genes
     [gene1, gene2] = gene_list
-    #for min_freq in [ 0.019, 0.009, 0.01, 0.0,  -1.0]:
-    for min_freq in [ 0.0]:
+    for min_freq in [ 0.02, 0.01, 0.001, 0.0,  -1.0]:
+    #for min_freq in [0.0,  -1.0]:
         filtered_db_list = [db_name for db_name in db_names if
                             non_silent_freq[gene1][db_name] > min_freq and  non_silent_freq[gene2][db_name] > min_freq]
         print
         print "==================================================================="
-        print min_freq, filtered_db_list
-        coappearance_stats (cursor, filtered_db_list, gene_list, full_name)
+        if min_freq<0:
+            print "min freq of nonsilent mutations: any"
+        else:
+            print "min freq of nonsilent mutations > %.1f%%" %  (min_freq*100)
+        print "tumors: ", ", ".join(filtered_db_list)
+        coappearance_stats (cursor, filtered_db_list, primary_samples, meta_samples, gene_list, full_name)
 
     cursor.close()
     db.close()

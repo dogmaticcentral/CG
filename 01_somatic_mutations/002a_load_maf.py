@@ -180,7 +180,7 @@ def load_maf (cursor, db_name, required_fields, maffile, table):
     elif table == "metastatic_mutations":
         source_codes = ['06']
     else:
-        print "I don't know how to hadndle ", table, " sample type"
+        print "I don't know how to handle ", table, " sample type"
         exit(1)
 
     inff = open(maffile, "r")
@@ -287,11 +287,12 @@ def main():
         exit(1)
 
 
-    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD","ESCA", "FPPP", "GBM", "HNSC", "KICH" ,"KIRC","KIRP",
-                 "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
+    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
+                 "KIRP", "LAML", "LGG",  "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    #db_names  = ["ACC"]
+    db_names  = [ "PAAD", "PCPG", "PRAD", "REA",
+                 "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
     for db_name in db_names:
         # check db exists
@@ -311,7 +312,7 @@ def main():
             print table, " found in ", db_name
         else:
             print table, " not found in ", db_name
-            exit(1)
+            continue
 
         # if there is a nonexistent field from the ones that we require, drop the whole dataset
         # (we want only the cases where the mutation is traceable back to the nucleotide position in cDNA,

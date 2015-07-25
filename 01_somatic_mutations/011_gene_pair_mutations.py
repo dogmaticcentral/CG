@@ -28,7 +28,7 @@ def main():
                  "KIRP","LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    table = 'somatic_mutations'
+    table = 'metastatic_mutations'
 
     for db_name in db_names:
         print "######################################"
@@ -42,6 +42,13 @@ def main():
         print  rows[0][0]
 
         if not rows[0][0]: continue
+
+        ############################
+        print "number of patients:",
+        qry  = "select distinct  sample_barcode_short from somatic_mutations "
+        rows = search_db(cursor, qry)
+        number_of_patients =  len(rows)
+        print number_of_patients
 
         ############################
         qry = "select  variant_classification, aa_change, sample_barcode_short "
