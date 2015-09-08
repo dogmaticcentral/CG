@@ -268,7 +268,7 @@ def process_data_set (cursor, db_name, gene_list, outf):
     toyset = ['PTEN'] # brca -loss
     toyset = ['CDKN2A'] # melanoma
     #toyset = sample(gene_list, 100)
-    toyset = ['TP53', 'RPL5', 'RPL11', 'WNT7A', 'MDM2']
+    toyset = ["AKAP13", "ESR1", "HAND2", "PRKACA", "PRKAR2A", "PRKAR2B", "PRKCA"]
 
 
     for symbol in toyset:

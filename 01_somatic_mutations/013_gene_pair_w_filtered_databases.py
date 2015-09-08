@@ -8,8 +8,8 @@ from   tcga_utils.mysql   import  *
 from random import randrange, sample
 from scipy  import stats
 
-use_metastatic =  True
-verbose        =  False
+use_metastatic =  False
+verbose        =  True
 #########################################
 def simulation (M, Nr, Nb, l, number_of_iterations):
     
@@ -213,9 +213,9 @@ def coappearance_stats (cursor, db_list, primary_samples, metastatic_samples, ge
         print "######################################"
         print "pan-cancer"
     print >> outf, "number of samples:", pancan_samples
-    print >> outf, " %8s   %4s  %4s   %8s  %4s  %4s   %15s  %15s  %15s  %15s  %15s  %15s" %  ("gene1", "#muts1", "#pts1", "gene2", "#muts2", "#pts2",
-                                                                "co-appearance", "expected no", "expected no", "pval of <=", "pval of >=", "pval fisher")
-    print >> outf, " %8s   %4s  %4s   %8s  %4s  %4s   %15s        %15s  %15s  %15s  %15s  %15s" %  ("", "", "", "", "", "", "", "of co-app (expr)","of co-app (sim)", "", "", "")
+    print >> outf, " %8s   %4s  %4s   %8s  %4s  %4s   %15s  %15s  %15s  %15s " %  ("gene1", "#muts1", "#pts1", "gene2", "#muts2", "#pts2",
+                                                                "co-appearance", "expected",  "pval of <=", "pval of >=")
+    #print >> outf, " %8s   %4s  %4s   %8s  %4s  %4s   %15s        %15s  %15s  %15s  %15s  %15s" %  ("", "", "", "", "", "", "", "of co-app (expr)","of co-app (sim)", "", "", "")
 
     for i in range (len(gene_list)):
         gene1 = gene_list[i]
@@ -227,18 +227,19 @@ def coappearance_stats (cursor, db_list, primary_samples, metastatic_samples, ge
             appears_together = pancan_coappearance[mut_key]
             ct2 = pancan_ct[gene2]
             pt2 = pancan_pt[gene2]
-            number_of_iterations = 2*pancan_samples
+            #number_of_iterations = 2*pancan_samples
             #[avg, pval_le, pval_ge]  = simulation (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
-            cmd = "coapp_sim  %d  %d    %d  %d   %d   "  % (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
-            [avg, pval_le, pval_ge] = [float(x) for x in commands.getoutput(cmd).split()]
+            #cmd = "coapp_sim  %d  %d    %d  %d   %d   "  % (pancan_samples, ct1, ct2, appears_together, number_of_iterations)
+            #[avg, pval_le, pval_ge] = [float(x) for x in commands.getoutput(cmd).split()]
             a = pt2 -  appears_together                     # rpl5 mutated and p53 wt
             b = pancan_samples - pt1 - pt2 + appears_together # rpl5 wt and p53 wt (in pt1 andp2 we subtracted the overlap twice
             c = appears_together                        # rpl5 mutated and p53 mutated
             d = pt1 - appears_together                    # rpl5 wt and p53  mutated
-            [odds,pval_fisher] = stats.fisher_exact([[a, b], [c, d]], "greater")
-            print >> outf,  " %8s   %4d  %4d   %8s  %4d %4d  %15d  %15.2f  %15.2f  %15.4f  %15.4f   %15.4f"  % ( gene1, ct1, pt1, gene2, ct2, pt2,
-                                                                                               appears_together, expected (ct1, ct2, pancan_samples),
-                                                                                               avg, pval_le, pval_ge, pval_fisher)
+            [odds,pval_fisher_le] = stats.fisher_exact([[a, b], [c, d]], "greater")
+            [odds,pval_fisher_ge] = stats.fisher_exact([[a, b], [c, d]], "less")
+            print >> outf,  " %8s   %4d  %4d   %8s  %4d %4d  %15d  %15.2f  %15.2f  %15.4f  "  % ( gene1, ct1, pt1, gene2, ct2, pt2,
+                                                                                               appears_together, float(pt1)*pt2/pancan_samples,
+                                                                                               pval_fisher_le, pval_fisher_ge)
 
 
 #########################################

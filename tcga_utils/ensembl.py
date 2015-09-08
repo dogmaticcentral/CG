@@ -5,6 +5,30 @@ from   mysql import search_db, switch_to_db
 from   exon  import Exon
 import commands
 
+#########################################
+def silent_proportion(cursor, gene):
+
+
+    qry  = "select count(1) from somatic_mutations "
+    qry += "where hugo_symbol='%s' " % gene
+    qry += "and variant_classification in ('Missense_Mutation', 'Nonstop_Mutation', 'Nonsense_Mutation')"
+    rows = search_db(cursor, qry)
+    if not rows:
+        non_silent_ct = 0
+    else:
+        non_silent_ct = rows[0][0]
+
+    qry  = "select count(1) from somatic_mutations "
+    qry += "where hugo_symbol='%s' " % gene
+    qry += "and variant_classification='silent'"
+    rows = search_db(cursor, qry)
+    if not rows:
+        silent_ct = 0
+    else:
+        silent_ct = rows[0][0]
+
+    return [silent_ct, non_silent_ct]
+
 
 #########################################
 def  get_seq_region_ids(cursor):

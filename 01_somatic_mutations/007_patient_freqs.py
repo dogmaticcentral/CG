@@ -1,17 +1,11 @@
 #!/usr/bin/python -u
-# needed the index on hugoSymbol for this to work with any speed:
-# create index hugo_idx on somatic_mutations (hugoSymbol);
 
-
-
-
-import sys, os
-import MySQLdb
-from   tcga_utils.mysql   import  *
 from   tcga_utils.utils   import  *
+from   tcga_utils.ensembl   import  *
 import matplotlib.pyplot as plt
-
+from time import time
 drop_silent = True
+special = "PRKACA"
 
 #########################################
 def rank_message ( gene_name, freq_gene):
@@ -19,59 +13,50 @@ def rank_message ( gene_name, freq_gene):
     if gene_name in freq_gene.keys():
         less_mutated = len( [y for y in  freq_gene.values() if y<freq_gene[gene_name]])
         more_mutated = len( [y for y in  freq_gene.values() if y>freq_gene[gene_name]])
-        rank_msg = "%7s rank:   %4d-%4d  (%.1f%% patients)" % (gene_name, more_mutated, len(freq_gene)-less_mutated, freq_gene[gene_name])
+        rank_msg = "%7s  mutated in %.1f%% patients   (rank: %d-%d)  " % (gene_name, freq_gene[gene_name], more_mutated, len(freq_gene)-less_mutated)
+        middle_range = float(more_mutated + len(freq_gene)-less_mutated)/2.0
     else:
-        rank_msg = "%7s rank:   %4d  (no patients)" %  (gene_name, len(freq_gene))
-    return rank_msg
+        rank_msg = "%7s   rank: %d  (no patients)" %  (gene_name, len(freq_gene))
+        middle_range = -1
+    return [rank_msg, middle_range]
 
 #########################################
-def  live_plot ( title, freq_gene, filename):
+def  live_plot ( title, freq_gene, sorted_genes, filename):
 
-    sorted_genes =  sorted(freq_gene.keys(), key= lambda x: -freq_gene[x])
+
     fig, ax1 = plt.subplots(1, 1)
-    ax1.set_title (title, fontsize=20)
-    ax1.set_xlabel('genes, listed by their rank', fontsize = 24)
+    ax1.set_title (title, fontsize=24)
+    ax1.set_xlabel('genes, listed by their rank', fontsize = 20)
     ax1.set_ylabel('% of patients', fontsize = 24)
-    rpl5_rank_msg  = rank_message('RPL5', freq_gene)
-    rpl11_rank_msg = rank_message('RPL11', freq_gene)
+    if special:
+        [rank_msg, middle_range] = rank_message(special, freq_gene)
     bg_color = (0, 102./255, 204./255)
     ax1.set_axis_bgcolor(bg_color)
     x = range(1,len(sorted_genes)+1)
     y = [freq_gene[gene] for gene in sorted_genes]
-    ax1.plot (x, y, 'b-', lw=1, alpha=0.6, label=rpl5_rank_msg)
-    ax1.plot (x, y, 'r-', lw=1, alpha=0.6, label=rpl11_rank_msg)
+    ylim = min(max(y),10)
+    xlim = len(sorted_genes)
+    if special:
+
+        bbox_props = dict(boxstyle="round", fc="w", ec="0.5", alpha=0.8)
+        ax1.text(xlim*0.9, ylim*0.9, rank_msg, ha="right", va="top", size=14, bbox=bbox_props)
+        if middle_range < 0: middle_range = xlim
+        ax1.annotate ('',  xy=(middle_range, 0),  # use the axes data coordinate system
+                xytext=(middle_range, ylim/2),    # fraction, fraction
+                arrowprops=dict(facecolor='red', shrink=0.05),
+                horizontalalignment='left',
+                verticalalignment='bottom')
+
     ax1.fill_between(x, y,  interpolate=True, color=(255./255,153./255,51./255))
-    ax1.legend()
-    plt.ylim(0,min(max(y),10))
+
+    plt.ylim(0,ylim)
+    plt.xlim(0,xlim)
 
     if filename:
         plt.savefig(filename)
     else:
         plt.show()
 
-#########################################
-def silent_proportion(cursor, gene):
-
-
-    qry  = "select count(1) from somatic_mutations "
-    qry += "where hugo_symbol='%s' " % gene
-    qry += "and variant_classification in ('Missense_Mutation', 'Nonstop_Mutation', 'Nonsense_Mutation')"
-    rows = search_db(cursor, qry)
-    if not rows:
-        non_silent_ct = 0
-    else:
-        non_silent_ct = rows[0][0]
-
-    qry  = "select count(1) from somatic_mutations "
-    qry += "where hugo_symbol='%s' " % gene
-    qry += "and variant_classification='silent'"
-    rows = search_db(cursor, qry)
-    if not rows:
-        silent_ct = 0
-    else:
-        silent_ct = rows[0][0]
-
-    return [silent_ct, non_silent_ct]
 
 
 #########################################
@@ -80,9 +65,9 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    db_names  = ["STAD","ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD","ESCA",  "GBM", "HNSC", "KICH" ,"KIRC",
+    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD","ESCA",  "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP","LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
-                 "SARC", "SKCM",  "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
+                 "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
     #db_names = ["ACC", "GBM", "UVM"]
 
     full_name = read_cancer_names ()
@@ -123,11 +108,32 @@ def main():
         ############################
         print "frequencies reported per gene"
         freq_gene = {}
+        special_dropped = False
+        silent_ct = 0
+        non_silent_ct = 1
+        prev_time = time()
+
+        if special and drop_silent:
+            [silent_ct, non_silent_ct] = silent_proportion(cursor, special)
+            if non_silent_ct==0 or float(silent_ct)/non_silent_ct>0.35:
+                if non_silent_ct > 0:
+                    print "dropping", special, "   %.2f" % (float(silent_ct)/non_silent_ct)
+                else:
+                    print "dropping", special, " all silent"
+                special_dropped = True
+                continue
+        ct = 0
         for gene in genes:
+            ct += 1
+            if not ct%1000:
+                print "%4d out of %4d, time for the last 1000: %8.3f s" % (ct, len(genes), time()-prev_time)
+                prev_time = time()
 
             if drop_silent:
                 [silent_ct, non_silent_ct] = silent_proportion(cursor, gene)
-                if non_silent_ct==0 or float(silent_ct)/non_silent_ct>0.15: continue
+                if non_silent_ct==0 or float(silent_ct)/non_silent_ct>0.35:
+                    continue
+
 
             qry  = "select sample_barcode_short, count(sample_barcode_short) from somatic_mutations "
             qry += "where hugo_symbol='%s' " % gene
@@ -140,7 +146,7 @@ def main():
                 no_patients = 0
             if no_patients==0: continue
 
-            if no_patients>total_patients/10:
+            if no_patients>total_patients*0.15:
                 print " %10s   %4d   %6d%%   %3d  %3d   %5.2f" % (gene, no_patients, float(no_patients)/total_patients*100,
                                                       silent_ct, non_silent_ct, float(silent_ct)/non_silent_ct)
 
@@ -153,12 +159,14 @@ def main():
             pancan_non_silent[gene] += non_silent_ct
             freq_gene[gene] = float(no_patients)/total_patients*100
 
+        if special and special_dropped: continue
         ###################################
         # in individual tumor types:
-        if False:
+        if True:
             filename = db_name+"_somatic_freq.png"
             title = full_name[db_name]
-            live_plot (title, freq_gene, "")
+            sorted_genes =  sorted(freq_gene.keys(), key= lambda x: -freq_gene[x])
+            live_plot (title, freq_gene, sorted_genes, filename)
 
     for gene in pancan_freq.keys():
         pancan_freq[gene] /= float(grand_total_patients)
@@ -168,8 +176,13 @@ def main():
     for gene in sorted_genes[:100]:
         print " %10s   %6d%%    %5.2f" % (gene,  pancan_freq[gene], float(pancan_silent[gene])/pancan_non_silent[gene])
 
+    # special interest:
+    if special:
+        gene = special
+        print " %10s   %6d%%    %5.2f  %5d " % (gene,  pancan_freq[gene], float(pancan_silent[gene])/pancan_non_silent[gene], sorted_genes.index(gene))
+
     filename = "pancan_somatic_freq.filtered_for_silent_proportion.png"
-    live_plot ("Pan-cancer statistics", pancan_freq, filename)
+    live_plot ("Pan-cancer statistics", pancan_freq, sorted_genes, filename)
 
     cursor.close()
     db.close()
