@@ -114,13 +114,14 @@ def coappearance_stats (cursor, db_list, primary_samples, metastatic_samples, ge
             mut_key = mkey(gene1, gene2)
             pancan_coappearance[mut_key] = 0
 
+    outf = sys.stdout
+
     for db_name in db_list:
 
         if verbose:
             print "######################################"
             print db_name, full_name[db_name]
         start = time()
-        outf = sys.stdout
         switch_to_db (cursor, db_name)
 
         ############################
@@ -156,7 +157,6 @@ def coappearance_stats (cursor, db_list, primary_samples, metastatic_samples, ge
             qry += " where sample_barcode_short  = '%s' " %  sample_barcode_short
             qry += " and not variant_classification in ('Silent', 'RNA') "
 
-
             rows = search_db (cursor, qry)
             if not rows: continue
 
@@ -186,6 +186,18 @@ def coappearance_stats (cursor, db_list, primary_samples, metastatic_samples, ge
                         co_appearance[mut_key] += 1
 
         pancan_samples += number_of_patients
+
+        ok = True
+        for i in range (len(gene_list)):
+            gene1 = gene_list[i]
+            pt1 = patients_per_gene[gene1]
+            if pt1==0:
+                ok = False
+                break
+
+        if not ok: continue
+
+
         if verbose:
             print >> outf, "number of different patients:", number_of_patients
             print >> outf, "number of functional mutations in codons (not silent and not 'RNA')", total_muts
@@ -206,9 +218,12 @@ def coappearance_stats (cursor, db_list, primary_samples, metastatic_samples, ge
                 pt2 = patients_per_gene[gene2]
                 if verbose:
                     print >> outf,  "%8s   %4d   %4d   %8s  %4d    %4d  " %  (gene1, pt1, ct1, gene2, pt2, ct2),
-                    print >> outf,  "%15d    %15.2f" %  ( co_appearance[mut_key], expected (ct1, ct2, number_of_patients))
+                    print >> outf,  "%15d    %15.2f" %  (co_appearance[mut_key], expected (ct1, ct2, number_of_patients))
 
         if verbose: print "db done in %8.2f min" % ( (time() - start)/60 )
+
+    if pancan_samples==0: return
+
     if verbose:
         print "######################################"
         print "pan-cancer"
@@ -319,7 +334,6 @@ def main():
     # unbuffered output
     #sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
-    
     db     = connect_to_mysql()
     cursor = db.cursor()
 

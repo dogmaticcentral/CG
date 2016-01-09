@@ -28,7 +28,9 @@ def main():
                  "KIRP","LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
+
     table = 'somatic_mutations'
+    table = 'metastatic_mutations'
 
     for db_name in db_names:
         print "######################################"

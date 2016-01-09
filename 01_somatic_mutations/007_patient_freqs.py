@@ -5,7 +5,7 @@ from   tcga_utils.ensembl   import  *
 import matplotlib.pyplot as plt
 from time import time
 drop_silent = True
-special = "PRKACA"
+special = "RPL5"
 
 #########################################
 def rank_message ( gene_name, freq_gene):
@@ -68,7 +68,7 @@ def main():
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD","ESCA",  "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP","LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
-    #db_names = ["ACC", "GBM", "UVM"]
+    db_names = ["COAD"]
 
     full_name = read_cancer_names ()
     pancan_freq = {}
@@ -113,15 +113,6 @@ def main():
         non_silent_ct = 1
         prev_time = time()
 
-        if special and drop_silent:
-            [silent_ct, non_silent_ct] = silent_proportion(cursor, special)
-            if non_silent_ct==0 or float(silent_ct)/non_silent_ct>0.35:
-                if non_silent_ct > 0:
-                    print "dropping", special, "   %.2f" % (float(silent_ct)/non_silent_ct)
-                else:
-                    print "dropping", special, " all silent"
-                special_dropped = True
-                continue
         ct = 0
         for gene in genes:
             ct += 1
@@ -131,9 +122,8 @@ def main():
 
             if drop_silent:
                 [silent_ct, non_silent_ct] = silent_proportion(cursor, gene)
-                if non_silent_ct==0 or float(silent_ct)/non_silent_ct>0.35:
+                if non_silent_ct==0 or float(silent_ct)/non_silent_ct>0.15:
                     continue
-
 
             qry  = "select sample_barcode_short, count(sample_barcode_short) from somatic_mutations "
             qry += "where hugo_symbol='%s' " % gene
@@ -174,12 +164,15 @@ def main():
 
     sorted_genes =  sorted(pancan_freq.keys(), key= lambda x: -pancan_freq[x])
     for gene in sorted_genes[:100]:
-        print " %10s   %6d%%    %5.2f" % (gene,  pancan_freq[gene], float(pancan_silent[gene])/pancan_non_silent[gene])
+        print " %10s   %6d%%    %5.2f" % (gene,  round(pancan_freq[gene]), float(pancan_silent[gene])/pancan_non_silent[gene])
 
     # special interest:
     if special:
         gene = special
-        print " %10s   %6d%%    %5.2f  %5d " % (gene,  pancan_freq[gene], float(pancan_silent[gene])/pancan_non_silent[gene], sorted_genes.index(gene))
+        print " %10s   %6d%%    %5.2f   %3d  %3d  %5d " % (gene,  round(pancan_freq[gene]),
+                                                          float(pancan_silent[gene])/pancan_non_silent[gene],
+                                                          pancan_silent[gene], pancan_non_silent[gene],
+                                                          sorted_genes.index(gene))
 
     filename = "pancan_somatic_freq.filtered_for_silent_proportion.png"
     live_plot ("Pan-cancer statistics", pancan_freq, sorted_genes, filename)

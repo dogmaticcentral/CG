@@ -35,7 +35,6 @@ def main():
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
 
-   
     table = 'somatic_mutations'
 
     for db_name in db_names:
