@@ -44,10 +44,10 @@ def main():
 
     root = 'https://tcga-data.nci.nih.gov/tcgafiles/ftp_auth/distro_ftpusers/anonymous/tumor'
 
-    local_dir = '/Users/ivana/databases/TCGA'
+    local_dir = '/mnt/databases/TCGA'
     updating_somatic_mutations = True
     if target_set == 'mutations':
-        file_names = open('../01_somatic_mutations/mutation_files.txt')
+        file_names = open('mutation_files.txt')
     else:
         file_names = open('expression_files.txt')
     all_files = {}

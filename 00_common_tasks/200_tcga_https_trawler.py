@@ -7,7 +7,8 @@
 #
 #
 import requests
-from BeautifulSoup import BeautifulSoup
+#from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 # Set security warning to always go off by default.
 import warnings
