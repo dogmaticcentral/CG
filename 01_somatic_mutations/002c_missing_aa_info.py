@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-
 import MySQLdb
 from sets import Set
 from   tcga_utils.mysql   import  *
@@ -16,9 +15,10 @@ def main():
     table_name = 'somatic_mutations'
     gene_names  = ['RPL5', 'RPL11','TP53']
 
-    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD","ESCA", "FPPP", "GBM", "HNSC", "KICH" ,"KIRC","KIRP",
-                 "LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
+    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
+                 "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
+
     if False:
         for db_name in db_names:
             print " ** ", db_name

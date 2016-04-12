@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
+import os.path
 from sets import Set
-
-from   tcga_utils.mysql   import  *
+from tcga_utils.mysql   import  *
 
 
 #########################################
@@ -170,6 +170,10 @@ from time import time
 
 def load_maf (cursor, db_name, required_fields, maffile, table):
 
+    if not os.path.isfile(maffile):
+        print "not found: "
+        print maffile 
+        exit(1)
     cmd = "wc  -l  " + maffile
     nol = int(commands.getstatusoutput(cmd)[1].split()[0]) -1
     print "\t number of entries:  %d " % nol
@@ -275,7 +279,7 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    sample_type = "metastatic"
+    sample_type = "primary"
 
 
     if sample_type == "primary":
@@ -288,11 +292,9 @@ def main():
 
 
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
-                 "KIRP", "LAML", "LGG",  "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
+                 "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    db_names  = [ "PAAD", "PCPG", "PRAD", "REA",
-                 "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
     for db_name in db_names:
         # check db exists
@@ -319,7 +321,10 @@ def main():
         # and for several 'blacklisted' datasets this is not the case)
         required_fields = find_existing_fields(cursor, db_name, table)
 
-        db_dir  = '/Users/ivana/databases/TCGA/' + db_name
+        db_dir  = '/mnt/databases/TCGA/' + db_name
+        if not  os.path.isdir(db_dir):
+            print "directory " + db_dir + " not found"
+            exit(1)
         ret       = commands.getoutput('find ' + db_dir + ' -name "*.maf"')
         maf_files = ret.split('\n')
         for maffile in maf_files:

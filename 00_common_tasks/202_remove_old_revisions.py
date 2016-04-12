@@ -29,7 +29,7 @@ import os, shutil
 #########################################
 def main():
 
-    local_dir = '/Users/ivana/databases/TCGA'
+    local_dir = '/mnt/databases/TCGA'
     updating_somatic_mutations = True
 
     for tumor_short in os.listdir(local_dir):

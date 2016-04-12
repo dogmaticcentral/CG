@@ -29,7 +29,6 @@
 import sys, os
 import MySQLdb
 from   tcga_utils.mysql   import  *
-from scipy import stats
 
 verbose = False
 

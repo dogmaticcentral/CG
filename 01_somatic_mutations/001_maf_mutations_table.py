@@ -88,13 +88,14 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    mutations_table = 'metastatic_mutations'
+    mutations_table = 'somatic_mutations'
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
     # I don't want to start this by mistake - remove comment and put in db names as needed
-    db_names  = []
+    # print "please comment out if you are sure you want to fiddle with the database"
+    # exit(1)
 
     for db_name in db_names:
         # check db exists

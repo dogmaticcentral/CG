@@ -2,8 +2,8 @@
 
 # to speed up things make index:  (int 01_maf_somatic_mutations_table.sql)
 # create index mutation_idx on somatic_mutations (tumor_sample_barcode, chromosome, strand, start_position)
-# note: I am assuming then that no tumot will have the exact same mutation in both alleles, for the simple reason that I do nto see
-# how would the thwo entried in the database then be distinguished from one another
+# note: I am assuming then that no tumor will have the exact same mutation in both alleles, for the simple reason that I do nto see
+# how would the two entries in the database then be distinguished from one another
 # (rather if tumor_seq_allele1 == tumor_seq_allele2 != match_norm_seq_allele1  and tumor_seq_allele2 != match_norm_seq_allele2
 # then I have somehting like that)
 
@@ -84,7 +84,7 @@ def main():
     else:
         print table, " not found in ", db_name
 
-    annotation_file = '/Users/ivana/databases/TCGA/tcga_annotations.txt'
+    annotation_file = '/mnt/databases/TCGA/tcga_annotations.txt'
     inf = open(annotation_file)
     for line in inf:
         if line[0] == '%': continue
