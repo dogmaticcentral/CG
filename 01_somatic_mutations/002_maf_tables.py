@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-
-
 import MySQLdb
 from   tcga_utils.mysql   import  *
 import commands
@@ -9,13 +7,25 @@ import commands
  
 
 #########################################
-def make_mutations_table(cursor, db_name, mutations_table):
-
+def make_meta_table(cursor, db_name, meta_table):
+    
     switch_to_db (cursor, db_name)
-    qry = "select database()"
+    qry = ""
+    qry += "  CREATE TABLE  %s (" % meta_table
+    qry += "     id INT NOT NULL AUTO_INCREMENT, "
+    qry += "	 file_name BLOB NOT NULL, "
+    qry += "	 aa_change VARCHAR (100), "
+    qry += "	 PRIMARY KEY (id) "
+    qry += ") ENGINE=MyISAM"
     rows = search_db(cursor, qry)
     print qry
     print rows
+
+    
+#########################################
+def make_mutations_table(cursor, db_name, mutations_table):
+
+    switch_to_db (cursor, db_name)
 
     qry = ""
     qry += "  CREATE TABLE  %s (" % mutations_table
@@ -88,14 +98,10 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    mutations_table = 'somatic_mutations'
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    # I don't want to start this by mistake - remove comment and put in db names as needed
-    # print "please comment out if you are sure you want to fiddle with the database"
-    # exit(1)
 
     for db_name in db_names:
         # check db exists
@@ -116,24 +122,24 @@ def main():
         print qry
         print rows
       
-
-        if ( check_table_exists (cursor, db_name, mutations_table)):
-            print mutations_table, " found in ", db_name
-
-
-            # if you really want to start from scratch, uncomment
-            #qry = "drop table %s "  % mutations_table
-            #rows = search_db(cursor, qry)
+        meta_table = "mutations_meta"
+        if ( check_table_exists (cursor, db_name, meta_table)):
+            print meta_table, " found in ", db_name
         else:
-            print mutations_table, " not found in ", db_name
-            
-            make_mutations_table(cursor, db_name, mutations_table)
-            qry = ""
-            qry += "create index variant_idx on %s (hugo_symbol, variant_classification)" % mutations_table
-            rows = search_db(cursor, qry)
-            print qry
-            print rows
+            make_meta_table(cursor, db_name, meta_table)
 
+        for mutations_table in ( 'somatic_mutations', 'metastatic_mutations'):
+            if ( check_table_exists (cursor, db_name, mutations_table)):
+                print mutations_table, " found in ", db_name
+            else:
+                print mutations_table, " not found in ", db_name
+            
+                make_mutations_table(cursor, db_name, mutations_table)
+                qry = ""
+                qry += "create index variant_idx on %s (hugo_symbol, variant_classification)" % mutations_table
+                rows = search_db(cursor, qry)
+                print qry
+                print rows
 
 
     cursor.close()

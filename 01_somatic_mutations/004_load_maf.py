@@ -187,6 +187,7 @@ def load_maf (cursor, db_name, required_fields, maffile, table):
         print "I don't know how to handle ", table, " sample type"
         exit(1)
 
+
     inff = open(maffile, "r")
     missing_fields = []
     header_fields  = []
