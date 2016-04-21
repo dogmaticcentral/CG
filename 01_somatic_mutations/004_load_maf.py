@@ -3,19 +3,8 @@
 import os.path
 from sets import Set
 from tcga_utils.mysql   import  *
+from tcga_utils.utils   import  find_required_fields
 
-
-#########################################
-def find_existing_fields(cursor, db_name, table):
-
-    qry  = "describe %s " % table
-    rows = search_db (cursor, qry)
-    if not rows:
-        print "%s not found in  %s" % (table, db_name)
-        exit(1)
-    # the first header field is 'id' - this is entry id in the table
-    existing_fields = [row[0] for row in rows[1:]]
-    return existing_fields
 
 #########################################
 def insert_into_db (cursor, fields, table):

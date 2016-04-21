@@ -2,10 +2,18 @@ import MySQLdb, commands, re, os, time
 from mysql import *
 
 ################################################################################################
-def process_header_line(headerline):
+def process_header_line(maffile):
     
-    if len(headerline)==0: return []
+    inff = open(maffile, "r")
+    headerline = ""
+    for line in inff:
+        if line.isspace(): continue
+        if line[0]=='#': continue
+        headerline = line.rstrip()
+        break # the first line that is not the comment should be the header
+    inff.close()
 
+    if len(headerline)==0: return []
     header_fields = [x.lower() for x in headerline.split('\t')]
     # translate the header nomenclature to what we expect to see:
     for i in range(len(header_fields)):
@@ -27,7 +35,7 @@ def process_header_line(headerline):
 # Required_fields are the absolute minimum we need to 
 # reconstruct the mutation - that they are missing  should not happen at all
 def get_required_fields ():
-    return ['start_position',  'tumor_seq_allele1', 'tumor_seq_allele2',
+    return ['start_position',  'reference_allele', 'tumor_seq_allele1', 'tumor_seq_allele2',
             'match_norm_seq_allele1',  'match_norm_seq_allele2']
  
 ################################################################################################

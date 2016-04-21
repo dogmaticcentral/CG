@@ -14,7 +14,9 @@ def make_meta_table(cursor, db_name, meta_table):
     qry += "  CREATE TABLE  %s (" % meta_table
     qry += "     id INT NOT NULL AUTO_INCREMENT, "
     qry += "	 file_name BLOB NOT NULL, "
-    qry += "	 aa_change VARCHAR (100), "
+    qry += "	 quality_check VARCHAR (10), " # pass or fail
+    qry += "	 assembly VARCHAR (10), "
+    qry += "	 diagnostics BLOB, "
     qry += "	 PRIMARY KEY (id) "
     qry += ") ENGINE=MyISAM"
     rows = search_db(cursor, qry)

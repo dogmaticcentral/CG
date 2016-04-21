@@ -266,19 +266,30 @@ def search_db (cursor, qry, verbose=False):
 
 ########
 def connect_to_mysql (user=None, passwd=None, host=None, port=None):
-    try:
-        if (user is None):
-            db = MySQLdb.connect(user="root")
-        elif (host is None):
-            db = MySQLdb.connect(user=user, passwd=passwd)
-        else:
-            db = MySQLdb.connect(user=user, passwd=passwd, host=host, port=port)
+
+    if user and  os.path.isfile(user):
+        try:
+            mysql_conn_handle = MySQLdb.connect(read_default_file=conf_file)
+        except  MySQLdb.Error, e:
+            print "Error connecting to mysql (%s) " % (e.args[1])
+            sys.exit(1) 
+        return mysql_conn_handle
+    
+    else:
+       
+        try:
+            if (user is None):
+                mysql_conn_handle = MySQLdb.connect(user="root")
+            elif (host is None):
+                mysql_conn_handle = MySQLdb.connect(user=user, passwd=passwd)
+            else:
+                mysql_conn_handle = MySQLdb.connect(user=user, passwd=passwd, host=host, port=port)
             
-    except  MySQLdb.Error, e:
-        print "Error connecting to mysql as %s" % (e.args[1])
-        sys.exit(1)
- 
-    return db
+        except  MySQLdb.Error, e:
+            print "Error connecting to mysql as %s" % (e.args[1])
+            sys.exit(1)
+
+        return mysql_conn_handle
 
 ########
 def connect_to_db (db_name, user=None, passwd=None):

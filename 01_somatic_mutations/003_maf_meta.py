@@ -4,56 +4,96 @@
 import os.path
 from tcga_utils.mysql   import  *
 from tcga_utils.utils   import  *
+from random import  random
 import commands
-
+import urllib2
+from HTMLParser import HTMLParser
+from bs4 import BeautifulSoup
 
 #########################################
 def  find_reference_genome (maffile):
 
     ref_gen = ""
-    # find 10 examples from each chromosome
+    header_fields  = process_header_line(maffile)
+    
+    ch_idx      = header_fields.index('chromosome')
+    start_idx   = header_fields.index('start_position')
+    end_idx     = header_fields.index('end_position')
+    ref_al_idx  = header_fields.index('reference_allele')
+    al1_idx     = header_fields.index('tumor_seq_allele1')
+    al2_idx     = header_fields.index('tumor_seq_allele2')
+    norm1_idx   = header_fields.index('match_norm_seq_allele1')
+    norm2_idx   = header_fields.index('match_norm_seq_allele2')
+
+    assemblies = ["hg38", "hg19", "hg18","hg17"]
+    number_of_correct_matches = {}
+    for assembly in assemblies:
+        number_of_correct_matches[assembly] = 0
+    parser = HTMLParser()
+    # find random examples from each chromosome
     inff = open(maffile, "r")
+    sample_size = 0
     line_ct = 0
     for line in inff:
+        if line.isspace(): continue
+        if line[0]=='#': continue
         line_ct += 1
-        if  line_ct%1000: continue
+        if line_ct <= 1: continue
+        if random() > 0.01: continue
+        field  = line.split("\t")
+        chrom = field[ch_idx]
+        start = field[start_idx]
+        end   = field[end_idx]
+        ref   = field[ref_al_idx]
+        al1   = field[al1_idx]
+        al2   = field[al2_idx]
+        norm1 = field[norm1_idx]
+        norm2 = field[norm2_idx]
+        #print chrom, start, end, al1, al2, norm1, norm2
+        sample_size += 1
+        for assembly in assemblies:
+            das_request  = "http://genome.ucsc.edu/cgi-bin/das/%s/" % assembly
+            das_request += "dna?segment=chr%s:%s,%s" % (chrom, start, end)
+            print das_request
+            response = urllib2.urlopen(das_request)
+            html = response.read()
+            soup = BeautifulSoup(html, 'html.parser')
+            if not soup or not soup.dna or not soup.dna.string: continue
+            #print " ** ", ref.upper(), soup.dna.string.strip().upper()
+            if ref.upper() == soup.dna.string.strip().upper():
+                 number_of_correct_matches[assembly] += 1
+        if sample_size >= 100: break
+        
     inff.close()
+
+    max_matches    = max(number_of_correct_matches.values())
+    max_assemblies = filter (lambda x:  number_of_correct_matches[x] == max_matches, assemblies)
+    if len(max_assemblies) > 1:        
+        return ["fail",  "multiple genome  matches:" + " ".join(max_assemblies)]
+       
+
+    ref_gen  = max_assemblies[0]
     # try matching using ucsf server
     # use the assembly with the smallest amount of failures
     # if both assemblies fail in more htan 10% of cases - abort
-    return ref_gen
+    return ["pass", ref_gen]
 
-
-#########################################
-def store_meta_info (cursor,  maf_name, ref_gen):
-
-    return
 
 #########################################
 def check_headers (maffile, required_fields, expected_fields):
 
     # required_fields are the absolute minimum we need to 
-    # reconstruct the mutation - that they are missing  should not happen at all    
-    inff = open(maffile, "r")
-    missing_fields = []
-    headerline = ""
-    for line in inff:
-        if line.isspace(): continue
-        if line[0]=='#': continue
-        headerline = line.rstrip()
-        break # the first line that is not the comment should be the header
-    inff.close()
-    
-    header_fields  = process_header_line(headerline)
+    # reconstruct the mutation - that they are missing  should not happen at all       
+    header_fields  = process_header_line(maffile)
     if len(header_fields) == 0:
         return ["fail", "no header found"]
     missing_fields = filter (lambda x: not x in header_fields, required_fields)
     if len(missing_fields) > 0:
-        return ["fail", "missing fields:  " + " ".join(missing_fields)]
+        return ["fail", "missing required fields:  " + " ".join(missing_fields)]
 
     missing_fields = filter (lambda x: not x in header_fields, expected_fields)
     if len(missing_fields) > 0:
-        return ["warn", "expected fields:  " + " ".join(missing_fields)]
+        return ["warn", "missing expected fields:  " + " ".join(missing_fields)]
    
     return ["pass", ""]
 
@@ -72,14 +112,7 @@ def check_health (maffile):
     
     inff = open(maffile, "r")
     missing_fields = []
-    headerline = ""
-    for line in inff:
-        if line.isspace(): continue
-        if line[0]=='#': continue
-        headerline = line.rstrip()
-        break # the first line that is not the comment should be the header
-    
-    header_fields  = process_header_line(headerline)
+    header_fields  = process_header_line(maffile)
     if len(header_fields) == 0:
         # though we shold have discovered this previously ....
         return ["fail", "no header found"]
@@ -120,7 +153,33 @@ def check_health (maffile):
     return ["pass", ""]
 
 
+#########################################
+def store_meta_info (cursor, bare_filename, overall_diagnostics):
+    print
+    print "storing meta info for ", bare_filename
+    for diag in overall_diagnostics:
+        print diag
 
+    fixed_fields  = {}
+    update_fields = {}
+
+    fixed_fields['file_name'] = bare_filename;
+    if overall_diagnostics[-1][0] == "pass":
+        update_fields['quality_check'] = "pass"
+        update_fields['assembly'] = overall_diagnostics[-1][1]
+        overall_diagnostics.pop()
+    else:
+        update_fields['quality_check'] = "fail"
+        
+    if len(overall_diagnostics)>0 :
+        update_fields['diagnostics'] = ";".join(overall_diagnostics)
+        
+    store_or_update (cursor, "mutations_meta", fixed_fields, update_fields)
+    return
+
+
+
+##################################################################################
 ##################################################################################
 def main():
     
@@ -153,58 +212,55 @@ def main():
         expected_fields = get_expected_fields (cursor, db_name, "somatic_mutations")
     
         for maffile in maf_files:
-            print '\n\t processing:', bare_filename
-            ref_genome = ""
             bare_filename =  maffile.split('/')[-1]
             overall_diagnostics = []
 
-            if "automated" in bare_file.lower():
-                overall_diagnostics.append(["warn", "automated"])
-            elif  "curated" in bare_file.lower():
-                overall_diagnostics.append(["warn", "curated"])
-            
+            # first make sure that the file is not empty - in which case
+            # we might have to go and check what's wiht the download
             if os.path.getsize(maffile)==0:
-                diagnostics = ["fail", "file empty"]
+                overall_diagnostics.append(["fail", "file empty"])
                 ref_genome  = ""
-                #store (cursor, barefile, diagnostics, ref_genome)
-                print "\t storing: ",  [diagnostics], ref_genome
+                store_meta_info (cursor, bare_filename, overall_diagnostics)
                 continue
             
+            # we'll not deal with mitochondiral mutations for now
+            if "mitochondria" in bare_filename.lower():
+                overall_diagnostics.append(["fail", "mitochondrial"])
+                store_meta_info (cursor, bare_filename, overall_diagnostics)
+                continue
+                
+            # might come handy: is this data curated or not?
+            if "automated" in bare_filename.lower():
+                overall_diagnostics.append(["warn", "automated"])
+            elif  "curated" in bare_filename.lower():
+                overall_diagnostics.append(["warn", "curated"])
+           
             # check if the file contains  all the info we need and hope to have
             diagnostics = check_headers (maffile, required_fields, expected_fields)
-            print "\t diag: ", [diagnostics]
+            if diagnostics[0] != "pass":
+                overall_diagnostics.append(diagnostics)
             if diagnostics[0] == "fail":
                 ref_genome  = ""
-                #store (cursor, barefile, diagnostics, ref_genome)
+                store_meta_info (cursor, bare_filename, overall_diagnostics)
                 continue
-            elif diagnostics[0] == "warn":
-                overall_diagnostics.append(diagnostics)
-
+ 
             
             # I am aware of one way in which the file can be corrupt, so I am checking for it
             diagnostics = check_health (maffile)
-            print "\t diag: ", [diagnostics]
+            if diagnostics[0] != "pass":
+                overall_diagnostics.append(diagnostics)
             if diagnostics[0] == "fail":
                 ref_genome  = ""
-                #store (cursor, barefile, diagnostics, ref_genome)
+                store (cursor, bare_filename, overall_diagnostics)
                 continue
-            elif diagnostics[0] == "warn":
-                overall_diagnostics.append(diagnostics)
 
-            ref_gen = find_reference_genome (maffile)
-            if not ref_gen:
-                diagnostics = ["fail", "reference genome could not be determined"]
-                overall_diagnostics.append(diagnostics)
-                # if there is no aa_info, and no reference genome, move on to the next file
-                missing = filter (lambda x: "missing" in x[1] and "aa_change" in  x[1], overall_diagnostics)
-                if len(missing) > 0:
-                    continue
-            else:
-                ref_genome = ref_gen
-                diagnostics = ["pass", ""]
-
-            #store (cursor, barefile, diagnostics, ref_genome)
+            diagnostics = find_reference_genome (maffile)
             
+            overall_diagnostics.append(diagnostics)
+ 
+            store_meta_info (cursor, bare_filename, overall_diagnostics)
+            exit(1)
+
             
     cursor.close()
     db.close()
