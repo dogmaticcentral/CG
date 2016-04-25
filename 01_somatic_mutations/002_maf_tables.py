@@ -4,8 +4,6 @@ import MySQLdb
 from   tcga_utils.mysql   import  *
 import commands
 
- 
-
 #########################################
 def make_meta_table(cursor, db_name, meta_table):
     
@@ -23,7 +21,6 @@ def make_meta_table(cursor, db_name, meta_table):
     print qry
     print rows
 
-    
 #########################################
 def make_mutations_table(cursor, db_name, mutations_table):
 
@@ -57,6 +54,8 @@ def make_mutations_table(cursor, db_name, mutations_table):
     qry += "	 verification_status VARCHAR (20), "
     qry += "	 validation_status VARCHAR (20) NOT NULL, "
     qry += "	 mutation_status VARCHAR (50) NOT NULL, "
+    qry += "	 meta_info_index INT (11)  NOT NULL, "
+    qry += "	 conflict BLOB, "
     qry += "	 PRIMARY KEY (id) "
     qry += ") ENGINE=MyISAM"
 
@@ -91,8 +90,6 @@ def add_column_to_mutations_table(cursor, db_name, new_column,  mutations_table)
     rows = search_db(cursor, qry)
     print qry
     print rows
-
-
 
 #########################################
 def main():

@@ -26,9 +26,6 @@ def process_header_line(maffile):
         elif header_fields[i] in ['cdna_change', 'chromchange', 'c_position_wu', 'c_position']:
             header_fields[i] = 'cdna_change'
 
-    # I am adding this one so I do not have to search the database by doing substring comparison
-    header_fields.append('sample_barcode_short')
-
     return header_fields
 
 ################################################################################################
