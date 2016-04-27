@@ -9,7 +9,7 @@ from random import random
 
 
 #########################################
-def update_db (cursor, row_id, update_fields, table):
+def update_db (cursor, table, row_id, update_fields):
 
     qry = "update %s set " % table
     first = True
@@ -46,17 +46,34 @@ def is_useful(fields, header):
     return fields != None and fields.has_key(header) and fields[header] != None and  not fields[header].replace(" ", "") in non_info
 
 #########################################
-def resolve_duplicate (cursor, table, expected_fields, header_fields, existing_rows, new_row):
+def conflict_annotation_updated (existing_fields, conflict_comment, new_id):
+    conflict_annotation = existing_fields['conflict']
+    if not conflict_annotation:
+        conflict_annotation = ""
+    elif len(conflict_annotation) > 0:
+        conflict_annotation += "; "
+    conflict_annotation += "%s with %d" % (conflict_comment, new_id)
+    return conflict_annotation
 
-    new_fields =  make_named_fields(header_fields, new_row)
+#########################################
+def update_conflict_field (cursor, table, existing_row_id, existing_fields, new_id, conflict_comment):
+    conflict_annotation = conflict_annotation_updated (existing_fields, conflict_comment, new_id)
+    update_fields = {'conflict': conflict_annotation}
+    existing_fields['conflict'] = conflict_annotation
+    update_db (cursor, table, existing_row_id, update_fields)
 
-    overall_diagnostics = {}
-    row_ct = 0
-    for existing_row in  existing_rows:
-        row_id = existing_row[0]
-        existing_fields = make_named_fields(expected_fields, existing_row[1:])
+#########################################
+def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields):
+
+    this_is_a_duplicate = False
+    diagnostics = {}
+
+    existing_fields_by_database_id  = dict( zip (map (lambda x: x[0], existing_rows),  map (lambda x: make_named_fields(expected_fields, x[1:]), existing_rows) ))
+
+    # try to diagnose how come we have multiple reports for a mutation starting at a given position
+    for db_id, existing_fields in  existing_fields_by_database_id.iteritems():
         # the end position the same?
-        diagnostics = ""
+        diagnostics[db_id] = ""
         if existing_fields['end_position'] == new_fields['end_position']:
             # are all alleles the same?
             all_alleles_the_same = True
@@ -72,92 +89,98 @@ def resolve_duplicate (cursor, table, expected_fields, header_fields, existing_r
 
             if all_alleles_the_same:
                 if existing_fields['variant_classification'] != new_fields['variant_classification']:
-                    diagnostics = "conflict: different variant classification"
+                    diagnostics[db_id] = "conflict: different variant classification"
                 else:
                     # do both entries have the same aa_change info
                     if new_fields.has_key('aa_change'):
                         if existing_fields['aa_change'] == new_fields['aa_change']:
                             #this is an exact duplicate, do nothing
-                            diagnostics = "move on"
+                            diagnostics[db_id] = "move on"
+                            this_is_a_duplicate = True
+                            break
                         elif is_useful (existing_fields, 'aa_change') and not is_useful (new_fields, 'aa_change'):
-                            diagnostics = "move on: the old has the aa info"
+                            diagnostics[db_id] = "move on: the old has the aa info"
+                            this_is_a_duplicate = True
+                            break
                         elif not is_useful (existing_fields, 'aa_change') and is_useful (new_fields, 'aa_change'):
-                            diagnostics = "use new: it has the aa info"
+                            diagnostics[db_id] = "use new: it has the aa info"
                         else:
-                            diagnostics = "conflict: different aa"
+                            diagnostics[db_id] = "conflict: different aa"
                             # should I be resolving it at this place?
                     else:
-                        diagnostics = "conflict: of unclear origin"
+                        diagnostics[db_id] = "conflict: of unclear origin"
 
             else: # some alleles are different
-                diagnostics = "different alleles;  empty existing: %d, empty new: %d" % (empty_alleles['existing_fields'], empty_alleles['new_fields'])
+                diagnostics[db_id] = "different alleles;  empty existing: %d, empty new: %d      " % (empty_alleles['existing_fields'], empty_alleles['new_fields'])
                 if empty_alleles['existing_fields'] > empty_alleles['new_fields']:
                     # the new entry has more info
-                    diagnostics += "use new"
+                    diagnostics[db_id] += "use new"
                 else:
-                    diagnostics += "move on: keep old"
-
+                    diagnostics[db_id] += "move on: keep old"
+                    this_is_a_duplicate = True
+                    break
 
         else: # the end position is not the same
-            diagnostics = "end positions different   *%s*   *%s* " % ( existing_fields['end_position'], new_fields['end_position'])
+            diagnostics[db_id] = "end positions different   *%s*   *%s* " % ( existing_fields['end_position'], new_fields['end_position'])
             # how could that happen?
             # one of the possibilities (gosh, will I have to go through all of them?)
             # is that a frameshift mutation is interpreted differently
-            if existing_fields['variant_classification'] == new_fields['variant_classification']:
-                if existing_fields['variant_classification'] == 'frame_shift_del' and  one_allele_normal(existing_fields) and  one_allele_normal(new_fields):
+            # hard to find a robust solution
+            if existing_fields['variant_classification'] == 'frame_shift_del' and  one_allele_normal(existing_fields) and one_allele_normal(new_fields):
                     # do nothing, this is a different interpretation of the same mutation
-                    diagnostics = "move on"
-                else:
+                    diagnostics[db_id] = "move on"
+                    this_is_a_duplicate = True
+                    break
+
+            elif not one_allele_normal(existing_fields) and  not one_allele_normal(new_fields):
                     # store, this is possibly compound  heterozygous
-                    diagnostics = "compound heterozygous"
+                    diagnostics[db_id] = "compound heterozygous"
             else:
-                # store, this is possibly compound  heterozygous
-                diagnostics = "compound heterozygous"
+                # I don't know what this is
+                diagnostics[db_id] = "conflict: different length"
 
-        overall_diagnostics[row_ct] = diagnostics
 
-    # if it is a duplicate of any oof the existing entries, we do not have to worry about it any more
-    for row_ct, diagnostics in overall_diagnostics.iteritems():
-        if 'move on' in diagnostics:
-            return "duplicate"  # move on, we already have this info
+    if False and new_fields['start_position'] == 35043650:
+        print
+        print "="*20
+        print
+        for header in new_fields.keys():
+            print "%30s    [ %s ] " % (header, new_fields[header]),
+            for existing_fields in existing_fields_by_database_id.values():
+                print " [ %s ] " % (existing_fields[header]),
+            print
+        print
+        print "this is a duplicate ", this_is_a_duplicate
+        print
+        if this_is_a_duplicate: return "duplicate"
+        for db_id in existing_fields_by_database_id.keys():
+            print db_id, "    ", diagnostics[db_id]
+        print
 
-        if 'use new' in diagnostics:
+    # if it is a duplicate of any of the existing entries, we do not have to worry about it any more
+    if this_is_a_duplicate: return "duplicate"
+
+    for existing_row_id, existing_fields in existing_fields_by_database_id.iteritems():
+        if 'use new' in diagnostics[existing_row_id]:
+            update_fields = new_fields
+            update_db (cursor, table, existing_row_id, update_fields)
             return "to replace"  # better info than what we already have
-        if 'compound' in diagnostics:
-            if random() < 0.1:
-                existing_fields = make_named_fields(expected_fields, existing_rows[row_ct][1:])
-                print
-                print diagnostics
-                for field_name in expected_fields:
-                    print " %30s       %s      %s " % (field_name, existing_fields[field_name], new_fields[field_name])
-                print
-            return "compound"  # store both without alarm
-        else:
-            return "conflict" # store but annotate all as conflict
+        if 'compound' in diagnostics[existing_row_id]:
+            new_id = insert_into_db (cursor, table, new_fields)
+            update_conflict_field (cursor, table, existing_row_id, existing_fields, new_id, "compound")
+            update_conflict_field (cursor, table, new_id, new_fields, existing_row_id, "compound")
+            return "compound"  # store both without alarm - I'm not sure that this ever happens
 
-    return "none"
+    # if we did not return until this point, we have a conflict - the question is with how many rows
+    new_id = -1
+    for existing_row_id, existing_fields in existing_fields_by_database_id.iteritems():
+        if 'conflict' in diagnostics[db_id]:
+            if new_id<0 :   new_id = insert_into_db (cursor, table, new_fields)
+            update_conflict_field (cursor, table, existing_row_id, existing_fields, new_id, "unresolved")
+            # the "new" raw already also became existing by this point
+            update_conflict_field (cursor, table, new_id, new_fields, existing_row_id, "unresolved")
 
-    # if diagnostics:
-    #     if 'compound' in diagnostics: continue
-    #     if 'empty' in diagnostics: continue
-    #     if 'conflict' in diagnostics: continue
-    #     if 'move on' in diagnostics: continue
-    #     if 'use new' in diagnostics: continue
-    #     print "....  " + diagnostics
-    # else:
-    #     print "diagnostics is empty: "
-    #     for field_name in expected_fields:
-    #             print field_name, "*", new_fields[field_name], "*"
-    #     exit(1)
-    #     #       update_db (cursor, row_id, update_fields, table)
-    #
-    #     #     if  not field in non_info: continue
-    #     #     new_field = new_fields[header]
-    #     #     if  new_field  in non_info: continue
-    #     #     update_fields[header] = new_field
-    #     #     #print "replacing |  ", field, " |  with ",  new_field
-    #     #
-
+    return "conflict"
 
 #########################################
 def insert_into_db (cursor, table, fields):
@@ -195,6 +218,14 @@ def insert_into_db (cursor, table, fields):
         search_db (cursor, qry, verbose=True)
         exit(1) # exit, bcs we should not be here
 
+    qry = "select last_insert_id()"
+    rows = search_db (cursor, qry)
+    if not rows:
+        print "last insert id failure (?)"
+        exit(1) # last insert id failure
+
+    return int(rows[0][0])
+
 #########################################
 def make_named_fields (header_fields, fields, expected_fields = None):
 
@@ -204,7 +235,7 @@ def make_named_fields (header_fields, fields, expected_fields = None):
         print "##################################"
         print "fields length mismatch (?)" # it should have been solved by this point
         print len(header_fields), len(fields)
-        exit(1)
+        exit(1) # header field mismatch
 
     for i in range( len(header_fields)):
         header = header_fields[i]
@@ -227,13 +258,15 @@ def store (cursor, table, expected_fields, maf_header_fields, new_row):
     qry += "and start_position = %s  " % start_position
     existing_rows = search_db(cursor, qry)
 
+    new_fields = make_named_fields(maf_header_fields, new_row, expected_fields)
+
+
     if not existing_rows: #this is the first time we a mutation in this place in this patient
-        insert_into_db(cursor, table, make_named_fields(maf_header_fields, new_row, expected_fields))
+        insert_into_db(cursor, table, new_fields)
         return "new"
     else:
-        # do something about duplicates
-        # expected_fields are the actual header in the db table
-        return resolve_duplicate (cursor, table, expected_fields, maf_header_fields, existing_rows, new_row)
+        # do something about possible duplicates
+        return resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields)
 
     return ""
 
@@ -318,10 +351,10 @@ def load_maf (cursor, db_name, table, maffile, meta_id, stats):
     if not os.path.isfile(maffile):
         print "not found: "
         print maffile
-        exit(1)
+        exit(1)  # maffile not found
     cmd = "wc  -l  " + maffile
-    print maffile
     nol = int(commands.getstatusoutput(cmd)[1].split()[0]) -1
+    print "processing %d lines from %s " % (nol, maffile)
 
     tumor_type_ids = []
     if table == "somatic_mutations":
@@ -330,7 +363,7 @@ def load_maf (cursor, db_name, table, maffile, meta_id, stats):
         tumor_type_ids = ['06']
     else:
         print "I don't know how to handle ", table, " sample type"
-        exit(1)
+        exit(1) # unrecognized table name
 
     expected_fields = get_expected_fields(cursor, db_name, table)
     maf_header_fields = process_header_line(maffile)
@@ -341,8 +374,6 @@ def load_maf (cursor, db_name, table, maffile, meta_id, stats):
     first = True
     tot_entries = 0
     type_queried = 0
-    new_entries = 0
-    duplicates = 0
     for line in inff:
         line_ct += 1
         if not line_ct%1000:
@@ -385,14 +416,13 @@ def main():
         table = 'metastatic_mutations'
     else:
         print "I don't know how to hadndle ", sample_type, " sample types"
-        exit(1)
+        exit(1) # unknown sample type
 
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    db_names  = ["ACC"]
-
+    #db_names  = ["ACC"]
 
     for db_name in db_names:
         # check db exists
@@ -400,7 +430,7 @@ def main():
         rows = search_db(cursor, qry)
         if not rows:
             print db_name, "not found"
-            exit(1)
+            exit(1) # db not found
 
         print " ** ", db_name
         switch_to_db (cursor, db_name)
@@ -418,7 +448,7 @@ def main():
         db_dir  = '/mnt/databases/TCGA'
         if not  os.path.isdir(db_dir):
             print "directory " + db_dir + " not found"
-            exit(1)
+            exit(1) # TCGA db dir not found
 
         maf_file = {}
         for row in rows:

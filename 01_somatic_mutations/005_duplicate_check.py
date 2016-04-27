@@ -67,7 +67,7 @@ def main():
             short_barcode = row[0]
             # this is wrong - not taking different cromosomes into accoutn
             qry =  'select chromosome, start_position, count(*) from %s ' % table_name
-            qry += "where sample_barcode_short = '%s' " % short_barcode
+            qry += "where conflict is null and sample_barcode_short = '%s' " % short_barcode
             qry += "group by chromosome, start_position having count(*) > 1 "
             rows2 = search_db (cursor, qry)
             if not rows2: continue
