@@ -59,7 +59,7 @@ def main():
     cursor = db.cursor()
 
     table_name = 'somatic_mutations'
-    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
+    db_names = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
@@ -69,16 +69,6 @@ def main():
         print " ** ", db_name
         switch_to_db (cursor, db_name)
 
-        # header fields:
-        header_fields = []
-        qry = "select column_name from information_schema.columns where "
-        qry += "table_schema='%s' "  % db_name
-        qry += "and table_name = '%s'" % table_name
-        rows = search_db(cursor, qry)
-        for  row in rows:
-            header_fields.append(row[0])
-
- 
         qry  = "select distinct  sample_barcode_short from %s " % table_name
         rows = search_db(cursor, qry)
         per_db_cases = 0

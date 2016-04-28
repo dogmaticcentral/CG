@@ -46,8 +46,8 @@ def update_db (cursor, table, row_id, update_fields):
         first = False
 
     qry += " where id = %d" % int(row_id)
+    rows = search_db (cursor, qry)
 
-    rows   = search_db (cursor, qry)
     # if there is a return,  something went wrong
     if (rows):
         search_db (cursor, qry, verbose=True)
@@ -56,12 +56,11 @@ def update_db (cursor, table, row_id, update_fields):
 #########################################
 def one_allele_normal(field) :
     tumor  = {field['tumor_seq_allele1'], field['tumor_seq_allele2']} # this is a set
-    normal =  {field['match_norm_seq_allele1'], field['match_norm_seq_allele2']}
+    normal = {field['match_norm_seq_allele1'], field['match_norm_seq_allele2']}
     return len(tumor&normal)>0
 
 #########################################
 def is_useful(fields, header):
-
     non_info  = ['missing', '', '.', '-']
     return fields != None and fields.has_key(header) and fields[header] != None and  not fields[header].replace(" ", "") in non_info
 
@@ -85,7 +84,6 @@ def update_conflict_field (cursor, table, existing_row_id, existing_fields, new_
 #########################################
 def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields):
 
-    this_is_a_duplicate = False
     diagnostics = {}
 
     existing_fields_by_database_id  = dict( zip (map (lambda x: x[0], existing_rows),  map (lambda x: make_named_fields(expected_fields, x[1:]), existing_rows) ))
@@ -114,13 +112,11 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
                     # do both entries have the same aa_change info
                     if new_fields.has_key('aa_change'):
                         if existing_fields['aa_change'] == new_fields['aa_change']:
-                            #this is an exact duplicate, do nothing
+                            # this is an exact duplicate, do nothing
                             diagnostics[db_id] = "move on"
-                            this_is_a_duplicate = True
                             break
                         elif is_useful (existing_fields, 'aa_change') and not is_useful (new_fields, 'aa_change'):
                             diagnostics[db_id] = "move on: the old has the aa info"
-                            this_is_a_duplicate = True
                             break
                         elif not is_useful (existing_fields, 'aa_change') and is_useful (new_fields, 'aa_change'):
                             diagnostics[db_id] = "use new: it has the aa info"
@@ -137,8 +133,6 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
                     diagnostics[db_id] += "use new"
                 else:
                     diagnostics[db_id] += "move on: keep old"
-                    this_is_a_duplicate = True
-                    break
 
         else: # the end position is not the same
             diagnostics[db_id] = "end positions different   *%s*   *%s* " % ( existing_fields['end_position'], new_fields['end_position'])
@@ -149,8 +143,6 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
             if existing_fields['variant_classification'] == 'frame_shift_del' and  one_allele_normal(existing_fields) and one_allele_normal(new_fields):
                     # do nothing, this is a different interpretation of the same mutation
                     diagnostics[db_id] = "move on"
-                    this_is_a_duplicate = True
-                    break
 
             elif not one_allele_normal(existing_fields) and  not one_allele_normal(new_fields):
                     # store, this is possibly compound  heterozygous
@@ -178,13 +170,27 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
         print
 
     # if it is a duplicate of any of the existing entries, we do not have to worry about it any more
+    this_is_a_duplicate = len(map (lambda x: "move on" in x, diagnostics.values() ))>0
     if this_is_a_duplicate: return "duplicate"
+
+    there_is_a_conflict  = len(map (lambda x: "conflict" in x, diagnostics.values() ))>0
+
+    replace_row = -1
+    dbids_to_be_replaced = filter (lambda dbid: "use_new" in diagnostics(dbid), existing_fields_by_database_id.keys() )
+    if len(dbids_to_be_replaced)>1:
+        # something's wrong with our boolean algebra
+        print " something's off"
+        exit(1)
+    elif len(dbids_to_be_replaced)==1:
+        # replace old row with new
+        replace_row = dbids_to_be_replaced[0]
+
 
     for existing_row_id, existing_fields in existing_fields_by_database_id.iteritems():
         if 'use new' in diagnostics[existing_row_id]:
             update_fields = new_fields
             update_db (cursor, table, existing_row_id, update_fields)
-            return "to replace"  # better info than what we already have
+            return "replaced"  # better info than what we already have
         if 'compound' in diagnostics[existing_row_id]:
             new_id = insert_into_db (cursor, table, new_fields)
             update_conflict_field (cursor, table, existing_row_id, existing_fields, new_id, "compound")
@@ -442,7 +448,7 @@ def main():
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    #db_names  = ["ACC"]
+    db_names  = ["LGG"]
 
     for db_name in db_names:
         # check db exists
