@@ -22,6 +22,25 @@ from mysql import *
 from mysql import *
 
 ################################################################################################
+def make_named_fields (header_fields, fields, expected_fields = None):
+
+    named_fields = {}
+
+    if len(header_fields) != len(fields) :
+        print "##################################"
+        print "fields length mismatch (?)" # it should have been solved by this point
+        print len(header_fields), len(fields)
+        exit(1) # header field mismatch
+
+    for i in range( len(header_fields)):
+        header = header_fields[i]
+        if expected_fields and not header in expected_fields: continue
+        field = fields[i]
+        named_fields[header] = field
+
+    return named_fields
+
+################################################################################################
 def process_header_line(maffile):
     
     inff = open(maffile, "r")

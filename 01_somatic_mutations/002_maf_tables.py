@@ -147,7 +147,7 @@ def main():
         else:
             make_meta_table(cursor, db_name, meta_table)
 
-        for mutations_table in ( 'somatic_mutations', 'metastatic_mutations'):
+        for mutations_table in ('somatic_mutations', 'metastatic_mutations', 'conflict_mutations'):
             if ( check_table_exists (cursor, db_name, mutations_table)):
                 print mutations_table, " found in ", db_name
             else:

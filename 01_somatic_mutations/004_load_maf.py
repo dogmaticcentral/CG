@@ -20,12 +20,10 @@
 # Contact: ivana.mihalek@gmail.com
 #
 
-# TO DO:  store discarded entries
-
 import os.path
 import re, commands
 from tcga_utils.mysql  import  *
-from tcga_utils.utils  import  get_expected_fields, process_header_line
+from tcga_utils.utils  import  get_expected_fields, process_header_line, make_named_fields
 from time import time
 from random import random
 
@@ -125,15 +123,35 @@ def selected_info_overlap (existing_fields, new_fields, field_selection):
     return "existing covers new"
 
 #########################################
+def is_exact_duplicate (new_fields, existing_fields_by_database_id):
+
+    exists_exact_duplicate = False
+    for db_id, fields in existing_fields_by_database_id.iteritems():
+        this_is_exact_duplicate = True
+        for field_name, value in fields.iteritems():
+            if field_name in ['id', 'conflict']: continue
+            if not new_fields.has_key(field_name) or str(value) != str(new_fields[field_name]):
+                this_is_exact_duplicate = False
+                break
+        if this_is_exact_duplicate:
+            exists_exact_duplicate = True
+            break
+    return exists_exact_duplicate
+
+#########################################
 def diagnose_duplication_reasons (existing_fields_by_database_id, new_fields):
 
     diagnostics = {}
+    # is this an exact duplicate by any chance?
+    if is_exact_duplicate (new_fields, existing_fields_by_database_id):
+        return diagnostics
 
     allele_fields =  ['reference_allele', 'tumor_seq_allele1', 'tumor_seq_allele2', 'match_norm_seq_allele1', 'match_norm_seq_allele2']
     interpretation_fields = ['cdna_change', 'aa_change', 'variant_classification']
 
+
     for db_id, existing_fields in existing_fields_by_database_id.iteritems():
-        # the end position the same?
+
         diagnostics[db_id] = ""
         if existing_fields['end_position'] == new_fields['end_position']:
 
@@ -181,7 +199,7 @@ def diagnose_duplication_reasons (existing_fields_by_database_id, new_fields):
             if existing_fields['variant_classification'] == 'frame_shift_del' and one_allele_normal(
                     existing_fields) and one_allele_normal(new_fields):
                 # do nothing, this is a different interpretation of the same mutation
-                diagnostics[db_id] = "move on: different  classification"
+                diagnostics[db_id] = "move on: different classification"
 
             elif not one_allele_normal(existing_fields) and not one_allele_normal(new_fields):
                 # store, this is possibly compound  heterozygous
@@ -192,6 +210,38 @@ def diagnose_duplication_reasons (existing_fields_by_database_id, new_fields):
 
     return diagnostics
 
+ #########################################
+
+#########################################
+def store_conflicts_and_duplicates (cursor, expected_fields, new_fields):
+
+    table = 'conflict_mutations'
+    # is this an exact copy of something we have already stored as duplicate?
+    sample_barcode_short = new_fields['sample_barcode_short']
+    chromosome           = new_fields['chromosome']
+    start_position       = new_fields['start_position']
+
+    qry  = "select * from %s  " % table
+    qry += "where sample_barcode_short = '%s' " % sample_barcode_short
+    qry += "and chromosome = '%s'  " % chromosome
+    qry += "and start_position = %s  " % start_position
+    existing_rows = search_db(cursor, qry)
+
+    new_entry = False
+    if not existing_rows: #this is the first time we see this entry
+        new_entry = True
+    else:
+        # take a more careful look
+        existing_fields_by_database_id  = dict( zip (map (lambda x: x[0], existing_rows),  map (lambda x: make_named_fields(expected_fields, x[1:]), existing_rows) ))
+        # if this is not an exact duplicate, store
+        new_entry = not is_exact_duplicate(new_fields, existing_fields_by_database_id)
+
+    if new_entry:
+        insert_into_db(cursor, table, new_fields)
+        return "stored in conflicts and duplicates table"
+    else:
+        return "found stored in conflicts and duplicates table"
+
 #########################################
 def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields):
 
@@ -199,6 +249,9 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
 
     # try to diagnose how come we have multiple reports for a mutation starting at a given position
     diagnostics = diagnose_duplication_reasons (existing_fields_by_database_id, new_fields)
+
+    # if this is an exact duplicate do nothing (this is mainly to protect us from re-runs filling the database with the same things by mistake)
+    if not diagnostics: return "exact duplicate"
 
     if False:
         print "+"*18
@@ -218,7 +271,15 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
     # in the order of difficulty ...
     # 1) if it is a duplicate or subset  of one of the existing entries, we do not have to worry about it any more
     this_is_a_duplicate = len(filter(lambda x: "move on" in x, diagnostics.values() ))>0
-    if this_is_a_duplicate:  return "duplicate"
+    if this_is_a_duplicate:
+        #store the new entry in the conflict_mutations table
+        id_list_string = ""
+        for db_id in filter(lambda x: "move on" in diagnostics[x], diagnostics.keys()):
+            if len(id_list_string)>0: id_list_string+= ","
+            id_list_string += str(db_id)
+        descr_string = "duplicate of (" + id_list_string + ") in table %s" % table
+        new_fields['conflict'] = descr_string
+        return store_conflicts_and_duplicates (cursor, expected_fields, new_fields)
 
 
     there_is_no_conflict = len(filter(lambda x: "conflict" in x, diagnostics.values() ))==0
@@ -229,19 +290,26 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
     if there_is_no_conflict:
         if len(dbids_to_be_replaced)>0:
             update_db (cursor, table, dbids_to_be_replaced[0], new_fields)
+            for db_id in dbids_to_be_replaced:
+                # store in the duplicates and conflicts
+                store_conflicts_and_duplicates (cursor, expected_fields, existing_fields_by_database_id[db_id])
             for db_id in dbids_to_be_replaced[1:]:
+                # delete from the main table
                 qry = "delete from %s where id=%d" % (table, db_id)
                 search_db (cursor, qry)
             return "superset"
+
         else: # there is one alternative possibility to covered entries: candidate compound mutations
             compound_db_ids = filter (lambda dbid: "compound" in diagnostics[dbid], existing_fields_by_database_id.keys())
             if len(compound_db_ids)>0:
                 new_fields['conflict'] = "compound"
                 insert_into_db (cursor, table, new_fields)
+                return "compound"
             else:
                 print " *** ",  filter(lambda dbid: "use new" in diagnostics[dbid], existing_fields_by_database_id.keys() )
                 print "we should not have ended here ..."
                 exit(1)
+
     # 3) if there is a conflict, but no rows to replace, add the new row and mark conflict
     #    (potentially compound get the similar treatment)
     conflicted_db_ids = filter(lambda dbid: "conflict" in diagnostics[dbid], existing_fields_by_database_id.keys() )
@@ -250,6 +318,7 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
         for db_id in  conflicted_db_ids:
             update_conflict_field (cursor, table, db_id, existing_fields_by_database_id[db_id], new_id, "unresolved")
             update_conflict_field (cursor, table, new_id, new_fields, db_id, "unresolved")
+
     # 4) if there there are rows to replace and there is conflict with some other rows,
     #    replace the rows and reconsider conflicts
     else:
@@ -257,6 +326,11 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
         id_to_reuse =  dbids_to_be_replaced[0]
         new_fields['conflict'] = new_conflict_annotation ("unresolved", conflicted_db_ids)
         update_db (cursor, table, id_to_reuse, new_fields)
+
+        for db_id in dbids_to_be_replaced:
+            # store in the duplicates and conflicts
+            store_conflicts_and_duplicates (cursor, expected_fields, existing_fields_by_database_id[db_id])
+
         for db_id in dbids_to_be_replaced[1:]:
             qry = "delete from %s where id=%d" % (table, db_id)
             search_db (cursor, qry)
@@ -264,6 +338,7 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
         for db_id in conflicted_db_ids:
             new_annot =  new_conflict_annotation ("unresolved", map(lambda x: id_to_reuse if x==db_id else x, conflicted_db_ids))
             update_db (cursor, table, db_id, {'conflict': new_annot})
+
     return "conflict"
 
 #########################################
@@ -311,25 +386,6 @@ def insert_into_db (cursor, table, fields):
     return int(rows[0][0])
 
 #########################################
-def make_named_fields (header_fields, fields, expected_fields = None):
-
-    named_fields = {}
-
-    if len(header_fields) != len(fields) :
-        print "##################################"
-        print "fields length mismatch (?)" # it should have been solved by this point
-        print len(header_fields), len(fields)
-        exit(1) # header field mismatch
-
-    for i in range( len(header_fields)):
-        header = header_fields[i]
-        if expected_fields and not header in expected_fields: continue
-        field = fields[i]
-        named_fields[header] = field
-
-    return named_fields
-
-#########################################
 def store (cursor, table, expected_fields, maf_header_fields, new_row):
 
     sample_barcode_short = new_row[ maf_header_fields.index('sample_barcode_short')]
@@ -344,7 +400,7 @@ def store (cursor, table, expected_fields, maf_header_fields, new_row):
 
     new_fields = make_named_fields(maf_header_fields, new_row, expected_fields)
 
-    if not existing_rows: #this is the first time we a mutation in this place in this patient
+    if not existing_rows: #this is the first time we see a mutation in this place in this patient
         insert_into_db(cursor, table, new_fields)
         return "new"
     else:
@@ -483,7 +539,6 @@ def load_maf (cursor, db_name, table, maffile, meta_id, stats):
     inff.close()
 
 
-
 #########################################
 def main():
 
@@ -491,7 +546,6 @@ def main():
     cursor = db.cursor()
 
     sample_type = "primary"
-
 
     if sample_type == "primary":
         table = 'somatic_mutations'
@@ -505,7 +559,7 @@ def main():
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    #db_names  = ["LGG"]
+    #db_names  = ["BLCA"]
 
     for db_name in db_names:
         # check db exists
