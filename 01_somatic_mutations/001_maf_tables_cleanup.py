@@ -57,11 +57,10 @@ def main():
         for row in rows:
             print "\t ", row[0]
 
-        #for table in ( 'metastatic_mutations', 'somatic_mutations', 'mutations_meta'):
-        for table in ( 'metastatic_mutations', 'somatic_mutations', 'conflict_mutations'):
+        #for table in ( 'metastatic_mutations', 'somatic_mutations', 'mutations_meta', 'conflict_mutations'):
+        for table in ( 'metastatic_mutations', 'somatic_mutations', 'mutations_meta', 'conflict_mutations'):
             if ( check_table_exists (cursor, db_name, table)):
                 print table, " found in ", db_name
-                # if you really want to start from scratch, uncomment
                 qry = "drop table %s "  % table
                 rows = search_db(cursor, qry)
             else:

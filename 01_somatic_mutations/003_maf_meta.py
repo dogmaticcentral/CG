@@ -154,10 +154,32 @@ def check_health(maffile):
     # only store it with a warning
     bad_counts = filter(lambda x: x > 100, number_of_samples_with_stutter_count.keys())
     if len(bad_counts) > 0:
-        return ["warn", "%d samples have more that 100 stutter frameshift points" % len(bad_counts)]
+        return ["warn", "%d samples have more than 100 stutter frameshift points" % len(bad_counts)]
 
     return ["pass", ""]
-
+#########################################################
+def check_norm_allele(maffile, allele_number):
+    inff = open(maffile, "r")
+    header_fields = process_header_line(maffile)
+    if len(header_fields) == 0:
+        # though we should have discovered this previously ....
+        return ["fail", "no header found"]
+    field_name = "match_norm_seq_allele%d" % allele_number
+    match_nor_seq_allel2_idx = header_fields.index(field_name)
+    line_ct = 0
+    allele_ok = False
+    for line in inff:
+        if line.isspace(): continue
+        if line[0] == '#': continue
+        line_ct += 1
+        if line_ct <= 1: continue
+        field = line.split("\t")
+        if not field[match_nor_seq_allel2_idx].replace(" ","") in ['-', '.']:
+            allele_ok = True
+    inff.close()
+    if not allele_ok:
+        return ["warn", field_name + " field empty"]
+    return ["pass", ""]
 
 #########################################
 def store_meta_info(cursor, bare_filename, overall_diagnostics):
@@ -178,7 +200,7 @@ def store_meta_info(cursor, bare_filename, overall_diagnostics):
         update_fields['quality_check'] = "fail"
 
     if len(overall_diagnostics) > 0:
-        update_fields['diagnostics'] = ";".join(map(lambda x: ":".join(x), overall_diagnostics))
+        update_fields['diagnostics'] = "; ".join(map(lambda x: ":".join(x), overall_diagnostics))
 
     store_or_update(cursor, "mutations_meta", fixed_fields, update_fields)
     return
@@ -224,7 +246,7 @@ def main():
             maf_files.append ( "/".join([db_dir, subdir,mafs[0]]) )
 
         required_fields = get_required_fields()
-        expected_fields = get_expected_fields(cursor, db_name, "somatic_mutations")
+        expected_fields = filter (lambda x: x not in ['sample_barcode_short', 'meta_info_index', 'conflict'], get_expected_fields(cursor, db_name, "somatic_mutations"))
 
         for maffile in maf_files:
             bare_filename = "/".join ( maffile.split('/')[-2:])
@@ -253,14 +275,24 @@ def main():
                 store_meta_info(cursor, bare_filename, overall_diagnostics)
                 continue
 
-            # I am aware of one way in which the file can be corrupt, so I am checking for it
+            # I am aware of one way in which the file can be corrupt (stutter), so I am checking for it
             diagnostics = check_health(maffile)
             if diagnostics[0] != "pass":
                 overall_diagnostics.append(diagnostics)
-            if diagnostics[0] == "fail":
-                ref_genome = ""
-                store(cursor, bare_filename, overall_diagnostics)
-                continue
+
+            # some seq centers fill in one of the normal alleles as '-' --> actually, it looks like it's Baylor
+            # (all seq centers seem not to bother checking if the other allele is different)
+            diagnostics = check_norm_allele(maffile, 1)
+            if diagnostics[0] != "pass":
+                 overall_diagnostics.append(diagnostics)
+                 print bare_filename
+                 print diagnostics
+
+            diagnostics = check_norm_allele(maffile, 2)
+            if diagnostics[0] != "pass":
+                 overall_diagnostics.append(diagnostics)
+                 print bare_filename
+                 print diagnostics
 
             diagnostics = find_reference_genome(maffile)
 

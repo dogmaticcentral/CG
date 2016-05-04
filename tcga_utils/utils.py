@@ -21,6 +21,11 @@ from mysql import *
 #
 from mysql import *
 
+###############################################################################################
+def is_useful(fields, header):
+    non_info  = ['missing', '', '.', '-']
+    return fields != None and fields.has_key(header) and fields[header] != None and  not fields[header].replace(" ", "") in non_info
+
 ################################################################################################
 def make_named_fields (header_fields, fields, expected_fields = None):
 

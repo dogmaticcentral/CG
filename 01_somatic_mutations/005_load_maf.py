@@ -72,11 +72,6 @@ def one_allele_normal(field) :
     return len(tumor&normal)>0
 
 #########################################
-def is_useful(fields, header):
-    non_info  = ['missing', '', '.', '-']
-    return fields != None and fields.has_key(header) and fields[header] != None and  not fields[header].replace(" ", "") in non_info
-
-#########################################
 def new_conflict_annotation (base_annot, list_of_ids):
     annot = ""
     for db_id in list_of_ids:
@@ -410,9 +405,10 @@ def store (cursor, table, expected_fields, maf_header_fields, new_row):
     return ""
 
 #########################################
-def field_cleanup(maf_header_fields, sample_barcode_short, meta_id, maf_fields):
+def field_cleanup(maf_header_fields, sample_barcode_short, maf_diagnostics, meta_id, maf_fields):
 
     number_of_header_fields = len(maf_header_fields)
+    normal_allele2_missing = match_norm_seq_allele2 in maf_diagnostics
 
     # TCGA is exhausting all possibilities here (row longer than the header):
     clean_fields = maf_fields[:number_of_header_fields]  # I do not know what you guys are anyway, so off you go
@@ -463,6 +459,9 @@ def field_cleanup(maf_header_fields, sample_barcode_short, meta_id, maf_fields):
     if clean_fields[chromosome_field].upper() == "MT":
         clean_fields[chromosome_field] = "M"
 
+    # if allele2 info is msissing in the whole maf file, fill in the info for allele1
+    if normal_allele2_missing:
+        clean_fields[maf_header_fields.index('match_norm_seq_allele2')] = clean_fields[maf_header_fields.index('match_norm_seq_allele1')]
     return clean_fields
 
 #########################################
@@ -485,7 +484,7 @@ def check_tumor_type(tumor_type_ids, maf_header_fields, maf_fields):
     return sample_barcode_short
 
 #########################################
-def load_maf (cursor, db_name, table, maffile, meta_id, stats):
+def load_maf (cursor, db_name, table, maffile, maf_diagnostics, meta_id, stats):
 
     if not os.path.isfile(maffile):
         print "not found: "
@@ -504,7 +503,7 @@ def load_maf (cursor, db_name, table, maffile, meta_id, stats):
         print "I don't know how to handle ", table, " sample type"
         exit(1) # unrecognized table name
 
-    expected_fields = get_expected_fields(cursor, db_name, table)
+    expected_fields   = get_expected_fields(cursor, db_name, table)
     maf_header_fields = process_header_line(maffile)
 
     inff = open(maffile, "r")
@@ -530,7 +529,7 @@ def load_maf (cursor, db_name, table, maffile, meta_id, stats):
         if not sample_barcode_short: continue # this can happen if the tumor type is not the one we are looking for
         type_queried += 1
 
-        clean_fields = field_cleanup(maf_header_fields, sample_barcode_short, meta_id, maf_fields)
+        clean_fields = field_cleanup(maf_header_fields, sample_barcode_short, maf_diagnostics, meta_id, maf_fields)
         retval = store(cursor, table, expected_fields,
               maf_header_fields + ['sample_barcode_short', 'meta_info_index', 'conflict'], clean_fields)
         if not retval in stats.keys(): stats[retval] = 0
@@ -559,7 +558,7 @@ def main():
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    #db_names  = ["BLCA"]
+    db_names  = ["BLCA"]
 
     for db_name in db_names:
         # check db exists
@@ -576,26 +575,29 @@ def main():
         else:
             print table, " not found in ", db_name
 
+        db_dir = '/mnt/databases/TCGA'
+        if not os.path.isdir(db_dir):
+            print "directory " + db_dir + " not found"
+            exit(1)  # TCGA db dir not found
+
         qry = "select * from mutations_meta"
         rows = search_db(cursor, qry)
         if not rows:
             print "no meta info found"
             continue
 
-        db_dir  = '/mnt/databases/TCGA'
-        if not  os.path.isdir(db_dir):
-            print "directory " + db_dir + " not found"
-            exit(1) # TCGA db dir not found
-
         maf_file = {}
+        maf_diagnostics = {}
         for row in rows:
             [meta_id, file_name, quality_check, assembly, diagnostics] = row
             if quality_check=="fail": continue
             maf_file[meta_id] = "/".join([db_dir, db_name, "Somatic_Mutations", file_name])
+            maf_diagnostics[meta_id] = diagnostics
+
 
         stats = {}
         for meta_id, maffile in maf_file.iteritems():
-            load_maf (cursor, db_name, table, maffile, meta_id, stats)
+            load_maf (cursor, db_name, table, maffile, maf_diagnostics[meta_id], meta_id, stats)
         print
         for type, count in stats.iteritems():
             print type, count
