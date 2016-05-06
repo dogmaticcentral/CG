@@ -266,7 +266,7 @@ def search_db (cursor, qry, verbose=False):
     except MySQLdb.Error, e:
         if verbose:
             print "Error running cursor.execute() for  qry: %s: %s " % (qry, e.args[1])
-        return  ["ERROR: "+e.args[1]]
+        return  [["ERROR: "+e.args[1]]]
 
 
     try:

@@ -47,7 +47,24 @@ def main():
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    db_names  = ["BLCA"]
+    for db_name in db_names:
+        print " ** ", db_name
+        switch_to_db (cursor, db_name)
+        if not check_table_exists (cursor, db_name, table):
+            print table, " table not found in ", db_name
+            continue
+        qry = "select count(1) from somatic_mutations"
+        rows = search_db(cursor, qry)
+        if not rows or rows[0][0] ==0 :  break
+        print "somatic mutations all: ", rows[0][0],
+        qry = "select count(1) from somatic_mutations where conflict is not null"
+        rows = search_db(cursor, qry)
+        print "conflicts: ", rows[0][0]
+        print
+
+    exit(1)
+
+    db_names  = ["KIRC"]
 
     for db_name in db_names:
         # check db exists
@@ -59,10 +76,9 @@ def main():
 
         print " ** ", db_name
         switch_to_db (cursor, db_name)
-        if ( check_table_exists (cursor, db_name, table)):
-            print table, " found in ", db_name
-        else:
-            print table, " not found in ", db_name
+        if not check_table_exists (cursor, db_name, table):
+            print table, " table not found in ", db_name
+            continue
 
         expected_fields = get_expected_fields(cursor, db_name, table)
         # get all conflicted groups
@@ -74,9 +90,13 @@ def main():
                                                   map(lambda x: make_named_fields(expected_fields, x[1:]), rows)))
 
         bags = []
+        keyset = set (existing_fields_by_database_id.keys())
         for db_id, fields in existing_fields_by_database_id.iteritems():
-            conflict_ids = [int(a.split(" with ")[-1]) for a in fields['conflict'].split(";")]
-            new_bag = set(conflict_ids) | set([db_id]) # set unioin
+            conflict_ids = set([int(a.split(" with ")[-1]) for a in fields['conflict'].split(";")])
+            if not conflict_ids <= keyset:
+                print "error - conflicting ids not reciprocally labelled or not in the database"
+                exit(1)
+            new_bag = set(conflict_ids) | set([db_id])  # set unioin
             new_bags = []
             for bag in bags:
                 if not bag & new_bag: # intersection is empty
@@ -95,9 +115,9 @@ def main():
             # 1) is this a dnp rather than snp? (I choose to believe them, otherwise I'll go crazy)
             diagnosed = False
             if len(bag)==2:
-                if set(ef[db_id]['variant_type'] for db_id in bag) == set(['snp', 'dnp']):
-                    count['dnp/snp'] += 1
-                    diagnosed = True
+                if set(map(lambda y: ef[y]['variant_type'], [x for x in bag if ef[x].has_key('variant_type')])) == set(['snp','dnp']):
+                         count['dnp/snp'] += 1
+                         diagnosed = True
                 elif set(is_useful(ef[db_id],'match_norm_seq_allele1')for db_id in bag) == set([True, False]):
                     count['suspicious normal'] += 1
                     diagnosed = True

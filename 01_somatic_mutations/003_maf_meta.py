@@ -157,6 +157,7 @@ def check_health(maffile):
         return ["warn", "%d samples have more than 100 stutter frameshift points" % len(bad_counts)]
 
     return ["pass", ""]
+
 #########################################################
 def check_norm_allele(maffile, allele_number):
     inff = open(maffile, "r")
@@ -164,8 +165,11 @@ def check_norm_allele(maffile, allele_number):
     if len(header_fields) == 0:
         # though we should have discovered this previously ....
         return ["fail", "no header found"]
-    field_name = "match_norm_seq_allele%d" % allele_number
-    match_nor_seq_allel2_idx = header_fields.index(field_name)
+    if allele_number>0:
+        field_name = "match_norm_seq_allele%d" % allele_number
+    else:
+        field_name = "reference_allele"
+    match_norm_seq_allele_idx = header_fields.index(field_name)
     line_ct = 0
     allele_ok = False
     for line in inff:
@@ -174,11 +178,41 @@ def check_norm_allele(maffile, allele_number):
         line_ct += 1
         if line_ct <= 1: continue
         field = line.split("\t")
-        if not field[match_nor_seq_allel2_idx].replace(" ","") in ['-', '.']:
-            allele_ok = True
+        if field[match_norm_seq_allele_idx]:
+            match_norm_seq_allele = field[match_norm_seq_allele_idx].replace(" ","")
+            if len(match_norm_seq_allele)>0 and not match_norm_seq_allele in ('-', '.'):
+                allele_ok = True
     inff.close()
     if not allele_ok:
         return ["warn", field_name + " field empty"]
+    return ["pass", ""]
+
+#########################################################
+def check_tumor_alleles(maffile):
+    inff = open(maffile, "r")
+    header_fields = process_header_line(maffile)
+    if len(header_fields) == 0:
+        # though we should have discovered this previously ....
+        return ["fail", "no header found"]
+
+    tumor_allele1_idx = header_fields.index('tumor_seq_allele1')
+    tumor_allele2_idx = header_fields.index('tumor_seq_allele2')
+    line_ct = 0
+    allele_ok = False
+    for line in inff:
+        if line.isspace(): continue
+        if line[0] == '#': continue
+        line_ct += 1
+        if line_ct <= 1: continue
+        field = line.split("\t")
+        if field[tumor_allele1_idx] and field[tumor_allele2_idx] :
+            tumor_allele1 = field[tumor_allele1_idx].replace(" ","")
+            tumor_allele2 = field[tumor_allele2_idx].replace(" ","")
+            if tumor_allele1 != tumor_allele2:
+                allele_ok = True
+    inff.close()
+    if not allele_ok:
+        return ["warn", "tumor alleles identical"]
     return ["pass", ""]
 
 #########################################
@@ -249,8 +283,16 @@ def main():
         expected_fields = filter (lambda x: x not in ['sample_barcode_short', 'meta_info_index', 'conflict'], get_expected_fields(cursor, db_name, "somatic_mutations"))
 
         for maffile in maf_files:
+
+
             bare_filename = "/".join ( maffile.split('/')[-2:])
             overall_diagnostics = []
+
+            reference_genome = None
+            # check if the entry already exists - esp for the genome search, because that one is slow
+            qry = "select assembly from mutations_meta where file_name='%s'" % bare_filename
+            rows = search_db (cursor, qry)
+            if rows and not 'error' in str(rows[0][0]).lower(): reference_genome = rows[0][0]
 
             # first make sure that the file is not empty - in which case
             # we might have to go and check what's wiht the download
@@ -285,17 +327,23 @@ def main():
             diagnostics = check_norm_allele(maffile, 1)
             if diagnostics[0] != "pass":
                  overall_diagnostics.append(diagnostics)
-                 print bare_filename
-                 print diagnostics
 
             diagnostics = check_norm_allele(maffile, 2)
             if diagnostics[0] != "pass":
                  overall_diagnostics.append(diagnostics)
-                 print bare_filename
-                 print diagnostics
 
-            diagnostics = find_reference_genome(maffile)
+            diagnostics = check_norm_allele(maffile, 0)
+            if diagnostics[0] != "pass":
+                 overall_diagnostics.append(diagnostics)
 
+            diagnostics = check_tumor_alleles(maffile)
+            if diagnostics[0] != "pass":
+                 overall_diagnostics.append(diagnostics)
+
+            if not reference_genome:
+                diagnostics = find_reference_genome(maffile)
+            else:
+                diagnostics = ["pass", reference_genome]
             overall_diagnostics.append(diagnostics)
 
             store_meta_info(cursor, bare_filename, overall_diagnostics)

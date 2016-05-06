@@ -23,8 +23,12 @@ from mysql import *
 
 ###############################################################################################
 def is_useful(fields, header):
-    non_info  = ['missing', '', '.', '-']
-    return fields != None and fields.has_key(header) and fields[header] != None and  not fields[header].replace(" ", "") in non_info
+    non_info  = ['missing', '', '.', '-', '---', 'untested']
+    field_is_useful = fields != None and fields.has_key(header) and fields[header] != None
+    if field_is_useful and type(fields[header]) is str: # additional check
+        field_is_useful = not fields[header].replace(" ", "") in non_info
+
+    return field_is_useful
 
 ################################################################################################
 def make_named_fields (header_fields, fields, expected_fields = None):
