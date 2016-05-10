@@ -64,7 +64,8 @@ def main():
         maf_diagnostics = {}
         for row in rows:
             [meta_id, file_name, quality_check, assembly, diagnostics] = row
-            if diagnostics and "tumor alleles identical" in diagnostics:
+            #if diagnostics and "tumor alleles identical" in diagnostics:
+            if True:
                 print "\t %4d  %50s   " % (meta_id, file_name)
                 print "\t\t %6s   %6s      %s" % (quality_check, assembly, diagnostics)
 

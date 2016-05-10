@@ -21,13 +21,9 @@
 #
 # store the meta info about the maf files: name and the reference genome,  for now
 
-import os
-from tcga_utils.mysql import *
 from tcga_utils.utils import *
 from random import random
-import urllib2
-from HTMLParser import HTMLParser
-from bs4 import BeautifulSoup
+from utils import seqment_from_das
 
 
 #########################################
@@ -62,14 +58,9 @@ def find_reference_genome(maffile):
         # print chrom, start, end, al1, al2, norm1, norm2
         sample_size += 1
         for assembly in assemblies:
-            das_request = "http://genome.ucsc.edu/cgi-bin/das/%s/" % assembly
-            das_request += "dna?segment=chr%s:%s,%s" % (chrom, start, end)
-            response = urllib2.urlopen(das_request)
-            html = response.read()
-            soup = BeautifulSoup(html, 'html.parser')
-            if not soup or not soup.dna or not soup.dna.string: continue
-            # print " ** ", ref.upper(), soup.dna.string.strip().upper()
-            if ref.upper() == soup.dna.string.strip().upper():
+            ucsd_segment = seqment_from_das(assembly, chrom, start, end)
+            if not ucsd_segment: continue
+            if ref.upper() == ucsd_segment:
                 number_of_correct_matches[assembly] += 1
         if sample_size >= 100: break
 
@@ -85,7 +76,6 @@ def find_reference_genome(maffile):
     # use the assembly with the smallest amount of failures
     # if both assemblies fail in more htan 10% of cases - abort
     return ["pass", ref_gen]
-
 
 #########################################
 def check_headers(maffile, required_fields, expected_fields):
@@ -104,7 +94,6 @@ def check_headers(maffile, required_fields, expected_fields):
         return ["warn", "missing expected fields:  " + " ".join(missing_fields)]
 
     return ["pass", ""]
-
 
 ##################################################################################
 # checking for the following, as seen in
@@ -171,7 +160,8 @@ def check_norm_allele(maffile, allele_number):
         field_name = "reference_allele"
     match_norm_seq_allele_idx = header_fields.index(field_name)
     line_ct = 0
-    allele_ok = False
+    allele_info_empty  = 0
+    allele_info_filled = 0
     for line in inff:
         if line.isspace(): continue
         if line[0] == '#': continue
@@ -181,10 +171,16 @@ def check_norm_allele(maffile, allele_number):
         if field[match_norm_seq_allele_idx]:
             match_norm_seq_allele = field[match_norm_seq_allele_idx].replace(" ","")
             if len(match_norm_seq_allele)>0 and not match_norm_seq_allele in ('-', '.'):
-                allele_ok = True
+                allele_info_filled += 1
+            else:
+                allele_info_empty += 1
+        else:
+            allele_info_empty += 1
     inff.close()
-    if not allele_ok:
-        return ["warn", field_name + " field empty"]
+
+    fraction_empty = allele_info_empty/float(allele_info_empty+allele_info_filled)
+    if fraction_empty>0.9:
+        return ["warn", field_name + " field %d%% empty" % int(100*fraction_empty)]
     return ["pass", ""]
 
 #########################################################
@@ -238,7 +234,6 @@ def store_meta_info(cursor, bare_filename, overall_diagnostics):
 
     store_or_update(cursor, "mutations_meta", fixed_fields, update_fields)
     return
-
 
 ##################################################################################
 ##################################################################################

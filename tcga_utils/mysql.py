@@ -1,4 +1,4 @@
-import MySQLdb, sys
+import MySQLdb, sys, os
 
 #
 # This source code is part of tcga, a TCGA processing pipeline, written by Ivana Mihalek.
@@ -82,7 +82,6 @@ def store_without_checking(cursor, table, fields, verbose=False):
         return False
 
     return True
-
 
 ########
 def store_or_update (cursor, table, fixed_fields, update_fields, verbose=False):
@@ -177,7 +176,6 @@ def store_or_update (cursor, table, fixed_fields, update_fields, verbose=False):
     
     return True
 
-
 #########################################
 def create_index (cursor, db_name, index_name, table, columns):
 
@@ -210,7 +208,23 @@ def create_index (cursor, db_name, index_name, table, columns):
    
     return True
 
-    
+#########################################
+def get_column_names (cursor, db_name, table_name):
+
+    if  not switch_to_db (cursor, db_name):
+        return False
+
+    qry = "show columns from "+ table_name
+    rows = search_db (cursor, qry, verbose=False)
+    if (rows):
+        if ( 'Error' in rows[0]):
+            rows = search_db (cursor, qry, verbose=True)
+            return False
+        else:
+            return [row[0] for row in rows]
+    else:
+        return False
+
 #########################################
 def check_column_exists (cursor, db_name, table_name, column_name):
     
@@ -226,7 +240,6 @@ def check_column_exists (cursor, db_name, table_name, column_name):
             return True
     else: 
         return False
-
 
 #########################################
 def check_table_exists (cursor, db_name, table_name):
@@ -283,12 +296,14 @@ def search_db (cursor, qry, verbose=False):
 
     return rows
 
-
 ########
-def connect_to_mysql (user=None, passwd=None, host=None, port=None):
+def connect_to_mysql (user=None, passwd=None, host=None, port=None, conf_file=None):
 
-    if user and  os.path.isfile(user):
-        try:
+    if conf_file:
+        if not  os.path.isfile(conf_file):
+            print conf_file, "not found or is not a file"
+            return None
+        try: # user is spelled out in the conf file
             mysql_conn_handle = MySQLdb.connect(read_default_file=conf_file)
         except  MySQLdb.Error, e:
             print "Error connecting to mysql (%s) " % (e.args[1])

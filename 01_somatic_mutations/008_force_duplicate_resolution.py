@@ -27,6 +27,7 @@ from tcga_utils.mysql  import  *
 from tcga_utils.utils  import  get_expected_fields, is_useful, make_named_fields
 from time import time
 
+
 #########################################
 def main():
 
@@ -46,9 +47,8 @@ def main():
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
-
+    conflicts = {}
     for db_name in db_names:
-        print " ** ", db_name
         switch_to_db (cursor, db_name)
         if not check_table_exists (cursor, db_name, table):
             print table, " table not found in ", db_name
@@ -56,17 +56,17 @@ def main():
         qry = "select count(1) from somatic_mutations"
         rows = search_db(cursor, qry)
         if not rows or rows[0][0] ==0 :  break
-        print "somatic mutations all: ", rows[0][0],
         qry = "select count(1) from somatic_mutations where conflict is not null"
         rows = search_db(cursor, qry)
-        print "conflicts: ", rows[0][0]
+        conflicts[db_name] = int(rows[0][0])
+
+
+    db_names_sorted = sorted(conflicts, key=conflicts.__getitem__, reverse=True)
+    for db_name in db_names_sorted:
         print
-
-    exit(1)
-
-    db_names  = ["KIRC"]
-
-    for db_name in db_names:
+        print db_name, conflicts[db_name], "conflicts"
+        print
+        continue
         # check db exists
         qry = "show databases like '%s'" % db_name
         rows = search_db(cursor, qry)
@@ -74,7 +74,6 @@ def main():
             print db_name, "not found"
             exit(1) # db not found
 
-        print " ** ", db_name
         switch_to_db (cursor, db_name)
         if not check_table_exists (cursor, db_name, table):
             print table, " table not found in ", db_name
@@ -138,7 +137,7 @@ def main():
         print " number of conflicting groups = %d" % len(bags)
         for k, v in count.iteritems():
             print k, v
-        exit(1)
+        if conflicts[db_name]>0: exit(1)
 
 
     cursor.close()

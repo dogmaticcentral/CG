@@ -20,6 +20,18 @@ from mysql import *
 # Contact: ivana.mihalek@gmail.com
 #
 from mysql import *
+import urllib2
+from bs4 import BeautifulSoup
+
+###############################################################################################
+def seqment_from_das(assembly, chrom, start, end):
+    das_request = "http://genome.ucsc.edu/cgi-bin/das/%s/" % assembly
+    das_request += "dna?segment=chr%s:%s,%s" % (chrom, start, end)
+    response = urllib2.urlopen(das_request)
+    html = response.read()
+    soup = BeautifulSoup(html, 'html.parser')
+    if not soup or not soup.dna or not soup.dna.string: return None
+    return soup.dna.string.strip().upper()
 
 ###############################################################################################
 def is_useful(fields, header):
