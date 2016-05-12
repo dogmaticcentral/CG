@@ -1,5 +1,3 @@
-import MySQLdb, commands, re, os, time
-from mysql import *
 #
 # This source code is part of tcga, a TCGA processing pipeline, written by Ivana Mihalek.
 # Copyright (C) 2014-2016 Ivana Mihalek.
@@ -20,25 +18,17 @@ from mysql import *
 # Contact: ivana.mihalek@gmail.com
 #
 from mysql import *
-import urllib2
-from bs4 import BeautifulSoup
 
 ###############################################################################################
-def seqment_from_das(assembly, chrom, start, end):
-    das_request = "http://genome.ucsc.edu/cgi-bin/das/%s/" % assembly
-    das_request += "dna?segment=chr%s:%s,%s" % (chrom, start, end)
-    response = urllib2.urlopen(das_request)
-    html = response.read()
-    soup = BeautifulSoup(html, 'html.parser')
-    if not soup or not soup.dna or not soup.dna.string: return None
-    return soup.dna.string.strip().upper()
+def is_informative(string):
+    non_info  = ['missing', '', '.', '-', '---', 'untested']
+    return not string.replace(" ", "") in non_info
 
 ###############################################################################################
 def is_useful(fields, header):
-    non_info  = ['missing', '', '.', '-', '---', 'untested']
     field_is_useful = fields != None and fields.has_key(header) and fields[header] != None
     if field_is_useful and type(fields[header]) is str: # additional check
-        field_is_useful = not fields[header].replace(" ", "") in non_info
+        field_is_useful = field_is_useful and is_informative(fields[header])
 
     return field_is_useful
 

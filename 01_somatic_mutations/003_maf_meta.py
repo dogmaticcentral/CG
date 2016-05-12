@@ -23,7 +23,7 @@
 
 from tcga_utils.utils import *
 from random import random
-from utils import seqment_from_das
+from tcga_utils.ucsc import seqment_from_das
 
 
 #########################################

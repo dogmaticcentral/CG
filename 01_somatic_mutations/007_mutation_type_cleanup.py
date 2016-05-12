@@ -24,7 +24,7 @@
 import os.path
 import re, commands
 from tcga_utils.mysql  import  *
-from tcga_utils.utils  import  make_named_fields, seqment_from_das
+from tcga_utils.utils  import  make_named_fields, seqment_from_das, is_informative
 from time import time
 
 verbose = True
@@ -44,11 +44,19 @@ def parse_mutation (mutation):
     return [mut_position, mut_from, mut_to]
 
 #########################################
-def check_aa_type (assembly_dict, fields):
+def check_aa_type (ucsc_cursor, assembly_dict, fields):
+
     checks = True
     fixed_row = {}
+    conflict  = fields['conflict']
+    aa_change = fields['aa_change']
+    variant_classification =  fields['variant_classification']
+    # I'll fix the absolute minimum that I can scrape by with
+    if not conflict and (variant_classification!="missense_mutation" or is_informative(aa_change)):
+        return [checks, fixed_row]
+    id = fields['id']
     start_position = fields['start_position']
-    end_position = fields['end_position']
+    end_position   = fields['end_position']
     tumor1      = fields['tumor_seq_allele1']
     tumor2      = fields['tumor_seq_allele2']
     norm1       = fields['match_norm_seq_allele1']
@@ -57,13 +65,15 @@ def check_aa_type (assembly_dict, fields):
     aa_change   = fields['aa_change']
     cdna_change = fields['cdna_change']
     meta_info_index = fields['meta_info_index']
-    assembly = assembly_dict[meta_info_index]
+    assembly   = assembly_dict[meta_info_index]
     chromosome = fields['chromosome']
+
     ucsd_segment = seqment_from_das(assembly, chromosome, start_position, end_position)
-    print assembly, chromosome, start_position, end_position, ucsd_segment
+    print id, assembly, chromosome, start_position, end_position, ucsd_segment
     print reference, norm1, norm2, tumor1, tumor2, cdna_change, aa_change
     print parse_mutation (cdna_change)
     print parse_mutation (aa_change)
+    print "conflict: ", conflict
     exit(1)
     return [checks, fixed_row]
 
@@ -85,6 +95,12 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
+    ucsc = connect_to_mysql(conf_file="/home/ivana/.ucsc_mysql_conf")
+    if not ucsc:
+        print "failed opening ucsc mysql connection"
+        exit(1)
+    ucsc_cursor = db.cursor()
+
     sample_type = "primary"
 
     if sample_type == "primary":
@@ -98,6 +114,8 @@ def main():
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
+
+    db_names = ["LUAD"]
 
     chunk = 10 # we process rows 10 by 10+
     offset = -chunk
@@ -131,10 +149,9 @@ def main():
                 done = True
                 continue
             for row in rows:
-                [checks, fixed_row] = check_aa_type (assembly, make_named_fields (header_fields, row) )
+                [checks, fixed_row] = check_aa_type (ucsc_cursor, assembly, make_named_fields (header_fields, row) )
                 if checks: continue
                 store_fixed_row (cursor, fixed_row)
-            break
         break
     cursor.close()
     db.close()

@@ -201,7 +201,14 @@ def diagnose_duplication_reasons (cursor, existing_fields_by_database_id, new_fi
                 elif  new_fields['validation_status'] == 'valid' and  existing_fields['validation_status'] != 'valid':
                     diagnostics[db_id] += "use new: new allele validated"
 
-
+                elif existing_fields['variant_type'] == 'ins' and  new_fields['variant_type']=='ins':
+                    ex_t   = existing_fields['tumor_seq_allele1']+existing_fields['tumor_seq_allele2']
+                    new_t = new_fields['tumor_seq_allele1']+new_fields['tumor_seq_allele2']
+                    # se the comment for deletions below
+                    if len(ex_t) > len(new_t):
+                        diagnostics[db_id] += "move on: old insert longer"
+                    elif len(ex_t) < len(new_t):
+                        diagnostics[db_id] += "use new: new insert longer"
                 else:
                     same = True
                     #cDNA change is in principle superfluous - we have that info from other fields
@@ -227,6 +234,7 @@ def diagnose_duplication_reasons (cursor, existing_fields_by_database_id, new_fi
                                 blah = new_fields[field_name]
                             print field_name, "      ", val, "      ", blah
                         exit(1)
+
             if len(diagnostics[db_id]) == 0:  # we are still undiagnosed
                 # giving the actual allele is the more fundamental info - go for that primarily
                 allele_diagnostics = selected_info_overlap (existing_fields, new_fields, allele_fields)
@@ -267,7 +275,18 @@ def diagnose_duplication_reasons (cursor, existing_fields_by_database_id, new_fi
                 else:  # we should not really be here - this is is just the default behavior so we do not crash on this
                      diagnostics[db_id] += "move on: keep old"
 
-
+        elif existing_fields['end_position'] == new_fields['end_position']+1 \
+                and [existing_fields['variant_type'], new_fields['variant_type']]==['dnp','snp']:
+            diagnostics[db_id] += "move on: old is dnp"
+        elif new_fields['end_position'] == existing_fields['end_position']+1 \
+                and [new_fields['variant_type'], existing_fields['variant_type']]==['dnp','snp']:
+            diagnostics[db_id] += "use new: new is dnp"
+        # this is rather arbitrary; my guess: longer rearrangements harder to detect,
+        # and whoever claims they found something like it is putting more effort:
+        elif existing_fields['end_position'] > new_fields['end_position']:
+            diagnostics[db_id] += "move on: old is longer"
+        elif new_fields['end_position'] > existing_fields['end_position']:
+            diagnostics[db_id] += "use new: new is longer"
 
         else:  # the end position is not the same
             diagnostics[db_id] = "end positions different   *%s*   *%s* " % (
@@ -351,11 +370,25 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
     this_is_a_duplicate = len(filter(lambda x: "move on" in x, diagnostics.values() ))>0
     if this_is_a_duplicate:
         #store the new entry in the conflict_mutations table
-        id_list_string = ""
-        for db_id in filter(lambda x: "move on" in diagnostics[x], diagnostics.keys()):
-            if len(id_list_string)>0: id_list_string+= ","
-            id_list_string += str(db_id)
-        descr_string = "duplicate of (" + id_list_string + ") in table %s" % table
+        db_ids_to_be_left_in_place = filter(lambda x: "move on" in diagnostics[x], diagnostics.keys())
+        # special case - we are favoring the dnp annotation over snp
+        dnps  =  filter(lambda x:     "dnp" in diagnostics[x],db_ids_to_be_left_in_place)
+        other =  filter(lambda x: not "dnp" in diagnostics[x],db_ids_to_be_left_in_place)
+        descr_string = ""
+        if len(dnps)>0:
+
+            id_list_string = ""
+            for db_id in dnps:
+                if len(id_list_string)>0: id_list_string+= ","
+                id_list_string += str(db_id)
+            descr_string  += "snp vs dnp for (" + id_list_string + ") in table %s" % table
+        if len(other)>0:
+            if descr_string:  descr_string += "; "
+            id_list_string = ""
+            for db_id in other:
+                if len(id_list_string)>0: id_list_string+= ","
+                id_list_string += str(db_id)
+            descr_string += "duplicate of (" + id_list_string + ") in table %s" % table
         new_fields['conflict'] = descr_string
         return store_conflicts_and_duplicates (cursor, expected_fields, new_fields)
 
@@ -369,7 +402,10 @@ def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields
             update_db (cursor, table, dbids_to_be_replaced[0], new_fields)
             for db_id in dbids_to_be_replaced:
                 # store in the duplicates and conflicts
-                store_conflicts_and_duplicates (cursor, expected_fields, existing_fields_by_database_id[db_id])
+                existing_fields =  existing_fields_by_database_id[db_id]
+                if "dnp" in diagnostics[db_id]:
+                    conflict_annotation_updated (existing_fields, "snp/dnp", dbids_to_be_replaced[0])
+                store_conflicts_and_duplicates (cursor, expected_fields, existing_fields)
             for db_id in dbids_to_be_replaced[1:]:
                 # delete from the main table
                 qry = "delete from %s where id=%d" % (table, db_id)
@@ -534,6 +570,7 @@ def field_cleanup(maf_header_fields, sample_barcode_short, maf_diagnostics, meta
         index =  maf_header_fields.index(header)
         clean_fields[index] = clean_fields[index].lower()
 
+
     for header in ['start_position', 'end_position']:
         index =  maf_header_fields.index(header)
         clean_fields[index] = int(clean_fields[index])
@@ -543,14 +580,37 @@ def field_cleanup(maf_header_fields, sample_barcode_short, maf_diagnostics, meta
     if clean_fields[chromosome_field].upper() == "MT":
         clean_fields[chromosome_field] = "M"
 
-    # if allele2 info is msissing in the whole maf file, fill in the info for allele1
+    #tumor1_idx = maf_header_fields.index('tumor_seq_allele1')
+    #tumor2_idx = maf_header_fields.index('tumor_seq_allele2')
+    norm1_idx = maf_header_fields.index('match_norm_seq_allele1')
+    norm2_idx = maf_header_fields.index('match_norm_seq_allele2')
+    ref_idx   = maf_header_fields.index('reference_allele')
+
+    # if allele2 info is missing in the whole maf file, fill in the info for allele1
     if normal_allele2_missing and not normal_allele1_missing:
-        clean_fields[maf_header_fields.index('match_norm_seq_allele2')] = clean_fields[maf_header_fields.index('match_norm_seq_allele1')]
+        clean_fields[norm2_idx] = clean_fields[norm1_idx]
     elif  normal_allele1_missing and not normal_allele2_missing:
-        clean_fields[maf_header_fields.index('match_norm_seq_allele1')] = clean_fields[maf_header_fields.index('match_norm_seq_allele2')]
+        clean_fields[norm1_idx] = clean_fields[norm2_idx]
     elif  normal_allele1_missing and  normal_allele2_missing and not reference_allele_missing:
-        clean_fields[maf_header_fields.index('match_norm_seq_allele1')] = clean_fields[maf_header_fields.index('reference_allele')]
-        clean_fields[maf_header_fields.index('match_norm_seq_allele2')] = clean_fields[maf_header_fields.index('reference_allele')]
+        clean_fields[norm1_idx] = clean_fields[ref_idx]
+        clean_fields[norm2_idx] = clean_fields[ref_idx]
+
+    var_type_idx  = maf_header_fields.index('variant_type')
+    var_class_idx = maf_header_fields.index('variant_classification')
+    if "del" in clean_fields[var_class_idx]:
+        clean_fields[var_type_idx] = "del"
+    if "ins" in clean_fields[var_class_idx]:
+        clean_fields[var_type_idx] = "ins"
+
+    # this all needs to be redone if they ever start top put in decent estimate for allales
+    if clean_fields[var_type_idx] != "ins":
+        if clean_fields[norm2_idx] == "-":
+            clean_fields[norm2_idx] = ""
+        if clean_fields[norm1_idx] == "-":
+            clean_fields[norm1_idx] = ""
+
+
+
 
     return clean_fields
 
@@ -648,7 +708,7 @@ def main():
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    #db_names = ["LUAD"]
+    #db_names = ["ACC"]
 
     for db_name in db_names:
         # check db exists
