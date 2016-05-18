@@ -40,7 +40,7 @@ def main():
                 if len(row) < 4:
                     print row
                     exit(1)
-                [tx_start, tx_end, transcript_id, protein_id]  = row
+                [tx_start, tx_end, transcript_id, protein_id] = row
 
                 # first lets find the exons boundaries,; they are the actual definition of a splice
                 qry = "select strand, txStart, txEnd, exonStarts, exonEnds from knownGene where name='%s' " % (transcript_id)

@@ -34,6 +34,7 @@ def is_useful(fields, header):
 
 ################################################################################################
 def make_named_fields (header_fields, fields, expected_fields = None):
+    # type: (object, object, object) -> object
 
     named_fields = {}
 

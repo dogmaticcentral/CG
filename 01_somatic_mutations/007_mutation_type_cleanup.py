@@ -24,7 +24,8 @@
 import os.path
 import re, commands
 from tcga_utils.mysql  import  *
-from tcga_utils.utils  import  make_named_fields, seqment_from_das, is_informative
+from tcga_utils.utils  import  make_named_fields, is_informative
+from tcga_utils.ucsc  import  *
 from time import time
 
 verbose = True
@@ -68,7 +69,7 @@ def check_aa_type (ucsc_cursor, assembly_dict, fields):
     assembly   = assembly_dict[meta_info_index]
     chromosome = fields['chromosome']
 
-    ucsd_segment = seqment_from_das(assembly, chromosome, start_position, end_position)
+    ucsd_segment = segment_from_das(assembly, chromosome, start_position, end_position)
     print id, assembly, chromosome, start_position, end_position, ucsd_segment
     print reference, norm1, norm2, tumor1, tumor2, cdna_change, aa_change
     print parse_mutation (cdna_change)

@@ -22,7 +22,7 @@ import urllib2
 from bs4 import BeautifulSoup
 
 ###############################################################################################
-def seqment_from_das(assembly, chrom, start, end):
+def segment_from_das(assembly, chrom, start, end):
     das_request = "http://genome.ucsc.edu/cgi-bin/das/%s/" % assembly
     das_request += "dna?segment=chr%s:%s,%s" % (chrom, start, end)
     response = urllib2.urlopen(das_request)
