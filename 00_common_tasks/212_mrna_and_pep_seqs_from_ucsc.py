@@ -20,7 +20,6 @@ def main():
         switch_to_db(cursor, assembly) # mouse build name
         # no Y chromosome, we are looking at uterus tissue
         chromosomes = ["chr"+str(x) for x in range(1,23)] + ["chrX", "chrY"]
-        coordinates_dir = "/mnt/databases/ucsc/canonical_gene_coords/" + assembly
         target_dir = {}
         for seq_type in ['mrna', 'pep']:
             target_dir[seq_type] = "/mnt/databases/ucsc/sequences/" + assembly + "/" + seq_type

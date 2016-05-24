@@ -18,18 +18,22 @@
 # Contact: ivana.mihalek@gmail.com
 #
 from mysql import *
+import re
 import urllib2
 from bs4 import BeautifulSoup
 
 ###############################################################################################
-def segment_from_das(assembly, chrom, start, end):
+def segment_from_das(assembly, chrom, start, end, verbose=False):
     das_request = "http://genome.ucsc.edu/cgi-bin/das/%s/" % assembly
-    das_request += "dna?segment=chr%s:%s,%s" % (chrom, start, end)
+    das_request += "dna?segment=%s:%s,%s" % (chrom, start, end)
+    if verbose:
+        print das_request
     response = urllib2.urlopen(das_request)
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
     if not soup or not soup.dna or not soup.dna.string: return None
-    return soup.dna.string.strip().upper()
+    stripped = soup.dna.string.strip().upper()
+    return re.sub('\s','', stripped) # get rid of all space characters
 
 ###############################################################################################
 def construct_refGene_qry (chrom, fields):

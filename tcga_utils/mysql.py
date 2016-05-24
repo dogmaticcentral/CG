@@ -158,7 +158,9 @@ def store_or_update (cursor, table, fixed_fields, update_fields, verbose=False):
             elif type(value) is float:
                 qry += " %f" % value
             else:
-                qry += " \'%s\'" % value
+                # strip its own quotes
+                value =value.replace("'", "").replace('"', '')
+                qry += " \"%s\"" % value
             first = False
         qry += ")"
         

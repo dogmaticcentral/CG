@@ -22,8 +22,7 @@
 
 
 import os.path
-import re, commands
-from tcga_utils.mysql  import  *
+import re
 from tcga_utils.utils  import  make_named_fields, is_informative
 from tcga_utils.ucsc  import  *
 from time import time
@@ -45,7 +44,7 @@ def parse_mutation (mutation):
     return [mut_position, mut_from, mut_to]
 
 #########################################
-def check_aa_type (ucsc_cursor, assembly_dict, fields):
+def check_aa_type (cursor, assembly_dict, fields):
 
     checks = True
     fixed_row = {}
@@ -56,6 +55,7 @@ def check_aa_type (ucsc_cursor, assembly_dict, fields):
     if not conflict and (variant_classification!="missense_mutation" or is_informative(aa_change)):
         return [checks, fixed_row]
     id = fields['id']
+    hugo_symbol = fields ['hugo_symbol']
     start_position = fields['start_position']
     end_position   = fields['end_position']
     tumor1      = fields['tumor_seq_allele1']
@@ -70,11 +70,18 @@ def check_aa_type (ucsc_cursor, assembly_dict, fields):
     chromosome = fields['chromosome']
 
     ucsd_segment = segment_from_das(assembly, chromosome, start_position, end_position)
-    print id, assembly, chromosome, start_position, end_position, ucsd_segment
+    print id, hugo_symbol
+    print assembly, chromosome, start_position, end_position, ucsd_segment
     print reference, norm1, norm2, tumor1, tumor2, cdna_change, aa_change
     print parse_mutation (cdna_change)
     print parse_mutation (aa_change)
     print "conflict: ", conflict
+    print
+    switch_to_db(cursor, 'ucsc')
+    qry = "select * from  canonical_transcripts_%s where hugo_name='%s'" % (assembly, hugo_symbol)
+    rows = search_db(cursor, qry)
+    print rows
+
     exit(1)
     return [checks, fixed_row]
 
@@ -96,11 +103,6 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    ucsc = connect_to_mysql(conf_file="/home/ivana/.ucsc_mysql_conf")
-    if not ucsc:
-        print "failed opening ucsc mysql connection"
-        exit(1)
-    ucsc_cursor = db.cursor()
 
     sample_type = "primary"
 
@@ -144,13 +146,14 @@ def main():
         while not done:
             offset += chunk
             if offset and not offset%1000: print "offset: ", offset
+            switch_to_db(cursor, db_name) # check_aa_type will sitch to ucsc db
             qry = "select * from %s limit %d, %d" % (table, offset, chunk)
             rows = search_db(cursor, qry)
             if not rows:
                 done = True
                 continue
             for row in rows:
-                [checks, fixed_row] = check_aa_type (ucsc_cursor, assembly, make_named_fields (header_fields, row) )
+                [checks, fixed_row] = check_aa_type (cursor, assembly, make_named_fields (header_fields, row) )
                 if checks: continue
                 store_fixed_row (cursor, fixed_row)
         break
