@@ -1,6 +1,4 @@
 #!/usr/bin/python
-# mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A
-# -A skips auto rehash
 #
 # This source code is part of tcga, a TCGA processing pipeline, written by Ivana Mihalek.
 # Copyright (C) 2014-2016 Ivana Mihalek.
@@ -20,7 +18,7 @@
 #
 # Contact: ivana.mihalek@gmail.com
 #
-from mysql import *
+from tcga_utils.mysql import *
 from tcga_utils.utils import make_named_fields
 from tcga_utils.ucsc import *
 
@@ -88,11 +86,10 @@ def read_fasta(file):
     return seq
 
 #########################################
-def  handle_orphan_hugo_name(cursor, table_name, assembly, chrom,  hugo_symbol, coordinates):
+def  handle_orphan_hugo_name(cursor, table, assembly, chrom,  hugo_symbol, coordinates):
 
     [fixed_fields, update_fields] = [ {}, {}]
     [ strand, tx_start, tx_end, exon_starts, exon_ends] = coordinates
-
 
     start = [int(x) for x in tx_start.split(";")]
     end   = [int(x) for x in tx_end.split(";")]
@@ -103,38 +100,64 @@ def  handle_orphan_hugo_name(cursor, table_name, assembly, chrom,  hugo_symbol, 
         print hugo_symbol, "mismatch in the number of splice coordinates"
         exit(1)
 
+    protein_coding = False # innocent until proven guilty
+    switch_to_db(cursor, "name_resolution")
+    qry = "select locus_type from hgnc where symbol='%s' " % hugo_symbol
+    qry += "or alias_symbol='%s' " % hugo_symbol
+    qry += "or prev_symbol='%s' "  % hugo_symbol
+    rows = search_db(cursor, qry)
+    if rows and 'protein' in rows[0][0]:
+        protein_coding = True
+
+    switch_to_db(cursor, "ucsc")
     for i in range(number_of_splices):
         fixed_fields = {'hugo_symbol': hugo_symbol}
         update_fields =  make_named_fields (["strand",  "tx_start", "tx_end", "exon_starts", "exon_ends"], \
                                             [strand, start[i], end[i], e_starts[i], e_ends[i]] )
 
         # get the mRNA seq directly from UCSC:
-        seq = segment_from_das(assembly, chrom, start[i], end[i])
+        seq = segment_from_das(assembly, chrom, start[i]+1, end[i]+1)
         update_fields ['mrna'] = seq
-        # dash "-" is appparently a naturally occuring read-through
-        if seq and not 'MIR' in hugo_symbol and not 'SNOR' in hugo_symbol and not '-' in hugo_symbol:
+        # dash "-" is apparently a naturally occurring read-through
+        if protein_coding: # the exon boundaries seem to be seriously screwed up here
+
             # store protein sequence only if it translates cleanly
-            es =  [int(x)-start[i] for x in e_starts[i].split(",")] # exons starts for this particular splice
+            es =  [int(x)-start[i]   for x in e_starts[i].split(",")] # exons starts for this particular splice
             ee =  [int(x)-start[i]+1 for x in e_ends[i].split(",")] # upper bound on the range in python
             number_of_exons = len(es)
 
             if len(ee) !=  number_of_exons:
+                print "number of exon starts != number of exon ends (?) "
                 pepseq = None  # I'm not going there
             else:
                 dna = "".join ( [seq[es[n]:ee[n]] for n in range(number_of_exons)] )
-                if len(dna)%3==0: # again, I am not going to deal with this here, there is just to much crap in this database
+                if len(dna)%3==0:
                     dnaseq = Seq (dna, generic_dna)
-                    if strand=="-":
-                        dnaseq = dnaseq.reverse_complement()
+                    if strand=="-":   dnaseq = dnaseq.reverse_complement()
                     pepseq = str(dnaseq.translate())
-                    if  strand=="+" :
-                        print hugo_symbol, start[i], end[i], e_starts[i], e_ends[i], strand
-                        print pepseq
-                        print
-                        #exit(1)
-                else:
-                    pepseq = None
+
+                    print hugo_symbol, start[i], end[i], e_starts[i], e_ends[i], strand, es, ee
+                    print pepseq
+                    print
+                elif number_of_exons==1:
+
+                    print "dna length not  multiple of 3:", len(dna), "number of exons:", number_of_exons
+                    dnaseq = Seq (dna, generic_dna)
+                    if strand=="-":   dnaseq = dnaseq.reverse_complement()
+
+
+                    print hugo_symbol, start[i], end[i], e_starts[i], e_ends[i], strand, es, ee
+                    pepseq = str(dnaseq.translate())
+                    print pepseq
+                    pepseq = str(dnaseq[1:].translate())
+                    print pepseq
+                    pepseq = str(dnaseq[2:].translate())
+                    print pepseq
+                    print
+
+
             #exit(1)
+
         #store_or_update (cursor, table[assembly], fixed_fields, update_fields)
 
     return
@@ -175,7 +198,7 @@ def main():
             for hugo_symbol in orphan_hugo_symbols:
                 handle_orphan_hugo_name(cursor, table_name, assembly, chrom, hugo_symbol, coords[hugo_symbol])
 
-            exit(1)
+            continue
 
             for seq_type in ['mrna', 'pep']:
                 file_name = target_dir[seq_type] + "/" + chrom + ".fasta"

@@ -21,7 +21,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="mysql.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="mysql.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tcga_utils/mysql.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="948">
@@ -70,16 +70,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="208_hgnc_to_mysql.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/208_hgnc_to_mysql.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="941">
-              <caret line="76" column="5" selection-start-line="76" selection-start-column="5" selection-end-line="76" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tcga_utils/utils.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -90,40 +80,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ucsc.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tcga_utils/ucsc.py">
+      <file leaf-file-name="210_get_canonical_gene_coords_from_ucsc.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/210_get_canonical_gene_coords_from_ucsc.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="7" column="37" selection-start-line="7" selection-start-column="37" selection-end-line="7" selection-end-column="37" />
-              <folding>
-                <element signature="e#805#824#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="1247">
+              <caret line="169" column="72" selection-start-line="169" selection-start-column="72" selection-end-line="169" selection-end-column="72" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="214_create_sequence_tables.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/214_create_sequence_tables.py">
+      <file leaf-file-name="209_get_canonical_gene_coords_from_ensembl.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/209_get_canonical_gene_coords_from_ensembl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="684">
-              <caret line="45" column="20" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
-              <folding>
-                <element signature="n#!!doc" expanded="false" />
-                <element signature="e#1129#1182#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="216_ucsc_seqs_to_mysql.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/216_ucsc_seqs_to_mysql.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="55" column="38" selection-start-line="55" selection-start-column="21" selection-end-line="55" selection-end-column="38" />
-              <folding>
-                <element signature="e#904#923#0" expanded="true" />
-                <element signature="e#2738#2965#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="383">
+              <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -141,15 +113,17 @@
         <option value="$PROJECT_DIR$/214_ucsc_seqs_to_mysql.py" />
         <option value="$PROJECT_DIR$/214_create_sequence_tables.py" />
         <option value="$PROJECT_DIR$/tcga_utils/ucsc.py" />
-        <option value="$PROJECT_DIR$/216_ucsc_seqs_to_mysql.py" />
         <option value="$PROJECT_DIR$/208_hgnc_to_mysql.py" />
         <option value="$PROJECT_DIR$/tcga_utils/mysql.py" />
+        <option value="$PROJECT_DIR$/216_ucsc_seqs_to_mysql.py" />
+        <option value="$PROJECT_DIR$/209_genome_assemblies_in_ensembl.py" />
+        <option value="$PROJECT_DIR$/209_get_canonical_gene_coords_from_ensembl.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2325" />
-    <option name="y" value="26" />
+    <option name="x" value="2148" />
+    <option name="y" value="23" />
     <option name="width" value="1750" />
     <option name="height" value="1311" />
   </component>
@@ -378,7 +352,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="2325" y="26" width="1750" height="1311" extended-state="0" />
+    <frame x="2148" y="23" width="1750" height="1311" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21649484" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -413,7 +387,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="11" />
+      <option name="time" value="12" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -484,7 +458,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/210_get_gene_regions_from_ucsc.py">
+    <entry file="file://$PROJECT_DIR$/210_get_canonical_gene_coords_from_ucsc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2826">
           <caret line="159" column="70" selection-start-line="159" selection-start-column="70" selection-end-line="159" selection-end-column="70" />
@@ -558,7 +532,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/210_get_gene_regions_from_ucsc.py">
+    <entry file="file://$PROJECT_DIR$/210_get_canonical_gene_coords_from_ucsc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -628,7 +602,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/210_get_gene_regions_from_ucsc.py">
+    <entry file="file://$PROJECT_DIR$/210_get_canonical_gene_coords_from_ucsc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -888,59 +862,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/210_get_gene_regions_from_ucsc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="761">
-          <caret line="159" column="70" selection-start-line="159" selection-start-column="70" selection-end-line="159" selection-end-column="70" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tcga_utils/ucsc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="7" column="37" selection-start-line="7" selection-start-column="37" selection-end-line="7" selection-end-column="37" />
-          <folding>
-            <element signature="e#805#824#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/214_create_sequence_tables.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="684">
-          <caret line="45" column="20" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-            <element signature="e#1129#1182#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tcga_utils/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="385">
-          <caret line="35" column="4" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/208_hgnc_to_mysql.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="941">
           <caret line="76" column="5" selection-start-line="76" selection-start-column="5" selection-end-line="76" selection-end-column="5" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/216_ucsc_seqs_to_mysql.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="55" column="38" selection-start-line="55" selection-start-column="21" selection-end-line="55" selection-end-column="38" />
-          <folding>
-            <element signature="e#904#923#0" expanded="true" />
-            <element signature="e#2738#2965#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -988,6 +914,63 @@
             <element signature="e#9363#9526#0" expanded="false" />
             <element signature="e#9565#9652#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tcga_utils/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="35" column="4" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/214_create_sequence_tables.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="684">
+          <caret line="45" column="20" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+            <element signature="e#1129#1182#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tcga_utils/ucsc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="37" selection-start-line="7" selection-start-column="37" selection-end-line="7" selection-end-column="37" />
+          <folding>
+            <element signature="e#805#824#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/216_ucsc_seqs_to_mysql.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="594">
+          <caret line="111" column="32" selection-start-line="111" selection-start-column="32" selection-end-line="111" selection-end-column="32" />
+          <folding>
+            <element signature="e#823#853#0" expanded="true" />
+            <element signature="e#1498#2598#0" expanded="false" />
+            <element signature="e#2668#2895#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/210_get_canonical_gene_coords_from_ucsc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1247">
+          <caret line="169" column="72" selection-start-line="169" selection-start-column="72" selection-end-line="169" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/209_get_canonical_gene_coords_from_ensembl.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="383">
+          <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
+          <folding />
         </state>
       </provider>
     </entry>
