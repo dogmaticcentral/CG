@@ -57,7 +57,10 @@ def main():
     latest = get_latest_ensembl_db_for_assembly(cursor)
     for assembly, human_db in latest.iteritems():
         print "latest db for %s is %s" % (assembly, human_db)
-
+        switch_to_db(cursor,  human_db)
+        # gene:  gene_id, canonical_transcript_id
+        # exon_transcript: exon_id, transcript_id, rank
+        # exon: exon_id, seq_region_id, seq_region_start, seq_region_end, seq_region_strand, phaswe, end_phase, is_current
     cursor.close()
     db.close()
 
