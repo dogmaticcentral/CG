@@ -18,7 +18,6 @@ def main():
     cursor = db.cursor()
     for assembly in ["hg18", "hg19"]:
         switch_to_db(cursor, assembly) # mouse build name
-        # no Y chromosome, we are looking at uterus tissue
         chromosomes = ["chr"+str(x) for x in range(1,23)] + ["chrX", "chrY"]
         target_dir = {}
         for seq_type in ['mrna', 'pep']:

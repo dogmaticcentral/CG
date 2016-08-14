@@ -25,23 +25,6 @@ from   tcga_utils.mysql   import  *
 import commands
 
 #########################################
-def make_meta_table(cursor, db_name, meta_table):
-    
-    switch_to_db (cursor, db_name)
-    qry = ""
-    qry += "  CREATE TABLE  %s (" % meta_table
-    qry += "     id INT NOT NULL AUTO_INCREMENT, "
-    qry += "	 file_name BLOB NOT NULL, "
-    qry += "	 quality_check VARCHAR (10), " # pass or fail
-    qry += "	 assembly VARCHAR (10), "
-    qry += "	 diagnostics BLOB, "
-    qry += "	 PRIMARY KEY (id) "
-    qry += ") ENGINE=MyISAM"
-    rows = search_db(cursor, qry)
-    print qry
-    print rows
-
-#########################################
 def make_mutations_table(cursor, db_name, mutations_table):
 
     switch_to_db (cursor, db_name)
@@ -74,7 +57,6 @@ def make_mutations_table(cursor, db_name, mutations_table):
     qry += "	 verification_status VARCHAR (20), "
     qry += "	 validation_status VARCHAR (20) NOT NULL, "
     qry += "	 mutation_status VARCHAR (50) NOT NULL, "
-    qry += "	 meta_info_index INT (11)  NOT NULL, "
     qry += "	 conflict BLOB, "
     qry += "	 PRIMARY KEY (id) "
     qry += ") ENGINE=MyISAM"
@@ -141,11 +123,6 @@ def main():
         print qry
         print rows
       
-        meta_table = "mutations_meta"
-        if ( check_table_exists (cursor, db_name, meta_table)):
-            print meta_table, " found in ", db_name
-        else:
-            make_meta_table(cursor, db_name, meta_table)
 
         for mutations_table in ('somatic_mutations', 'metastatic_mutations', 'conflict_mutations'):
             if ( check_table_exists (cursor, db_name, mutations_table)):

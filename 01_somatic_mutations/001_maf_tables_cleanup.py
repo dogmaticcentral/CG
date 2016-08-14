@@ -35,8 +35,8 @@ def main():
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
     
     # I don't want to start this by mistake - remove comment and put in db names as needed
-    print "please comment out if you are sure you want to delete database tables"
-    exit(1)
+    #print "please comment out if you are sure you want to delete database tables"
+    #exit(1)
     
     for db_name in db_names:
         # check db exists
@@ -57,8 +57,8 @@ def main():
         for row in rows:
             print "\t ", row[0]
 
-        #for table in ( 'metastatic_mutations', 'somatic_mutations', 'mutations_meta', 'conflict_mutations'):
-        for table in ( 'metastatic_mutations', 'somatic_mutations', 'conflict_mutations'):
+        for table in ( 'metastatic_mutations', 'somatic_mutations', 'mutations_meta', 'conflict_mutations'):
+        #for table in ( 'metastatic_mutations', 'somatic_mutations', 'conflict_mutations'):
             if ( check_table_exists (cursor, db_name, table)):
                 print table, " found in ", db_name
                 qry = "drop table %s "  % table

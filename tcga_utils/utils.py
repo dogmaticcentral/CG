@@ -72,9 +72,9 @@ def process_header_line(maffile):
             header_fields[i] ='chromosome'
         elif header_fields[i] in ['amino_acid_change_wu',
                               'aachange', 'amino_acid_change',
-                              'protein_change']:
+                              'protein_change', 'hgvsp_short']:
             header_fields[i] = 'aa_change'
-        elif header_fields[i] in ['cdna_change', 'chromchange', 'c_position_wu', 'c_position']:
+        elif header_fields[i] in ['cdna_change', 'chromchange', 'c_position_wu', 'c_position', 'hgvsc']:
             header_fields[i] = 'cdna_change'
 
     return header_fields

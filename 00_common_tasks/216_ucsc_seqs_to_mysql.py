@@ -44,7 +44,7 @@ def check_file(file_name):
         exit(1)
 
 #########################################
-def read_coords_file(file):
+def read_ucsc_coords_file(file):
 
     transcript2hugo   = {}
     trancript2protein = {}
@@ -86,10 +86,16 @@ def read_fasta(file):
     return seq
 
 #########################################
-def  handle_orphan_hugo_name(cursor, table, assembly, chrom,  hugo_symbol, coordinates):
+def  handle_orphan_hugo_name(cursor, table, assembly, chrom,  hugo_symbol, coordinates_ucsc):
 
+    # I could not reconstruct peptide sequences from ucsc coordinates - some things are  off by on or two and I do not really care why
     [fixed_fields, update_fields] = [ {}, {}]
-    [ strand, tx_start, tx_end, exon_starts, exon_ends] = coordinates
+    [ strand, tx_start, tx_end, exon_starts, exon_ends] = coordinates_ucsc
+    grc = {'hg38':'GRCh38', 'hg19':'GRCh37', 'hg18':'NCBI36'}
+    coordinates_dir = "/mnt/databases/ensembl/canonical_gene_coords/" + grc[assembly]
+    check_dir(coordinates_dir) # will die here if nonexistent
+
+    exit(1)
 
     start = [int(x) for x in tx_start.split(";")]
     end   = [int(x) for x in tx_end.split(";")]
@@ -115,20 +121,21 @@ def  handle_orphan_hugo_name(cursor, table, assembly, chrom,  hugo_symbol, coord
         update_fields =  make_named_fields (["strand",  "tx_start", "tx_end", "exon_starts", "exon_ends"], \
                                             [strand, start[i], end[i], e_starts[i], e_ends[i]] )
 
-        # get the mRNA seq directly from UCSC:
-        seq = segment_from_das(assembly, chrom, start[i]+1, end[i]+1)
+        # get the mRNA seq directly from UCSC: is start off by 1 everywhere?
+        seq = segment_from_das(assembly, chrom, start[i]+2, end[i]+1)
         update_fields ['mrna'] = seq
         # dash "-" is apparently a naturally occurring read-through
         if protein_coding: # the exon boundaries seem to be seriously screwed up here
 
             # store protein sequence only if it translates cleanly
-            es =  [int(x)-start[i]   for x in e_starts[i].split(",")] # exons starts for this particular splice
+            es =  [int(x)-start[i]  for x in e_starts[i].split(",")] # exons starts for this particular splice
             ee =  [int(x)-start[i]+1 for x in e_ends[i].split(",")] # upper bound on the range in python
             number_of_exons = len(es)
 
             if len(ee) !=  number_of_exons:
                 print "number of exon starts != number of exon ends (?) "
                 pepseq = None  # I'm not going there
+
             else:
                 dna = "".join ( [seq[es[n]:ee[n]] for n in range(number_of_exons)] )
                 if len(dna)%3==0:
@@ -139,12 +146,12 @@ def  handle_orphan_hugo_name(cursor, table, assembly, chrom,  hugo_symbol, coord
                     print hugo_symbol, start[i], end[i], e_starts[i], e_ends[i], strand, es, ee
                     print pepseq
                     print
+
                 elif number_of_exons==1:
 
                     print "dna length not  multiple of 3:", len(dna), "number of exons:", number_of_exons
                     dnaseq = Seq (dna, generic_dna)
                     if strand=="-":   dnaseq = dnaseq.reverse_complement()
-
 
                     print hugo_symbol, start[i], end[i], e_starts[i], e_ends[i], strand, es, ee
                     pepseq = str(dnaseq.translate())
@@ -156,7 +163,7 @@ def  handle_orphan_hugo_name(cursor, table, assembly, chrom,  hugo_symbol, coord
                     print
 
 
-            #exit(1)
+            exit(1)
 
         #store_or_update (cursor, table[assembly], fixed_fields, update_fields)
 
@@ -175,7 +182,7 @@ def main():
     switch_to_db(cursor, db_name)
     chromosomes = ["chr" + str(x) for x in range(1, 23)] + ["chrX", "chrY"]
 
-    for assembly in ["hg18", "hg19"]:
+    for assembly in ["hg19", "hg18"]:
         print "assembly", assembly
         coordinates_dir = "/mnt/databases/ucsc/canonical_gene_coords/" + assembly
         check_dir(coordinates_dir) # will die here if nonexistent
@@ -192,7 +199,7 @@ def main():
             check_file(file_name)
             coords_file = open(file_name, "r")
 
-            [orphan_hugo_symbols, transcript2hugo, trancript2protein, coords] = read_coords_file(coords_file)
+            [orphan_hugo_symbols, transcript2hugo, trancript2protein, coords] = read_ucsc_coords_file(coords_file)
             coords_file.close()
 
             for hugo_symbol in orphan_hugo_symbols:

@@ -24,6 +24,7 @@ from bs4 import BeautifulSoup
 
 ###############################################################################################
 def segment_from_das(assembly, chrom, start, end, verbose=False):
+    # das counts from 1, not from 0
     das_request = "http://genome.ucsc.edu/cgi-bin/das/%s/" % assembly
     das_request += "dna?segment=%s:%s,%s" % (chrom, start, end)
     if verbose:

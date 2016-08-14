@@ -44,7 +44,7 @@ def main():
     for assembly in ["hg18", "hg19", "hg38"]:
         switch_to_db(cursor, assembly) # mouse build name
 
-        fields_to_dwld = ["hugo_name", "ucsc_transcript_id", "ucsc_protein_id","strand", "txStart", "txEnd", "exonStarts",  "exonEnds"]
+        fields_to_dwld = ["hugo_name", "ucsc_transcript_id", "ucsc_protein_id", "strand", "txStart", "txEnd", "exonStarts",  "exonEnds"]
 
         target_dir = "/mnt/databases/ucsc/canonical_gene_coords/" + assembly
         if not os.path.isdir(target_dir):
