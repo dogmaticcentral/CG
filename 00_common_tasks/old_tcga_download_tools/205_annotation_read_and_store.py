@@ -33,8 +33,6 @@ from   tcga_utils.mysql import  *
 import commands
 
 
-
-
 #########################################
 def make_annotation_table(cursor, fields):
 
