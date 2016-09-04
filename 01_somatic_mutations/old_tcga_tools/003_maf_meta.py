@@ -245,7 +245,7 @@ def store_meta_info(cursor, bare_filename, overall_diagnostics):
         update_fields['quality_check'] = "fail"
 
     if len(overall_diagnostics) > 0:
-        overall_diagnostics = [x for x in overall_diagnostics if len(x[1]>0)]
+        overall_diagnostics = [x for x in overall_diagnostics if x[1] and len(x[1]>0)]
         update_fields['diagnostics'] = "; ".join(map(lambda x: ":".join(x), overall_diagnostics))
 
     store_or_update(cursor, "mutations_meta", fixed_fields, update_fields)
