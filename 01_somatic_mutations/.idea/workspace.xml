@@ -49,8 +49,8 @@
       <file leaf-file-name="004_read_maf_meta.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/old_tcga_tools/004_read_maf_meta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7132353">
-              <caret line="71" column="36" selection-start-line="71" selection-start-column="36" selection-end-line="71" selection-end-column="36" />
+            <state vertical-scroll-proportion="0.18382353">
+              <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -681,8 +681,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/old_tcga_tools/004_read_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7132353">
-          <caret line="71" column="36" selection-start-line="71" selection-start-column="36" selection-end-line="71" selection-end-column="36" />
+        <state vertical-scroll-proportion="0.18382353">
+          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
           <folding />
         </state>
       </provider>
