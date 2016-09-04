@@ -67,7 +67,9 @@ def main():
             #if diagnostics and "tumor alleles identical" in diagnostics:
             if True:
                 print "\t %4d  %50s   " % (meta_id, file_name)
-                print "\t\t %6s   %6s      %s" % (quality_check, assembly, diagnostics)
+                print "\t\t %6s" % (quality_check)
+                print "\t\t %6s" % (assembly)
+                print "\t\t %6s" % (diagnostics)
 
     cursor.close()
     db.close()
