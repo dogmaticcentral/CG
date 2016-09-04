@@ -36,7 +36,7 @@ def main():
     
     # I don't want to start this by mistake - remove comment and put in db names as needed
     print "please comment out if you are sure you want to delete database tables"
-    #exit(1)
+    exit(1)
     
     for db_name in db_names:
         # check db exists
