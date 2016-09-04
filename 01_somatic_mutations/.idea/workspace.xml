@@ -34,14 +34,13 @@
       <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/old_tcga_tools/003_maf_meta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.16584565">
-              <caret line="233" column="32" selection-start-line="233" selection-start-column="32" selection-end-line="233" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.48440066">
+              <caret line="38" column="23" selection-start-line="38" selection-start-column="23" selection-end-line="38" selection-end-column="23" />
               <folding>
-                <element signature="e#1207#3579#0" expanded="false" />
-                <element signature="e#3690#4515#0" expanded="false" />
-                <element signature="e#5195#7015#0" expanded="false" />
-                <element signature="e#7126#8393#0" expanded="false" />
-                <element signature="e#8491#9454#0" expanded="false" />
+                <element signature="e#3702#4527#0" expanded="false" />
+                <element signature="e#5207#7027#0" expanded="false" />
+                <element signature="e#7138#8405#0" expanded="false" />
+                <element signature="e#8503#9466#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -106,8 +105,8 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="47" />
-    <option name="y" value="69" />
+    <option name="x" value="67" />
+    <option name="y" value="77" />
     <option name="width" value="1202" />
     <option name="height" value="706" />
   </component>
@@ -334,7 +333,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="47" y="69" width="1202" height="706" extended-state="0" />
+    <frame x="67" y="77" width="1202" height="706" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22046588" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -399,11 +398,10 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="312" column="50" selection-start-line="312" selection-start-column="50" selection-end-line="312" selection-end-column="50" />
           <folding>
-            <element signature="e#1207#3579#0" expanded="false" />
-            <element signature="e#3690#4515#0" expanded="false" />
-            <element signature="e#5195#7015#0" expanded="false" />
-            <element signature="e#7126#8393#0" expanded="false" />
-            <element signature="e#8491#9454#0" expanded="false" />
+            <element signature="e#3702#4527#0" expanded="false" />
+            <element signature="e#5207#7027#0" expanded="false" />
+            <element signature="e#7138#8405#0" expanded="false" />
+            <element signature="e#8503#9466#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -437,11 +435,10 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1207#3579#0" expanded="false" />
-            <element signature="e#3690#4515#0" expanded="false" />
-            <element signature="e#5195#7015#0" expanded="false" />
-            <element signature="e#7126#8393#0" expanded="false" />
-            <element signature="e#8491#9454#0" expanded="false" />
+            <element signature="e#3702#4527#0" expanded="false" />
+            <element signature="e#5207#7027#0" expanded="false" />
+            <element signature="e#7138#8405#0" expanded="false" />
+            <element signature="e#8503#9466#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -716,14 +713,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/old_tcga_tools/003_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16584565">
-          <caret line="233" column="32" selection-start-line="233" selection-start-column="32" selection-end-line="233" selection-end-column="32" />
+        <state vertical-scroll-proportion="0.48440066">
+          <caret line="38" column="23" selection-start-line="38" selection-start-column="23" selection-end-line="38" selection-end-column="23" />
           <folding>
-            <element signature="e#1207#3579#0" expanded="false" />
-            <element signature="e#3690#4515#0" expanded="false" />
-            <element signature="e#5195#7015#0" expanded="false" />
-            <element signature="e#7126#8393#0" expanded="false" />
-            <element signature="e#8491#9454#0" expanded="false" />
+            <element signature="e#3702#4527#0" expanded="false" />
+            <element signature="e#5207#7027#0" expanded="false" />
+            <element signature="e#7138#8405#0" expanded="false" />
+            <element signature="e#8503#9466#0" expanded="false" />
           </folding>
         </state>
       </provider>

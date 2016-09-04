@@ -36,7 +36,7 @@ def find_reference_genome(cursor, maffile, bare_filename):
     rows = search_db (cursor, qry)
     if rows:
         ref_gen = rows[0][0]
-        if len(ref_gen) > 3 and not 'error' in ref_gen.lower():
+        if ref_gen and len(ref_gen) > 3 and not 'error' in ref_gen.lower():
             ref_gen = rows[0][0]
             return ["pass", ref_gen]
 
