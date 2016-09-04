@@ -245,6 +245,7 @@ def store_meta_info(cursor, bare_filename, overall_diagnostics):
         update_fields['quality_check'] = "fail"
 
     if len(overall_diagnostics) > 0:
+        overall_diagnostics = [x for x in overall_diagnostics if len(x[1]>0)]
         update_fields['diagnostics'] = "; ".join(map(lambda x: ":".join(x), overall_diagnostics))
 
     store_or_update(cursor, "mutations_meta", fixed_fields, update_fields)
@@ -300,7 +301,6 @@ def main():
             # we might have to go and check what's wiht the download
             if os.path.getsize(maffile) == 0:
                 overall_diagnostics.append(["fail", "file empty"])
-                ref_genome = ""
                 store_meta_info(cursor, bare_filename, overall_diagnostics)
                 continue
 
