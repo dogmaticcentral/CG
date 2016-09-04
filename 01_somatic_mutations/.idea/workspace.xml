@@ -34,12 +34,13 @@
       <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/old_tcga_tools/003_maf_meta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.110738255">
-              <caret line="258" column="0" selection-start-line="258" selection-start-column="0" selection-end-line="258" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.5503356">
+              <caret line="38" column="14" selection-start-line="38" selection-start-column="14" selection-end-line="38" selection-end-column="14" />
               <folding>
-                <element signature="e#1207#3521#0" expanded="false" />
-                <element signature="e#3632#4457#0" expanded="false" />
-                <element signature="e#5137#6957#0" expanded="false" />
+                <element signature="e#3690#4515#0" expanded="false" />
+                <element signature="e#5195#7015#0" expanded="false" />
+                <element signature="e#7126#8393#0" expanded="false" />
+                <element signature="e#8491#9454#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -379,7 +380,7 @@
           <option name="timeStamp" value="33" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="50" />
+      <option name="time" value="51" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -397,9 +398,10 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="312" column="50" selection-start-line="312" selection-start-column="50" selection-end-line="312" selection-end-column="50" />
           <folding>
-            <element signature="e#1207#3521#0" expanded="false" />
-            <element signature="e#3632#4457#0" expanded="false" />
-            <element signature="e#5137#6957#0" expanded="false" />
+            <element signature="e#3690#4515#0" expanded="false" />
+            <element signature="e#5195#7015#0" expanded="false" />
+            <element signature="e#7126#8393#0" expanded="false" />
+            <element signature="e#8491#9454#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -433,9 +435,10 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1207#3521#0" expanded="false" />
-            <element signature="e#3632#4457#0" expanded="false" />
-            <element signature="e#5137#6957#0" expanded="false" />
+            <element signature="e#3690#4515#0" expanded="false" />
+            <element signature="e#5195#7015#0" expanded="false" />
+            <element signature="e#7126#8393#0" expanded="false" />
+            <element signature="e#8491#9454#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -710,12 +713,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/old_tcga_tools/003_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.110738255">
-          <caret line="258" column="0" selection-start-line="258" selection-start-column="0" selection-end-line="258" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.5503356">
+          <caret line="38" column="14" selection-start-line="38" selection-start-column="14" selection-end-line="38" selection-end-column="14" />
           <folding>
-            <element signature="e#1207#3521#0" expanded="false" />
-            <element signature="e#3632#4457#0" expanded="false" />
-            <element signature="e#5137#6957#0" expanded="false" />
+            <element signature="e#3690#4515#0" expanded="false" />
+            <element signature="e#5195#7015#0" expanded="false" />
+            <element signature="e#7126#8393#0" expanded="false" />
+            <element signature="e#8491#9454#0" expanded="false" />
           </folding>
         </state>
       </provider>

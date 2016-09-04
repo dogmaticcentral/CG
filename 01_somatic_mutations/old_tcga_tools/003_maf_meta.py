@@ -34,9 +34,11 @@ def find_reference_genome(cursor, maffile, bare_filename):
     ref_gen = None
     qry = "select assembly from mutations_meta where file_name='%s'" % bare_filename
     rows = search_db (cursor, qry)
-    if rows and not 'error' in str(rows[0][0]).lower():
+    if rows:
         ref_gen = rows[0][0]
-        return ["pass", ref_gen]
+        if len(ref_gen) > 3 and not 'error' in ref_gen.lower():
+            ref_gen = rows[0][0]
+            return ["pass", ref_gen]
 
     #####################################################
     # if we are here, we have not found the reference genome
@@ -311,14 +313,13 @@ def main():
                 continue
 
             # this one should be pass or fail only
-            diagnostics = find_reference_genome(cursor, maffile, bare_filename)
+            assembly_diag = find_reference_genome(cursor, maffile, bare_filename)
             # if we fail here,  it means it is not clear what assembly was used
-            if diagnostics[0] == "fail":
-                overall_diagnostics.append(diagnostics)
+            if assembly_diag[0] == "fail":
+                overall_diagnostics.append(assembly_diag)
                 store_meta_info(cursor, bare_filename, overall_diagnostics)
                 continue
-            else:
-                assembly_diag = diagnostics
+
             # might come handy: is this data curated or not?
             if "automated" in bare_filename.lower():
                 overall_diagnostics.append(["note", "automated"])
