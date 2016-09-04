@@ -91,11 +91,9 @@ def find_reference_genome(cursor, maffile, bare_filename):
 
 #########################################
 def check_assignments_on_protein_level(assembly, maffile):
-'''Sample a number of positions that are supposedly in the coding region,
-    and check the aa change against the value given by jannovar.
-    Count the number of discrepancies, and issue a warning if significant.
-'''
-
+    #Sample a number of positions that are supposedly in the coding region,
+    #and check the aa change against the value given by jannovar.
+    #Count the number of discrepancies, and issue a warning if significant.
 
     print assembly
     ref_gen = ""
