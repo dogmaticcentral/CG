@@ -34,8 +34,33 @@
       <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/old_tcga_tools/003_maf_meta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7058824">
-              <caret line="275" column="85" selection-start-line="275" selection-start-column="85" selection-end-line="275" selection-end-column="85" />
+            <state vertical-scroll-proportion="0.41347626">
+              <caret line="319" column="0" selection-start-line="319" selection-start-column="0" selection-end-line="319" selection-end-column="0" />
+              <folding>
+                <element signature="e#1207#3521#0" expanded="false" />
+                <element signature="e#3632#4457#0" expanded="false" />
+                <element signature="e#5137#6957#0" expanded="false" />
+                <element signature="e#9509#10185#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="004_read_maf_meta.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/old_tcga_tools/004_read_maf_meta.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="56" column="44" selection-start-line="56" selection-start-column="44" selection-end-line="56" selection-end-column="44" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tcga_utils/utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="26" column="51" selection-start-line="26" selection-start-column="51" selection-end-line="26" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -79,8 +104,8 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="134" />
-    <option name="y" value="26" />
+    <option name="x" value="208" />
+    <option name="y" value="27" />
     <option name="width" value="1234" />
     <option name="height" value="777" />
   </component>
@@ -123,6 +148,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="01_somatic_mutations" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="01_somatic_mutations" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="01_somatic_mutations" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tcga_utils" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -293,7 +332,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="134" y="26" width="1234" height="777" extended-state="0" />
+    <frame x="208" y="27" width="1234" height="777" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21474878" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -340,7 +379,7 @@
           <option name="timeStamp" value="33" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="49" />
+      <option name="time" value="50" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -542,14 +581,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tcga_utils/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="51" selection-start-line="26" selection-start-column="51" selection-end-line="26" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/009_no_protein_level_annotation_check.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -595,11 +626,32 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tcga_utils/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="51" selection-start-line="26" selection-start-column="51" selection-end-line="26" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/old_tcga_tools/004_read_maf_meta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="56" column="44" selection-start-line="56" selection-start-column="44" selection-end-line="56" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/old_tcga_tools/003_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7058824">
-          <caret line="275" column="85" selection-start-line="275" selection-start-column="85" selection-end-line="275" selection-end-column="85" />
-          <folding />
+        <state vertical-scroll-proportion="0.41347626">
+          <caret line="319" column="0" selection-start-line="319" selection-start-column="0" selection-end-line="319" selection-end-column="0" />
+          <folding>
+            <element signature="e#1207#3521#0" expanded="false" />
+            <element signature="e#3632#4457#0" expanded="false" />
+            <element signature="e#5137#6957#0" expanded="false" />
+            <element signature="e#9509#10185#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

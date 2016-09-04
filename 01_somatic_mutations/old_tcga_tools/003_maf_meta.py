@@ -89,24 +89,6 @@ def find_reference_genome(cursor, maffile, bare_filename):
     # if both assemblies fail in more htan 10% of cases - abort
     return ["pass", ref_gen]
 
-#########################################
-def check_assignments_on_protein_level(assembly, maffile):
-    #Sample a number of positions that are supposedly in the coding region,
-    #and check the aa change against the value given by jannovar.
-    #Count the number of discrepancies, and issue a warning if significant.
-
-    print assembly
-    ref_gen = ""
-    header_fields = process_header_line(maffile)
-
-    ch_idx = header_fields.index('chromosome')
-    start_idx = header_fields.index('start_position')
-    end_idx = header_fields.index('end_position')
-    ref_al_idx = header_fields.index('reference_allele')
-    # 'tumor_seq_allele1', 'aa_change'
-    #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	1568981
-    #chr1	13116	.	T	G
-    exit(1)
 
 #########################################
 def check_headers(maffile, required_fields, expected_fields):
@@ -335,12 +317,6 @@ def main():
             if diagnostics[0] == "fail":
                 store_meta_info(cursor, bare_filename, overall_diagnostics)
                 continue
-
-            # there is still one more check - do assignments on the protein level
-            # appear to refer to canonical splices in the majority of cases?
-            # we will use a godawful hack, using a third party variant annotation tool
-            assembly    = diagnostics[1]
-            diagnostics = check_assignments_on_protein_level(assembly, maffile)
 
 
             # might come handy: is this data curated or not?
