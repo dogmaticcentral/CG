@@ -34,9 +34,10 @@
       <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/old_tcga_tools/003_maf_meta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33333334">
-              <caret line="247" column="74" selection-start-line="247" selection-start-column="74" selection-end-line="247" selection-end-column="74" />
+            <state vertical-scroll-proportion="0.26436782">
+              <caret line="237" column="26" selection-start-line="237" selection-start-column="26" selection-end-line="237" selection-end-column="26" />
               <folding>
+                <element signature="e#1207#3579#0" expanded="false" />
                 <element signature="e#3690#4515#0" expanded="false" />
                 <element signature="e#5195#7015#0" expanded="false" />
                 <element signature="e#7126#8393#0" expanded="false" />
@@ -380,7 +381,7 @@
           <option name="timeStamp" value="33" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="51" />
+      <option name="time" value="52" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -398,6 +399,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="312" column="50" selection-start-line="312" selection-start-column="50" selection-end-line="312" selection-end-column="50" />
           <folding>
+            <element signature="e#1207#3579#0" expanded="false" />
             <element signature="e#3690#4515#0" expanded="false" />
             <element signature="e#5195#7015#0" expanded="false" />
             <element signature="e#7126#8393#0" expanded="false" />
@@ -435,6 +437,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="e#1207#3579#0" expanded="false" />
             <element signature="e#3690#4515#0" expanded="false" />
             <element signature="e#5195#7015#0" expanded="false" />
             <element signature="e#7126#8393#0" expanded="false" />
@@ -713,9 +716,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/old_tcga_tools/003_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="247" column="74" selection-start-line="247" selection-start-column="74" selection-end-line="247" selection-end-column="74" />
+        <state vertical-scroll-proportion="0.26436782">
+          <caret line="237" column="26" selection-start-line="237" selection-start-column="26" selection-end-line="237" selection-end-column="26" />
           <folding>
+            <element signature="e#1207#3579#0" expanded="false" />
             <element signature="e#3690#4515#0" expanded="false" />
             <element signature="e#5195#7015#0" expanded="false" />
             <element signature="e#7126#8393#0" expanded="false" />

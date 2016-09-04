@@ -230,9 +230,12 @@ def check_tumor_alleles(maffile):
 def store_meta_info(cursor, bare_filename, overall_diagnostics):
     print
     print "storing meta info for ", bare_filename
+    filtered_diagnostics = []
     for diag in overall_diagnostics:
-        print diag
-
+        if len(diag[1])>0:
+            print diag
+            filtered_diagnostics.push(diag)
+    overall_diagnostics = filtered_diagnostics
     fixed_fields = {}
     update_fields = {}
 
@@ -245,7 +248,6 @@ def store_meta_info(cursor, bare_filename, overall_diagnostics):
         update_fields['quality_check'] = "fail"
 
     if len(overall_diagnostics) > 0:
-        overall_diagnostics = [x for x in overall_diagnostics if x[1] and len(x[1]>0)]
         update_fields['diagnostics'] = "; ".join(map(lambda x: ":".join(x), overall_diagnostics))
 
     store_or_update(cursor, "mutations_meta", fixed_fields, update_fields)
