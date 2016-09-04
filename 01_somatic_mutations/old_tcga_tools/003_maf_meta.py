@@ -257,10 +257,6 @@ def main():
                 "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC", "MESO", "OV", "PAAD", "PCPG", "PRAD", "REA",
                 "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    db_names = ["HNSC", "KICH", "KIRC",
-                "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC", "MESO", "OV", "PAAD", "PCPG", "PRAD", "REA",
-                "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
-
     for db_name in db_names:
         # check db exists
         qry = "show databases like '%s'" % db_name
@@ -317,12 +313,12 @@ def main():
             # this one should be pass or fail only
             diagnostics = find_reference_genome(cursor, maffile, bare_filename)
             # if we fail here,  it means it is not clear what assembly was used
-            overall_diagnostics.append(diagnostics)
             if diagnostics[0] == "fail":
+                overall_diagnostics.append(diagnostics)
                 store_meta_info(cursor, bare_filename, overall_diagnostics)
                 continue
-
-
+            else:
+                assembly_diag = diagnostics
             # might come handy: is this data curated or not?
             if "automated" in bare_filename.lower():
                 overall_diagnostics.append(["note", "automated"])
@@ -353,8 +349,10 @@ def main():
             if diagnostics[0] != "pass":
                  overall_diagnostics.append(diagnostics)
 
-
             overall_diagnostics.append(diagnostics)
+
+            # as a convention, (or convenience) assembly info last
+            overall_diagnostics.append(assembly_diag)
 
             store_meta_info(cursor, bare_filename, overall_diagnostics)
 
