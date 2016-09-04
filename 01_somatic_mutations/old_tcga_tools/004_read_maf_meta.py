@@ -71,7 +71,7 @@ def main():
                 print "\t\t assembly: %6s" % (assembly)
                 print "\t\t diagnostics:"
                 for diag in diagnostics.split(';'):
-                    print "\t\t\t %6s" % diag
+                    print "\t\t\t %6s" % diag.strip()
 
     cursor.close()
     db.close()
