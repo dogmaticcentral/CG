@@ -234,7 +234,7 @@ def store_meta_info(cursor, bare_filename, overall_diagnostics):
     for diag in overall_diagnostics:
         if len(diag[1])>0:
             print diag
-            filtered_diagnostics.push(diag)
+            filtered_diagnostics.append(diag)
     overall_diagnostics = filtered_diagnostics
     fixed_fields = {}
     update_fields = {}
