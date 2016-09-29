@@ -68,7 +68,7 @@ def main():
         rows2 = search_db (cursor, qry)
         for row2 in rows2:
             print "\t", row2[0]
-        if length(rows2) > 1:
+        if len(rows2) > 1:
             print "more than one assembly - unseen at the time of writing of this script"
             exit(1)
         print
