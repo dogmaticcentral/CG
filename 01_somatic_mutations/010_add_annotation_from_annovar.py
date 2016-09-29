@@ -67,10 +67,10 @@ def main():
         rows = search_db (cursor, qry)
         for row in rows:
             meta_info_index = row[0]
-            qry  = "select * from mutations_meta where id=%d" % meta_info_index
+            qry  = "select distinct(assembly) from mutations_meta where id=%d" % meta_info_index
             rows2 = search_db (cursor, qry)
             for row2 in rows2:
-                print row2
+                print "\t", row2
 
         exit(1)
 
