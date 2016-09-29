@@ -40,7 +40,6 @@ def main():
 
     # how many cases do we have affected?
     for db_name in db_names:
-        print " ** ", db_name
         switch_to_db (cursor, db_name)
         per_db_cases = 0
         qry = "select count(1) from somatic_mutations where variant_classification='missense_mutation' "
@@ -58,6 +57,7 @@ def main():
 
         if per_db_cases == 0: continue
 
+        print " ** ", db_name
         print "number of missing protein annotation cases: ", per_db_cases, "out of", out_of
         print
 
@@ -66,7 +66,11 @@ def main():
         print "meta info for missing info cases:"
         rows = search_db (cursor, qry)
         for row in rows:
-            print row
+            meta_info_index = row[0]
+            qry  = "select * from mutations_meta where id=%d" % meta_info_index
+            rows2 = search_db (cursor, qry)
+            for row2 in rows2:
+                print row2
 
         exit(1)
 
