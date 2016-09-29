@@ -59,8 +59,6 @@ def main():
 
         print " ** ", db_name
         print "number of missing protein annotation cases: ", per_db_cases, "out of", out_of
-        print
-
         qry = "select distinct(meta_info_index) from somatic_mutations where variant_classification='missense_mutation' "
         qry += " and (aa_change is null or aa_change='')"
         print "meta info for missing info cases:"
@@ -70,6 +68,8 @@ def main():
         rows2 = search_db (cursor, qry)
         for row2 in rows2:
             print "\t", row2[0]
+        print
+        print
 
         #exit(1)
 
