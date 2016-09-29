@@ -65,12 +65,11 @@ def main():
         qry += " and (aa_change is null or aa_change='')"
         print "meta info for missing info cases:"
         rows = search_db (cursor, qry)
-        for row in rows:
-            meta_info_index = row[0]
-            qry  = "select distinct(assembly) from mutations_meta where id=%d" % meta_info_index
-            rows2 = search_db (cursor, qry)
-            for row2 in rows2:
-                print "\t", row2[0]
+        meta_ids  = [str(row[0]) for row in rows]
+        qry  = "select distinct(assembly) from mutations_meta where id in (%s)" % ",".join(meta_ids)
+        rows2 = search_db (cursor, qry)
+        for row2 in rows2:
+            print "\t", row2[0]
 
         #exit(1)
 
