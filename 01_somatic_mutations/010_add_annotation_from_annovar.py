@@ -78,7 +78,7 @@ def main():
         qry += " and (aa_change is null or aa_change='')"
         rows = search_db (cursor, qry)
         for row in rows[:10]:
-            print "\t", row[0]
+            print "\t", row
 
 
         print
