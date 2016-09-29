@@ -64,17 +64,20 @@ def main():
         print "meta info for missing info cases:"
         rows = search_db (cursor, qry)
         meta_ids  = [str(row[0]) for row in rows]
-        qry  = "select distinct(assembly) from mutations_meta where id in (%s)" % ",".join(meta_ids)
+        qry    "select distinct(assembly) from mutations_meta where id in (%s)" % ",".join(meta_ids)
         rows2 = search_db (cursor, qry)
         for row2 in rows2:
             print "\t", row2[0]
         if len(rows2) > 1:
             print "more than one assembly - unseen at the time of writing of this script"
             exit(1)
+        assembly =  row2[0]
+
+
         print
         print
 
-        #exit(1)
+        exit(1)
 
 
 
