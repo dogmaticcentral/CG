@@ -20,6 +20,11 @@
 # Contact: ivana.mihalek@gmail.com
 #
 
+import MySQLdb
+from sets import Set
+from   tcga_utils.mysql   import  *
+import commands
+
 
 
 #########################################
@@ -62,7 +67,7 @@ def main():
         rows = search_db (cursor, qry)
         for row in rows:
             print row
-            
+
         exit(1)
 
 

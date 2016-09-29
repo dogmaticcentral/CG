@@ -25,8 +25,10 @@
         <entry file="file://$PROJECT_DIR$/009_no_protein_level_annotation_check.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="11" column="12" selection-start-line="0" selection-start-column="1" selection-end-line="22" selection-end-column="0" />
-              <folding />
+              <caret line="29" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+              <folding>
+                <element signature="e#831#845#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -34,9 +36,11 @@
       <file leaf-file-name="010_add_annotation_from_annovar.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/010_add_annotation_from_annovar.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.74907064">
-              <caret line="64" column="12" selection-start-line="64" selection-start-column="12" selection-end-line="64" selection-end-column="12" />
-              <folding />
+            <state vertical-scroll-proportion="0.05204461">
+              <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+              <folding>
+                <element signature="e#825#839#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -81,8 +85,8 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="53" />
-    <option name="y" value="71" />
+    <option name="x" value="71" />
+    <option name="y" value="35" />
     <option name="width" value="1221" />
     <option name="height" value="635" />
   </component>
@@ -285,7 +289,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="53" y="71" width="1221" height="635" extended-state="0" />
+    <frame x="71" y="35" width="1221" height="635" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25552824" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -709,16 +713,20 @@
     <entry file="file://$PROJECT_DIR$/009_no_protein_level_annotation_check.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="12" selection-start-line="0" selection-start-column="1" selection-end-line="22" selection-end-column="0" />
-          <folding />
+          <caret line="29" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding>
+            <element signature="e#831#845#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/010_add_annotation_from_annovar.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.74907064">
-          <caret line="64" column="12" selection-start-line="64" selection-start-column="12" selection-end-line="64" selection-end-column="12" />
-          <folding />
+        <state vertical-scroll-proportion="0.05204461">
+          <caret line="10" column="1" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+          <folding>
+            <element signature="e#825#839#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
