@@ -36,8 +36,8 @@
       <file leaf-file-name="010_add_annotation_from_annovar.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/010_add_annotation_from_annovar.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.91635686">
-              <caret line="79" column="8" selection-start-line="79" selection-start-column="8" selection-end-line="79" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.69330853">
+              <caret line="80" column="1" selection-start-line="80" selection-start-column="1" selection-end-line="80" selection-end-column="1" />
               <folding>
                 <element signature="e#825#839#0" expanded="true" />
               </folding>
@@ -722,8 +722,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/010_add_annotation_from_annovar.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.91635686">
-          <caret line="79" column="8" selection-start-line="79" selection-start-column="8" selection-end-line="79" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.69330853">
+          <caret line="80" column="1" selection-start-line="80" selection-start-column="1" selection-end-line="80" selection-end-column="1" />
           <folding>
             <element signature="e#825#839#0" expanded="true" />
           </folding>
