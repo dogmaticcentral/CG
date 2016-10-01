@@ -102,7 +102,7 @@ def main():
         avinput = output_annovar_input_file (db_name, cursor)
         avoutput = run_annovar (avinput, assembly, db_name)
         store_annotation (cursor, db_name, avoutput)
-        exit(1)
+        
 
 
 
