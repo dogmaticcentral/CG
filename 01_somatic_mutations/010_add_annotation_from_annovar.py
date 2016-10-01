@@ -56,7 +56,10 @@ def store_annotation(cursor, db_name, avoutput):
     inf = open (avoutput, "r")
     for line in inf:
         fields = line.split('\t')[-1].split(',')[0].split(':')
-        print fields[-2], fields[-1]
+        print line
+        print line.split('\t')[-1]
+        print line.split('\t')[-1].split(',')[0]
+        print
         exit(1)
     inf.close()
     return
