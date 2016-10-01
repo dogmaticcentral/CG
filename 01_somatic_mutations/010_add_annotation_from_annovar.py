@@ -60,7 +60,7 @@ def store_annotation(cursor, db_name, avoutput):
         print line
         print line.split('\t')[-1]
         print line.split('\t')[-1].split(',')[0]
-        print
+        print fields[-2], fields[-1]
         exit(1)
     inf.close()
     return
