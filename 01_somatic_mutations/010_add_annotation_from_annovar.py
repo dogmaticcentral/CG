@@ -21,6 +21,7 @@
 #
 
 import MySQLdb
+import re
 from sets import Set
 from tcga_utils.mysql   import  *
 from subprocess import call
