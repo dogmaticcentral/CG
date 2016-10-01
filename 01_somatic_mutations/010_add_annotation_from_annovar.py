@@ -46,7 +46,7 @@ def run_annovar(avinput, assembly, db_name):
     call(cmd, shell=True)
     avoutname = "%s.%s_multianno.txt" % (db_name, assembly)
     # clean the junk
-    cmd = "rm %s.reGene.variant_function " % db_name
+    cmd = "rm %s.refGene.variant_function " % db_name
     cmd +="%s.refGene.exonic_variant_function %s.refGene.log" % (db_name, db_name)
     call ( cmd, shell=True)
     return avoutname
@@ -54,7 +54,9 @@ def run_annovar(avinput, assembly, db_name):
 ##################################
 def store_annotation(cursor, db_name, avoutput):
     inf = open (avoutput, "r")
-
+    for line in inf:
+        fields = line.split('\t')
+        print fields[-2], fields[-1]
     inf.close()
     return
 
