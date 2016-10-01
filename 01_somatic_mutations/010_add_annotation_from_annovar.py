@@ -81,7 +81,7 @@ def main():
         if len(rows) > 1:
             print "more than one assembly - unseen at the time of writing of this script"
             exit(1)
-        assembly =  rows[0]
+        assembly =  rows[0][0]
         if assembly != "hg19":
             print "unexpected assembly:", assembly
             exit(2)
