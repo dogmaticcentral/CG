@@ -53,11 +53,11 @@ def run_annovar(avinput, assembly, db_name):
 
 ##################################
 def store_annotation(cursor, db_name, avoutput):
-    return
     inf = open (avoutput, "r")
     for line in inf:
-        fields = line.split('\t')
+        fields = line.split('\t')[-1].split(',')[0].split(':')
         print fields[-2], fields[-1]
+        exit(1)
     inf.close()
     return
 
