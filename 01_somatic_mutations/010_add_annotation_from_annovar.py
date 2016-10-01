@@ -46,7 +46,9 @@ def output_annovar_input_file(db_name, cursor):
     outfname = "%s.avinput" % db_name
     outf = open(outfname, 'w')
     for row in rows[:10]:
-        print >> outf, "%s\t%d\t%d\t%s\t%s" % row
+        (chromosome, start_position, end_position, reference_allele, tumor_seq_allele1 ) = row
+        print >> outf, "%s\t%d\t%d\t%s\t%s" % \
+            (chromosome, start_position, end_position, '.', tumor_seq_allele1 )
     outf.close()
     return outfname
 
