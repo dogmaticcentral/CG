@@ -73,6 +73,7 @@ def main():
             print "more than one assembly - unseen at the time of writing of this script"
             exit(1)
         assembly =  row[0]
+        print assembly
         qry = "select chromosome, start_position, end_position, reference_allele, tumor_seq_allele1 "
         qry += "from somatic_mutations where variant_classification='missense_mutation' "
         qry += " and (aa_change is null or aa_change='')"
