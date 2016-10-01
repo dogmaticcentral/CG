@@ -90,7 +90,7 @@ def main():
         cmd += "/home/ivana/third/annovar/humandb/ -buildver hg19 -out %s " % db_name
         cmd += " -protocol refGene  -operation g  -nastring ."
         print cmd
-        call(cmd)
+        call(cmd, shell=True)
         exit(1)
 
 
