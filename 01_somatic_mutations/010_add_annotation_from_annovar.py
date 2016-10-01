@@ -77,7 +77,8 @@ def store_annotation(cursor, db_name, avoutput):
         aa_change =  fields[-1].replace('p.','').replace(' ', '')
         print fields[-2], fields[-1], cdna_change_position, aa_change
     inf.close()
-    exit(1)
+    print
+    print
     return
 
 
