@@ -22,8 +22,19 @@
 
 import MySQLdb
 from sets import Set
-from   tcga_utils.mysql   import  *
+from tcga_utils.mysql   import  *
 from subprocess import call
+
+#########################################
+mutation_annot_pattern = re.compile('(\D+)(\-*\d+)(\D+)')
+#########################################
+def parse_mutation (mutation):
+
+    match_return = re.match(mutation_annot_pattern, mutation)
+    mut_from = match_return.group(1)
+    mut_to   = match_return.group(3)
+    mut_position = int (match_return.group(2))
+    return [mut_position, mut_from, mut_to]
 
 ##################################
 def output_annovar_input_file(db_name, cursor):

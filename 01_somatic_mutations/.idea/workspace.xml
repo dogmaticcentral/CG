@@ -36,8 +36,8 @@
       <file leaf-file-name="010_add_annotation_from_annovar.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/010_add_annotation_from_annovar.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="65" column="51" selection-start-line="65" selection-start-column="51" selection-end-line="65" selection-end-column="51" />
+            <state relative-caret-position="-424">
+              <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
               <folding>
                 <element signature="e#825#839#0" expanded="true" />
               </folding>
@@ -48,8 +48,8 @@
       <file leaf-file-name="007_mutation_type_cleanup.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/old_tcga_tools/007_mutation_type_cleanup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+            <state relative-caret-position="324">
+              <caret line="44" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
               <folding>
                 <element signature="e#826#840#0" expanded="true" />
               </folding>
@@ -738,8 +738,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/old_tcga_tools/007_mutation_type_cleanup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+        <state relative-caret-position="324">
+          <caret line="44" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
           <folding>
             <element signature="e#826#840#0" expanded="true" />
           </folding>
@@ -748,8 +748,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/010_add_annotation_from_annovar.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="65" column="51" selection-start-line="65" selection-start-column="51" selection-end-line="65" selection-end-column="51" />
+        <state relative-caret-position="-424">
+          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
           <folding>
             <element signature="e#825#839#0" expanded="true" />
           </folding>
