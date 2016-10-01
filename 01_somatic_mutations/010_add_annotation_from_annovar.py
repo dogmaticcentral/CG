@@ -75,7 +75,7 @@ def store_annotation(cursor, db_name, avoutput):
     for line in inf:
         if line[:3]=="Chr": continue
         fields = line.rstrip().split('\t')
-        [chrom, start, end] = fields[0:2]
+        [chrom, start, end] = fields[:3]
         fields = fields[-1].split(',')[0].split(':')
         # in some cases annovar believes this is not exonic change at all
         # I am not sure wha to do in such case, and I am so sick and tired
