@@ -57,12 +57,10 @@ def store_annotation(cursor, db_name, avoutput):
     for line in inf:
         if line[:3]=="Chr": continue
         fields = line.split('\t')[-1].split(',')[0].split(':')
-        print line
-        print line.split('\t')[-1]
-        print line.split('\t')[-1].split(',')[0]
-        print fields[-2], fields[-1]
-        exit(1)
+        aa_change =  fields[-1].replace('p.','').replace(' ', '')
+        print fields[-2], fields[-1], aa_change
     inf.close()
+    exit(1)
     return
 
 
