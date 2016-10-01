@@ -74,14 +74,16 @@ def store_annotation(cursor, db_name, avoutput):
     inf = open (avoutput, "r")
     for line in inf:
         if line[:3]=="Chr": continue
-        fields = line.rstrip().split('\t')[-1].split(',')[0].split(':')
+        fields = line.rstrip().split('\t')
+        [chrom, start, end] = fields[0:2]
+        fields = fields[-1].split(',')[0].split(':')
         # in some cases annovar believes this is not exonic change at all
         # I am not sure wha to do in such case, and I am so sick and tired
         # of this godawful data set
         if len(fields)<2: continue
         [cdna_change_position, val1, val2] =  parse_mutation(fields[-2])
         aa_change =  fields[-1].replace('p.','').replace(' ', '')
-        print fields[0:2], cdna_change_position, aa_change
+        print chrom, start, end, cdna_change_position, aa_change
     inf.close()
     print
     print
