@@ -39,6 +39,15 @@ def output_annovar_input_file(db_name, cursor):
     return outfname
 
 ##################################
+def run_annovar(avinput, assembly, db_name):
+    cmd = "/home/ivana/third/annovar/table_annovar.pl %s " % avinput
+    cmd += "/home/ivana/third/annovar/humandb/ -buildver %s -out %s " % (assembly,db_name)
+    cmd += " -protocol refGene  -operation g  -nastring ."
+    call(cmd, shell=True)
+    avoutname = "%s.%s_multianno.txt" % (db_name, assembly)
+    return avoutname
+
+##################################
 def main():
 
 #######
@@ -86,12 +95,8 @@ def main():
             print "unexpected assembly:", assembly
             exit(2)
         avinput = output_annovar_input_file (db_name, cursor)
-        cmd = "/home/ivana/third/annovar/table_annovar.pl %s " % avinput
-        cmd += "/home/ivana/third/annovar/humandb/ -buildver hg19 -out %s " % db_name
-        cmd += " -protocol refGene  -operation g  -nastring ."
-        print cmd
-        call(cmd, shell=True)
-        exit(1)
+        avoutput = run_annovar (avinput, assembly, db_name)
+        
 
 
 
