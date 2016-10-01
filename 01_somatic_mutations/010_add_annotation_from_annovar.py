@@ -45,10 +45,17 @@ def run_annovar(avinput, assembly, db_name):
     cmd += " -protocol refGene  -operation g  -nastring ."
     call(cmd, shell=True)
     avoutname = "%s.%s_multianno.txt" % (db_name, assembly)
+    # clean the junk
+    cmd = "rm %s.reGene.variant_function " % db_name
+    cmd +="%s.refGene.exonic_variant_function %s.refGene.log" % (db_name, db_name)
+    call ( shell=True)
     return avoutname
 
 ##################################
 def store_annotation(cursor, db_name, avoutput):
+    inf = open (avoutput, "r")
+
+    inf.close()
     return
 
 
@@ -102,7 +109,7 @@ def main():
         avinput = output_annovar_input_file (db_name, cursor)
         avoutput = run_annovar (avinput, assembly, db_name)
         store_annotation (cursor, db_name, avoutput)
-        
+
 
 
 
