@@ -73,14 +73,19 @@ def main():
             print "more than one assembly - unseen at the time of writing of this script"
             exit(1)
         assembly =  row[0]
-        qry = "select entrez_gene_id, chromosome, start_position, reference_allele, tumor_seq_allele1 "
+        qry = "select chromosome, start_position, reference_allele, tumor_seq_allele1 "
         qry += "from somatic_mutations where variant_classification='missense_mutation' "
         qry += " and (aa_change is null or aa_change='')"
         rows = search_db (cursor, qry)
+        outf = open ('test.vcf', 'w')
+        print >> outf, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" %
+            ("#CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO")
         for row in rows[:10]:
-            print "\t", row
-
-
+            (chromosome, start_position, reference_allele, tumor_seq_allele1) = row
+            print >> outf, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" %
+                           (chromosome,start_position, "", reference_allele, tumor_seq_allele1,
+                            100, "PASS", "info")
+         outf.close()
         print
         print
 
