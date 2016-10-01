@@ -31,7 +31,7 @@ def output_annovar_input_file(db_name, cursor):
     qry += "from somatic_mutations where variant_classification='missense_mutation' "
     qry += " and (aa_change is null or aa_change='')"
     rows = search_db(cursor, qry)
-    outfname = "%.avinput" % db_name
+    outfname = "%s.avinput" % db_name
     outf = open(outfname, 'w')
     for row in rows[:10]:
         print >> outf, "%s\t%d\t%d\t%s\t%s" % row
