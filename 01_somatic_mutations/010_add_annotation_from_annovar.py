@@ -81,7 +81,7 @@ def store_annotation(cursor, db_name, avoutput):
         if len(fields)<2: continue
         [cdna_change_position, val1, val2] =  parse_mutation(fields[-2])
         aa_change =  fields[-1].replace('p.','').replace(' ', '')
-        print fields[-2], fields[-1], cdna_change_position, aa_change
+        print fields[0:2], cdna_change_position, aa_change
     inf.close()
     print
     print
