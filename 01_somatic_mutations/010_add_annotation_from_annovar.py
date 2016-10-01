@@ -48,7 +48,7 @@ def run_annovar(avinput, assembly, db_name):
     # clean the junk
     cmd = "rm %s.reGene.variant_function " % db_name
     cmd +="%s.refGene.exonic_variant_function %s.refGene.log" % (db_name, db_name)
-    call ( shell=True)
+    call ( cmd, shell=True)
     return avoutname
 
 ##################################
