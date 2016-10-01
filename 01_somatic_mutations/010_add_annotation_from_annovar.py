@@ -48,6 +48,11 @@ def run_annovar(avinput, assembly, db_name):
     return avoutname
 
 ##################################
+def store_annotation(cursor, db_name, avoutput):
+    return
+
+
+##################################
 def main():
 
 #######
@@ -91,12 +96,13 @@ def main():
             print "more than one assembly - unseen at the time of writing of this script"
             exit(1)
         assembly =  rows[0][0]
-        if assembly != "hg19":
+        if not assembly in ["hg19", "hg18"]:
             print "unexpected assembly:", assembly
             exit(2)
         avinput = output_annovar_input_file (db_name, cursor)
         avoutput = run_annovar (avinput, assembly, db_name)
-        
+        store_annotation (cursor, db_name, avoutput)
+        exit(1)
 
 
 
