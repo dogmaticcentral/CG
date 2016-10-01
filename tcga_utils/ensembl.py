@@ -31,7 +31,7 @@ def silent_proportion(cursor, gene):
 
     qry  = "select count(1) from somatic_mutations "
     qry += "where hugo_symbol='%s' " % gene
-    qry += "and variant_classification in ('Missense_Mutation', 'Nonstop_Mutation', 'Nonsense_Mutation')"
+    qry += "and variant_classification in ('missense_mutation', 'nonstop_mutation', 'nonsense_mutation')"
     rows = search_db(cursor, qry)
     if not rows:
         non_silent_ct = 0

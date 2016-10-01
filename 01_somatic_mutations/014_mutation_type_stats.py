@@ -28,7 +28,7 @@ from   tcga_utils.utils   import  *
 #########################################
 def main():
 
-    extra_genes = ["TP53", "RPL5", "RPL11"]
+    extra_genes = ["TP53", "RPL5", "RPL11", "MDM2"]
     
     db     = connect_to_mysql()
     cursor = db.cursor()
@@ -47,9 +47,9 @@ def main():
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
     # the order in which we want the variants output:
-    variant_order = ["Missense_Mutation", "Silent", "Nonsense_Mutation", "RNA", "Splice_Site", "Frame_Shift_Ins", 
-                     "Frame_Shift_Del", "In_Frame_Del", "In_Frame_Ins", "Translation_Start_Site", "Nonstop_Mutation", 
-                     "5UTR", "3UTR", "IGR", "Intron", "5Flank"]
+    variant_order = ["missense_mutation", "silent", "nonsense_mutation", "rna", "splice_site", "frame_fhift_ins",
+                     "frame_shift_del", "in_frame_del", "in_frame_ins", "translation_start_site", "nonstop_mutation",
+                     "5utr", "3utr", "igr", "intron", "5flank"]
     grand_total = {}
     for variant in variant_order:
         grand_total[variant] = 0

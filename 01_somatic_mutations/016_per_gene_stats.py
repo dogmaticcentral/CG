@@ -42,6 +42,7 @@ def main():
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
     genes = ["AKAP13", "ESR1", "HAND2", "PRKACA", "PRKAR2A", "PRKAR2B", "PRKCA"]
+    genes = []
     full_name = read_cancer_names ()
     table = 'somatic_mutations'
     for db_name in db_names:
@@ -80,11 +81,14 @@ def main():
         for gene in genes:
 
             [silent_ct, non_silent_ct] = silent_proportion(cursor, gene)
-            if non_silent_ct:
+            if non_silent_ct>10:
                  print " %10s   %5d  %5d    %4.2f  " % (gene, silent_ct,
                                                                  non_silent_ct, float(silent_ct)/non_silent_ct)
-            else:
-                print " %10s   %5d  %5d  all_silent " % (gene, silent_ct, non_silent_ct)
+            #if non_silent_ct:
+            #     print " %10s   %5d  %5d    %4.2f  " % (gene, silent_ct,
+            #                                                     non_silent_ct, float(silent_ct)/non_silent_ct)
+            #else:
+            #    print " %10s   %5d  %5d  all_silent " % (gene, silent_ct, non_silent_ct)
 
             #print "  %4d  %10s   %5d  %5d  " % ( ct, gene, entries_per_gene[gene],   silent_per_gene[gene])
         print

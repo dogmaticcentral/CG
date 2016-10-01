@@ -36,7 +36,7 @@ def main():
 
     table_name = 'somatic_mutations'
     db_names = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
-                 "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
+                 "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
 
@@ -52,7 +52,7 @@ def main():
         if not rows: continue
         for  row in rows:
             short_barcode = row[0]
-            # this is wrong - not taking different cromosomes into accoutn
+            # this is wrong - not taking different chromosomes into account
             qry =  'select chromosome, start_position, count(*) from %s ' % table_name
             qry += "where conflict is null and sample_barcode_short = '%s' " % short_barcode
             qry += "group by chromosome, start_position having count(*) > 1 "

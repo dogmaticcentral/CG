@@ -71,7 +71,7 @@ def simulation (M, Nr, Nb, l, number_of_iterations):
 #########################################
 def read_cancer_names ():
     full_name= {}
-    inf = open ("/Users/ivana/Dropbox/Sinisa/ribosomal/html/cancer_names.txt", "r")
+    inf = open ("/home/ivana/pypeworks/tcga/cancer_names.txt", "r")
     for line in inf:
         line   = line.rstrip() 
         field = line.split ("\t")
@@ -146,11 +146,11 @@ def main():
         gene_list = ['RPL11', 'RPL5', 'MDM2']
 
         #print "number of different genes:"
-        switch_to_db(cursor, 'baseline')
-        qry = "select distinct approved_symbol from hgnc_id_translation where locus_type = 'gene with protein product' "
-        rows = search_db(cursor, qry)
-        gene_list = [row[0] for row in  rows if row[0] != "TP53"]
-        print "total genes:", len(gene_list)
+        #switch_to_db(cursor, 'baseline')
+        #qry = "select distinct approved_symbol from hgnc_id_translation where locus_type = 'gene with protein product' "
+        #rows = search_db(cursor, qry)
+        #gene_list = [row[0] for row in  rows if row[0] != "TP53"]
+        #print "total genes:", len(gene_list)
 
         #gene_list = gene_list[:30]
         #gene_list = sample(gene_list, 500)

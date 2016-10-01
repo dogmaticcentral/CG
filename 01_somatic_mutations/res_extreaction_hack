@@ -1,0 +1,4 @@
+./020_gene_pair_mutations.py RPL5 TP53   | awk '$3=="RPL5"' | grep 'No mut' | grep missense | awk '{print $5}' |  sed 's/.$//' | sed 's/./&  / | sort -gk 2 | uniq
+
+
+the last two seds: remoce last character and replace first character with chcaracter and space

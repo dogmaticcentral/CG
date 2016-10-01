@@ -131,7 +131,7 @@ def hugo2ensembl (cursor, hugo_id):
 #########################################
 def read_cancer_names ():
     full_name= {}
-    inf = open ("/Users/ivana/pypeworks/tcga/cancer_names.txt", "r")
+    inf = open ("/home/ivana/pypeworks/tcga/cancer_names.txt", "r")
     for line in inf:
         line   = line.rstrip()
         field = line.split ("\t")

@@ -50,7 +50,7 @@ def main():
 
 
     table = 'somatic_mutations'
-    table = 'metastatic_mutations'
+    #table = 'metastatic_mutations'
 
     for db_name in db_names:
         print "######################################"
