@@ -39,16 +39,20 @@ def parse_mutation (mutation):
 
 ##################################
 def output_annovar_input_file(db_name, cursor):
-    qry = "select chromosome, start_position, end_position, reference_allele, tumor_seq_allele1 "
+    qry = "select chromosome, start_position, end_position, "
+    qry += "reference_allele, tumor_seq_allele1 , tumor_seq_allele2"
     qry += "from somatic_mutations where variant_classification='missense_mutation' "
     qry += " and (aa_change is null or aa_change='')"
     rows = search_db(cursor, qry)
     outfname = "%s.avinput" % db_name
     outf = open(outfname, 'w')
     for row in rows[:10]:
-        (chromosome, start_position, end_position, reference_allele, tumor_seq_allele1 ) = row
+        (chromosome, start_position, end_position,
+            reference_allele, tumor_seq_allele1, tumor_seq_allele2 ) = row
+        differing_allele = tumor_seq_allele1
+        if differing_allele==reference_allele: differing_allele = tumor_seq_allele2
         print >> outf, "%s\t%d\t%d\t%s\t%s" % \
-            (chromosome, start_position, end_position, '.', tumor_seq_allele1 )
+            (chromosome, start_position, end_position, reference_allele, differing_allele )
     outf.close()
     return outfname
 
