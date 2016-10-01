@@ -61,8 +61,9 @@ def store_annotation(cursor, db_name, avoutput):
         # I am not sure wha to do in such case, and I am so sick and tired
         # of this godawful data set
         if len(fields)<2: continue
+        [val1, cdna_change, val2] =  parse_mutation(fields[-2])
         aa_change =  fields[-1].replace('p.','').replace(' ', '')
-        print fields[-2], fields[-1], aa_change
+        print fields[-2], fields[-1], cdna_change, aa_change
     inf.close()
     exit(1)
     return
