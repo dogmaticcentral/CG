@@ -23,13 +23,25 @@
 import MySQLdb
 from sets import Set
 from   tcga_utils.mysql   import  *
-import commands
+from subprocess import call
 
+##################################
+def output_annovar_input_file(db_name, cursor):
+    qry = "select chromosome, start_position, end_position, reference_allele, tumor_seq_allele1 "
+    qry += "from somatic_mutations where variant_classification='missense_mutation' "
+    qry += " and (aa_change is null or aa_change='')"
+    rows = search_db(cursor, qry)
+    outfname = "%.avinput" % db_name
+    outf = open(outfname, 'w')
+    for row in rows[:10]:
+        print >> outf, "%s\t%d\t%d\t%s\t%s" % row
+    outf.close()
+    return outfname
 
-
-#########################################
+##################################
 def main():
 
+#######
     db     = connect_to_mysql()
     cursor = db.cursor()
 
@@ -65,26 +77,20 @@ def main():
         rows = search_db (cursor, qry)
         meta_ids  = [str(row[0]) for row in rows]
         qry  = "select distinct(assembly) from mutations_meta where id in (%s)" % ",".join(meta_ids)
-        print qry
         rows = search_db (cursor, qry)
-        for row in rows:
-            print "\t", row[0]
         if len(rows) > 1:
             print "more than one assembly - unseen at the time of writing of this script"
             exit(1)
         assembly =  row[0]
-        print assembly
-        qry = "select chromosome, start_position, end_position, reference_allele, tumor_seq_allele1 "
-        qry += "from somatic_mutations where variant_classification='missense_mutation' "
-        qry += " and (aa_change is null or aa_change='')"
-        rows = search_db (cursor, qry)
-        outf = open ('test.avinput', 'w')
-        for row in rows[:10]:
-            print >> outf, "%s\t%d\t%d\t%s\t%s" % row
-        outf.close()
-        print
-        print
-
+        if assembly != "hg19":
+            print "unexpected assembly:", assembly
+            exit(2)
+        avinput = output_annovar_input_file (db_name, cursor)
+        cmd = "/home/ivana/third/annovar/table_annovar.pl %s " % avinput
+        cmd += "/home/ivana/third/annovar/humandb/ -buildver hg19 -out %s " % db_name
+        cmd += " -protocol refGene  -operation g  -nastring ."
+        print cmd
+        call(cmd)
         exit(1)
 
 
