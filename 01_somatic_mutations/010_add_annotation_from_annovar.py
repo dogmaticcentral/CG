@@ -40,7 +40,7 @@ def parse_mutation (mutation):
 ##################################
 def output_annovar_input_file(db_name, cursor):
     qry = "select chromosome, start_position, end_position, "
-    qry += "reference_allele, tumor_seq_allele1 , tumor_seq_allele2"
+    qry += "reference_allele, tumor_seq_allele1 , tumor_seq_allele2  "
     qry += "from somatic_mutations where variant_classification='missense_mutation' "
     qry += " and (aa_change is null or aa_change='')"
     rows = search_db(cursor, qry)
