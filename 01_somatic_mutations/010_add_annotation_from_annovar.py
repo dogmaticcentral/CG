@@ -46,7 +46,7 @@ def output_annovar_input_file(db_name, cursor):
     rows = search_db(cursor, qry)
     outfname = "%s.avinput" % db_name
     outf = open(outfname, 'w')
-    for row in rows[:10]:
+    for row in rows[:30]:
         (chromosome, start_position, end_position,
             reference_allele, tumor_seq_allele1, tumor_seq_allele2 ) = row
         differing_allele = tumor_seq_allele1
