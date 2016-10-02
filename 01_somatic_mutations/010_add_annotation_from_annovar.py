@@ -46,7 +46,7 @@ def output_annovar_input_file(db_name, cursor):
     rows = search_db(cursor, qry)
     outfname = "%s.avinput" % db_name
     outf = open(outfname, 'w')
-    for row in rows[:30]:
+    for row in rows[:3]:
         (chromosome, start_position, end_position,
             reference_allele, tumor_seq_allele1, tumor_seq_allele2 ) = row
         differing_allele = tumor_seq_allele1
@@ -95,8 +95,6 @@ def store_annotation(cursor, db_name, avoutput):
         qry += "where chromosome=%s  " % chrom
         qry += "and start_position=%s and end_position=%s  " % (start,end)
         search_db(cursor,qry)
-        print chrom, start, end, cdna_change_position, aa_change, classf
-        exit(1)
     inf.close()
     print
     print
@@ -153,7 +151,7 @@ def main():
         avinput = output_annovar_input_file (db_name, cursor)
         avoutput = run_annovar (avinput, assembly, db_name)
         store_annotation (cursor, db_name, avoutput)
-
+        exit(1)
 
 
 
