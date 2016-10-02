@@ -88,7 +88,15 @@ def store_annotation(cursor, db_name, avoutput):
             classf = "silent"
         else:
             classf = "missense_mutation"
+        qry = "update somatic_mutations set "
+        qry += "variant_classification=%s,  " % classf
+        qry += "aa_change=%s " % aa_change
+        qry += "cdna_change=%d " % cdna_change_position
+        qry += "where chromosome=%s  " % chrom
+        qry += "and start_position=%d and end_position=%d  " % (start,end)
+        search_db(cursor,qry)
         print chrom, start, end, cdna_change_position, aa_change, classf
+        exit(1)
     inf.close()
     print
     print
