@@ -82,8 +82,13 @@ def store_annotation(cursor, db_name, avoutput):
         # of this godawful data set
         if len(fields)<2: continue
         [cdna_change_position, val1, val2] =  parse_mutation(fields[-2])
-        aa_change =  fields[-1].replace('p.','').replace(' ', '')
-        print chrom, start, end, cdna_change_position, aa_change
+        [aa_change_position, val1, val2] =  parse_mutation(fields[-1].replace('p.','').replace(' ', ''))
+        aa_change = "%d%s%d" % (aa_change_position, val1, val2)
+        if val1==val2:
+            classf = "silent"
+        else:
+            classf = "missense_mutation"
+        print chrom, start, end, cdna_change_position, aa_change, classf
     inf.close()
     print
     print
