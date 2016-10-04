@@ -89,7 +89,7 @@ def store_annotation(cursor, db_name, avoutput):
         else:
             classf = "missense_mutation"
         qry = 'update somatic_mutations set '
-        qry += 'variant_clasfication="%s",  ' % classf
+        qry += 'variant_classification="%s",  ' % classf
         qry += 'aa_change="%s", ' % aa_change
         qry += 'cdna_change="%d" ' % cdna_change_position
         qry += 'where chromosome="%s"  ' % chrom
