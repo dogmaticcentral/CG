@@ -94,7 +94,7 @@ def store_annotation(cursor, db_name, avoutput):
         qry += 'cdna_change="%d" ' % cdna_change_position
         qry += 'where chromosome="%s"  ' % chrom
         qry += 'and start_position="%s" and end_position="%s"  ' % (start,end)
-        search_db(cursor,qry, verbose=True)
+        search_db(cursor,qry)
     inf.close()
     print
     print
@@ -151,8 +151,7 @@ def main():
         avinput = output_annovar_input_file (db_name, cursor)
         avoutput = run_annovar (avinput, assembly, db_name)
         store_annotation (cursor, db_name, avoutput)
-        exit(1)
-
+ 
 
 
 
