@@ -32,6 +32,7 @@ mutation_annot_pattern = re.compile('(\D+)(\-*\d+)(\D+)')
 def parse_mutation (mutation):
 
     match_return = re.match(mutation_annot_pattern, mutation)
+    if not match_return: return [None, None, None]
     mut_from = match_return.group(1)
     mut_to   = match_return.group(3)
     mut_position = int (match_return.group(2))
@@ -82,7 +83,9 @@ def store_annotation(cursor, db_name, avoutput):
         # of this godawful data set
         if len(fields)<2: continue
         [cdna_change_position, val1, val2] =  parse_mutation(fields[-2])
+        if not cdna_change_position: continue
         [aa_change_position, val1, val2] =  parse_mutation(fields[-1].replace('p.','').replace(' ', ''))
+        if not aa_change_position: continue
         aa_change = val1 + str(aa_change_position) + val2
         if val1==val2:
             classf = "silent"
