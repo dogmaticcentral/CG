@@ -94,7 +94,7 @@ def store_annotation(cursor, db_name, avoutput):
         qry += "cdna_change=%d " % cdna_change_position
         qry += "where chromosome=%s  " % chrom
         qry += "and start_position=%s and end_position=%s  " % (start,end)
-        search_db(cursor,qry)
+        search_db(cursor,qry, verbose=True)
     inf.close()
     print
     print
