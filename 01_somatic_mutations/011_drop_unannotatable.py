@@ -63,20 +63,34 @@ def main():
         for row in rows:
             print row
             [id, conflict] = row
-            if not conflict:
+            # delete in any case
+            #qry = "delete from %s where id=%d" % (table, id)
+            #search_db(cursor, qry)
+            if not conflict: continue
+
+            conflicting_id = int(conflict.split(' ')[-1])
+            qry = "select conflict from %s where id=%d" % (table, conflicting_id)
+            rows2 = search_db(cursor, qry)
+            if not rows2:
+                print "the row with id %d does not exist" % conflicting_id
                 qry = "delete from %s where id=%d" % (table, id)
                 search_db(cursor, qry)
             else:
-                conflicting_id = int(conflict.split(' ')[-1])
-                qry = "select conflict from %s where id=%d" % (table, conflicting_id)
-                rows2 = search_db(cursor, qry)
-                if not rows2:
-                    print "the row with id %d does not exist" % conflicting_id
-                    qry = "delete from %s where id=%d" % (table, id)
+                for row2 in rows2:
+                    print row2
+                    conflicts = conflict.split(';')[-1]
+                    new_conflicts = []
+                    for confl in conflicts:
+                        id2 = int(confl.split(' ')[-1])
+                        if id2==id: continue
+                        new_conflicts.append(confl)
+                    if len(new_conflicts)==0:
+                        qry = "update %s set conflict=NULL where id=%d" % (table, conflicting_id)
+                    else:
+                        newconfl = "; ".join(new_conflicts)
+                        qry = "update %s set conflict=%s where id=%d" % (table, newconfl, conflicting_id)
                     search_db(cursor, qry)
-                else:
-                    for row2 in rows2:
-                        print row2
+
 
         # if conflict is null, then delete, otherwise be a bit more careful
 
