@@ -100,37 +100,11 @@ def main():
         count = {}
         count['dnp/snp']  = 0
         count['suspicious normal'] = 0
-        ef = existing_fields_by_database_id # I neeed a shorthand
+        #ef = existing_fields_by_database_id # I neeed a shorthand
         for bag in bags: # bag is a collection of conflicting ids
             # now comes the random collection of reasons why this duplicate might exist:
             # 1) is this a dnp rather than snp? (I choose to believe them, otherwise I'll go crazy)
-            diagnosed = False
-            if len(bag)==2:
-                if set(map(lambda y: ef[y]['variant_type'], [x for x in bag if ef[x].has_key('variant_type')])) == set(['snp','dnp']):
-                         count['dnp/snp'] += 1
-                         diagnosed = True
-                elif set(is_useful(ef[db_id],'match_norm_seq_allele1')for db_id in bag) == set([True, False]):
-                    count['suspicious normal'] += 1
-                    diagnosed = True
-                elif set(is_useful(ef[db_id],'match_norm_seq_allele2')for db_id in bag) == set([True, False]):
-                    count['suspicious normal'] += 1
-                    diagnosed = True
-
-            if not diagnosed:
-                print
-                for field in expected_fields:
-                    print field, "     ",
-                    for db_id in bag:
-                        print ef[db_id][field], "  ",
-                    print
-
-                print
-
-        print " number of conflicting groups = %d" % len(bags)
-        for k, v in count.iteritems():
-            print k, v
-        if conflicts[db_name]>0: exit(1)
-
+            print bag
 
     cursor.close()
     db.close()
