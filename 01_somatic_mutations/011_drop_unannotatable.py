@@ -78,7 +78,7 @@ def main():
             else:
                 for row2 in rows2:
                     print row2
-                    conflicts = conflict.split(';')[-1]
+                    conflicts = row2[0].split(';')[-1]
                     new_conflicts = []
                     for confl in conflicts:
                         id2 = int(confl.split(' ')[-1])
