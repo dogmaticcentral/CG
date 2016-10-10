@@ -47,7 +47,7 @@ def main():
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
-    db_names  = ["ACC"]
+    db_names  = ["CHOL"]
     conflicts = {}
     for db_name in db_names:
         switch_to_db (cursor, db_name)
