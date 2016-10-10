@@ -79,9 +79,7 @@ def main():
 
         existing_fields_by_database_id = dict(zip(map(lambda x: int(x[0]), rows),
                                                   map(lambda x: make_named_fields(expected_fields, x[1:]), rows)))
-        print existing_fields_by_database_id
-        exit(1)
-        
+
         bags = []
         keyset = set (existing_fields_by_database_id.keys())
         for db_id, fields in existing_fields_by_database_id.iteritems():
