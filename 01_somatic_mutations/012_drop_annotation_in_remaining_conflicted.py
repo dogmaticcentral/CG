@@ -104,7 +104,8 @@ def main():
         for bag in bags: # bag is a collection of conflicting ids
             # now comes the random collection of reasons why this duplicate might exist:
             # 1) is this a dnp rather than snp? (I choose to believe them, otherwise I'll go crazy)
-            print bag
+            conflicting_ids = list(bag)
+            print conflicting_ids[0], conflicting_ids[1:]
 
     cursor.close()
     db.close()
