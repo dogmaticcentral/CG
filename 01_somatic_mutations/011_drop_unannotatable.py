@@ -68,7 +68,7 @@ def main():
                 search_db(cursor, qry)
             else:
                 conflicting_id = int(conflict.split(' ')[-1])
-                qry = "select conflicts from %s where id=%d" % (table, conflicting_id)
+                qry = "select conflict from %s where id=%d" % (table, conflicting_id)
                 rows2 = search_db(cursor, qry)
                 if not rows2:
                     print "the row with id %d does not exist" % conflicting_id
