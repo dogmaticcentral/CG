@@ -54,8 +54,8 @@
       <file leaf-file-name="008_force_duplicate_resolution.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/old_tcga_tools/008_force_duplicate_resolution.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="49" column="23" selection-start-line="49" selection-start-column="23" selection-end-line="49" selection-end-column="23" />
+            <state relative-caret-position="309">
+              <caret line="83" column="8" selection-start-line="83" selection-start-column="8" selection-end-line="83" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -886,8 +886,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/old_tcga_tools/008_force_duplicate_resolution.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="49" column="23" selection-start-line="49" selection-start-column="23" selection-end-line="49" selection-end-column="23" />
+        <state relative-caret-position="309">
+          <caret line="83" column="8" selection-start-line="83" selection-start-column="8" selection-end-line="83" selection-end-column="8" />
           <folding />
         </state>
       </provider>

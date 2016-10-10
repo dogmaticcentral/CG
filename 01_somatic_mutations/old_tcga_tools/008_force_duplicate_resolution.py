@@ -56,7 +56,7 @@ def main():
             continue
         qry = "select count(1) from somatic_mutations"
         rows = search_db(cursor, qry)
-        if not rows or rows[0][0] ==0 :  break
+        if not rows or rows[0][0] ==0:  break
         qry = "select count(1) from somatic_mutations where conflict is not null"
         rows = search_db(cursor, qry)
         conflicts[db_name] = int(rows[0][0])
@@ -67,28 +67,21 @@ def main():
         print
         print db_name, conflicts[db_name], "conflicts"
         print
-        continue
-        # check db exists
-        qry = "show databases like '%s'" % db_name
-        rows = search_db(cursor, qry)
-        if not rows:
-            print db_name, "not found"
-            exit(1) # db not found
+        # continue
 
         switch_to_db (cursor, db_name)
-        if not check_table_exists (cursor, db_name, table):
-            print table, " table not found in ", db_name
-            continue
 
         expected_fields = get_expected_fields(cursor, db_name, table)
         # get all conflicted groups
         qry = "select * from somatic_mutations where conflict is not null"
         rows = search_db(cursor, qry)
-        if not rows:
-            continue
+        if not rows: continue
+
         existing_fields_by_database_id = dict(zip(map(lambda x: int(x[0]), rows),
                                                   map(lambda x: make_named_fields(expected_fields, x[1:]), rows)))
-
+        print existing_fields_by_database_id
+        exit(1)
+        
         bags = []
         keyset = set (existing_fields_by_database_id.keys())
         for db_id, fields in existing_fields_by_database_id.iteritems():
