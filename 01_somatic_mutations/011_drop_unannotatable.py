@@ -79,7 +79,7 @@ def main():
                 for row2 in rows2:
                     print row2[0]
                     conflicts = row2[0].split(';')
-                   new_conflicts = []
+                    new_conflicts = []
                     for confl in conflicts:
                         id2 = int(confl.split(' ')[-1])
                         if id2==id: continue
