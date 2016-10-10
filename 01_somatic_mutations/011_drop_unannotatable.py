@@ -67,7 +67,6 @@ def main():
             qry = "delete from %s where id=%d" % (table, id)
             search_db(cursor, qry)
             if not conflict: continue
-
             conflicting_id = int(conflict.split(' ')[-1])
             qry = "select conflict from %s where id=%d" % (table, conflicting_id)
             rows2 = search_db(cursor, qry)
