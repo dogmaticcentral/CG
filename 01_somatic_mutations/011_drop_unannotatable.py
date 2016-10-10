@@ -68,14 +68,15 @@ def main():
                 search_db(cursor, qry)
             else:
                 conflicting_id = int(conflict.split(' ')[-1])
-                qry = "select * from %s where id=%d" % (table, conflicting_id)
+                qry = "select conflicts from %s where id=%d" % (table, conflicting_id)
                 rows2 = search_db(cursor, qry)
                 if not rows2:
                     print "the row with id %d does not exist" % conflicting_id
                     qry = "delete from %s where id=%d" % (table, id)
                     search_db(cursor, qry)
                 else:
-                    pass
+                    for row2 in rows2:
+                        print row2
 
         # if conflict is null, then delete, otherwise be a bit more careful
 
