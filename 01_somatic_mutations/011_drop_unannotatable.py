@@ -55,14 +55,21 @@ def main():
         if not check_table_exists (cursor, db_name, table):
             print table, " table not found in ", db_name
             continue
-        qry  = "select id, conflict from somatic_mutations "
+        qry  = "select id, conflict from %s " % table
         qry += " where aa_change is null and"
         qry += " variant_classification ='missense_mutation' "
         rows = search_db(cursor, qry)
         if not rows or rows[0][0] == 0:  continue
         for row in rows:
             print row
+            [id, conflict] = row
+            if not conflict:
+                qry = "delete from %s where id=%d" % (table, id)
+                search_db(cursor, qry)
+            else:
+                pass
         # if conflict is null, then delete, otherwise be a bit more careful
+
     cursor.close()
     db.close()
 
