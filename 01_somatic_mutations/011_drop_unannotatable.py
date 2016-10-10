@@ -64,8 +64,8 @@ def main():
             print row
             [id, conflict] = row
             # delete in any case
-            #qry = "delete from %s where id=%d" % (table, id)
-            #search_db(cursor, qry)
+            qry = "delete from %s where id=%d" % (table, id)
+            search_db(cursor, qry)
             if not conflict: continue
 
             conflicting_id = int(conflict.split(' ')[-1])
