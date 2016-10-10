@@ -49,6 +49,7 @@ def main():
         qry  = "select distinct  sample_barcode_short from %s " % table_name
         rows = search_db(cursor, qry)
         per_db_cases = 0
+        per_db_cases_conflict = 0
         if not rows: continue
         for  row in rows:
             short_barcode = row[0]
@@ -57,14 +58,26 @@ def main():
             qry += "where conflict is null and sample_barcode_short = '%s' " % short_barcode
             qry += "group by chromosome, start_position having count(*) > 1 "
             rows2 = search_db (cursor, qry)
-            if not rows2: continue
+            if rows2:
+                for row2 in rows2:
+                    [chrom, start, count] = row2
+                    print ">>>>>> ", short_barcode, chrom, start, count
+                    per_db_cases += 1
 
-            for row2 in rows2:
-                [chrom, start, count] = row2
-                print ">>>>>> ", short_barcode, chrom, start, count
-                per_db_cases += 1
+            qry =  'select chromosome, start_position, count(*) from %s ' % table_name
+            qry += "where conflict is not null and sample_barcode_short = '%s' " % short_barcode
+            qry += "group by chromosome, start_position having count(*) > 1 "
+            rows2 = search_db (cursor, qry)
+            if rows2:
+                for row2 in rows2:
+                    [chrom, start, count] = row2
+                    print ">>>>>> ", short_barcode, chrom, start, count
+                    per_db_cases_conflict+= 1
 
-        print "number of duplicate cases: ", per_db_cases
+
+
+        print "number of duplicates without conflict annotation: ", per_db_cases
+        print "number of duplicates with    conflict annotation: ", per_db_cases_conflict
         print
     
         total_cases += per_db_cases
