@@ -56,7 +56,7 @@ def main():
             print table, " table not found in ", db_name
             continue
         qry  = "select id, conflict from somatic_mutations "
-        qry += " where aa_change='None' and"
+        qry += " where aa_change is null and"
         qry += " variant_classification ='missense_mutation' "
         rows = search_db(cursor, qry)
         if not rows or rows[0][0] == 0:  continue
