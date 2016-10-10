@@ -47,7 +47,7 @@ def main():
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
-    db_names  = ["BLCA"]
+    db_names  = ["ACC"]
     conflicts = {}
     for db_name in db_names:
         switch_to_db (cursor, db_name)
@@ -97,15 +97,17 @@ def main():
             new_bags.append(new_bag)
             bags = new_bags
 
-        count = {}
-        count['dnp/snp']  = 0
-        count['suspicious normal'] = 0
         #ef = existing_fields_by_database_id # I neeed a shorthand
         for bag in bags: # bag is a collection of conflicting ids
-            # now comes the random collection of reasons why this duplicate might exist:
-            # 1) is this a dnp rather than snp? (I choose to believe them, otherwise I'll go crazy)
             conflicting_ids = list(bag)
             print conflicting_ids[0], conflicting_ids[1:]
+            keep_id = int(conflicting_ids[0])
+            qry = "update %s set aa_change=NULL, conflict=null where id=%d" % (table, keep_id)
+            search_db(cursor, qry)
+            for delete_id in conflicting_ids[1:]:
+                qry = "delete from %s where  id=%d" % (table, int(delete_id))
+                search_db(cursor, qry)
+
 
     cursor.close()
     db.close()
