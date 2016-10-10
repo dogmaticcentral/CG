@@ -82,7 +82,7 @@ def main():
         print
     
         total_cases += per_db_cases
-        total_cases_conflict += per_db_cases
+        total_cases_conflict += per_db_cases_conflict
 
 
     print
