@@ -42,6 +42,7 @@ def main():
 
     # how many cases do we have affected?
     total_cases = 0
+    total_cases_conflict = 0
     for db_name in db_names:
         print " ** ", db_name
         switch_to_db (cursor, db_name)
@@ -71,7 +72,7 @@ def main():
             if rows2:
                 for row2 in rows2:
                     [chrom, start, count] = row2
-                    print ">>>>>> ", short_barcode, chrom, start, count
+                    #print ">>>>>> ", short_barcode, chrom, start, count
                     per_db_cases_conflict+= 1
 
 
@@ -81,10 +82,12 @@ def main():
         print
     
         total_cases += per_db_cases
+        total_cases_conflict += per_db_cases
 
 
     print
-    print "total number of duplicate cases: ", total_cases
+    print "total number of duplicate cases without conflict annotation: ", total_cases
+    print "total number of duplicate cases with    conflict annotation: ", total_cases_conflict
     print
 
     cursor.close()
