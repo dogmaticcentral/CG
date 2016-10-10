@@ -57,7 +57,7 @@ def main():
             continue
         qry  = "select id, conflict from somatic_mutations "
         qry += " where aa_change='None' and"
-        qry += " where variant_classification ='missense_mutation' "
+        qry += " variant_classification ='missense_mutation' "
         rows = search_db(cursor, qry)
         if not rows or rows[0][0] == 0:  continue
         for row in rows:
