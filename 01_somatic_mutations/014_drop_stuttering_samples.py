@@ -49,7 +49,7 @@ def main():
             for term in terms:
                 if not "stutter" in term: continue
                 sample_ids = term.split("=>")[-1].replace(" ","").split(",")
-                sample_ids_quoted = map[lambda x: '"' + x + '"', sample_ids].join(",")
+                sample_ids_quoted = map(lambda x: '"' + x + '"', sample_ids).join(",")
                 print sample_ids_quoted
                 #qry = "delete from somatic_mutations where tumor_sample_barcode in (%s) " % sample_ids
                 #search_db(cursor,qry)
