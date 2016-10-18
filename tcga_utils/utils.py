@@ -21,8 +21,11 @@ from mysql import *
 
 ###############################################################################################
 def is_informative(string):
+    if not string or len(string)==0: return False
+    string = string.replace(" ", "")
+    if  len(string)==0: return False
     non_info  = ['missing', '', '.', '-', '---', 'untested']
-    return not string.replace(" ", "") in non_info
+    return not string in non_info
 
 ###############################################################################################
 def is_useful(fields, header):
