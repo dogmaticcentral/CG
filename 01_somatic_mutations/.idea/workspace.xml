@@ -95,12 +95,12 @@
       <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="265">
-              <caret line="134" column="17" selection-start-line="134" selection-start-column="17" selection-end-line="134" selection-end-column="17" />
+            <state relative-caret-position="481">
+              <caret line="164" column="33" selection-start-line="164" selection-start-column="33" selection-end-line="164" selection-end-column="33" />
               <folding>
                 <element signature="e#1237#3621#0" expanded="false" />
                 <element signature="e#3732#4557#0" expanded="false" />
-                <element signature="e#7168#8435#0" expanded="false" />
+                <element signature="e#7351#8618#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -979,12 +979,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="265">
-          <caret line="134" column="17" selection-start-line="134" selection-start-column="17" selection-end-line="134" selection-end-column="17" />
+        <state relative-caret-position="481">
+          <caret line="164" column="33" selection-start-line="164" selection-start-column="33" selection-end-line="164" selection-end-column="33" />
           <folding>
             <element signature="e#1237#3621#0" expanded="false" />
             <element signature="e#3732#4557#0" expanded="false" />
-            <element signature="e#7168#8435#0" expanded="false" />
+            <element signature="e#7351#8618#0" expanded="false" />
           </folding>
         </state>
       </provider>

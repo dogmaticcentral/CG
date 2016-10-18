@@ -141,6 +141,7 @@ def check_health(maffile):
     inff.close()
 
     number_of_samples_with_stutter_count = {}
+    offending_samples = []
     for sample_barcode in start_posns.keys():
         prev = None
         count = 0
@@ -148,9 +149,10 @@ def check_health(maffile):
             if prev and sp - prev < 5:
                 count += 1
             prev = sp
-        if not count in number_of_samples_with_stutter_count.keys(): number_of_samples_with_stutter_count[count] = 0
+        if not count in number_of_samples_with_stutter_count.keys():
+            number_of_samples_with_stutter_count[count] = 0
         number_of_samples_with_stutter_count[count] += 1
-
+        if count>100: offending_samples.append(sample_barcode)
     # for stutter_count in sorted( number_of_samples_with_stutter_count.keys()):
     #    print "\t", stutter_count, number_of_samples_with_stutter_count [stutter_count]
 
@@ -158,7 +160,9 @@ def check_health(maffile):
     # only store it with a warning
     bad_counts = filter(lambda x: x > 100, number_of_samples_with_stutter_count.keys())
     if len(bad_counts) > 0:
-        return ["warn", "%d samples have more than 100 stutter frameshift points" % len(bad_counts)]
+        warn_text =  "%d samples have more than 100 stutter frameshift points: " % len(bad_counts)
+        warn_text += ",".join(offending_samples)
+        return ["warn", warn_text]
 
     return ["pass", ""]
 
