@@ -82,8 +82,8 @@ def main():
         total_metastatic += metastatic_samples
 
         print db_name, full_name[db_name]
-        print "primary tumor samples: %d   metastatic: %d     total: %d", \
-            primary_samples, metastatic_samples, primary_samples+metastatic_samples
+        print "primary tumor samples: %d   metastatic: %d     total: %d", % \
+                  (primary_samples, metastatic_samples, primary_samples+metastatic_samples)
         print
 
     print "total tumor types:         ", len(db_names)
