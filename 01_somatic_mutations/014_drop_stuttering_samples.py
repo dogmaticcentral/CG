@@ -45,8 +45,11 @@ def main():
         print
         print " ** ", db_name
         for row in rows:
-            print row
-
+            terms = row[-1].split(";")
+            for term in terms:
+                if not "stutter" in term: continue
+                sample_ids = term.split("=>").replace(" ","")
+                print sample_ids
 
     cursor.close()
     db.close()
