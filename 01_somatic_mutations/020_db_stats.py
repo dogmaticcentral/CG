@@ -65,32 +65,31 @@ def main():
                 "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-
+    total_primary = 0
+    total_metastatic = 0
     for db_name in db_names:
 
         switch_to_db (cursor, db_name)
-        print 
-
         ############################
         qry = "select count(distinct tumor_sample_barcode) from somatic_mutations "
         rows = search_db(cursor, qry)
         primary_samples = int(rows[0][0])
+        total_primary += primary_samples
 
         qry = "select count(distinct tumor_sample_barcode) from metastatic_mutations "
         rows = search_db(cursor, qry)
         metastatic_samples = int(rows[0][0])
-        print db_name, full_name[db_name], primary_samples, metastatic_samples, primary_samples+metastatic_samples
+        total_metastatic += metastatic_samples
 
+        print db_name, full_name[db_name]
+        print "primary tumor samples: %d   metastatic: %d     total: %d", \
+            primary_samples, metastatic_samples, primary_samples+metastatic_samples
+        print
 
-        ############################
-
-        ############################
-        #if verbose: # so far I haven't seen an anetry without tumor sample barcode, but you never know with TCGA
-        #    qry  = "select count(1) from somatic_mutations "
-        #    qry += "where not tumor_sample_barcode like 'TCGA%'"
-        #    rows = search_db(cursor, qry)
-        #    print "number of entries without tumor barcode:", rows[0][0]
-        ############################
+    print "total tumor types:         ", len(db_names)
+    print "      primary samples:     ", total_primary
+    print "      metastatic samples:  ", total_metastatic
+    print "      all samples:          ", total_metastatic+total_primary
 
     cursor.close()
     db.close()

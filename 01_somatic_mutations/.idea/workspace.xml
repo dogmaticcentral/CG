@@ -48,8 +48,8 @@
       <file leaf-file-name="020_db_stats.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/020_db_stats.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-221">
-              <caret line="57" column="4" selection-start-line="57" selection-start-column="4" selection-end-line="57" selection-end-column="4" />
+            <state relative-caret-position="450">
+              <caret line="91" column="72" selection-start-line="91" selection-start-column="72" selection-end-line="91" selection-end-column="72" />
               <folding>
                 <element signature="e#1752#1766#0" expanded="true" />
               </folding>
@@ -920,8 +920,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/020_db_stats.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-221">
-          <caret line="57" column="4" selection-start-line="57" selection-start-column="4" selection-end-line="57" selection-end-column="4" />
+        <state relative-caret-position="450">
+          <caret line="91" column="72" selection-start-line="91" selection-start-column="72" selection-end-line="91" selection-end-column="72" />
           <folding>
             <element signature="e#1752#1766#0" expanded="true" />
           </folding>
