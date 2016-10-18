@@ -21,21 +21,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="014_drop_stuttering_samples.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="014_drop_stuttering_samples.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18">
+            <state relative-caret-position="137">
               <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="277">
-              <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
+            <state relative-caret-position="313">
+              <caret line="278" column="0" selection-start-line="276" selection-start-column="0" selection-end-line="278" selection-end-column="0" />
               <folding>
                 <element signature="e#1237#3621#0" expanded="false" />
                 <element signature="e#3732#4557#0" expanded="false" />
@@ -83,13 +83,13 @@
         <option value="$PROJECT_DIR$/012_drop_annotation_in_remaining_conflicted.py" />
         <option value="$PROJECT_DIR$/020_db_stats.py" />
         <option value="$PROJECT_DIR$/027_patient_freqs.py" />
-        <option value="$PROJECT_DIR$/014_drop_stuttering_samples.py" />
         <option value="$PROJECT_DIR$/003_maf_meta.py" />
+        <option value="$PROJECT_DIR$/014_drop_stuttering_samples.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="40" />
+    <option name="x" value="197" />
     <option name="width" value="1286" />
     <option name="height" value="688" />
   </component>
@@ -352,7 +352,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="40" y="0" width="1286" height="688" extended-state="0" />
+    <frame x="197" y="0" width="1286" height="688" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2578125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -898,23 +898,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
+        <state relative-caret-position="313">
+          <caret line="278" column="0" selection-start-line="276" selection-start-column="0" selection-end-line="278" selection-end-column="0" />
           <folding>
             <element signature="e#1237#3621#0" expanded="false" />
             <element signature="e#3732#4557#0" expanded="false" />
             <element signature="e#7354#8621#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
