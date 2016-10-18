@@ -26,6 +26,7 @@ import matplotlib.pyplot as plt
 from time import time
 drop_silent = True
 special = None
+verbose = False
 
 #########################################
 def rank_message ( gene_name, freq_gene):
@@ -50,7 +51,8 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
     ax1.set_ylabel('% of patients', fontsize = 24)
     if special:
         [rank_msg, middle_range] = rank_message(special, freq_gene)
-    bg_color = (0, 102./255, 204./255)
+    #bg_color = (0, 102./255, 204./255) # this is blue. I believe
+    bg_color = (1, 1, 1)
     ax1.set_axis_bgcolor(bg_color)
     x = range(1,len(sorted_genes)+1)
     y = [freq_gene[gene] for gene in sorted_genes]
@@ -59,13 +61,13 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
     if special:
 
         bbox_props = dict(boxstyle="round", fc="w", ec="0.5", alpha=0.8)
-        ax1.text(xlim*0.9, ylim*0.9, rank_msg, ha="right", va="top", size=14, bbox=bbox_props)
+        #ax1.text(xlim*0.9, ylim*0.9, rank_msg, ha="right", va="top", size=14, bbox=bbox_props)
         if middle_range < 0: middle_range = xlim
         ax1.annotate ('',  xy=(middle_range, 0),  # use the axes data coordinate system
-                xytext=(middle_range, ylim/2),    # fraction, fraction
-                arrowprops=dict(facecolor='red', shrink=0.05),
-                horizontalalignment='left',
-                verticalalignment='bottom')
+                xytext     = (middle_range, ylim/2),    # fraction, fraction
+                arrowprops = dict(facecolor='red', shrink=0.05),
+                horizontalalignment = 'left',
+                verticalalignment   = 'bottom')
 
     ax1.fill_between(x, y,  interpolate=True, color=(255./255,153./255,51./255))
 
@@ -90,36 +92,41 @@ def main():
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
     #db_names = ["COAD"]
 
-    full_name = read_cancer_names ()
+    tables = ["somatic_mutations", "metastatic_mutations"]
+    full_name = read_cancer_names()
     pancan_freq = {}
     pancan_silent = {}
     pancan_non_silent = {}
     grand_total_patients = 0
+
     for db_name in db_names:
         print "######################################"
         print db_name
         switch_to_db (cursor, db_name)
 
         ############################
-        print db_name, "number of somatic_mutations:"
-        qry = "select count(1)from somatic_mutations"
-        rows = search_db(cursor, qry)
-        print "\t", rows[0][0]
-        print
+        number_muts = 0
+        for table in tables:
+            qry = "select count(1)from %s " % table
+            rows = search_db(cursor, qry)
+            number_muts += int(rows[0][0])
+        print db_name, "total number of mutations: ", number_muts
 
         ############################
-        print "number of different genes:"
-        qry = "select distinct(hugo_symbol) from somatic_mutations"
-        rows  = search_db(cursor, qry)
-        genes = [row[0] for row in  rows]
-        print "\t", len(genes)
+        genes = set([])
+        for table in tables:
+            qry = "select distinct(hugo_symbol) from %s " % table
+            genes |= set([row[0] for row in rows])
+        genes = list(genes)
+        print "number of affected genes:",  len(genes)
 
         ############################
-        print "number of different patients:"
-        qry = "select distinct(sample_barcode_short) from somatic_mutations"
-        rows = search_db(cursor, qry)
-        patients = [row[0] for row in  rows]
-        total_patients = len(patients)
+        total_patients = 0
+        for table in tables:
+            qry = "select distinct(sample_barcode_short) from %s " % table
+            rows = search_db(cursor, qry)
+            patients = [row[0] for row in  rows]
+            total_patients += len(patients)
         print "\t", total_patients
 
         grand_total_patients += total_patients
@@ -133,7 +140,7 @@ def main():
         prev_time = time()
 
         ct = 0
-        genes = ['RPL5', 'RPL11', 'TP53', 'APC']
+        #genes = ['RPL5', 'RPL11', 'TP53', 'APC']
         for gene in genes:
             ct += 1
             if not ct%1000:
@@ -150,15 +157,16 @@ def main():
                     print gene, " %6.4f " % (float(silent_ct)/non_silent_ct), '  dropping'
                 continue
 
-            qry  = "select sample_barcode_short, count(sample_barcode_short) from somatic_mutations "
-            qry += "where hugo_symbol='%s' " % gene
-            qry += "and variant_classification!='silent' and variant_classification!='RNA' "
-            qry += "group by sample_barcode_short"
-            rows = search_db(cursor, qry)
-            if rows:
-                no_patients = len(rows)
-            else:
-                no_patients = 0
+            no_patients = 0
+            for table in tables:
+                qry  = "select sample_barcode_short, count(sample_barcode_short) from %s " % table
+                qry += "where hugo_symbol='%s' " % gene
+                qry += "and variant_classification!='silent' and variant_classification!='RNA' "
+                qry += "group by sample_barcode_short"
+                rows = search_db(cursor, qry)
+                if rows:
+                    no_patients += len(rows)
+
             if no_patients==0: continue
 
 
@@ -188,20 +196,22 @@ def main():
         pancan_freq[gene] *= 100
 
     sorted_genes =  sorted(pancan_freq.keys(), key= lambda x: -pancan_freq[x])
-    for gene in sorted_genes:
-        print " %10s   %6d%%    %6.4f    %4d   %4d " % (gene,  round(pancan_freq[gene]),
-                                                        float(pancan_silent[gene])/pancan_non_silent[gene],
-                                                        pancan_silent[gene], pancan_non_silent[gene])
-    # special interest:
-    if special:
-        gene = special
-        print " %10s   %6d%%    %6.4f   %3d  %3d  %5d " % (gene,  round(pancan_freq[gene]),
-                                                          float(pancan_silent[gene])/pancan_non_silent[gene],
-                                                          pancan_silent[gene], pancan_non_silent[gene],
-                                                          sorted_genes.index(gene))
+
+    if verbose:
+        for gene in sorted_genes:
+            print " %10s   %6d%%    %6.4f    %4d   %4d " % (gene,  round(pancan_freq[gene]),
+                                                            float(pancan_silent[gene])/pancan_non_silent[gene],
+                                                            pancan_silent[gene], pancan_non_silent[gene])
+        # special interest:
+        if special:
+            gene = special
+            print " %10s   %6d%%    %6.4f   %3d  %3d  %5d " % (gene,  round(pancan_freq[gene]),
+                                                              float(pancan_silent[gene])/pancan_non_silent[gene],
+                                                              pancan_silent[gene], pancan_non_silent[gene],
+                                                              sorted_genes.index(gene))
 
     filename = "pancan_somatic_freq.filtered_for_silent_proportion.png"
-    #live_plot ("Pan-cancer statistics", pancan_freq, sorted_genes, filename)
+    live_plot ("Pan-cancer statistics", pancan_freq, sorted_genes, filename)
 
     cursor.close()
     db.close()

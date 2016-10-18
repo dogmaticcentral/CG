@@ -89,7 +89,7 @@ def main():
     print "total tumor types:         ", len(db_names)
     print "      primary samples:     ", total_primary
     print "      metastatic samples:  ", total_metastatic
-    print "      all samples:          ", total_metastatic+total_primary
+    print "      all samples:         ", total_metastatic+total_primary
 
     cursor.close()
     db.close()

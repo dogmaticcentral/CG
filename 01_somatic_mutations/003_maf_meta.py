@@ -132,9 +132,9 @@ def check_health(maffile):
     sample_barcode_idx = header_fields.index('tumor_sample_barcode')
     start_posns = {}
     for line in inff:
-        if not 'Frame_Shift_Del' in line: continue
+        if not 'frame_shift_del' in line: continue
         field = line.split("\t");
-        if not field[variantclass_index] == 'Frame_Shift_Del': continue
+        if not field[variantclass_index] == 'frame_shift_del': continue
         sample_barcode = field[sample_barcode_idx]
         if not start_posns.has_key(sample_barcode): start_posns[sample_barcode] = []
         start_posns[sample_barcode].append(int(field[startpos_index]))
