@@ -53,6 +53,8 @@ def main():
         if not check_table_exists (cursor, db_name, table):
             print table, " table not found in ", db_name
             continue
+        else:
+            print "checking", table, "in", db_name
         qry = "select count(1) from %s " % table
         rows = search_db(cursor, qry)
         if not rows or rows[0][0] ==0 :  break
