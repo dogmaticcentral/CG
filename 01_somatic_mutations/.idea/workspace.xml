@@ -21,25 +21,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="014_drop_stuttering_samples.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="014_drop_stuttering_samples.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="515">
-              <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+            <state relative-caret-position="443">
+              <caret line="51" column="32" selection-start-line="51" selection-start-column="32" selection-end-line="51" selection-end-column="32" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="313">
-              <caret line="278" column="0" selection-start-line="276" selection-start-column="0" selection-end-line="278" selection-end-column="0" />
+            <state relative-caret-position="97">
+              <caret line="143" column="22" selection-start-line="143" selection-start-column="22" selection-end-line="143" selection-end-column="22" />
               <folding>
                 <element signature="e#1237#3621#0" expanded="false" />
                 <element signature="e#3732#4557#0" expanded="false" />
-                <element signature="e#7354#8621#0" expanded="false" />
+                <element signature="e#7423#8690#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -83,8 +83,8 @@
         <option value="$PROJECT_DIR$/012_drop_annotation_in_remaining_conflicted.py" />
         <option value="$PROJECT_DIR$/020_db_stats.py" />
         <option value="$PROJECT_DIR$/027_patient_freqs.py" />
-        <option value="$PROJECT_DIR$/003_maf_meta.py" />
         <option value="$PROJECT_DIR$/014_drop_stuttering_samples.py" />
+        <option value="$PROJECT_DIR$/003_maf_meta.py" />
       </list>
     </option>
   </component>
@@ -908,23 +908,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
+    <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="278" column="0" selection-start-line="276" selection-start-column="0" selection-end-line="278" selection-end-column="0" />
-          <folding>
-            <element signature="e#1237#3621#0" expanded="false" />
-            <element signature="e#3732#4557#0" expanded="false" />
-            <element signature="e#7354#8621#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="443">
+          <caret line="51" column="32" selection-start-line="51" selection-start-column="32" selection-end-line="51" selection-end-column="32" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
+    <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="515">
-          <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="97">
+          <caret line="143" column="22" selection-start-line="143" selection-start-column="22" selection-end-line="143" selection-end-column="22" />
+          <folding>
+            <element signature="e#1237#3621#0" expanded="false" />
+            <element signature="e#3732#4557#0" expanded="false" />
+            <element signature="e#7423#8690#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

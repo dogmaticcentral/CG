@@ -149,10 +149,12 @@ def check_health(maffile):
             if prev and sp - prev < 5:
                 count += 1
             prev = sp
-        if not count in number_of_samples_with_stutter_count.keys():
-            number_of_samples_with_stutter_count[count] = 0
-        number_of_samples_with_stutter_count[count] += 1
-        if count>100: offending_samples.append(sample_barcode)
+        if count>100 and not sample_barcode in offending_samples:
+            offending_samples.append(sample_barcode)
+            if not count in number_of_samples_with_stutter_count.keys():
+                number_of_samples_with_stutter_count[count] = 0
+            number_of_samples_with_stutter_count[count] += 1
+
     # for stutter_count in sorted( number_of_samples_with_stutter_count.keys()):
     #    print "\t", stutter_count, number_of_samples_with_stutter_count [stutter_count]
 
