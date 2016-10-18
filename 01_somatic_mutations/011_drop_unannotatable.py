@@ -35,7 +35,7 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    sample_type = "primary"
+    sample_type = "metastatic"
 
     if sample_type == "primary":
         table = 'somatic_mutations'

@@ -21,26 +21,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="014_drop_stuttering_samples.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
+      <file leaf-file-name="011_drop_unannotatable.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/011_drop_unannotatable.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="54" column="112" selection-start-line="54" selection-start-column="112" selection-end-line="54" selection-end-column="112" />
+            <state relative-caret-position="-63">
+              <caret line="40" column="21" selection-start-line="40" selection-start-column="17" selection-end-line="40" selection-end-column="21" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="61">
-              <caret line="147" column="46" selection-start-line="147" selection-start-column="46" selection-end-line="147" selection-end-column="46" />
-              <folding>
-                <element signature="e#1237#3621#0" expanded="false" />
-                <element signature="e#3732#4557#0" expanded="false" />
-                <element signature="e#7423#8690#0" expanded="false" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -70,7 +56,6 @@
         <option value="$PROJECT_DIR$/001_maf_tables_cleanup.py" />
         <option value="$PROJECT_DIR$/old_tcga_tools/003_maf_meta.py" />
         <option value="$PROJECT_DIR$/old_tcga_tools/004_read_maf_meta.py" />
-        <option value="$PROJECT_DIR$/011_drop_unannotatable.py" />
         <option value="$PROJECT_DIR$/old_tcga_tools/008_force_duplicate_resolution.py" />
         <option value="$PROJECT_DIR$/gdc_tools/005_load_maf.py" />
         <option value="$PROJECT_DIR$/005_load_maf.py" />
@@ -85,12 +70,13 @@
         <option value="$PROJECT_DIR$/027_patient_freqs.py" />
         <option value="$PROJECT_DIR$/003_maf_meta.py" />
         <option value="$PROJECT_DIR$/014_drop_stuttering_samples.py" />
+        <option value="$PROJECT_DIR$/011_drop_unannotatable.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="80" />
-    <option name="y" value="18" />
+    <option name="x" value="48" />
+    <option name="y" value="22" />
     <option name="width" value="1286" />
     <option name="height" value="688" />
   </component>
@@ -353,10 +339,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="80" y="18" width="1286" height="688" extended-state="0" />
+    <frame x="48" y="22" width="1286" height="688" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2578125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2203125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32978722" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13851352" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -703,13 +689,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/011_drop_unannotatable.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="56" column="53" selection-start-line="56" selection-start-column="53" selection-end-line="56" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/old_tcga_tools/008_force_duplicate_resolution.py" />
     <entry file="file://$PROJECT_DIR$/001_maf_tables_cleanup.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -913,8 +892,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="54" column="112" selection-start-line="54" selection-start-column="112" selection-end-line="54" selection-end-column="112" />
+        <state relative-caret-position="378">
+          <caret line="53" column="37" selection-start-line="53" selection-start-column="37" selection-end-line="53" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/011_drop_unannotatable.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-63">
+          <caret line="40" column="21" selection-start-line="40" selection-start-column="17" selection-end-line="40" selection-end-column="21" />
           <folding />
         </state>
       </provider>
