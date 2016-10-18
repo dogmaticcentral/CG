@@ -23,8 +23,8 @@
 
 import os.path
 import re, commands
-from tcga_utils.mysql import  *
-from tcga_utils.utils import  get_expected_fields, is_useful, make_named_fields
+from old_tcga_tools.tcga_utils.mysql import  *
+from old_tcga_tools.tcga_utils.utils import  get_expected_fields, is_useful, make_named_fields
 from time import time
 
 
@@ -34,7 +34,7 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    sample_type = "primary"
+    sample_type = "metastatic"
 
     if sample_type == "primary":
         table = 'somatic_mutations'

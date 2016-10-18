@@ -21,9 +21,9 @@
 #
 # store the meta info about the maf files: name and the reference genome,  for now
 
-from tcga_utils.utils import *
+from old_tcga_tools.tcga_utils.utils import *
 from random import random
-from tcga_utils.ucsc import segment_from_das
+from old_tcga_tools.tcga_utils.ucsc import segment_from_das
 
 
 #########################################

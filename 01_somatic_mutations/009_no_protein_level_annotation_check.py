@@ -38,6 +38,15 @@ def main():
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
+    sample_type = "metastatic"
+
+    if sample_type == "primary":
+        table_name = 'somatic_mutations'
+    elif sample_type == "metastatic":
+        table_name = 'metastatic_mutations'
+    else:
+        print "I don't know how to hadndle ", sample_type, " sample types"
+        exit(1) # unknown sample type
 
     # how many cases do we have affected?
     total_cases = 0
@@ -45,7 +54,7 @@ def main():
         print " ** ", db_name
         switch_to_db (cursor, db_name)
         per_db_cases = 0
-        qry = "select count(1) from somatic_mutations where variant_classification='missense_mutation' "
+        qry = "select count(1) from %s where variant_classification='missense_mutation' " % table_name
         qry += " and (aa_change is null or aa_change='')";
         rows = search_db (cursor, qry)
         if rows and rows[0][0] != 0:
@@ -53,7 +62,7 @@ def main():
             per_db_cases = rows[0][0]
 
         out_of = 0
-        qry = "select count(1) from somatic_mutations where variant_classification='missense_mutation' "
+        qry = "select count(1) from %s where variant_classification='missense_mutation' " % table_name
         rows = search_db (cursor, qry)
         if rows and rows[0][0] != 0:
             out_of = rows[0][0]

@@ -34,7 +34,16 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    table_name = 'somatic_mutations'
+    sample_type = "metastatic"
+
+    if sample_type == "primary":
+        table_name = 'somatic_mutations'
+    elif sample_type == "metastatic":
+        table_name = 'metastatic_mutations'
+    else:
+        print "I don't know how to hadndle ", sample_type, " sample types"
+        exit(1) # unknown sample type
+
     db_names = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]

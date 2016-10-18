@@ -22,12 +22,13 @@
 
 import os.path
 import re, commands
-from tcga_utils.utils  import  *
+from old_tcga_tools.tcga_utils.mysql import  *
+from old_tcga_tools.tcga_utils.utils import  *
 from time import time
+from random import random
 
 dorky = re.compile('(\-*\d+)([ACGT]+)>([ACGT]+)')
 #########################################
-
 def clean_cdna_change_annotation(old_annot):
     new_annot = old_annot.replace ("c.", "")
     if '>' in new_annot:
@@ -65,6 +66,393 @@ def update_db (cursor, table, row_id, update_fields):
         search_db (cursor, qry, verbose=True)
         exit(1) # exit, bcs we should not be here
 
+#########################################
+def one_allele_normal(field) :
+    tumor  = {field['tumor_seq_allele1'], field['tumor_seq_allele2']} # this is a set
+    normal = {field['match_norm_seq_allele1'], field['match_norm_seq_allele2']}
+    return len(tumor&normal)>0
+
+#########################################
+def new_conflict_annotation (base_annot, list_of_ids):
+    annot = ""
+    for db_id in list_of_ids:
+        if len(annot)>0:  annot += "; "
+        annot += "%s with %d" % (base_annot, db_id)
+    return annot
+
+#########################################
+def conflict_annotation_updated (existing_fields, conflict_comment, new_id):
+    conflict_annotation = existing_fields['conflict']
+    if not conflict_annotation:
+        conflict_annotation = ""
+    elif len(conflict_annotation) > 0:
+        conflict_annotation += "; "
+    conflict_annotation += "%s with %d" % (conflict_comment, new_id)
+    return conflict_annotation
+
+#########################################
+def update_conflict_field (cursor, table, existing_row_id, existing_fields, new_id, conflict_comment):
+    conflict_annotation = conflict_annotation_updated (existing_fields, conflict_comment, new_id)
+    update_fields = {'conflict': conflict_annotation}
+    existing_fields['conflict'] = conflict_annotation
+    update_db (cursor, table, existing_row_id, update_fields)
+
+#########################################
+def selected_info_overlap (existing_fields, new_fields, field_selection):
+
+    # indicator (True/False) arrays
+    existing_has_info = map (lambda f: existing_fields[f]is not None and len(existing_fields[f]) > 0, field_selection)
+    new_has_info      = map (lambda f: new_fields[f] is not None and len(new_fields[f])>0, field_selection)
+    # list of indices where both have info
+    both_have_info = filter (lambda x: existing_has_info[x] and new_has_info[x], range(len(field_selection)) )
+    # list of indices where both ahve info and  info is the same
+    info_the_same  = filter (lambda x: existing_fields[field_selection[x]] == new_fields[field_selection[x]], both_have_info )
+
+    # is information the same in all fields that exist in both entries?
+    if len(both_have_info) != len (info_the_same):
+        # nope - we have a conflict
+        return "conflict"
+    elif len (both_have_info) < sum (1 for x in new_has_info if x):
+        # the new entry has more info
+        return "new covers existing"
+
+    return "existing covers new"
+
+#########################################
+def is_exact_duplicate (new_fields, existing_fields_by_database_id):
+
+    exists_exact_duplicate = False
+    for db_id, fields in existing_fields_by_database_id.iteritems():
+        this_is_exact_duplicate = True
+        for field_name, value in fields.iteritems():
+            if field_name in ['id', 'conflict']: continue
+            if  is_useful (new_fields, field_name) and is_useful (fields, field_name)  and\
+                str(value) != str(new_fields[field_name]):
+                   this_is_exact_duplicate = False
+                   break
+        if this_is_exact_duplicate:
+            exists_exact_duplicate = True
+            break
+    return exists_exact_duplicate
+
+#########################################
+def is_tumor_allele_copy_paste (cursor, fields):
+
+    is_cp = False
+    if not fields.has_key('meta_info_idx') or not fields['meta_info_idx']:
+        return is_cp
+
+    qry = "select diagnostics, file_name from mutations_meta where id=%d" % int(fields['meta_info_idx'])
+    rows = search_db(cursor, qry)
+    is_cp = rows and ("tumor alleles identical" in rows[0][0])
+
+    if is_cp: print rows[0][1], " copy pastes"
+
+    return is_cp
+
+#########################################
+#this is godawful, but so is TCGA
+def diagnose_duplication_reasons (cursor, existing_fields_by_database_id, new_fields):
+
+    diagnostics = {}
+    # is this an exact duplicate by any chance?
+    if is_exact_duplicate (new_fields, existing_fields_by_database_id):
+        return diagnostics
+
+
+    allele_fields =  ['reference_allele', 'tumor_seq_allele1', 'tumor_seq_allele2', 'match_norm_seq_allele1', 'match_norm_seq_allele2']
+    interpretation_fields = ['cdna_change', 'aa_change', 'variant_classification']
+
+    new_fields_maf_duplicates_tumor_allele = is_tumor_allele_copy_paste(cursor, new_fields)
+
+
+    for db_id, existing_fields in existing_fields_by_database_id.iteritems():
+
+        diagnostics[db_id] = ""
+
+
+        if existing_fields['end_position'] == new_fields['end_position']:
+
+            # if differing required_fields is subset of tumor alleles
+            differing_req_fields = set(filter(lambda x: existing_fields[x] != new_fields[x], get_required_fields()))
+            existing_fields_maf_duplicates_tumor_allele = is_tumor_allele_copy_paste(cursor, existing_fields)
+
+            if differing_req_fields <= set(['tumor_seq_allele1', 'tumor_seq_allele2']):
+
+                if is_useful(existing_fields, 'tumor_seq_allele1') and is_useful(existing_fields, 'tumor_seq_allele2') \
+                        and not is_useful(new_fields, 'tumor_seq_allele1') and not is_useful(new_fields, 'tumor_seq_allele2'):
+                     diagnostics[db_id] += "move on: old allele has tumor allele info"
+                elif is_useful(new_fields, 'tumor_seq_allele1') and is_useful(new_fields, 'tumor_seq_allele2') \
+                        and not is_useful(existing_fields, 'tumor_seq_allele1') and not is_useful(existing_fields, 'tumor_seq_allele2'):
+                     diagnostics[db_id] += "use new: new allele has tumor allele info"
+
+                elif is_useful(existing_fields, 'aa_change') and not is_useful(new_fields, 'aa_change'):
+                     diagnostics[db_id] += "move on: old allele has aa"
+                elif is_useful(new_fields, 'aa_change') and not is_useful(existing_fields, 'aa_change'):
+                     diagnostics[db_id] += "use new: new allele has aa"
+
+                elif new_fields_maf_duplicates_tumor_allele and not existing_fields_maf_duplicates_tumor_allele:
+                    diagnostics[db_id] += "move on: new maf duplicates tumor allele"
+                elif existing_fields_maf_duplicates_tumor_allele and not new_fields_maf_duplicates_tumor_allele :
+                    diagnostics[db_id] += "use new: existing maf duplicates tumor allele"
+
+                elif  existing_fields['validation_status'] == 'valid' and  new_fields['validation_status'] != 'valid':
+                    diagnostics[db_id] += "move on: old allele validated"
+                elif  new_fields['validation_status'] == 'valid' and  existing_fields['validation_status'] != 'valid':
+                    diagnostics[db_id] += "use new: new allele validated"
+
+                elif existing_fields['variant_type'] == 'ins' and  new_fields['variant_type']=='ins':
+                    ex_t   = existing_fields['tumor_seq_allele1']+existing_fields['tumor_seq_allele2']
+                    new_t = new_fields['tumor_seq_allele1']+new_fields['tumor_seq_allele2']
+                    # se the comment for deletions below
+                    if len(ex_t) > len(new_t):
+                        diagnostics[db_id] += "move on: old insert longer"
+                    elif len(ex_t) < len(new_t):
+                        diagnostics[db_id] += "use new: new insert longer"
+                else:
+                    same = True
+                    #cDNA change is in principle superfluous - we have that info from other fields
+                    for field_name in ['aa_change', 'validation_status', 'variant_classification', 'variant_type']:
+                        if is_useful(existing_fields, field_name) and is_useful(new_fields, field_name) and \
+                            existing_fields[field_name]==new_fields[field_name] or \
+                            not  is_useful(existing_fields, field_name) and not is_useful(new_fields, field_name):
+                            pass
+                        else:
+                            same = False
+                            break
+                    # this is something like "the same for all intents and purposes" somebody equally lazy from thwo places deposited this
+                    # this might be homozygosity, but it seems to me that somebidy decide that it was easier to them to just copy the two fields
+                    if same:
+                        if existing_fields['tumor_seq_allele1']!=existing_fields['tumor_seq_allele2']:
+                            diagnostics[db_id] += "move on: old had differing tumor alleles"
+                        else:
+                            diagnostics[db_id] += "use new: by tiebreaker" # i.e. I am sick of this
+                    elif False:
+                        for field_name, val in existing_fields.iteritems():
+                            blah = None
+                            if new_fields.has_key(field_name):
+                                blah = new_fields[field_name]
+                            print field_name, "      ", val, "      ", blah
+                        exit(1)
+
+            if len(diagnostics[db_id]) == 0:  # we are still undiagnosed
+                # giving the actual allele is the more fundamental info - go for that primarily
+                allele_diagnostics = selected_info_overlap (existing_fields, new_fields, allele_fields)
+
+                if allele_diagnostics=="conflict":
+                    # do we have a compound by any chance"
+                    if not one_allele_normal(existing_fields) and not one_allele_normal(new_fields):
+                        diagnostics[db_id] = "compound heterozygous"
+                    else:
+                       diagnostics[db_id] = "conflicting allele info"
+                       if  existing_fields['validation_status'] == 'valid' and  new_fields['validation_status'] != 'valid':
+                            diagnostics[db_id] += "move on: old allele validated"
+                       elif  new_fields['validation_status'] == 'valid' and  existing_fields['validation_status'] != 'valid':
+                            diagnostics[db_id] += "use new: new allele validated"
+
+
+                elif allele_diagnostics=="existing covers new":
+                    diagnostics[db_id] += "move on: old allele info covers"
+
+                elif allele_diagnostics=="new covers existing":
+                    diagnostics[db_id] += "use new: new allele info covers"
+
+                elif allele_diagnostics=="duplicate":
+                    diagnostics[db_id] += "allele info duplicate; "
+                    # do we have a tie breaker among the interpretation fields?
+                    interpretation_diagnostics = selected_info_overlap (existing_fields, new_fields, interpretation_fields)
+                    if interpretation_diagnostics=="conflict":
+                        diagnostics[db_id] += "conflicting interpretation"
+                    elif interpretation_diagnostics=="existing covers new":
+                        diagnostics[db_id] += "move on: old interpretation info covers"
+                    elif interpretation_diagnostics=="existing covers new":
+                        diagnostics[db_id] += "use new: new interpretation info covers"
+                    elif interpretation_diagnostics=="duplicate":
+                        diagnostics[db_id] += "move on: interpretation info duplicate"
+                    else: # we should not really be here - this is is just the default behavior so we do not crash on this
+                        diagnostics[db_id] += "move on: keep old"
+
+                else:  # we should not really be here - this is is just the default behavior so we do not crash on this
+                     diagnostics[db_id] += "move on: keep old"
+
+        elif existing_fields['end_position'] == new_fields['end_position']+1 \
+                and [existing_fields['variant_type'], new_fields['variant_type']]==['dnp','snp']:
+            diagnostics[db_id] += "move on: old is dnp"
+        elif new_fields['end_position'] == existing_fields['end_position']+1 \
+                and [new_fields['variant_type'], existing_fields['variant_type']]==['dnp','snp']:
+            diagnostics[db_id] += "use new: new is dnp"
+        # this is rather arbitrary; my guess: longer rearrangements harder to detect,
+        # and whoever claims they found something like it is putting more effort:
+        elif existing_fields['end_position'] > new_fields['end_position']:
+            diagnostics[db_id] += "move on: old is longer"
+        elif new_fields['end_position'] > existing_fields['end_position']:
+            diagnostics[db_id] += "use new: new is longer"
+
+        else:  # the end position is not the same
+            diagnostics[db_id] = "end positions different   *%s*   *%s* " % (
+            existing_fields['end_position'], new_fields['end_position'])
+            # how could that happen?
+            # one of the possibilities (gosh, will I have to go through all of them?)
+            # is that a frameshift mutation is interpreted differently
+            # hard to find a robust solution
+            if existing_fields['variant_classification'] == 'frame_shift_del' and one_allele_normal(
+                    existing_fields) and one_allele_normal(new_fields):
+                # do nothing, this is a different interpretation of the same mutation
+                diagnostics[db_id] = "move on: different classification"
+
+            elif not one_allele_normal(existing_fields) and not one_allele_normal(new_fields):
+                # store, this is possibly compound  heterozygous
+                diagnostics[db_id] = "compound heterozygous"
+            else:
+                # I don't know what this is
+                diagnostics[db_id] = "conflict: different length"
+
+    return diagnostics
+
+#########################################
+def store_conflicts_and_duplicates (cursor, expected_fields, new_fields):
+
+    table = 'conflict_mutations'
+    # is this an exact copy of something we have already stored as duplicate?
+    sample_barcode_short = new_fields['sample_barcode_short']
+    chromosome           = new_fields['chromosome']
+    start_position       = new_fields['start_position']
+
+    qry  = "select * from %s  " % table
+    qry += "where sample_barcode_short = '%s' " % sample_barcode_short
+    qry += "and chromosome = '%s'  " % chromosome
+    qry += "and start_position = %s  " % start_position
+    existing_rows = search_db(cursor, qry)
+
+    new_entry = False
+    if not existing_rows: #this is the first time we see this entry
+        new_entry = True
+    else:
+        # take a more careful look
+        existing_fields_by_database_id  = dict( zip (map (lambda x: x[0], existing_rows),  map (lambda x: make_named_fields(expected_fields, x[1:]), existing_rows) ))
+        # if this is not an exact duplicate, store
+        new_entry = not is_exact_duplicate(new_fields, existing_fields_by_database_id)
+
+    if new_entry:
+        insert_into_db(cursor, table, new_fields)
+        return "stored in conflicts and duplicates table"
+    else:
+        return "found stored in conflicts and duplicates table"
+
+#########################################
+def resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields):
+
+    existing_fields_by_database_id  = dict( zip (map (lambda x: x[0], existing_rows),  map (lambda x: make_named_fields(expected_fields, x[1:]), existing_rows) ))
+
+    # try to diagnose how come we have multiple reports for a mutation starting at a given position
+    diagnostics = diagnose_duplication_reasons (cursor, existing_fields_by_database_id, new_fields)
+
+    # if this is an exact duplicate do nothing (this is mainly to protect us from re-runs filling the database with the same things by mistake)
+    if not diagnostics: return "exact duplicate"
+
+    if False:
+        print "+"*18
+        for dbid, diag in diagnostics.iteritems():
+            print dbid, diag
+        #   if False and new_fields['start_position'] == 35043650:
+        print
+        print "="*20
+        for header in new_fields.keys():
+            print "%30s    [ %s ] " % (header, new_fields[header]),
+            for existing_fields in existing_fields_by_database_id.values():
+                print " [ %s ] " % (existing_fields[header]),
+            print
+        print
+        print
+
+    # in the order of difficulty ...
+    # 1) if it is a duplicate or subset  of one of the existing entries, we do not have to worry about it any more
+    this_is_a_duplicate = len(filter(lambda x: "move on" in x, diagnostics.values() ))>0
+    if this_is_a_duplicate:
+        #store the new entry in the conflict_mutations table
+        db_ids_to_be_left_in_place = filter(lambda x: "move on" in diagnostics[x], diagnostics.keys())
+        # special case - we are favoring the dnp annotation over snp
+        dnps  =  filter(lambda x:     "dnp" in diagnostics[x],db_ids_to_be_left_in_place)
+        other =  filter(lambda x: not "dnp" in diagnostics[x],db_ids_to_be_left_in_place)
+        descr_string = ""
+        if len(dnps)>0:
+
+            id_list_string = ""
+            for db_id in dnps:
+                if len(id_list_string)>0: id_list_string+= ","
+                id_list_string += str(db_id)
+            descr_string  += "snp vs dnp for (" + id_list_string + ") in table %s" % table
+        if len(other)>0:
+            if descr_string:  descr_string += "; "
+            id_list_string = ""
+            for db_id in other:
+                if len(id_list_string)>0: id_list_string+= ","
+                id_list_string += str(db_id)
+            descr_string += "duplicate of (" + id_list_string + ") in table %s" % table
+        new_fields['conflict'] = descr_string
+        return store_conflicts_and_duplicates (cursor, expected_fields, new_fields)
+
+
+    there_is_no_conflict = len(filter(lambda x: "conflict" in x, diagnostics.values() ))==0
+    dbids_to_be_replaced = filter(lambda dbid: "use new" in diagnostics[dbid], existing_fields_by_database_id.keys() )
+
+    # 2) if there is no conflict, just replace the rows that the new one covers (has a superset info)
+    if there_is_no_conflict:
+        if len(dbids_to_be_replaced)>0:
+            update_db (cursor, table, dbids_to_be_replaced[0], new_fields)
+            for db_id in dbids_to_be_replaced:
+                # store in the duplicates and conflicts
+                existing_fields =  existing_fields_by_database_id[db_id]
+                if "dnp" in diagnostics[db_id]:
+                    conflict_annotation_updated (existing_fields, "snp/dnp", dbids_to_be_replaced[0])
+                store_conflicts_and_duplicates (cursor, expected_fields, existing_fields)
+            for db_id in dbids_to_be_replaced[1:]:
+                # delete from the main table
+                qry = "delete from %s where id=%d" % (table, db_id)
+                search_db (cursor, qry)
+            return "superset"
+
+        else: # there is one alternative possibility to covered entries: candidate compound mutations
+            compound_db_ids = filter (lambda dbid: "compound" in diagnostics[dbid], existing_fields_by_database_id.keys())
+            if len(compound_db_ids)>0:
+                new_fields['conflict'] = new_conflict_annotation ("compound", compound_db_ids)
+                insert_into_db (cursor, table, new_fields)
+                return "compound"
+            else:
+                print " *** ",  filter(lambda dbid: "use new" in diagnostics[dbid], existing_fields_by_database_id.keys() )
+                print "we should not have ended here ..."
+                exit(1)
+
+    # 3) if there is a conflict, but no rows to replace, add the new row and mark conflict
+    #    (potentially compound get the similar treatment)
+    conflicted_db_ids = filter(lambda dbid: "conflict" in diagnostics[dbid], existing_fields_by_database_id.keys() )
+    if len(dbids_to_be_replaced)==0:
+        new_id = insert_into_db (cursor, table, new_fields)
+        for db_id in  conflicted_db_ids:
+            update_conflict_field (cursor, table, db_id, existing_fields_by_database_id[db_id], new_id, "unresolved")
+            update_conflict_field (cursor, table, new_id, new_fields, db_id, "unresolved")
+
+    # 4) if there there are rows to replace and there is conflict with some other rows,
+    #    replace the rows and reconsider conflicts
+    else:
+        # new entry
+        id_to_reuse =  dbids_to_be_replaced[0]
+        new_fields['conflict'] = new_conflict_annotation ("unresolved", conflicted_db_ids)
+        update_db (cursor, table, id_to_reuse, new_fields)
+
+        for db_id in dbids_to_be_replaced:
+            # store in the duplicates and conflicts
+            store_conflicts_and_duplicates (cursor, expected_fields, existing_fields_by_database_id[db_id])
+
+        for db_id in dbids_to_be_replaced[1:]:
+            qry = "delete from %s where id=%d" % (table, db_id)
+            search_db (cursor, qry)
+        # corrected old entries
+        for db_id in conflicted_db_ids:
+            new_annot =  new_conflict_annotation ("unresolved", map(lambda x: id_to_reuse if x==db_id else x, conflicted_db_ids))
+            update_db (cursor, table, db_id, {'conflict': new_annot})
+
+    return "conflict"
 
 #########################################
 def insert_into_db (cursor, table, fields):
@@ -130,20 +518,17 @@ def store (cursor, table, expected_fields, maf_header_fields, new_row):
         return "new"
     else:
         # do something about possible duplicates
-        print "duplicate!"
-        #exit(1)
-        #  apparently, they have cleaned up; this happens so rarely that I wil just ignore it
-        # I have seen only one 2 cases in UCEC (and nowhere else)
-        return "duplicate"
-        #return resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields)
-
+        return resolve_duplicate (cursor, table, expected_fields, existing_rows, new_fields)
 
     return ""
 
 #########################################
-def field_cleanup(maf_header_fields, sample_barcode_short, maf_fields):
+def field_cleanup(maf_header_fields, sample_barcode_short, maf_diagnostics, meta_id, maf_fields):
 
     number_of_header_fields = len(maf_header_fields)
+    normal_allele2_missing  = maf_diagnostics and "match_norm_seq_allele2" in maf_diagnostics
+    normal_allele1_missing  = maf_diagnostics and "match_norm_seq_allele1" in maf_diagnostics
+    reference_allele_missing = maf_diagnostics and "reference_allele" in maf_diagnostics
 
     # TCGA is exhausting all possibilities here (row longer than the header):
     clean_fields = maf_fields[:number_of_header_fields]  # I do not know what you guys are anyway, so off you go
@@ -157,6 +542,8 @@ def field_cleanup(maf_header_fields, sample_barcode_short, maf_fields):
 
     clean_fields.append(sample_barcode_short)
 
+    # also in addition to the fields in the original maf file, we are adding a pointer to the maffile itself
+    clean_fields.append(meta_id)
     # there is an optional 'conflict field' which might get filled if there is one:
     clean_fields.append(None)
     # special: I want to be able to index on aa_change
@@ -199,6 +586,14 @@ def field_cleanup(maf_header_fields, sample_barcode_short, maf_fields):
     norm2_idx = maf_header_fields.index('match_norm_seq_allele2')
     ref_idx   = maf_header_fields.index('reference_allele')
 
+    # if allele2 info is missing in the whole maf file, fill in the info for allele1
+    if normal_allele2_missing and not normal_allele1_missing:
+        clean_fields[norm2_idx] = clean_fields[norm1_idx]
+    elif  normal_allele1_missing and not normal_allele2_missing:
+        clean_fields[norm1_idx] = clean_fields[norm2_idx]
+    elif  normal_allele1_missing and  normal_allele2_missing and not reference_allele_missing:
+        clean_fields[norm1_idx] = clean_fields[ref_idx]
+        clean_fields[norm2_idx] = clean_fields[ref_idx]
 
     var_type_idx  = maf_header_fields.index('variant_type')
     var_class_idx = maf_header_fields.index('variant_classification')
@@ -213,6 +608,8 @@ def field_cleanup(maf_header_fields, sample_barcode_short, maf_fields):
             clean_fields[norm2_idx] = ""
         if clean_fields[norm1_idx] == "-":
             clean_fields[norm1_idx] = ""
+
+
 
 
     return clean_fields
@@ -237,7 +634,7 @@ def check_tumor_type(tumor_type_ids, maf_header_fields, maf_fields):
     return sample_barcode_short
 
 #########################################
-def load_maf (cursor, db_name, table, maffile):
+def load_maf (cursor, db_name, table, maffile, maf_diagnostics, meta_id, stats):
 
     if not os.path.isfile(maffile):
         print "not found: "
@@ -282,9 +679,11 @@ def load_maf (cursor, db_name, table, maffile):
         if not sample_barcode_short: continue # this can happen if the tumor type is not the one we are looking for
         type_queried += 1
 
-        clean_fields = field_cleanup(maf_header_fields, sample_barcode_short, maf_fields)
+        clean_fields = field_cleanup(maf_header_fields, sample_barcode_short, maf_diagnostics, meta_id, maf_fields)
         retval = store(cursor, table, expected_fields,
-              maf_header_fields + ['sample_barcode_short', 'conflict'], clean_fields)
+              maf_header_fields + ['sample_barcode_short', 'meta_info_index', 'conflict'], clean_fields)
+        if not retval in stats.keys(): stats[retval] = 0
+        stats[retval] += 1
 
     inff.close()
 
@@ -295,7 +694,7 @@ def main():
     db     = connect_to_mysql()
     cursor = db.cursor()
 
-    sample_type = "primary"
+    sample_type = "metastatic"
 
     if sample_type == "primary":
         table = 'somatic_mutations'
@@ -326,15 +725,32 @@ def main():
         else:
             print table, " not found in ", db_name
 
-        db_dir = "/mnt/databases/TCGA/" + db_name + "/Somatic_Mutations"
+        db_dir = '/mnt/databases/TCGA'
         if not os.path.isdir(db_dir):
             print "directory " + db_dir + " not found"
-            exit(1)
+            exit(1)  # TCGA db dir not found
 
-        mafs = filter(lambda x: x.endswith(".maf") and not 'mitochondria' in x, os.listdir(db_dir))
-        maf_files =   ["/".join([db_dir,  maf]) for maf in mafs]
-        for maffile in maf_files:
-             load_maf (cursor, db_name, table, maffile)
+        qry = "select * from mutations_meta"
+        rows = search_db(cursor, qry)
+        if not rows:
+            print "no meta info found"
+            continue
+
+        maf_file = {}
+        maf_diagnostics = {}
+        for row in rows:
+            [meta_id, file_name, quality_check, assembly, diagnostics] = row
+            if quality_check=="fail": continue
+            maf_file[meta_id] = "/".join([db_dir, db_name, "Somatic_Mutations", file_name])
+            maf_diagnostics[meta_id] = diagnostics
+
+
+        stats = {}
+        for meta_id, maffile in maf_file.iteritems():
+            load_maf (cursor, db_name, table, maffile, maf_diagnostics[meta_id], meta_id, stats)
+        print
+        for type, count in stats.iteritems():
+            print type, count
 
     cursor.close()
     db.close()

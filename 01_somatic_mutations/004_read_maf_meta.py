@@ -21,8 +21,8 @@
 # store the meta info about the maf files: name and the reference genome,  for now
 
 import os
-from tcga_utils.mysql import *
-from tcga_utils.utils import *
+from old_tcga_tools.tcga_utils.mysql import *
+from old_tcga_tools.tcga_utils.utils import *
 from random import random
 import urllib2
 from HTMLParser import HTMLParser

@@ -23,8 +23,8 @@
 
 import os.path
 import re
-from tcga_utils.utils import  make_named_fields, is_informative
-from tcga_utils.ucsc import  *
+from old_tcga_tools.tcga_utils.utils import  make_named_fields, is_informative
+from old_tcga_tools.tcga_utils.ucsc import  *
 from time import time
 
 verbose = True
@@ -104,7 +104,7 @@ def main():
     cursor = db.cursor()
 
 
-    sample_type = "primary"
+    sample_type = "metastatic"
 
     if sample_type == "primary":
         table = 'somatic_mutations'

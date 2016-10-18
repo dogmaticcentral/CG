@@ -21,7 +21,7 @@
 #
 
 import MySQLdb
-from   tcga_utils.mysql   import  *
+from   old_tcga_tools.tcga_utils.mysql import  *
 import commands
 
 #########################################
