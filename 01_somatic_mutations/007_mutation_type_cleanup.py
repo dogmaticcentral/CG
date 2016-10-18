@@ -146,7 +146,7 @@ def main():
         while not done:
             offset += chunk
             if offset and not offset%1000: print "offset: ", offset
-            switch_to_db(cursor, db_name) # check_aa_type will sitch to ucsc db
+            switch_to_db(cursor, db_name) # check_aa_type will switch to ucsc db
             qry = "select * from %s limit %d, %d" % (table, offset, chunk)
             rows = search_db(cursor, qry)
             if not rows:
@@ -156,7 +156,7 @@ def main():
                 [checks, fixed_row] = check_aa_type (cursor, assembly, make_named_fields (header_fields, row) )
                 if checks: continue
                 store_fixed_row (cursor, fixed_row)
-        break
+  
     cursor.close()
     db.close()
 
