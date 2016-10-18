@@ -57,7 +57,7 @@ def main():
             print "checking", table, "in", db_name
         qry = "select count(1) from %s " % table
         rows = search_db(cursor, qry)
-        if not rows or rows[0][0] ==0 :  break
+        if not rows or rows[0][0]==0:  continue
         qry = "select count(1) from %s where conflict is not null" % table
         rows = search_db(cursor, qry)
         conflicts[db_name] = int(rows[0][0])
