@@ -48,7 +48,7 @@ def main():
             terms = row[-1].split(";")
             for term in terms:
                 if not "stutter" in term: continue
-                sample_ids = term.split("=>").replace(" ","")
+                sample_ids = term.split("=>")[-1].replace(" ","")
                 print sample_ids
 
     cursor.close()
