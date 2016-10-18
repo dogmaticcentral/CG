@@ -36,7 +36,7 @@ def store_fixed_row (cursor, fixed_row):
 mutation_annot_pattern = re.compile('(\D+)(\-*\d+)(\D+)')
 #########################################
 def parse_mutation (mutation):
-
+    if not mutation or len(mutation)==0: return ["", "",""]
     match_return = re.match(mutation_annot_pattern, mutation)
     mut_from = match_return.group(1)
     mut_to   = match_return.group(3)
