@@ -21,21 +21,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="014_drop_stuttering_samples.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="014_drop_stuttering_samples.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="443">
-              <caret line="51" column="32" selection-start-line="51" selection-start-column="32" selection-end-line="51" selection-end-column="32" />
+            <state relative-caret-position="493">
+              <caret line="54" column="45" selection-start-line="54" selection-start-column="45" selection-end-line="54" selection-end-column="45" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="97">
-              <caret line="143" column="22" selection-start-line="143" selection-start-column="22" selection-end-line="143" selection-end-column="22" />
+            <state relative-caret-position="61">
+              <caret line="147" column="46" selection-start-line="147" selection-start-column="46" selection-end-line="147" selection-end-column="46" />
               <folding>
                 <element signature="e#1237#3621#0" expanded="false" />
                 <element signature="e#3732#4557#0" expanded="false" />
@@ -83,13 +83,14 @@
         <option value="$PROJECT_DIR$/012_drop_annotation_in_remaining_conflicted.py" />
         <option value="$PROJECT_DIR$/020_db_stats.py" />
         <option value="$PROJECT_DIR$/027_patient_freqs.py" />
-        <option value="$PROJECT_DIR$/014_drop_stuttering_samples.py" />
         <option value="$PROJECT_DIR$/003_maf_meta.py" />
+        <option value="$PROJECT_DIR$/014_drop_stuttering_samples.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="197" />
+    <option name="x" value="80" />
+    <option name="y" value="18" />
     <option name="width" value="1286" />
     <option name="height" value="688" />
   </component>
@@ -352,7 +353,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="197" y="0" width="1286" height="688" extended-state="0" />
+    <frame x="80" y="18" width="1286" height="688" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2578125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -422,16 +423,6 @@
           <url>file://$PROJECT_DIR$/020_db_stats.py</url>
           <line>89</line>
           <option name="timeStamp" value="56" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/014_drop_stuttering_samples.py</url>
-          <line>50</line>
-          <option name="timeStamp" value="58" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/014_drop_stuttering_samples.py</url>
-          <line>47</line>
-          <option name="timeStamp" value="59" />
         </line-breakpoint>
       </breakpoints>
       <option name="time" value="60" />
@@ -908,23 +899,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="443">
-          <caret line="51" column="32" selection-start-line="51" selection-start-column="32" selection-end-line="51" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="97">
-          <caret line="143" column="22" selection-start-line="143" selection-start-column="22" selection-end-line="143" selection-end-column="22" />
+        <state relative-caret-position="61">
+          <caret line="147" column="46" selection-start-line="147" selection-start-column="46" selection-end-line="147" selection-end-column="46" />
           <folding>
             <element signature="e#1237#3621#0" expanded="false" />
             <element signature="e#3732#4557#0" expanded="false" />
             <element signature="e#7423#8690#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="54" column="45" selection-start-line="54" selection-start-column="45" selection-end-line="54" selection-end-column="45" />
+          <folding />
         </state>
       </provider>
     </entry>
