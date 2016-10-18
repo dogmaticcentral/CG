@@ -54,7 +54,7 @@ def main():
                 #qry = "delete from somatic_mutations where tumor_sample_barcode in (%s) " % sample_ids
                 #search_db(cursor,qry)
                 #qry = "delete from metastatic_mutations where tumor_sample_barcode in (%s) " % sample_ids
-                3search_db(cursor,qry)
+                #search_db(cursor,qry)
 
     cursor.close()
     db.close()
