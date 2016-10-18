@@ -160,7 +160,7 @@ def check_health(maffile):
     # only store it with a warning
     bad_counts = filter(lambda x: x > 100, number_of_samples_with_stutter_count.keys())
     if len(bad_counts) > 0:
-        warn_text =  "%d samples have more than 100 stutter frameshift points: " % len(bad_counts)
+        warn_text =  "%d samples have more than 100 stutter frameshift points =>  " % len(bad_counts)
         warn_text += ",".join(offending_samples)
         return ["warn", warn_text]
 

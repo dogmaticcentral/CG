@@ -21,72 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="012_drop_annotation_in_remaining_conflicted.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/012_drop_annotation_in_remaining_conflicted.py">
+      <file leaf-file-name="014_drop_stuttering_samples.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="251">
-              <caret line="98" column="66" selection-start-line="98" selection-start-column="66" selection-end-line="98" selection-end-column="66" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="010_add_annotation_from_annovar.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/010_add_annotation_from_annovar.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="179">
-              <caret line="128" column="0" selection-start-line="124" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
-              <folding>
-                <element signature="e#1486#2308#0" expanded="false" />
-                <element signature="e#2394#2901#0" expanded="false" />
-                <element signature="e#2994#4279#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="020_db_stats.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/020_db_stats.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="89" column="0" selection-start-line="89" selection-start-column="0" selection-end-line="89" selection-end-column="0" />
-              <folding>
-                <element signature="e#1752#1766#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="027_patient_freqs.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="63" column="9" selection-start-line="63" selection-start-column="9" selection-end-line="63" selection-end-column="9" />
-              <folding>
-                <element signature="e#3996#4120#0" expanded="false" />
-                <element signature="e#4290#4394#0" expanded="false" />
-                <element signature="e#4584#4781#0" expanded="false" />
-                <element signature="e#5184#6882#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="029_mutations_in_a_specific_gene.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/029_mutations_in_a_specific_gene.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-486">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="030_gene_pair_mutations.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/030_gene_pair_mutations.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1015">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="18">
+              <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -95,24 +34,12 @@
       <file leaf-file-name="003_maf_meta.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="481">
-              <caret line="164" column="33" selection-start-line="164" selection-start-column="33" selection-end-line="164" selection-end-column="33" />
+            <state relative-caret-position="277">
+              <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
               <folding>
                 <element signature="e#1237#3621#0" expanded="false" />
                 <element signature="e#3732#4557#0" expanded="false" />
-                <element signature="e#7351#8618#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="024_mutation_type_stats.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/024_mutation_type_stats.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="143">
-              <caret line="75" column="0" selection-start-line="74" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
-              <folding>
-                <element signature="e#829#843#0" expanded="true" />
+                <element signature="e#7354#8621#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -156,6 +83,7 @@
         <option value="$PROJECT_DIR$/012_drop_annotation_in_remaining_conflicted.py" />
         <option value="$PROJECT_DIR$/020_db_stats.py" />
         <option value="$PROJECT_DIR$/027_patient_freqs.py" />
+        <option value="$PROJECT_DIR$/014_drop_stuttering_samples.py" />
         <option value="$PROJECT_DIR$/003_maf_meta.py" />
       </list>
     </option>
@@ -501,13 +429,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="312" column="50" selection-start-line="312" selection-start-column="50" selection-end-line="312" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/004_read_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -908,14 +829,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/012_drop_annotation_in_remaining_conflicted.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="98" column="66" selection-start-line="98" selection-start-column="66" selection-end-line="98" selection-end-column="66" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/010_add_annotation_from_annovar.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="179">
@@ -948,6 +861,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/030_gene_pair_mutations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1015">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/029_mutations_in_a_specific_gene.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-486">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="308">
@@ -961,30 +890,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/029_mutations_in_a_specific_gene.py">
+    <entry file="file://$PROJECT_DIR$/012_drop_annotation_in_remaining_conflicted.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-486">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="251">
+          <caret line="98" column="66" selection-start-line="98" selection-start-column="66" selection-end-line="98" selection-end-column="66" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/030_gene_pair_mutations.py">
+    <entry file="file://$PROJECT_DIR$/014_drop_stuttering_samples.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1015">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="18">
+          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/003_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="481">
-          <caret line="164" column="33" selection-start-line="164" selection-start-column="33" selection-end-line="164" selection-end-column="33" />
+        <state relative-caret-position="277">
+          <caret line="162" column="0" selection-start-line="162" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
           <folding>
             <element signature="e#1237#3621#0" expanded="false" />
             <element signature="e#3732#4557#0" expanded="false" />
-            <element signature="e#7351#8618#0" expanded="false" />
+            <element signature="e#7354#8621#0" expanded="false" />
           </folding>
         </state>
       </provider>
