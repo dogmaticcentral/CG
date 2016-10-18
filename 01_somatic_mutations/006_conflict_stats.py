@@ -53,10 +53,10 @@ def main():
         if not check_table_exists (cursor, db_name, table):
             print table, " table not found in ", db_name
             continue
-        qry = "select count(1) from somatic_mutations"
+        qry = "select count(1) from %s " % table
         rows = search_db(cursor, qry)
         if not rows or rows[0][0] ==0 :  break
-        qry = "select count(1) from somatic_mutations where conflict is not null"
+        qry = "select count(1) from %s where conflict is not null" % table
         rows = search_db(cursor, qry)
         conflicts[db_name] = int(rows[0][0])
 

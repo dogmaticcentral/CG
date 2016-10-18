@@ -39,10 +39,10 @@ def parse_mutation (mutation):
     return [mut_position, mut_from, mut_to]
 
 ##################################
-def output_annovar_input_file(db_name, cursor):
+def output_annovar_input_file(db_name, table_name, cursor):
     qry = "select chromosome, start_position, end_position, "
     qry += "reference_allele, tumor_seq_allele1 , tumor_seq_allele2  "
-    qry += "from somatic_mutations where variant_classification='missense_mutation' "
+    qry += "from %s where variant_classification='missense_mutation' " % table_name
     qry += " and (aa_change is null or aa_change='')"
     rows = search_db(cursor, qry)
     outfname = "%s.avinput" % db_name
@@ -71,7 +71,7 @@ def run_annovar(avinput, assembly, db_name):
     return avoutname
 
 ##################################
-def store_annotation(cursor, db_name, avoutput):
+def store_annotation(cursor, table_name, avoutput):
     inf = open (avoutput, "r")
     for line in inf:
         if line[:3]=="Chr": continue
@@ -91,7 +91,7 @@ def store_annotation(cursor, db_name, avoutput):
             classf = "silent"
         else:
             classf = "missense_mutation"
-        qry = 'update somatic_mutations set '
+        qry = 'update %s set ' % table_name
         qry += 'variant_classification="%s",  ' % classf
         qry += 'aa_change="%s", ' % aa_change
         qry += 'cdna_change="%d" ' % cdna_change_position
@@ -107,9 +107,21 @@ def store_annotation(cursor, db_name, avoutput):
 ##################################
 def main():
 
-#######
+
+    sample_type = "metastatic"
+
+    if sample_type == "primary":
+        table_name = 'somatic_mutations'
+    elif sample_type == "metastatic":
+        table_name = 'metastatic_mutations'
+    else:
+        print "I don't know how to hadndle ", sample_type, " sample types"
+        exit(1)  # unknown sample type
+
+    #####
     db     = connect_to_mysql()
     cursor = db.cursor()
+
 
     db_names = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
@@ -120,7 +132,7 @@ def main():
     for db_name in db_names:
         switch_to_db (cursor, db_name)
         per_db_cases = 0
-        qry = "select count(1) from somatic_mutations where variant_classification='missense_mutation' "
+        qry = "select count(1) from %s where variant_classification='missense_mutation' " % table_name
         qry += " and (aa_change is null or aa_change='')";
         rows = search_db (cursor, qry)
         if rows and rows[0][0] != 0:
@@ -128,7 +140,7 @@ def main():
             per_db_cases = rows[0][0]
 
         out_of = 0
-        qry = "select count(1) from somatic_mutations where variant_classification='missense_mutation' "
+        qry = "select count(1) from %s where variant_classification='missense_mutation' " % table_name
         rows = search_db (cursor, qry)
         if rows and rows[0][0] != 0:
             out_of = rows[0][0]
@@ -137,7 +149,7 @@ def main():
 
         print " ** ", db_name
         print "number of missing protein annotation cases: ", per_db_cases, "out of", out_of
-        qry = "select distinct(meta_info_index) from somatic_mutations where variant_classification='missense_mutation' "
+        qry = "select distinct(meta_info_index) from %s  where variant_classification='missense_mutation' " % table_name
         qry += " and (aa_change is null or aa_change='')"
         print "meta info for missing info cases:"
         rows = search_db (cursor, qry)
@@ -151,9 +163,9 @@ def main():
         if not assembly in ["hg19", "hg18"]:
             print "unexpected assembly:", assembly
             exit(2)
-        avinput = output_annovar_input_file (db_name, cursor)
+        avinput = output_annovar_input_file (db_name, table_name, cursor)
         avoutput = run_annovar (avinput, assembly, db_name)
-        store_annotation (cursor, db_name, avoutput)
+        store_annotation (cursor, table_name, avoutput)
 
     cursor.close()
     db.close()
