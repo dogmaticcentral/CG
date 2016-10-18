@@ -156,7 +156,7 @@ def main():
                 [checks, fixed_row] = check_aa_type (cursor, assembly, make_named_fields (header_fields, row) )
                 if checks: continue
                 store_fixed_row (cursor, fixed_row)
-  
+
     cursor.close()
     db.close()
 

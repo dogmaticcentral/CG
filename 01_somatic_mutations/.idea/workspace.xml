@@ -21,15 +21,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="007_mutation_type_cleanup.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="007_mutation_type_cleanup.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/007_mutation_type_cleanup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="467">
-              <caret line="158" column="2" selection-start-line="158" selection-start-column="2" selection-end-line="158" selection-end-column="2" />
+            <state relative-caret-position="1331">
+              <caret line="143" column="0" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
               <folding>
                 <element signature="e#1568#3143#0" expanded="false" />
                 <element signature="e#3220#3477#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="utils.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tcga_utils/utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="72">
+              <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -85,7 +95,6 @@
         <option value="$PROJECT_DIR$/tcga_utils/ucsc.py" />
         <option value="$PROJECT_DIR$/003_maf_meta.py" />
         <option value="$PROJECT_DIR$/002_maf_tables.py" />
-        <option value="$PROJECT_DIR$/tcga_utils/utils.py" />
         <option value="$PROJECT_DIR$/001_maf_tables_cleanup.py" />
         <option value="$PROJECT_DIR$/old_tcga_tools/003_maf_meta.py" />
         <option value="$PROJECT_DIR$/old_tcga_tools/004_read_maf_meta.py" />
@@ -99,6 +108,7 @@
         <option value="$PROJECT_DIR$/010_add_annotation_from_annovar.py" />
         <option value="$PROJECT_DIR$/006_conflict_stats.py" />
         <option value="$PROJECT_DIR$/007_mutation_type_cleanup.py" />
+        <option value="$PROJECT_DIR$/tcga_utils/utils.py" />
       </list>
     </option>
   </component>
@@ -701,13 +711,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tcga_utils/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="26" column="51" selection-start-line="26" selection-start-column="51" selection-end-line="26" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/004_read_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -903,12 +906,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/007_mutation_type_cleanup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="467">
-          <caret line="158" column="2" selection-start-line="158" selection-start-column="2" selection-end-line="158" selection-end-column="2" />
+        <state relative-caret-position="1331">
+          <caret line="143" column="0" selection-start-line="143" selection-start-column="0" selection-end-line="143" selection-end-column="0" />
           <folding>
             <element signature="e#1568#3143#0" expanded="false" />
             <element signature="e#3220#3477#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tcga_utils/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
+          <folding />
         </state>
       </provider>
     </entry>
