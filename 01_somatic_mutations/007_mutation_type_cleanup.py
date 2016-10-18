@@ -118,7 +118,7 @@ def main():
                  "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    db_names = ["LUAD"]
+    #db_names = ["LUAD"]
 
     chunk = 10 # we process rows 10 by 10+
     offset = -chunk

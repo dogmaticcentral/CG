@@ -21,32 +21,53 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="008_duplicate_check.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/008_duplicate_check.py">
+      <file leaf-file-name="005_load_maf.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/005_load_maf.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
-              <caret line="45" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+            <state relative-caret-position="87">
+              <caret line="696" column="30" selection-start-line="696" selection-start-column="30" selection-end-line="696" selection-end-column="30" />
+              <folding>
+                <element signature="e#1148#1543#0" expanded="false" />
+                <element signature="e#1646#2260#0" expanded="false" />
+                <element signature="e#2337#2529#0" expanded="false" />
+                <element signature="e#2632#2781#0" expanded="false" />
+                <element signature="e#2906#3195#0" expanded="false" />
+                <element signature="e#3346#3609#0" expanded="false" />
+                <element signature="e#3732#4699#0" expanded="false" />
+                <element signature="e#4817#5423#0" expanded="false" />
+                <element signature="e#5521#5899#0" expanded="false" />
+                <element signature="e#6069#15995#0" expanded="false" />
+                <element signature="e#16118#17324#0" expanded="false" />
+                <element signature="e#17454#23395#0" expanded="false" />
+                <element signature="e#23488#24592#0" expanded="false" />
+                <element signature="e#24713#25626#0" expanded="false" />
+                <element signature="e#25773#30456#0" expanded="false" />
+                <element signature="e#30574#31489#0" expanded="false" />
+                <element signature="e#31619#33488#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="006_conflict_stats.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/006_conflict_stats.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="72">
+              <caret line="36" column="29" selection-start-line="36" selection-start-column="29" selection-end-line="36" selection-end-column="29" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="010_add_annotation_from_annovar.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/010_add_annotation_from_annovar.py">
+      <file leaf-file-name="007_mutation_type_cleanup.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/007_mutation_type_cleanup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="109" column="7" selection-start-line="109" selection-start-column="7" selection-end-line="109" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="009_no_protein_level_annotation_check.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/009_no_protein_level_annotation_check.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="64" column="102" selection-start-line="64" selection-start-column="102" selection-end-line="64" selection-end-column="102" />
-              <folding />
+            <state relative-caret-position="-197">
+              <caret line="120" column="5" selection-start-line="120" selection-start-column="5" selection-end-line="120" selection-end-column="5" />
+              <folding>
+                <element signature="e#1568#3143#0" expanded="false" />
+                <element signature="e#3220#3477#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -85,9 +106,9 @@
         <option value="$PROJECT_DIR$/gdc_tools/005_load_maf.py" />
         <option value="$PROJECT_DIR$/005_load_maf.py" />
         <option value="$PROJECT_DIR$/006_conflict_stats.py" />
-        <option value="$PROJECT_DIR$/007_mutation_type_cleanup.py" />
         <option value="$PROJECT_DIR$/008_duplicate_check.py" />
         <option value="$PROJECT_DIR$/009_no_protein_level_annotation_check.py" />
+        <option value="$PROJECT_DIR$/007_mutation_type_cleanup.py" />
       </list>
     </option>
   </component>
@@ -829,9 +850,33 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/008_duplicate_check.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="45" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/010_add_annotation_from_annovar.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="117" column="0" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/009_no_protein_level_annotation_check.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="64" column="102" selection-start-line="64" selection-start-column="102" selection-end-line="64" selection-end-column="102" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/005_load_maf.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
+        <state relative-caret-position="87">
           <caret line="696" column="30" selection-start-line="696" selection-start-column="30" selection-end-line="696" selection-end-column="30" />
           <folding>
             <element signature="e#1148#1543#0" expanded="false" />
@@ -857,7 +902,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/006_conflict_stats.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
+        <state relative-caret-position="72">
           <caret line="36" column="29" selection-start-line="36" selection-start-column="29" selection-end-line="36" selection-end-column="29" />
           <folding />
         </state>
@@ -865,36 +910,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/007_mutation_type_cleanup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="469">
-          <caret line="115" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
+        <state relative-caret-position="-197">
+          <caret line="120" column="5" selection-start-line="120" selection-start-column="5" selection-end-line="120" selection-end-column="5" />
           <folding>
             <element signature="e#1568#3143#0" expanded="false" />
             <element signature="e#3220#3477#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/008_duplicate_check.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="45" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/009_no_protein_level_annotation_check.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="64" column="102" selection-start-line="64" selection-start-column="102" selection-end-line="64" selection-end-column="102" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/010_add_annotation_from_annovar.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="109" column="7" selection-start-line="109" selection-start-column="7" selection-end-line="109" selection-end-column="7" />
-          <folding />
         </state>
       </provider>
     </entry>
