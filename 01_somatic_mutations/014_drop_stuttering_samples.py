@@ -50,10 +50,9 @@ def main():
                 if not "stutter" in term: continue
                 sample_ids = term.split("=>")[-1].replace(" ","").split(",")
                 sample_ids_quoted = ",".join(map(lambda x: '"' + x + '"', sample_ids))
-                print sample_ids_quoted
-                qry = "delete from somatic_mutations where tumor_sample_barcode in (%s) " % sample_ids
+                qry = "delete from somatic_mutations where tumor_sample_barcode in (%s) " % sample_ids_quoted
                 search_db(cursor,qry)
-                qry = "delete from metastatic_mutations where tumor_sample_barcode in (%s) " % sample_ids
+                qry = "delete from metastatic_mutations where tumor_sample_barcode in (%s) " % sample_ids_quoted
                 search_db(cursor,qry)
 
     cursor.close()
