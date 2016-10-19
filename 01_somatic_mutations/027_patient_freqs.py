@@ -74,6 +74,7 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
                 verticalalignment   = 'bottom')
 
     #ax1.fill_between(x, y,  interpolate=True, color=(255./255,153./255,51./255))
+    ax1.fill_between(x, y,  interpolate=True, color=(128./255,128./255,128./255))
 
     plt.ylim(0,ylim)
     plt.xlim(0,xlim)
