@@ -58,7 +58,7 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
         [rank_msg, middle_range] = rank_message(special, freq_gene)
     #bg_color = (0, 102./255, 204./255) # this is blue. I believe
     bg_color = (1, 1, 1)
-    ax1.set_axis_bgcolor(bg_color)
+    #ax1.set_axis_bgcolor(bg_color)
     x = range(1,len(sorted_genes)+1)
     y = [freq_gene[gene] for gene in sorted_genes]
     ylim = min(max(y),10)
