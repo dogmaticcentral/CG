@@ -29,7 +29,7 @@ special = None
 verbose = False
 
 #########################################
-def rank_message ( gene_name, freq_gene):
+def rank_message (gene_name, freq_gene):
     rank_msg = ""
     if gene_name in freq_gene.keys():
         less_mutated = len( [y for y in  freq_gene.values() if y<freq_gene[gene_name]])
@@ -124,7 +124,7 @@ def main():
         total_patients = 0
         for table in tables:
             qry = "select distinct(sample_barcode_short) from %s " % table
-            rows = search_db(cursor, qry)
+            rows = search_db(cursor, qry, verbose=True)
             patients = [row[0] for row in  rows]
             total_patients += len(patients)
         print "\t", total_patients
