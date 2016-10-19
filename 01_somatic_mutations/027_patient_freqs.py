@@ -51,6 +51,7 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
 
     fig, ax1 = plt.subplots(1, 1)
     ax1.set_title (title, fontsize=24)
+    ax1.set_xscale("log", nonposx='clip')
     ax1.set_xlabel('genes, listed by their rank', fontsize = 20)
     ax1.set_ylabel('% of patients', fontsize = 24)
     if special:
@@ -73,8 +74,8 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
                 horizontalalignment = 'left',
                 verticalalignment   = 'bottom')
 
-    #ax1.fill_between(x, y,  interpolate=True, color=(255./255,153./255,51./255))
-    ax1.fill_between(x, y,  interpolate=True, color=(128./255,128./255,128./255))
+    #ax1.fill_between(x, y,  interpolate=True, color=(255./255,153./255,51./255)) # orange
+    ax1.fill_between(x, y,  interpolate=True, color=(128./255,128./255,128./255)) # gray
 
     plt.ylim(0,ylim)
     plt.xlim(0,xlim)
