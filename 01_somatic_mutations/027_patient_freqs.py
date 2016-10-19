@@ -222,7 +222,7 @@ def main():
     live_plot ("Pan-cancer statistics", pancan_freq, sorted_genes, filename)
 
     for gene in ['RPL5', 'RPL11', 'TP53', 'APC']:
-        print gene, pancan_freq[gene] *= 100
+        print gene, pancan_freq[gene]
 
     cursor.close()
     db.close()
