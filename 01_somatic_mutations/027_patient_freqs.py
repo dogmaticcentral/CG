@@ -61,10 +61,22 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
     #ax1.set_axis_bgcolor(bg_color)
     x = range(1,len(sorted_genes)+1)
     y = [freq_gene[gene] for gene in sorted_genes]
+    # fudge x and y to get steps
+    xfudge = []
+    yfudge = []
+    xfudge.append(x)
+    yfudge.append(y)
+    for i in range(1,len(y)):
+        xfudge.append(x[i])
+        yfudge.append(y[i-1])
+        xfudge.append(x[i])
+        yfudge.append(y[i])
+    x = xfudge
+    y = yfudge
+
     ylim = min(max(y),35)
     xlim = len(sorted_genes)
     if special:
-
         bbox_props = dict(boxstyle="round", fc="w", ec="0.5", alpha=0.8)
         #ax1.text(xlim*0.9, ylim*0.9, rank_msg, ha="right", va="top", size=14, bbox=bbox_props)
         if middle_range < 0: middle_range = xlim
@@ -155,7 +167,8 @@ def main():
             if not ct%1000:
                 print "%4d out of %4d, time for the last 1000: %8.3f s" % (ct, len(genes), time()-prev_time)
                 prev_time = time()
-
+                break
+                
             [silent_ct, non_silent_ct] = silent_proportion(cursor, gene)
             #print gene, silent_ct, non_silent_ct
             if drop_silent and  (non_silent_ct==0 or float(silent_ct)/non_silent_ct>0.15):

@@ -21,36 +21,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="011_drop_unannotatable.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/011_drop_unannotatable.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="61" column="24" selection-start-line="61" selection-start-column="24" selection-end-line="61" selection-end-column="24" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="035_pancan_anticorr_filtered.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/035_pancan_anticorr_filtered.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1088">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="027_patient_freqs.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="411">
-              <caret line="224" column="52" selection-start-line="224" selection-start-column="52" selection-end-line="224" selection-end-column="52" />
+            <state relative-caret-position="303">
+              <caret line="170" column="16" selection-start-line="170" selection-start-column="16" selection-end-line="170" selection-end-column="16" />
               <folding>
                 <element signature="e#831#852#0" expanded="true" />
-                <element signature="e#4248#4373#0" expanded="false" />
-                <element signature="e#4543#4723#0" expanded="false" />
-                <element signature="e#4913#5144#0" expanded="false" />
+                <element signature="e#4529#4654#0" expanded="false" />
+                <element signature="e#5194#5425#0" expanded="false" />
+                <marker date="1476918661170" expanded="false" signature="4811:5004" ph="..." />
               </folding>
             </state>
           </provider>
@@ -59,8 +39,8 @@
       <file leaf-file-name="032_gene_vs_TP53_background.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/032_gene_vs_TP53_background.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4050">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="6534">
+              <caret line="386" column="30" selection-start-line="386" selection-start-column="30" selection-end-line="386" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -110,8 +90,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="48" />
-    <option name="y" value="22" />
+    <option name="x" value="185" />
+    <option name="y" value="13" />
     <option name="width" value="1286" />
     <option name="height" value="688" />
   </component>
@@ -374,7 +354,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="48" y="22" width="1286" height="688" extended-state="0" />
+    <frame x="185" y="13" width="1286" height="688" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.196875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -445,8 +425,18 @@
           <line>89</line>
           <option name="timeStamp" value="56" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/032_gene_vs_TP53_background.py</url>
+          <line>384</line>
+          <option name="timeStamp" value="61" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/032_gene_vs_TP53_background.py</url>
+          <line>77</line>
+          <option name="timeStamp" value="62" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="61" />
+      <option name="time" value="63" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -914,14 +904,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/032_gene_vs_TP53_background.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4050">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/035_pancan_anticorr_filtered.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1088">
@@ -930,15 +912,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/032_gene_vs_TP53_background.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6534">
+          <caret line="386" column="30" selection-start-line="386" selection-start-column="30" selection-end-line="386" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="411">
-          <caret line="224" column="52" selection-start-line="224" selection-start-column="52" selection-end-line="224" selection-end-column="52" />
+        <state relative-caret-position="303">
+          <caret line="170" column="16" selection-start-line="170" selection-start-column="16" selection-end-line="170" selection-end-column="16" />
           <folding>
             <element signature="e#831#852#0" expanded="true" />
-            <element signature="e#4248#4373#0" expanded="false" />
-            <element signature="e#4543#4723#0" expanded="false" />
-            <element signature="e#4913#5144#0" expanded="false" />
+            <element signature="e#4529#4654#0" expanded="false" />
+            <element signature="e#5194#5425#0" expanded="false" />
+            <marker date="1476918661170" expanded="false" signature="4811:5004" ph="..." />
           </folding>
         </state>
       </provider>
