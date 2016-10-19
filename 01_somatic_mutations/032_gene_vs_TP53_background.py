@@ -37,7 +37,6 @@ def simulation (M, Nr, Nb, l, number_of_iterations):
     if not number_of_iterations > 0:
         return  [avg_number_of_double_labeled, pval_le, pval_ge]
 
-
     for i in range(number_of_iterations):
         #####
         slots = []
