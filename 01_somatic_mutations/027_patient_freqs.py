@@ -24,7 +24,8 @@ from time import time
 from   tcga_utils.utils   import  *
 from   tcga_utils.ensembl   import  *
 import matplotlib.pyplot as plt
-matplotlib.use('Agg')
+import matplotlib.use as muse
+muse('Agg')
 
 drop_silent = True
 special = None
@@ -46,7 +47,6 @@ def rank_message (gene_name, freq_gene):
 
 #########################################
 def  live_plot ( title, freq_gene, sorted_genes, filename):
-
 
     fig, ax1 = plt.subplots(1, 1)
     ax1.set_title (title, fontsize=24)
