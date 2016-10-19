@@ -23,6 +23,7 @@ from time import time
 
 from   tcga_utils.utils   import  *
 from   tcga_utils.ensembl   import  *
+# note this has to come in this particular order:
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -72,7 +73,7 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
                 horizontalalignment = 'left',
                 verticalalignment   = 'bottom')
 
-    ax1.fill_between(x, y,  interpolate=True, color=(255./255,153./255,51./255))
+    #ax1.fill_between(x, y,  interpolate=True, color=(255./255,153./255,51./255))
 
     plt.ylim(0,ylim)
     plt.xlim(0,xlim)
