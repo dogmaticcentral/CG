@@ -107,7 +107,7 @@ def main():
         ############################
         number_muts = 0
         for table in tables:
-            qry = "select count(1)from %s " % table
+            qry = "select count(1) from %s " % table
             rows = search_db(cursor, qry)
             number_muts += int(rows[0][0])
         print db_name, "total number of mutations: ", number_muts
@@ -116,7 +116,9 @@ def main():
         genes = set([])
         for table in tables:
             qry = "select distinct(hugo_symbol) from %s " % table
-            genes |= set([row[0] for row in rows])
+            rows = search_db(cursor, qry)
+            if not rows: continue
+           genes |= set([row[0] for row in rows])
         genes = list(genes)
         print "number of affected genes:",  len(genes)
 
@@ -124,7 +126,8 @@ def main():
         total_patients = 0
         for table in tables:
             qry = "select distinct(sample_barcode_short) from %s " % table
-            rows = search_db(cursor, qry, verbose=True)
+            rows = search_db(cursor, qry)
+            if not rows: continue
             patients = [row[0] for row in  rows]
             total_patients += len(patients)
         print "\t", total_patients
