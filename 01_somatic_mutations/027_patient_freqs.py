@@ -24,8 +24,8 @@ from time import time
 from   tcga_utils.utils   import  *
 from   tcga_utils.ensembl   import  *
 import matplotlib.pyplot as plt
-import matplotlib.use as muse
-muse('Agg')
+import matplotlib
+matplotlib.use('Agg')
 
 drop_silent = True
 special = None
