@@ -153,7 +153,7 @@ def main():
 
 
             [silent_ct, non_silent_ct] = silent_proportion(cursor, gene)
-            print gene, silent_ct, non_silent_ct
+            #print gene, silent_ct, non_silent_ct
             if drop_silent and  (non_silent_ct==0 or float(silent_ct)/non_silent_ct>0.15):
                 #if non_silent_ct==0:
                 #    print gene, 'non_silent_ct == 0', '  dropping'
