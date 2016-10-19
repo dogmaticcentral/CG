@@ -168,7 +168,7 @@ def main():
             if not ct%1000:
                 print "%4d out of %4d, time for the last 1000: %8.3f s" % (ct, len(genes), time()-prev_time)
                 prev_time = time()
-                break
+                #break
 
             [silent_ct, non_silent_ct] = silent_proportion(cursor, gene)
             #print gene, silent_ct, non_silent_ct
