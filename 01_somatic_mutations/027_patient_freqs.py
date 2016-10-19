@@ -118,7 +118,7 @@ def main():
             qry = "select distinct(hugo_symbol) from %s " % table
             rows = search_db(cursor, qry)
             if not rows: continue
-           genes |= set([row[0] for row in rows])
+            genes |= set([row[0] for row in rows])
         genes = list(genes)
         print "number of affected genes:",  len(genes)
 
