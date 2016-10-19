@@ -222,8 +222,8 @@ def main():
     live_plot ("Pan-cancer statistics", pancan_freq, sorted_genes, filename)
 
     for gene in ['TP53', 'APC', 'RPL5', 'RPL11',  'RPL6', 'RPL23', ]:
-        msg, range = rank_message (gene, pancan_freq[gene])
-        print gene, msg
+        msg, range = rank_message (gene, pancan_freq)
+        print msg
     cursor.close()
     db.close()
 
