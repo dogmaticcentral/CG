@@ -62,17 +62,18 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
     x = range(1,len(sorted_genes)+1)
     y = [freq_gene[gene] for gene in sorted_genes]
     # fudge x and y to get steps
-    xfudge = []
-    yfudge = []
-    xfudge.append(x)
-    yfudge.append(y)
-    for i in range(1,len(y)):
-        xfudge.append(x[i])
-        yfudge.append(y[i-1])
-        xfudge.append(x[i])
-        yfudge.append(y[i])
-    x = xfudge
-    y = yfudge
+    if 1:
+        xfudge = []
+        yfudge = []
+        xfudge.append(x)
+        yfudge.append(y)
+        for i in range(1,len(y)):
+            xfudge.append(x[i])
+            yfudge.append(y[i-1])
+            xfudge.append(x[i])
+            yfudge.append(y[i])
+        x = xfudge
+        y = yfudge
 
     ylim = min(max(y),35)
     xlim = len(sorted_genes)
@@ -168,7 +169,7 @@ def main():
                 print "%4d out of %4d, time for the last 1000: %8.3f s" % (ct, len(genes), time()-prev_time)
                 prev_time = time()
                 break
-                
+
             [silent_ct, non_silent_ct] = silent_proportion(cursor, gene)
             #print gene, silent_ct, non_silent_ct
             if drop_silent and  (non_silent_ct==0 or float(silent_ct)/non_silent_ct>0.15):

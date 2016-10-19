@@ -24,13 +24,13 @@
       <file leaf-file-name="027_patient_freqs.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="303">
-              <caret line="170" column="16" selection-start-line="170" selection-start-column="16" selection-end-line="170" selection-end-column="16" />
+            <state relative-caret-position="105">
+              <caret line="63" column="32" selection-start-line="63" selection-start-column="32" selection-end-line="63" selection-end-column="32" />
               <folding>
                 <element signature="e#831#852#0" expanded="true" />
-                <element signature="e#4529#4654#0" expanded="false" />
-                <element signature="e#5194#5425#0" expanded="false" />
-                <marker date="1476918661170" expanded="false" signature="4811:5004" ph="..." />
+                <element signature="e#4583#4708#0" expanded="false" />
+                <element signature="e#5248#5479#0" expanded="false" />
+                <marker date="1476918765398" expanded="false" signature="4865:5058" ph="..." />
               </folding>
             </state>
           </provider>
@@ -922,13 +922,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="170" column="16" selection-start-line="170" selection-start-column="16" selection-end-line="170" selection-end-column="16" />
+        <state relative-caret-position="105">
+          <caret line="63" column="32" selection-start-line="63" selection-start-column="32" selection-end-line="63" selection-end-column="32" />
           <folding>
             <element signature="e#831#852#0" expanded="true" />
-            <element signature="e#4529#4654#0" expanded="false" />
-            <element signature="e#5194#5425#0" expanded="false" />
-            <marker date="1476918661170" expanded="false" signature="4811:5004" ph="..." />
+            <element signature="e#4583#4708#0" expanded="false" />
+            <element signature="e#5248#5479#0" expanded="false" />
+            <marker date="1476918765398" expanded="false" signature="4865:5058" ph="..." />
           </folding>
         </state>
       </provider>
