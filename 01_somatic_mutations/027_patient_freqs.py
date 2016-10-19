@@ -222,6 +222,9 @@ def main():
     filename = "pancan_somatic_freq.filtered_for_silent_proportion.png"
     live_plot ("Pan-cancer statistics", pancan_freq, sorted_genes, filename)
 
+    for gene in ['RPL5', 'RPL11', 'TP53', 'APC']:
+        print gene, pancan_freq[gene] *= 100
+
     cursor.close()
     db.close()
 
