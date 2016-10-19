@@ -61,7 +61,7 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
     #ax1.set_axis_bgcolor(bg_color)
     x = range(1,len(sorted_genes)+1)
     y = [freq_gene[gene] for gene in sorted_genes]
-    ylim = min(max(y),10)
+    ylim = min(max(y),35)
     xlim = len(sorted_genes)
     if special:
 
@@ -221,9 +221,9 @@ def main():
     filename = "pancan_somatic_freq.filtered_for_silent_proportion.png"
     live_plot ("Pan-cancer statistics", pancan_freq, sorted_genes, filename)
 
-    for gene in ['RPL5', 'RPL11', 'TP53', 'APC']:
-        print gene, pancan_freq[gene]
-
+    for gene in ['TP53', 'APC', 'RPL5', 'RPL11',  'RPL6', 'RPL23', ]:
+        msg, range = rank_message (gene, pancan_freq[gene])
+        print gene, msg
     cursor.close()
     db.close()
 
