@@ -19,11 +19,13 @@
 # 
 # Contact: ivana.mihalek@gmail.com
 #
+from time import time
 
 from   tcga_utils.utils   import  *
 from   tcga_utils.ensembl   import  *
 import matplotlib.pyplot as plt
-from time import time
+matplotlib.use('Agg')
+
 drop_silent = True
 special = None
 verbose = False
@@ -150,7 +152,7 @@ def main():
             if not ct%1000:
                 print "%4d out of %4d, time for the last 1000: %8.3f s" % (ct, len(genes), time()-prev_time)
                 prev_time = time()
-
+                break
 
             [silent_ct, non_silent_ct] = silent_proportion(cursor, gene)
             #print gene, silent_ct, non_silent_ct
