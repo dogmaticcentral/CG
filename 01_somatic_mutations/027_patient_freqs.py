@@ -34,7 +34,8 @@ def rank_message (gene_name, freq_gene):
     if gene_name in freq_gene.keys():
         less_mutated = len( [y for y in  freq_gene.values() if y<freq_gene[gene_name]])
         more_mutated = len( [y for y in  freq_gene.values() if y>freq_gene[gene_name]])
-        rank_msg = "%7s  mutated in %.1f%% patients   (rank: %d-%d)  " % (gene_name, freq_gene[gene_name], more_mutated, len(freq_gene)-less_mutated)
+        rank_msg = "%7s  mutated in %.1f%% patients   (rank: %d-%d)  " % \
+                   (gene_name, freq_gene[gene_name], more_mutated, len(freq_gene)-less_mutated)
         middle_range = float(more_mutated + len(freq_gene)-less_mutated)/2.0
     else:
         rank_msg = "%7s   rank: %d  (no patients)" %  (gene_name, len(freq_gene))
@@ -154,10 +155,10 @@ def main():
             [silent_ct, non_silent_ct] = silent_proportion(cursor, gene)
             print gene, silent_ct, non_silent_ct
             if drop_silent and  (non_silent_ct==0 or float(silent_ct)/non_silent_ct>0.15):
-                if non_silent_ct==0:
-                    print gene, 'non_silent_ct == 0', '  dropping'
-                else:
-                    print gene, " %6.4f " % (float(silent_ct)/non_silent_ct), '  dropping'
+                #if non_silent_ct==0:
+                #    print gene, 'non_silent_ct == 0', '  dropping'
+                #else:
+                #    print gene, " %6.4f " % (float(silent_ct)/non_silent_ct), '  dropping'
                 continue
 
             no_patients = 0
@@ -181,9 +182,9 @@ def main():
             pancan_silent[gene]     += silent_ct
             pancan_non_silent[gene] += non_silent_ct
             freq_gene[gene] = float(no_patients)/total_patients*100
-            print gene, silent_ct, non_silent_ct
-            print gene, pancan_silent[gene], pancan_non_silent[gene]
-            print '-'*20
+            #print gene, silent_ct, non_silent_ct
+            #print gene, pancan_silent[gene], pancan_non_silent[gene]
+            #print '-'*20
 
         if special and special_dropped: continue
         ###################################
