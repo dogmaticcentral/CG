@@ -62,7 +62,7 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
     x = range(1,len(sorted_genes)+1)
     y = [freq_gene[gene] for gene in sorted_genes]
     # fudge x and y to get steps
-    if 1:
+    if False:
         xfudge = []
         yfudge = []
         xfudge.append(x)
