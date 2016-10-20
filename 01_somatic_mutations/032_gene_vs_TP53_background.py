@@ -294,7 +294,6 @@ def main():
 
             for j in range (len(gene_list)):
                 gene2   = gene_list[j]
-                print ">>>>> ", gene2
                 mut_key = mkey (gene1, gene2)
                 pancan_coappearance[mut_key] += co_appearance[mut_key]
                 appears_together = co_appearance[mut_key]
@@ -323,11 +322,11 @@ def main():
                 d = pt1 - appears_together                    # rpl5 wt and p53  mutated
                 if expctd > appears_together:
                     # pval to have smaller overlap than expected - that is greater overalp with wt p53 type
-                    [odds,pval] = stats.fisher_exact([[a, b], [c, d]], "greater")
+                    [odds, pval] = stats.fisher_exact([[a, b], [c, d]], "greater")
                     pval_lt = pval
                     pval_gt = 1.0
                 else:
-                    [odds,pval] = stats.fisher_exact([[a, b], [c, d]], "less")
+                    [odds, pval] = stats.fisher_exact([[a, b], [c, d]], "less")
                     pval_lt = 1.0
                     pval_gt = pval
 
@@ -379,7 +378,6 @@ def main():
     print >> outf, " %8s   %4s   %4s %8s  %4s   %4s  %15s %15s %10s %10s  " %  ("gene1", "#pts1", "#muts1", "gene2",
                                                                                 "#pts2", "#muts2", "co-appearance",
                                                                                  "expct_co-app", "pval <=", "pval >=")
-
     if tp53_mode:
         gene11 = 'TP53'
         ct1 = pancan_ct[gene1]
@@ -389,6 +387,7 @@ def main():
         for j in range (len(gene_list)):
 
             gene2 = gene_list[j]
+            print ">>>>> ", gene2
             mut_key = mkey (gene1, gene2)
             appears_together = pancan_coappearance[mut_key]
 
@@ -396,14 +395,14 @@ def main():
 
             ct1 = pancan_ct_gene1[gene2]
             pt1 = pancan_pt_gene1[gene2]
-            if not pt1  or float(pt1)/number_of_patients < 0.001: continue
+            if not pt1  or float(pt1)/number_of_patients < 0.00001: continue
 
             ct2 = pancan_ct[gene2]
             pt2 = pancan_pt[gene2]
-            if not pt2 or float(pt2)/number_of_patients < 0.001: continue
+            if not pt2 or float(pt2)/number_of_patients < 0.00001: continue
 
             expctd = float(pt1)/number_of_patients*pt2
-            if abs((expctd - appears_together)/expctd) < 0.1: continue
+            if abs((expctd - appears_together)/expctd) < 0.0001: continue
             a = pt2 -  appears_together                     # rpl5 mutated and p53 wt
             b = number_of_patients - pt1 - pt2 + appears_together # rpl5 wt and p53 wt (in pt1 andp2 we subtracted the overlap twice
             c = appears_together                        # rpl5 mutated and p53 mutated
