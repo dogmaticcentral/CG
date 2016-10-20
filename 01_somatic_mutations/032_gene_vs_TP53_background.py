@@ -298,9 +298,13 @@ def main():
                 pancan_coappearance[mut_key] += co_appearance[mut_key]
                 appears_together = co_appearance[mut_key]
                 ct2 = mut_ct [gene2]
-                if not ct2: continue
+                if not ct2:
+                    print "mutation ct 0 for ", gene2
+                    continue
                 pt2 = patients_per_gene[gene2]
-                if float(pt2)/number_of_patients < 0.00001: continue
+                if float(pt2)/number_of_patients < 0.00001:
+                    print "patients per ", gene2, " number of patients:", number_of_patients
+                    continue
 
                 # the number of times gene1 appears in tumors in which both gene1 and gene2 appear
                 pancan_ct_gene1[gene2] += ct1
