@@ -203,7 +203,8 @@ def main():
         rows = []
         for table in tables:
             qry  = "select distinct  sample_barcode_short from %s " % table
-            rows += search_db(cursor, qry)
+            ret = search_db(cursor, qry)
+            if ret: rows += ret
         number_of_patients =  len(rows)
 
         for row in rows:
@@ -245,8 +246,8 @@ def main():
                 qry += " where sample_barcode_short  = '%s' " %  sample_barcode_short
                 qry += " and not  variant_classification like '%s' " % "silent"
                 qry += " and not  variant_classification like '%s' " % "RNA"
-
-                rows += search_db (cursor, qry)
+                ret = search_db (cursor, qry)
+                if ret: rows += ret
             if not rows: continue
 
             mutations_found = {}
