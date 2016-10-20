@@ -24,13 +24,13 @@
       <file leaf-file-name="027_patient_freqs.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="376">
-              <caret line="102" column="0" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+            <state relative-caret-position="268">
+              <caret line="96" column="4" selection-start-line="96" selection-start-column="4" selection-end-line="96" selection-end-column="4" />
               <folding>
                 <element signature="e#831#852#0" expanded="true" />
-                <element signature="e#4634#4759#0" expanded="false" />
-                <element signature="e#5299#5530#0" expanded="false" />
-                <marker date="1476921538210" expanded="false" signature="4916:5109" ph="..." />
+                <element signature="e#4620#4745#0" expanded="false" />
+                <element signature="e#5285#5516#0" expanded="false" />
+                <marker date="1476921610970" expanded="false" signature="4902:5095" ph="..." />
               </folding>
             </state>
           </provider>
@@ -356,9 +356,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="80" y="19" width="1286" height="688" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.196875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.196875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32978722" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13851352" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -918,13 +918,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="102" column="0" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+        <state relative-caret-position="268">
+          <caret line="96" column="4" selection-start-line="96" selection-start-column="4" selection-end-line="96" selection-end-column="4" />
           <folding>
             <element signature="e#831#852#0" expanded="true" />
-            <element signature="e#4634#4759#0" expanded="false" />
-            <element signature="e#5299#5530#0" expanded="false" />
-            <marker date="1476921538210" expanded="false" signature="4916:5109" ph="..." />
+            <element signature="e#4620#4745#0" expanded="false" />
+            <element signature="e#5285#5516#0" expanded="false" />
+            <marker date="1476921610970" expanded="false" signature="4902:5095" ph="..." />
           </folding>
         </state>
       </provider>

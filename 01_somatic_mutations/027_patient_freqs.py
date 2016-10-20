@@ -93,8 +93,8 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
     plt.ylim(0,ylim)
     plt.xlim(0,xlim)
 
-    fig.tight_layout()fig.tight_layout()
-
+    fig.tight_layout()
+    
     if filename:
         plt.savefig(filename)
     else:
