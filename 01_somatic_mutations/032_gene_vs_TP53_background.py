@@ -82,6 +82,7 @@ def read_cancer_names ():
     return full_name
     
 
+#########################################
 def expected (a, b, n):
     expected = 0
     # probability that there are  no mutations of  type a
@@ -128,8 +129,6 @@ def main():
     db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD","ESCA",  "GBM", "HNSC", "KICH" ,"KIRC",
                  "KIRP","LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
-
-    #db_names = ["ACC", "UCS"]
 
     table = 'somatic_mutations'
 
@@ -179,7 +178,6 @@ def main():
 
     for db_name in db_names:
         header = "\n"
-
         header += "######################################" + "\n"
         header += " %s  %s " % (db_name, full_name[db_name])
         header += "\n"
@@ -204,7 +202,6 @@ def main():
         rows = search_db(cursor, qry)
 
         number_of_patients =  len(rows)
-
 
         for row in rows:
             short_barcodes.append(row[0])
@@ -256,7 +253,6 @@ def main():
                     # here keep track of the actual number of mutations
                     mut_ct[hugo_symbol] += 1
 
-
             ############################
             if mutations_found:
 
@@ -271,7 +267,6 @@ def main():
                             if gene2=='TP53': continue
                             mut_key = mkey (gene1, gene2)
                             co_appearance[mut_key] += 1
-
                 else:
                     all_mutated_genes_from_the_list = mutations_found.keys();
                     for i in range (len(all_mutated_genes_from_the_list)):
@@ -285,7 +280,7 @@ def main():
         header +=  "number of different patients: " + str(number_of_patients)+ "\n"
         header +=  "total number of entries: " + str(db_entries)+ "\n"
         header +=  "number of functional mutations (not silent and not 'RNA') " + str(total_muts)+ "\n"
-        header +=  " %8s   %4s   %4s %8s  %4s   %4s  %15s  %10s  %10s %10s  " %  ("gene1", "#pts1", "#muts1", "gene2",
+        header +=  " %8s   %4s   %4s %8s  %4s   %4s  %15s  %10s  %10s %10s  " % ("gene1", "#pts1", "#muts1", "gene2",
                                                                                      "#pts2", "#muts2", "co-appearance",
                                                                                      "expct_co-app", "pval <=", "pval >=")
         #header += "\n"
@@ -305,12 +300,11 @@ def main():
                 ct2 = mut_ct [gene2]
                 if not ct2: continue
                 pt2 = patients_per_gene[gene2]
-                if float(pt2)/number_of_patients < 0.001: continue
+                if float(pt2)/number_of_patients < 0.00001: continue
 
                 # the number of times gene1 appears in tumors in which both gene1 and gene2 appear
                 pancan_ct_gene1[gene2] += ct1
                 pancan_pt_gene1[gene2] += pt1
-
                 pancan_ct[gene2] += ct2
                 pancan_pt[gene2] += pt2
 
@@ -333,7 +327,7 @@ def main():
                     pval_gt = pval
 
                 outstr +=  "%8s   %4d   %4d   %8s  %4d    %4d  " %  (gene1, pt1, ct1, gene2, pt2, ct2)
-                outstr +=  "%15d    %10.2f   %10.4f  %10.4f" %  ( co_appearance[mut_key], expctd, pval_lt, pval_gt)
+                outstr +=  "%15d    %10.2f   %10.4f  %10.4f" %  (co_appearance[mut_key], expctd, pval_lt, pval_gt)
                 outstr += "\n"
 
         else:
