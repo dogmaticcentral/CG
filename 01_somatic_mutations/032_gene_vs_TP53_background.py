@@ -294,6 +294,7 @@ def main():
 
             for j in range (len(gene_list)):
                 gene2   = gene_list[j]
+                print ">>>>> ", gene2
                 mut_key = mkey (gene1, gene2)
                 pancan_coappearance[mut_key] += co_appearance[mut_key]
                 appears_together = co_appearance[mut_key]
