@@ -49,8 +49,8 @@ def main():
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
 
-    table = 'somatic_mutations'
-    #table = 'metastatic_mutations'
+    #table = 'somatic_mutations'
+    table = 'metastatic_mutations'
 
     for db_name in db_names:
         print "######################################"
@@ -67,7 +67,7 @@ def main():
 
         ############################
         print "number of patients:",
-        qry  = "select distinct  sample_barcode_short from somatic_mutations "
+        qry  = "select distinct  sample_barcode_short from %s " % table
         rows = search_db(cursor, qry)
         number_of_patients =  len(rows)
         print number_of_patients
@@ -81,7 +81,7 @@ def main():
             print 'no mutations found in ', gene_symbol_1
             continue
         print "%10s %15s  %10s  %20s  %15s" % ('sample id ', '#muts_in_sample', 'name1', 'variant1', 'aa_change1'),
-        print "%10s  %20s  %15s"  % ('name2', 'variant2', 'aa_change2')
+        print "%10s  %20s  %15s" % ('name2', 'variant2', 'aa_change2')
         for row in rows:
             [variant_classification, aa_change, sample_barcode_short] = row
             # how many mutations in this particular sample?
