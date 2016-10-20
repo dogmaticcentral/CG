@@ -21,12 +21,46 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="030_gene_pair_mutations.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="030_gene_pair_mutations.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/030_gene_pair_mutations.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-360">
-              <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+            <state relative-caret-position="324">
+              <caret line="111" column="16" selection-start-line="111" selection-start-column="16" selection-end-line="111" selection-end-column="16" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="027_patient_freqs.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="108">
+              <caret line="117" column="0" selection-start-line="116" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+              <folding>
+                <element signature="e#831#852#0" expanded="true" />
+                <element signature="e#4680#4805#0" expanded="false" />
+                <element signature="e#4975#5155#0" expanded="false" />
+                <element signature="e#5345#5576#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="032_gene_vs_TP53_background.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/032_gene_vs_TP53_background.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="234">
+              <caret line="242" column="22" selection-start-line="242" selection-start-column="22" selection-end-line="242" selection-end-column="22" />
+              <folding>
+                <element signature="e#1084#2397#0" expanded="false" />
+                <element signature="e#2471#2776#0" expanded="false" />
+                <element signature="e#2853#3373#0" expanded="false" />
+                <element signature="e#3446#3601#0" expanded="false" />
+                <element signature="e#4418#5351#0" expanded="false" />
+                <element signature="e#5370#5763#0" expanded="false" />
+                <element signature="e#13008#14663#0" expanded="false" />
+                <element signature="e#17423#18944#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -71,8 +105,8 @@
         <option value="$PROJECT_DIR$/014_drop_stuttering_samples.py" />
         <option value="$PROJECT_DIR$/011_drop_unannotatable.py" />
         <option value="$PROJECT_DIR$/027_patient_freqs.py" />
-        <option value="$PROJECT_DIR$/032_gene_vs_TP53_background.py" />
         <option value="$PROJECT_DIR$/030_gene_pair_mutations.py" />
+        <option value="$PROJECT_DIR$/032_gene_vs_TP53_background.py" />
       </list>
     </option>
   </component>
@@ -344,7 +378,7 @@
     <frame x="46" y="18" width="1320" height="691" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16666667" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.11415525" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32978722" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13851352" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -874,36 +908,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1872">
-          <caret line="31" column="18" selection-start-line="31" selection-start-column="18" selection-end-line="31" selection-end-column="18" />
-          <folding>
-            <element signature="e#831#852#0" expanded="true" />
-            <element signature="e#4680#4805#0" expanded="false" />
-            <element signature="e#5345#5576#0" expanded="false" />
-            <marker date="1476922362938" expanded="false" signature="4962:5155" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/032_gene_vs_TP53_background.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="403" column="54" selection-start-line="403" selection-start-column="54" selection-end-line="403" selection-end-column="54" />
-          <folding>
-            <element signature="e#1084#2397#0" expanded="false" />
-            <element signature="e#2471#2776#0" expanded="false" />
-            <element signature="e#2853#3373#0" expanded="false" />
-            <element signature="e#3446#3601#0" expanded="false" />
-            <element signature="e#4391#5324#0" expanded="false" />
-            <element signature="e#5343#5736#0" expanded="false" />
-            <element signature="e#12859#14514#0" expanded="false" />
-            <element signature="e#17274#18795#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/026_per_gene_stats.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1026">
@@ -914,9 +918,39 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/030_gene_pair_mutations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-360">
-          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+        <state relative-caret-position="324">
+          <caret line="111" column="16" selection-start-line="111" selection-start-column="16" selection-end-line="111" selection-end-column="16" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="117" column="0" selection-start-line="116" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+          <folding>
+            <element signature="e#831#852#0" expanded="true" />
+            <element signature="e#4680#4805#0" expanded="false" />
+            <element signature="e#4975#5155#0" expanded="false" />
+            <element signature="e#5345#5576#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/032_gene_vs_TP53_background.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="242" column="22" selection-start-line="242" selection-start-column="22" selection-end-line="242" selection-end-column="22" />
+          <folding>
+            <element signature="e#1084#2397#0" expanded="false" />
+            <element signature="e#2471#2776#0" expanded="false" />
+            <element signature="e#2853#3373#0" expanded="false" />
+            <element signature="e#3446#3601#0" expanded="false" />
+            <element signature="e#4418#5351#0" expanded="false" />
+            <element signature="e#5370#5763#0" expanded="false" />
+            <element signature="e#13008#14663#0" expanded="false" />
+            <element signature="e#17423#18944#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

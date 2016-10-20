@@ -130,7 +130,7 @@ def main():
                  "KIRP","LAML", "LGG", "LIHC", "LUAD", "LUSC", "OV", "PAAD", "PCPG", "PRAD", "REA",
                  "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    table = 'somatic_mutations'
+    tables = ["somatic_mutations", "metastatic_mutations"]
 
     pancan_samples = 0
     pancan_ct_gene1 = {}
@@ -198,9 +198,10 @@ def main():
 
         ############################
         short_barcodes = []
-        qry  = "select distinct  sample_barcode_short from somatic_mutations "
-        rows = search_db(cursor, qry)
-
+        rows = []
+        for table in tables:
+            qry  = "select distinct  sample_barcode_short from %s " % table
+            rows += search_db(cursor, qry)
         number_of_patients =  len(rows)
 
         for row in rows:
@@ -235,13 +236,15 @@ def main():
         ############################
         for sample_barcode_short in short_barcodes:
             ############################
-            qry = "select  hugo_symbol, variant_classification, aa_change "
-            qry += " from somatic_mutations"
-            qry += " where sample_barcode_short  = '%s' " %  sample_barcode_short
-            qry += " and not  variant_classification like '%s' " % "silent"
-            qry += " and not  variant_classification like '%s' " % "RNA"
+            rows = []
+            for table in tables:
+                qry = "select  hugo_symbol, variant_classification, aa_change "
+                qry += " from %s " % table
+                qry += " where sample_barcode_short  = '%s' " %  sample_barcode_short
+                qry += " and not  variant_classification like '%s' " % "silent"
+                qry += " and not  variant_classification like '%s' " % "RNA"
 
-            rows = search_db (cursor, qry)
+                rows += search_db (cursor, qry)
             if not rows: continue
 
             mutations_found = {}
