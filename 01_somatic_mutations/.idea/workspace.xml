@@ -24,13 +24,13 @@
       <file leaf-file-name="027_patient_freqs.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="268">
-              <caret line="96" column="4" selection-start-line="96" selection-start-column="4" selection-end-line="96" selection-end-column="4" />
+            <state relative-caret-position="126">
+              <caret line="31" column="18" selection-start-line="31" selection-start-column="18" selection-end-line="31" selection-end-column="18" />
               <folding>
                 <element signature="e#831#852#0" expanded="true" />
-                <element signature="e#4620#4745#0" expanded="false" />
-                <element signature="e#5285#5516#0" expanded="false" />
-                <marker date="1476921610970" expanded="false" signature="4902:5095" ph="..." />
+                <element signature="e#4680#4805#0" expanded="false" />
+                <element signature="e#5345#5576#0" expanded="false" />
+                <marker date="1476922362938" expanded="false" signature="4962:5155" ph="..." />
               </folding>
             </state>
           </provider>
@@ -39,9 +39,17 @@
       <file leaf-file-name="032_gene_vs_TP53_background.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/032_gene_vs_TP53_background.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
+            <state relative-caret-position="-1819">
               <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
-              <folding />
+              <folding>
+                <element signature="e#4381#5314#0" expanded="false" />
+                <element signature="e#5333#5726#0" expanded="false" />
+                <element signature="e#5765#14497#0" expanded="false" />
+                <element signature="e#10377#12637#0" expanded="false" />
+                <element signature="e#12665#14320#0" expanded="false" />
+                <element signature="e#15152#17021#0" expanded="false" />
+                <element signature="e#17040#18561#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -426,13 +434,8 @@
           <line>89</line>
           <option name="timeStamp" value="56" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/032_gene_vs_TP53_background.py</url>
-          <line>383</line>
-          <option name="timeStamp" value="61" />
-        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="63" />
+      <option name="time" value="64" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -910,21 +913,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/032_gene_vs_TP53_background.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
+        <state relative-caret-position="-1819">
           <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#4381#5314#0" expanded="false" />
+            <element signature="e#5333#5726#0" expanded="false" />
+            <element signature="e#5765#14497#0" expanded="false" />
+            <element signature="e#10377#12637#0" expanded="false" />
+            <element signature="e#12665#14320#0" expanded="false" />
+            <element signature="e#15152#17021#0" expanded="false" />
+            <element signature="e#17040#18561#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/027_patient_freqs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="96" column="4" selection-start-line="96" selection-start-column="4" selection-end-line="96" selection-end-column="4" />
+        <state relative-caret-position="126">
+          <caret line="31" column="18" selection-start-line="31" selection-start-column="18" selection-end-line="31" selection-end-column="18" />
           <folding>
             <element signature="e#831#852#0" expanded="true" />
-            <element signature="e#4620#4745#0" expanded="false" />
-            <element signature="e#5285#5516#0" expanded="false" />
-            <marker date="1476921610970" expanded="false" signature="4902:5095" ph="..." />
+            <element signature="e#4680#4805#0" expanded="false" />
+            <element signature="e#5345#5576#0" expanded="false" />
+            <marker date="1476922362938" expanded="false" signature="4962:5155" ph="..." />
           </folding>
         </state>
       </provider>

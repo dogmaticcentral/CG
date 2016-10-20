@@ -23,7 +23,8 @@ from time import time
 
 from   tcga_utils.utils   import  *
 from   tcga_utils.ensembl   import  *
-# note this has to come in this particular order:
+# note this has to come in this particular order
+# if we are to plot to a file without opening yhr matplot window
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -38,7 +39,7 @@ def rank_message (gene_name, freq_gene):
     if gene_name in freq_gene.keys():
         less_mutated = len( [y for y in  freq_gene.values() if y<freq_gene[gene_name]])
         more_mutated = len( [y for y in  freq_gene.values() if y>freq_gene[gene_name]])
-        rank_msg = "%7s  mutated in %.1f%% patients   (rank: %d-%d)  " % \
+        rank_msg = "%7s  mutated in %.3f%% patients   (rank: %d-%d)  " % \
                    (gene_name, freq_gene[gene_name], more_mutated, len(freq_gene)-less_mutated)
         middle_range = float(more_mutated + len(freq_gene)-less_mutated)/2.0
     else:
@@ -94,7 +95,7 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
     plt.xlim(0,xlim)
 
     fig.tight_layout()
-    
+
     if filename:
         plt.savefig(filename)
     else:
