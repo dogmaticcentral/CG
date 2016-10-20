@@ -191,10 +191,12 @@ def main():
         switch_to_db (cursor, db_name)
 
         ############################
-        qry = "select count(1) from " + table
-        rows = search_db(cursor, qry)
-        db_entries =  rows[0][0]
-        if not rows[0][0]: continue
+        db_entries  = 0
+        for table in tables:
+            qry = "select count(1) from " + table
+            rows = search_db(cursor, qry)
+            db_entries +=  rows[0][0]
+        if db_entries==0: continue
 
         ############################
         short_barcodes = []
