@@ -52,7 +52,7 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
 
     fig, ax1 = plt.subplots(1, 1)
     ax1.set_title (title, fontsize=24)
-    ax1.set_xscale("log", nonposx='clip')
+    #ax1.set_xscale("log", nonposx='clip')
     ax1.set_xlabel('genes, listed by their rank', fontsize = 20)
     ax1.set_ylabel('% of patients', fontsize = 24)
     if special:
@@ -76,7 +76,7 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
         x = xfudge
         y = yfudge
 
-    ylim = min(max(y),35)
+    ylim = min(max(y),10)
     xlim = len(sorted_genes)
     if special:
         bbox_props = dict(boxstyle="round", fc="w", ec="0.5", alpha=0.8)
