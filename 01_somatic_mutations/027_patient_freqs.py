@@ -76,7 +76,7 @@ def  live_plot ( title, freq_gene, sorted_genes, filename):
         x = xfudge
         y = yfudge
 
-    ylim = min(max(y),10)
+    ylim = min(max(y),2)
     xlim = len(sorted_genes)
     if special:
         bbox_props = dict(boxstyle="round", fc="w", ec="0.5", alpha=0.8)
