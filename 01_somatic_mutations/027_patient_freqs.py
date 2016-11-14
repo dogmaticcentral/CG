@@ -241,6 +241,11 @@ def main():
     for gene in ['TP53', 'APC', 'RPL5', 'RPL11',  'RPL6', 'RPL23', ]:
         msg, range = rank_message (gene, pancan_freq)
         print msg
+
+    for gene in sorted_genes[:10]:
+        msg, range = rank_message (gene, pancan_freq)
+        print msg
+
     cursor.close()
     db.close()
 
