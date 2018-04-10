@@ -25,6 +25,7 @@ struct
 
 # Logs and databases #
 ######################
+wget-log*
 *.log
 *.sql
 *.sqlite
