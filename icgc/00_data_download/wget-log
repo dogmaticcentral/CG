@@ -1,0 +1,11 @@
+--2018-04-10 13:08:02--  https://dcc.icgc.org/api/v1/download/info?dir=releases
+Resolving dcc.icgc.org (dcc.icgc.org)... 206.108.121.75
+Connecting to dcc.icgc.org (dcc.icgc.org)|206.108.121.75|:443... connected.
+HTTP request sent, awaiting response... 200 
+Length: unspecified [application/json]
+Saving to: ‘info?dir=releases’
+
+info?dir=releases                              [<=>                                                                                      ]       0  --.-KB/s               info?dir=releases                              [ <=>                                                                                     ]   1.13K  --.-KB/s    in 0s      
+
+2018-04-10 13:08:03 (201 MB/s) - ‘info?dir=releases’ saved [1161]
+

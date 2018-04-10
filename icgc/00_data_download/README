@@ -1,0 +1,13 @@
+
+generate token (upper right corner, after you are logged in) for portal download
+
+data releases https://dcc.icgc.org/releases
+
+https://dcc.icgc.org/releases/release_26/Projects/
+
+https://dcc.icgc.org/api/v1/download?fn=/release_26/Projects/WT-US/copy_number_somatic_mutation.WT-US.tsv.gz
+
+wget -O copy_number_somatic_mutation.WT-US.tsv.gz https://dcc.icgc.org/api/v1/download?fn=/release_26/Projects/WT-US/copy_number_somatic_mutation.WT-US.tsv.gz
+
+=========================================================
+http://docs.icgc.org/portal/api-endpoints/
