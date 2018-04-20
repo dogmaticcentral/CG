@@ -31,9 +31,10 @@ def parse_json(release):
 
 	return of_interest
 
-
 #########################################
 def main():
+	icgc_token = os.environ['ICGC_TOKEN']
+
 	data_home_local = "/data/icgc"
 	release   = "26"
 	base_url  = "https://dcc.icgc.org/api/v1/download?fn="
@@ -45,15 +46,16 @@ def main():
 		if not os.path.exists(target_dir): os.makedirs(target_dir)
 		for fnm_full_path in fnms:
 			if not 'somatic' in fnm_full_path: continue
+			# not sure how to download the listing of controlled files
+			# I am going with the assumption that for every 'open' file
+			# there is a 'controlled' version
+			fnm_full_path = fnm_full_path.replace('open','controlled')
 			fnm = fnm_full_path.split('/')[-1]
 			print "\t", fnm
 			if fnm_full_path[0]=='/': fnm_full_path=fnm_full_path[1:]
-			cmd = "wget {}/{} -O {}/{} ".format(base_url, fnm_full_path, target_dir, fnm)
+			cmd = "curl -L '{}/{}' -o {}/{} --header 'authorization: Bearer {}' ".\
+				format(base_url, fnm_full_path, target_dir, fnm, icgc_token)
 			subprocess.call(["bash", "-c", cmd], stdout=DEVNULL, stderr=DEVNULL)
-
-
-
-
 
 #########################################
 if __name__ == '__main__':
