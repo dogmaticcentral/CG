@@ -1,5 +1,10 @@
 #! /usr/bin/python
 
+
+# to further clasify tumor subtypes, the following files might be useful:
+# specimen*tsv contains tumor histologica type code, the ontology can be found here: http://codes.iarc.fr/codegroup/2
+# donor*tsv contains donor diagnosis icd10, the ontology can be found here: http://apps.who.int/classifications/icd10/browse/2016/en
+
 import json
 import os, subprocess
 DEVNULL = open(os.devnull, 'wb')
@@ -52,6 +57,7 @@ def main():
 			fnm_full_path = fnm_full_path.replace('open','controlled')
 			fnm = fnm_full_path.split('/')[-1]
 			print "\t", fnm
+			if os.path.exists("/".join([target_dir, fnm])): continue
 			if fnm_full_path[0]=='/': fnm_full_path=fnm_full_path[1:]
 			cmd = "curl -L '{}/{}' -o {}/{} --header 'authorization: Bearer {}' ".\
 				format(base_url, fnm_full_path, target_dir, fnm, icgc_token)
