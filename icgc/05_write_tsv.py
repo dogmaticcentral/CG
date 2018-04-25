@@ -42,7 +42,7 @@ def appendopen(original_tsv_file):
 def main():
 	data_home_local = "/data/icgc"
 	tsv_files = get_simple_somatic_tsv_files(data_home_local)
-	names = "icgc_donor_id,icgc_specimen_id,icgc_sample_id,submitted_sample_id,chromosome,chromosome_start," \
+	names = "icgc_mutation_id,icgc_donor_id,icgc_specimen_id,icgc_sample_id,submitted_sample_id,chromosome,chromosome_start," \
 	"chromosome_end,chromosome_strand,assembly_version,mutation_type,reference_genome_allele,control_genotype,tumour_genotype,"\
 	"mutated_from_allele,mutated_to_allele,consequence_type,aa_mutation,cds_mutation," \
 	"gene_affected,transcript_affected".split(",")

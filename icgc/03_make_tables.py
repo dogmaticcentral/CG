@@ -15,10 +15,13 @@ def make_mutations_table(cursor, db_name, mutations_table):
 
 	switch_to_db (cursor, db_name)
 
+	qry = "drop table " + mutations_table
+	search_db(cursor, qry, verbose=True)
+
 	qry = ""
 	qry += "  CREATE TABLE  %s (" % mutations_table
 	qry += "     id INT NOT NULL, "
-
+	qry += "  	 icgc_mutation_id VARCHAR (20) NOT NULL, "
 	qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
 	qry += "     icgc_specimen_id VARCHAR (20), "
 	qry += "     icgc_sample_id VARCHAR (20), "
