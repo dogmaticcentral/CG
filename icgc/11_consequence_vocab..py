@@ -3,12 +3,9 @@
 import MySQLdb
 from icgc_utils.mysql   import  *
 
-
 #########################################
 #########################################
 def main():
-
-
 
 	homedir = "/data/icgc"
 	cancer_types = []
@@ -18,18 +15,24 @@ def main():
 	db     = connect_to_mysql()
 	cursor = db.cursor()
 
-	db_name =  "icgc"
-	switch_to_db(cursor, db_name)
+	switch_to_db(cursor,"icgc")
+	cons_vocab = set([])
 	for ct in cancer_types:
-		mutations_table = ct + "_simple_somatic"
-		qry = "load data local infile '%s.tsv' into table %s" % (mutations_table,mutations_table)
-		search_db(cursor,qry,verbose=True)
+		mutations_table = ct + "_simple_somatic_temp"
+
+		qry  = "select distinct consequence_type from %s" % mutations_table
+		csq = [ret[0] for ret in search_db(cursor,qry)]
+		cons_vocab = cons_vocab.union(csq)
+
+	for kwd in cons_vocab:
+		print kwd
 
 	cursor.close()
 	db.close()
 
-
 #########################################
 if __name__ == '__main__':
 	main()
+
+
 

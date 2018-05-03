@@ -27,9 +27,10 @@ def get_simple_somatic_tsv_files(data_home_local):
 
 #########################################
 def appendopen(original_tsv_file):
+	if not os.path.exists("tsvs"): os.mkdir("tsvs")
 	fields = original_tsv_file.split("/")
 	cancer_type  = fields[3]
-	outname = cancer_type+"_simple_somatic.tsv"
+	outname = "tsvs/"+cancer_type+"_simple_somatic_temp.tsv"
 	if os.path.exists(outname):
 		last_id = int(subprocess.Popen(["bash", "-c", "tail -n1 %s"%outname], stdin=PIPE, stdout=PIPE).communicate()[0].split("\t")[0])
 	else:
@@ -45,10 +46,10 @@ def main():
 	names = "icgc_mutation_id,icgc_donor_id,icgc_specimen_id,icgc_sample_id,submitted_sample_id,chromosome,chromosome_start," \
 	"chromosome_end,chromosome_strand,assembly_version,mutation_type,reference_genome_allele,control_genotype,tumour_genotype,"\
 	"mutated_from_allele,mutated_to_allele,consequence_type,aa_mutation,cds_mutation," \
-	"gene_affected,transcript_affected".split(",")
+	"gene_affected,transcript_affected,total_read_count,mutant_allele_read_count".split(",")
 
 	outfiles = []
-	max_allele_length = 0
+
 	for tf in tsv_files:
 		print tf
 		infile  = open(tf,'r')
@@ -56,6 +57,7 @@ def main():
 		if not outfile in outfiles: outfiles.append(outfile)
 		headers = None
 		id = last_id
+
 		for line in infile:
 			if not headers:
 				headers = line.rstrip('\n').split('\t')
@@ -65,11 +67,16 @@ def main():
 				id += 1
 				new_fields = [str(id)]
 				# some fixing
-				field_named['mutation_type'] = field_named['mutation_type'].split(" ")[0]
+				field_named['mutation_type']    = field_named['mutation_type'].split(" ")[0]
 				field_named['consequence_type'] = field_named['consequence_type'].replace("_variant","").replace("_gene","")
+				for name in ["total_read_count","mutant_allele_read_count"]:
+					tmp = field_named[name].replace(" ","")
+					if len(tmp)==0: tmp = "\N"
+					field_named[name] = tmp
 				for name in names:
 					new_fields.append(field_named[name])
 				outfile.write("\t".join(new_fields) + "\n")
+
 		infile.close()
 		outfile.close()
 

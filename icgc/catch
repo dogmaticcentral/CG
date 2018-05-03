@@ -1,0 +1,778 @@
+=================================
+ALL_simple_somatic
+	 donors:  27
+	DO5
+		SP873 Primary tumour - blood derived (peripheral blood)
+		total mutations:  2
+	DO22
+		SP21 Primary tumour - blood derived (peripheral blood)
+		total mutations:  2
+	DO50
+		SP49 Primary tumour - blood derived (peripheral blood)
+		total mutations:  1
+	DO48
+		SP47 Primary tumour - blood derived (bone marrow)
+		total mutations:  2
+	DO74
+		SP73 Primary tumour - blood derived (peripheral blood)
+		total mutations:  19
+		MU40448236 OR6B1 missense; 
+		MU40448230 SMARCA4 splice; 
+		MU40448234 CTTNBP2 splice; 
+		MU40448229 DNAH9 missense; 
+		MU4433984 DNAH7 missense; 
+		MU40448225 JAK1 missense; 
+		MU40448228 EMP2 missense; 
+		MU40448237 AEBP1 missense; 
+		MU95554 TFEC splice; 
+		MU40448231 DOT1L missense; 
+		MU40448226 GRID1 missense; 
+		MU12519 KRAS missense; 
+		MU1821662 SMC1A missense; 
+		MU40448224 TIPRL missense; 
+		MU40448233 STXBP5 start; 
+		MU153546 OR5M8 missense; 
+	DO76
+		SP428 Primary tumour - blood derived (bone marrow)
+		total mutations:  1
+	DO49384
+		SP108493 Recurrent tumour - blood derived (bone marrow)
+		SP108492 Primary tumour - blood derived (peripheral blood)
+		total mutations:  414
+		in all specimens:  13
+		in  SP108493(R): 414
+		in  SP108492(P): 13
+		MU40447940 FAM71D splice; 
+		MU40447847 FLG missense; 
+		MU40447845 NBPF15 missense; 
+		MU40448169 RAD21 missense; 
+		MU40448071 CLASP2 missense; 
+		MU40448054 DUSP18 missense; 
+		MU40447952 MARF1 missense; 
+		MU40447932 VWF splice; 
+		MU40448038 CNNM4 missense; 
+	DO49380
+		SP108408 Recurrent tumour - blood derived (bone marrow)
+		SP108407 Primary tumour - blood derived (peripheral blood)
+		total mutations:  257
+		in all specimens:  8
+		in  SP108408(R): 257
+		in  SP108407(P): 8
+		MU40447773 DNAJC7 missense; 
+		MU30748 TP53 missense; 
+		MU40447759 OR5M11 missense; 
+		MU40447780 ZBTB46 missense; 
+	DO49357
+		SP108375 Recurrent tumour - blood derived (bone marrow)
+		total mutations:  91
+		MU40447746 BORA splice; 
+		MU40448299 CDC37L1 missense; 
+		MU40448273 OR2AG1 missense; 
+		MU40448295 FAM71B missense; 
+		MU40448282 GGA2 missense; 
+		MU40447744 ZP1 frame; 
+		MU40448291 UMODL1 missense; 
+		MU4568157 ZNF880 missense; 
+		MU40447742 MID1 missense; 
+		MU40448286 KIF19 missense; 
+		MU40447748 HIGD1C frame; 
+		MU40448301 KANK1 missense; start; 
+		MU40447728 IL12RB2 missense; 
+		MU40448262 C10orf82 missense; 
+		MU40448266 FDXACB1 missense; 
+		MU40448277 DNAJC14 missense; 
+		MU9234280 DSE missense; 
+		MU40448264 ATM missense; 
+		MU40448260 STIL missense; 
+		MU40448293 PCYT1A missense; 
+		MU40447733 EIF4A1 missense; 
+		MU127727 TTYH2 missense; 
+		MU40447735 ARHGEF38 missense; 
+		MU40448271 ARFGAP2 missense; 
+		MU40447737 TMEM229A missense; 
+		MU40448296 DNAH11 missense; 
+		MU40447747 POM121L2 frame; 
+		MU40448290 MYH14 missense; 
+		MU40447732 SUPT6H missense; 
+		MU40448298 CCDC183 missense; 
+		MU40448281 AKAP13 missense; 
+		MU40447729 RXFP2 missense; 
+		MU127742 TTYH2 missense; 
+		MU4539866 ZNF257 missense; 
+		MU40448274 TYR missense; 
+		MU40448289 PHLPP1 missense; 
+		MU127704 OR8A1 missense; 
+		MU40447745 STK33 frame; 
+		MU122679 NRAS missense; 
+		MU40448294 MST1R missense; 
+		MU40448269 FEZ1 missense; 
+		MU40447730 DLGAP5 missense; 
+		MU13429039 SPEG missense; 
+		MU40448276 VDR missense; 
+		MU40447750 TCF3 frame; 
+		MU40448270 IFITM2 missense; 
+		MU11583092 ATP13A5 missense; 
+		MU40447743 ABCC2 frame; 
+		MU40448302 TCF3 frame; 
+		MU40447749 RORA frame; 
+		MU40447734 TCF3 missense; 
+		MU40448261 ABCC2 stop; 
+		MU4460238 DHX37 missense; 
+		MU40448265 EXPH5 missense; 
+		MU4614671 TEKT4 missense; 
+	DO49355
+		SP108372 Recurrent tumour - blood derived (bone marrow)
+		total mutations:  5
+		MU40447724 SLC22A24 stop; 
+		MU40447727 IQCF2 missense; 
+		MU40447725 LOXL3 missense; 
+		MU4365258 NRAS missense; 
+	DO49343
+		SP108353 Recurrent tumour - blood derived (bone marrow)
+		total mutations:  38
+		MU71771 NT5C2 missense; 
+		MU40447721 DUSP8 frame; 
+		MU40447723 CCZ1 frame; 
+		MU40447701 NEBL missense; 
+		MU40447712 TFF3 missense; 
+		MU37643 KRAS missense; 
+		MU40447703 QPRT missense; 
+		MU40447705 HSH2D missense; 
+		MU40447697 PTPN14 missense; 
+		MU40447718 KMT2D stop; 
+		MU40447707 BICRA missense; 
+		MU32779493 KRAS missense; 
+		MU40447698 USH2A missense; 
+		MU40447713 SUN2 missense; 
+		MU40447700 FRMD4A missense; 
+		MU40447711 SLC4A11 missense; 
+		MU40447720 LOXL2 frame; 
+		MU40447719 LPIN2 splice; 
+		MU40447715 TNKS missense; 
+		MU23715 GRM1 missense; 
+		MU40448493 FAM83G frame; 
+		MU40447696 PYHIN1 missense; 
+		MU40447722 CNTN6 frame; 
+		MU40447708 POLRMT missense; 
+		MU28833 GOLGA2 frame; 
+		MU40447706 NUMBL missense; 
+	DO49341
+		SP108349 Primary tumour - blood derived (peripheral blood)
+		SP108350 Recurrent tumour - blood derived (bone marrow)
+		total mutations:  21
+		in all specimens:  6
+		in  SP108349(P): 8
+		in  SP108350(R): 19
+		MU40447691 DST missense; 
+		MU40447688 SOAT2 missense; 
+		MU40447690 ENSG00000090920 missense; 
+		MU40447689 KRT25 stop; 
+		MU40447687 WNT10B stop; 
+		MU17538930 KCNH6 missense; 
+	DO49334
+		SP108336 Recurrent tumour - blood derived (bone marrow)
+		total mutations:  31
+		MU40447668 NT5C2 missense; 
+		MU40447686 CDK13 splice; 
+		MU40447396 NT5C2 missense; 
+		MU40447666 KDM1A missense; 
+		MU29165309 PHF6 stop; 
+		MU40447680 PLAT splice; 
+		MU40447684 PDIA2 frame; 
+		MU71771 NT5C2 missense; 
+		MU40447682 ATP11C missense; splice; 
+		MU40448489 ANKS1B missense; 
+		MU40448487 POLE missense; 
+		MU40447677 NSD2 missense; 
+		MU40447667 NT5C2 missense; 
+		MU40447681 STAG2 splice; 
+		MU40447672 ANKS1B missense; 
+		MU40448488 ANKS1B stop; 
+		MU40447669 PANX3 missense; 
+		MU40447676 SETD2 stop; 
+		MU40447674 AXIN1 missense; 
+		MU40447665 OBSCN missense; 
+		MU40448491 PDIA2 frame; 
+		MU40447678 PDS5A missense; 
+		MU40447670 SLCO2B1 missense; 
+		MU40447685 IRF2 frame; 
+	DO49326
+		SP108323 Recurrent tumour - blood derived (bone marrow)
+		total mutations:  181
+		MU40448242 FSHB missense; 
+		MU40447627 NOS3 missense; 
+		MU40447535 IRAK3 missense; 
+		MU40447560 SOX9 missense; 
+		MU40447632 HECW1 missense; 
+		MU40447630 RAPGEF5 missense; 
+		MU40447573 IZUMO1 splice; 
+		MU40447568 RTTN missense; 
+		MU40447586 KIF1A splice; 
+		MU40447580 LYPD6B stop; 
+		MU40447506 CELA2B missense; 
+		MU40447616 FBXO9 missense; 
+		MU40447551 CSPG4 missense; 
+		MU40447605 IDUA missense; 
+		MU40447566 KIAA1328 missense; 
+		MU40447582 TTN missense; 
+		MU40447595 FGF12 missense; 
+		MU40447522 CNTN5 missense; 
+		MU40447564 PIEZO2 missense; 
+		MU40447603 ZNF732 missense; 
+		MU40447553 SV2B missense; splice; 
+		MU40447540 NBEA missense; 
+		MU40447519 A1CF missense; 
+		MU40447649 PHF2 missense; 
+		MU40447597 ZNF620 missense; 
+		MU40447508 TNR splice; 
+		MU4777717 MYO9A missense; 
+		MU40447656 L1CAM missense; 
+		MU40447584 MAP2 missense; 
+		MU4485928 CPA6 stop; 
+		MU40447601 TIGD4 missense; 
+		MU40447629 BZW2 missense; 
+		MU40447654 SASH3 missense; 
+		MU40447647 MPDZ missense; 
+		MU40447663 USP36 frame; 
+		MU40447517 KIAA1217 missense; 
+		MU40447557 SLC4A1 missense; 
+		MU40447599 ZNF589 stop; 
+		MU40447524 GRIA4 missense; 
+		MU40447528 FAM111A missense; 
+		MU40447621 CHRM2 missense; 
+		MU30957996 TWIST2 missense; 
+		MU40447618 LAMB1 stop; 
+		MU40447542 MDGA2 missense; 
+		MU40448251 C6 missense; 
+		MU40447575 ZNF534 missense; 
+		MU40447650 ENSG00000087916 missense; 
+		MU40447515 ABCA4 splice; 
+		MU40447577 MLLT1 missense; 
+		MU40447593 TSPEAR missense; 
+		MU31619242 GPR146 missense; 
+		MU40447594 IQCB1 missense; 
+		MU40447516 FGFR2 stop; 
+		MU40447572 CYP2A6 missense; 
+		MU40447600 CNTN3 missense; 
+		MU40448247 WNT9B missense; 
+		MU40447606 SLC4A9 missense; 
+		MU40447648 LCN8 missense; 
+		MU40447558 INCA1 missense; 
+		MU40447576 FUT3 missense; 
+		MU40447620 EXOC4 missense; 
+		MU820588 NRAS missense; 
+		MU40447554 CACNA1H missense; 
+		MU40447581 LY75 missense; 
+		MU40447581 LY75-CD302 missense; 
+		MU40447598 ENSG00000206549 missense; 
+		MU40447613 CHD1 splice; 
+		MU40447549 SLTM missense; 
+		MU40447590 KRTAP24-1 missense; 
+		MU4534560 BTNL3 missense; 
+		MU40447512 TSSK3 missense; 
+		MU40447653 SMARCA1 splice; 
+		MU5890687 FAM189A2 missense; 
+		MU40447596 RUBCN missense; 
+		MU3875202 SORCS3 missense; 
+		MU1294034 TNC missense; 
+		MU40447617 PRSS35 missense; 
+		MU40447631 ADCYAP1R1 missense; 
+		MU40447523 DYNC2H1 missense; 
+		MU1304508 ZNF391 missense; 
+		MU40447662 NAP1L2 missense; 
+		MU40447642 HGSNAT splice; 
+		MU40447563 USP36 missense; 
+		MU40447543 PCNX1 missense; 
+		MU40447619 HYAL4 start; 
+		MU40447567 DLGAP1 missense; 
+		MU40447570 CPAMD8 missense; 
+		MU40447635 PKHD1L1 missense; 
+		MU40447637 SGCZ missense; 
+		MU40447510 RPS6KC1 missense; 
+		MU40447574 FPR2 missense; 
+		MU7026543 PLEKHA4 splice; 
+		MU40447646 ZBTB43 missense; 
+		MU40447552 TMEM266 missense; 
+		MU40447587 PHACTR3 missense; 
+		MU40447583 NT5C1B missense; 
+		MU40447583 NT5C1B-RDH14 missense; 
+		MU1671213 SCML1 missense; 
+		MU40447589 RBM11 missense; 
+		MU40447505 WDR47 missense; 
+		MU40447536 CPSF6 missense; 
+		MU40447541 SLC15A1 splice; 
+		MU40448256 PNLIPRP3 frame; 
+		MU40447608 RXFP3 missense; 
+		MU40447633 ABCB1 stop; 
+		MU1993032 URB1 missense; 
+		MU40447569 ZNF236 start; 
+		MU40447518 PARG missense; 
+	DO49323
+		SP108318 Recurrent tumour - blood derived (bone marrow)
+		total mutations:  31
+		MU31872338 COL5A3 missense; 
+		MU40447480 AGBL4 missense; 
+		MU40447484 PGAP2 missense; 
+		MU40447495 DSCAM missense; 
+		MU40447497 ZFYVE28 missense; 
+		MU40447491 ABCA12 missense; 
+		MU40447499 PCDHB4 missense; 
+		MU40447477 TNNT2 splice; 
+		MU40447503 RP1 missense; 
+		MU40447486 ZNF536 missense; 
+		MU40447498 PCDHA6 missense; 
+		MU40447481 CDHR1 stop; 
+		MU40447500 ENSG00000155130 missense; 
+		MU40447487 DMKN missense; 
+		MU40447492 MLPH missense; 
+		MU40447476 TAS1R2 missense; 
+		MU6320216 SNTB1 missense; 
+		MU40447494 LTN1 missense; 
+		MU68462 KRAS missense; 
+	DO49320
+		SP108313 Recurrent tumour - blood derived (bone marrow)
+		SP108585 Primary tumour - blood derived (peripheral blood)
+		total mutations:  59
+		in all specimens:  14
+		in  SP108313(R): 56
+		in  SP108585(P): 17
+		MU40447467 KDM5C missense; 
+		MU40447449 PRND missense; 
+		MU40447470 DEPDC5 frame; 
+		MU40447454 SPINK5 missense; 
+		MU40447441 KPNB1 missense; 
+		MU40447443 C5AR2 missense; 
+		MU40447450 TRPC3 missense; 
+		MU40447459 FNDC1 missense; 
+		MU40447453 PCDHAC1 missense; 
+		MU40447437 SPSB3 missense; 
+		MU820588 NRAS missense; 
+		MU40447439 GSE1 missense; 
+	DO49309
+		SP108296 Recurrent tumour - blood derived (bone marrow)
+		total mutations:  36
+		MU40447411 ERCC8 missense; 
+		MU1779085 NRAS missense; 
+		MU1792840 PRKD1 stop; 
+		MU40447404 ARHGAP35 missense; 
+		MU40447394 DSTYK stop; 
+		MU40447420 CRLF2 missense; 
+		MU40447417 MUC17 stop; 
+		MU40447406 VIT stop; 
+		MU40447396 NT5C2 missense; 
+		MU40447400 OTOGL missense; 
+		MU40447398 OVCH1 splice; 
+		MU40447419 PRPS1 missense; 
+		MU40448494 FPGS missense; 
+		MU40447416 ADGRF1 missense; 
+		MU1787834 ZBTB5 missense; 
+		MU40447418 ETV1 splice; 
+		MU40447407 SLC5A1 missense; 
+		MU40447423 CPXCR1 frame; 
+		MU40447397 DMBT1 missense; 
+		MU40447409 HEMK1 splice; 
+		MU40447421 RPGR missense; 
+		MU40447401 PSMB5 missense; 
+		MU40447414 ADGB start; 
+		MU40447405 TTC30A stop; 
+		MU40447412 RSPO3 missense; 
+		MU6266727 GLI3 missense; 
+	DO49287
+		SP108259 Recurrent tumour - blood derived (bone marrow)
+		total mutations:  43
+		MU40447304 MSH6 missense; 
+		MU1860922 DBT missense; 
+		MU40447296 CRLF3 splice; 
+		MU40447313 EBF2 missense; 
+		MU40447306 OR11H1 missense; 
+		MU40447315 ADGRD2 missense; 
+		MU1864030 DNAH9 missense; 
+		MU40447308 DNAJC21 missense; splice; 
+		MU40447302 TGFBRAP1 missense; 
+		MU113858 SLC30A5 missense; 
+		MU40447317 ADGRE5 splice; 
+		MU40447285 ZNF215 missense; 
+		MU40448303 RRAGB missense; 
+		MU40447292 FBN1 missense; 
+		MU40447305 VRK2 missense; 
+		MU40447303 TRIP12 missense; 
+		MU40448304 ADGRE5 frame; 
+		MU1860602 ALG13 missense; 
+		MU820588 NRAS missense; 
+		MU5274472 CREBBP missense; 
+		MU40447286 GOLGA3 splice; 
+		MU40447316 RRAGB missense; 
+		MU40447307 SLC12A2 missense; 
+		MU40447295 ERAL1 splice; 
+		MU71771 NT5C2 missense; 
+		MU40447293 ITPRIPL2 missense; 
+		MU40447312 BBS9 splice; 
+		MU40447284 NT5C2 missense; 
+		MU40447299 ASXL3 missense; 
+	DO49292
+		SP108268 Primary tumour - blood derived (peripheral blood)
+		SP108269 Recurrent tumour - blood derived (bone marrow)
+		total mutations:  88
+		in all specimens:  32
+		in  SP108268(P): 56
+		in  SP108269(R): 64
+		MU40447337 BEST2 splice; 
+		MU40447346 FAM19A4 missense; 
+		MU852849 CACNA1E missense; 
+		MU40447339 ZC3H4 missense; 
+		MU40447344 ZNF334 missense; 
+		MU40447326 TRPM1 stop; 
+		MU40447335 CEP112 missense; 
+		MU4405777 PAPPA2 missense; 
+		MU40447330 GRIN2A splice; 
+		MU4476813 ANO4 missense; 
+		MU40447352 AOC1 missense; 
+		MU40447361 PAX5 missense; 
+	DO162
+		SP161 Primary tumour - blood derived (peripheral blood)
+		total mutations:  6
+	DO282
+		SP280 Primary tumour - blood derived (peripheral blood)
+		total mutations:  1
+	DO228
+		SP226 Primary tumour - blood derived (bone marrow)
+		total mutations:  1
+	DO210
+		SP208 Primary tumour - blood derived (peripheral blood)
+		total mutations:  1
+	DO200
+		SP400 Primary tumour - blood derived (peripheral blood)
+		total mutations:  1
+	DO208
+		SP883 Primary tumour - blood derived (peripheral blood)
+		total mutations:  1
+	DO376
+		SP374 Primary tumour - blood derived (peripheral blood)
+		total mutations:  1
+	DO378
+		SP376 Primary tumour - blood derived (bone marrow)
+		total mutations:  3
+AOC1 1  *  1  *  0  * 
+PARG 1  *  0  *  1  * 
+PGAP2 1  *  0  *  1  * 
+CRLF2 1  *  0  *  1  * 
+CRLF3 1  *  0  *  1  * 
+USH2A 1  *  0  *  1  * 
+KDM1A 1  *  0  *  1  * 
+RPGR 1  *  0  *  1  * 
+CTTNBP2 1  *  0  *  1  * 
+IQCB1 1  *  0  *  1  * 
+RUBCN 1  *  0  *  1  * 
+CELA2B 1  *  0  *  1  * 
+C5AR2 1  *  1  *  0  * 
+RAPGEF5 1  *  0  *  1  * 
+FAM71D 1  *  1  *  0  * 
+FAM71B 1  *  0  *  1  * 
+ENSG00000206549 1  *  0  *  1  * 
+L1CAM 1  *  0  *  1  * 
+SLC30A5 1  *  0  *  1  * 
+IQCF2 1  *  0  *  1  * 
+LTN1 1  *  0  *  1  * 
+BORA 1  *  0  *  1  * 
+DNAH11 1  *  0  *  1  * 
+CACNA1H 1  *  0  *  1  * 
+SETD2 1  *  0  *  1  * 
+POM121L2 1  *  0  *  1  * 
+TTC30A 1  *  0  *  1  * 
+ZP1 1  *  0  *  1  * 
+WNT10B 1  *  1  *  0  * 
+IL12RB2 1  *  0  *  1  * 
+CACNA1E 1  *  1  *  0  * 
+RORA 1  *  0  *  1  * 
+NT5C1B-RDH14 1  *  0  *  1  * 
+GSE1 1  *  1  *  0  * 
+TSPEAR 1  *  0  *  1  * 
+GOLGA2 1  *  0  *  1  * 
+DLGAP1 1  *  0  *  1  * 
+DLGAP5 1  *  0  *  1  * 
+PRND 1  *  1  *  0  * 
+IRAK3 1  *  0  *  1  * 
+URB1 1  *  0  *  1  * 
+SV2B 1  *  0  *  1  * 
+NT5C1B 1  *  0  *  1  * 
+C10orf82 1  *  0  *  1  * 
+IFITM2 1  *  0  *  1  * 
+FAM19A4 1  *  1  *  0  * 
+ATM 1  *  0  *  1  * 
+PLAT 1  *  0  *  1  * 
+VRK2 1  *  0  *  1  * 
+SLC12A2 1  *  0  *  1  * 
+FPR2 1  *  0  *  1  * 
+ZBTB46 1  *  1  *  0  * 
+KRT25 1  *  1  *  0  * 
+UMODL1 1  *  0  *  1  * 
+TMEM229A 1  *  0  *  1  * 
+CEP112 1  *  1  *  0  * 
+MUC17 1  *  0  *  1  * 
+SLC15A1 1  *  0  *  1  * 
+FGFR2 1  *  0  *  1  * 
+PCYT1A 1  *  0  *  1  * 
+DYNC2H1 1  *  0  *  1  * 
+CSPG4 1  *  0  *  1  * 
+IZUMO1 1  *  0  *  1  * 
+SLTM 1  *  0  *  1  * 
+LYPD6B 1  *  0  *  1  * 
+MST1R 1  *  0  *  1  * 
+FDXACB1 1  *  0  *  1  * 
+PTPN14 1  *  0  *  1  * 
+PLEKHA4 1  *  0  *  1  * 
+VIT 1  *  0  *  1  * 
+SPEG 1  *  0  *  1  * 
+TAS1R2 1  *  0  *  1  * 
+DBT 1  *  0  *  1  * 
+TYR 1  *  0  *  1  * 
+AKAP13 1  *  0  *  1  * 
+TNKS 1  *  0  *  1  * 
+RXFP2 1  *  0  *  1  * 
+ZFYVE28 1  *  0  *  1  * 
+ENSG00000087916 1  *  0  *  1  * 
+DSTYK 1  *  0  *  1  * 
+PDS5A 1  *  0  *  1  * 
+GRIA4 1  *  0  *  1  * 
+SLC4A11 1  *  0  *  1  * 
+CNTN3 1  *  0  *  1  * 
+CPXCR1 1  *  0  *  1  * 
+ARFGAP2 1  *  0  *  1  * 
+OVCH1 1  *  0  *  1  * 
+MDGA2 1  *  0  *  1  * 
+CNTN5 1  *  0  *  1  * 
+LAMB1 1  *  0  *  1  * 
+LY75-CD302 1  *  0  *  1  * 
+HYAL4 1  *  0  *  1  * 
+OR5M11 1  *  1  *  0  * 
+PKHD1L1 1  *  0  *  1  * 
+DHX37 1  *  0  *  1  * 
+CHD1 1  *  0  *  1  * 
+MPDZ 1  *  0  *  1  * 
+STIL 1  *  0  *  1  * 
+TNNT2 1  *  0  *  1  * 
+NEBL 1  *  0  *  1  * 
+WDR47 1  *  0  *  1  * 
+ASXL3 1  *  0  *  1  * 
+TNR 1  *  0  *  1  * 
+CPA6 1  *  0  *  1  * 
+TEKT4 1  *  0  *  1  * 
+PCDHB4 1  *  0  *  1  * 
+TMEM266 1  *  0  *  1  * 
+DMBT1 1  *  0  *  1  * 
+NBEA 1  *  0  *  1  * 
+PCDHAC1 1  *  1  *  0  * 
+TIPRL 1  *  0  *  1  * 
+TTN 1  *  0  *  1  * 
+PRSS35 1  *  0  *  1  * 
+JAK1 1  *  0  *  1  * 
+TRPM1 1  *  1  *  0  * 
+OR2AG1 1  *  0  *  1  * 
+TIGD4 1  *  0  *  1  * 
+SMC1A 1  *  0  *  1  * 
+TFEC 1  *  0  *  1  * 
+QPRT 1  *  0  *  1  * 
+STAG2 1  *  0  *  1  * 
+DST 1  *  1  *  0  * 
+BICRA 1  *  0  *  1  * 
+GPR146 1  *  0  *  1  * 
+ARHGEF38 1  *  0  *  1  * 
+PAX5 1  *  1  *  0  * 
+RAD21 1  *  1  *  0  * 
+ZNF589 1  *  0  *  1  * 
+BTNL3 1  *  0  *  1  * 
+DSE 1  *  0  *  1  * 
+RTTN 1  *  0  *  1  * 
+ETV1 1  *  0  *  1  * 
+IRF2 1  *  0  *  1  * 
+ABCA12 1  *  0  *  1  * 
+KCNH6 1  *  1  *  0  * 
+TP53 1  *  1  *  0  * 
+DNAH7 1  *  0  *  1  * 
+KRTAP24-1 1  *  0  *  1  * 
+CDHR1 1  *  0  *  1  * 
+PHLPP1 1  *  0  *  1  * 
+DNAJC7 1  *  1  *  0  * 
+ZC3H4 1  *  1  *  0  * 
+LY75 1  *  0  *  1  * 
+STK33 1  *  0  *  1  * 
+HECW1 1  *  0  *  1  * 
+SLCO2B1 1  *  0  *  1  * 
+PHF6 1  *  0  *  1  * 
+BEST2 1  *  1  *  0  * 
+VWF 1  *  1  *  0  * 
+KDM5C 1  *  1  *  0  * 
+EIF4A1 1  *  0  *  1  * 
+RXFP3 1  *  0  *  1  * 
+FLG 1  *  1  *  0  * 
+CYP2A6 1  *  0  *  1  * 
+SOAT2 1  *  1  *  0  * 
+ZNF215 1  *  0  *  1  * 
+ZNF334 1  *  1  *  0  * 
+AGBL4 1  *  0  *  1  * 
+MYH14 1  *  0  *  1  * 
+ADGRF1 1  *  0  *  1  * 
+ZNF236 1  *  0  *  1  * 
+SORCS3 1  *  0  *  1  * 
+FNDC1 1  *  1  *  0  * 
+ZNF257 1  *  0  *  1  * 
+TRPC3 1  *  1  *  0  * 
+POLE 1  *  0  *  1  * 
+VDR 1  *  0  *  1  * 
+SLC4A1 1  *  0  *  1  * 
+HGSNAT 1  *  0  *  1  * 
+SPSB3 1  *  1  *  0  * 
+FBXO9 1  *  0  *  1  * 
+CCDC183 1  *  0  *  1  * 
+PANX3 1  *  0  *  1  * 
+SLC4A9 1  *  0  *  1  * 
+KIF19 1  *  0  *  1  * 
+ZBTB43 1  *  0  *  1  * 
+ZNF534 1  *  0  *  1  * 
+ADGB 1  *  0  *  1  * 
+ZNF536 1  *  0  *  1  * 
+RP1 1  *  0  *  1  * 
+RSPO3 1  *  0  *  1  * 
+ZNF620 1  *  0  *  1  * 
+SLC22A24 1  *  0  *  1  * 
+ANO4 1  *  1  *  0  * 
+RBM11 1  *  0  *  1  * 
+GOLGA3 1  *  0  *  1  * 
+DUSP8 1  *  0  *  1  * 
+DNAJC14 1  *  0  *  1  * 
+KIF1A 1  *  0  *  1  * 
+CCZ1 1  *  0  *  1  * 
+OR5M8 1  *  0  *  1  * 
+DOT1L 1  *  0  *  1  * 
+C6 1  *  0  *  1  * 
+SGCZ 1  *  0  *  1  * 
+DMKN 1  *  0  *  1  * 
+GRID1 1  *  0  *  1  * 
+TSSK3 1  *  0  *  1  * 
+PHACTR3 1  *  0  *  1  * 
+KIAA1328 1  *  0  *  1  * 
+ENSG00000155130 1  *  0  *  1  * 
+ADGRD2 1  *  0  *  1  * 
+PYHIN1 1  *  0  *  1  * 
+COL5A3 1  *  0  *  1  * 
+OR11H1 1  *  0  *  1  * 
+PCNX1 1  *  0  *  1  * 
+EXPH5 1  *  0  *  1  * 
+FGF12 1  *  0  *  1  * 
+SUPT6H 1  *  0  *  1  * 
+EBF2 1  *  0  *  1  * 
+ALG13 1  *  0  *  1  * 
+TGFBRAP1 1  *  0  *  1  * 
+ZNF732 1  *  0  *  1  * 
+FRMD4A 1  *  0  *  1  * 
+CREBBP 1  *  0  *  1  * 
+ZNF880 1  *  0  *  1  * 
+CNNM4 1  *  1  *  0  * 
+IDUA 1  *  0  *  1  * 
+PAPPA2 1  *  1  *  0  * 
+RPS6KC1 1  *  0  *  1  * 
+GRM1 1  *  0  *  1  * 
+ABCA4 1  *  0  *  1  * 
+EMP2 1  *  0  *  1  * 
+MYO9A 1  *  0  *  1  * 
+BZW2 1  *  0  *  1  * 
+AEBP1 1  *  0  *  1  * 
+PSMB5 1  *  0  *  1  * 
+KIAA1217 1  *  0  *  1  * 
+PRKD1 1  *  0  *  1  * 
+OBSCN 1  *  0  *  1  * 
+MARF1 1  *  1  *  0  * 
+SNTB1 1  *  0  *  1  * 
+CPAMD8 1  *  0  *  1  * 
+LCN8 1  *  0  *  1  * 
+MSH6 1  *  0  *  1  * 
+TFF3 1  *  0  *  1  * 
+MAP2 1  *  0  *  1  * 
+SLC5A1 1  *  0  *  1  * 
+SOX9 1  *  0  *  1  * 
+ATP11C 1  *  0  *  1  * 
+CPSF6 1  *  0  *  1  * 
+SMARCA1 1  *  0  *  1  * 
+HSH2D 1  *  0  *  1  * 
+ADCYAP1R1 1  *  0  *  1  * 
+SMARCA4 1  *  0  *  1  * 
+OR6B1 1  *  0  *  1  * 
+ERAL1 1  *  0  *  1  * 
+MID1 1  *  0  *  1  * 
+CDC37L1 1  *  0  *  1  * 
+LOXL2 1  *  0  *  1  * 
+LOXL3 1  *  0  *  1  * 
+LPIN2 1  *  0  *  1  * 
+AXIN1 1  *  0  *  1  * 
+FSHB 1  *  0  *  1  * 
+ITPRIPL2 1  *  0  *  1  * 
+CDK13 1  *  0  *  1  * 
+NAP1L2 1  *  0  *  1  * 
+TWIST2 1  *  0  *  1  * 
+ATP13A5 1  *  0  *  1  * 
+MLLT1 1  *  0  *  1  * 
+HIGD1C 1  *  0  *  1  * 
+FAM189A2 1  *  0  *  1  * 
+DSCAM 1  *  0  *  1  * 
+GLI3 1  *  0  *  1  * 
+ABCB1 1  *  0  *  1  * 
+GRIN2A 1  *  1  *  0  * 
+PNLIPRP3 1  *  0  *  1  * 
+OR8A1 1  *  0  *  1  * 
+STXBP5 1  *  0  *  1  * 
+SPINK5 1  *  1  *  0  * 
+HEMK1 1  *  0  *  1  * 
+NUMBL 1  *  0  *  1  * 
+ENSG00000090920 1  *  1  *  0  * 
+NOS3 1  *  0  *  1  * 
+CLASP2 1  *  1  *  0  * 
+ZBTB5 1  *  0  *  1  * 
+KMT2D 1  *  0  *  1  * 
+OTOGL 1  *  0  *  1  * 
+PIEZO2 1  *  0  *  1  * 
+FAM83G 1  *  0  *  1  * 
+KPNB1 1  *  1  *  0  * 
+CHRM2 1  *  0  *  1  * 
+DNAJC21 1  *  0  *  1  * 
+FBN1 1  *  0  *  1  * 
+POLRMT 1  *  0  *  1  * 
+NBPF15 1  *  1  *  0  * 
+ARHGAP35 1  *  0  *  1  * 
+FPGS 1  *  0  *  1  * 
+DUSP18 1  *  1  *  0  * 
+TNC 1  *  0  *  1  * 
+TRIP12 1  *  0  *  1  * 
+SCML1 1  *  0  *  1  * 
+SASH3 1  *  0  *  1  * 
+BBS9 1  *  0  *  1  * 
+ERCC8 1  *  0  *  1  * 
+NSD2 1  *  0  *  1  * 
+PCDHA6 1  *  0  *  1  * 
+EXOC4 1  *  0  *  1  * 
+FEZ1 1  *  0  *  1  * 
+PHF2 1  *  0  *  1  * 
+PRPS1 1  *  0  *  1  * 
+A1CF 1  *  0  *  1  * 
+SUN2 1  *  0  *  1  * 
+CNTN6 1  *  0  *  1  * 
+INCA1 1  *  0  *  1  * 
+FUT3 1  *  0  *  1  * 
+WNT9B 1  *  0  *  1  * 
+DEPDC5 1  *  1  *  0  * 
+KANK1 1  *  0  *  1  * 
+ZNF391 1  *  0  *  1  * 
+GGA2 1  *  0  *  1  * 
+FAM111A 1  *  0  *  1  * 
+MLPH 1  *  0  *  1  * 
+TTYH2 2  *  0  *  2  * 
+USP36 2  *  0  *  2  * 
+PDIA2 2  *  0  *  2  * 
+RRAGB 2  *  0  *  2  * 
+DNAH9 2  *  0  *  2  * 
+ADGRE5 2  *  0  *  2  * 
+ABCC2 2  *  0  *  2  * 
+TCF3 3  *  0  *  3  * 
+ANKS1B 3  *  0  *  3  * 
+KRAS 4  *  0  *  4  * 
+NRAS 6  *  1  *  5  * 
+NT5C2 8  *  0  *  8  * 

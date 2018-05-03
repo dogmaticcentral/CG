@@ -29,6 +29,8 @@ wget-log*
 *.log
 *.sql
 *.sqlite
+*.tsv
+*.csv
 *~
 *.fa
 *.afa
@@ -43,6 +45,7 @@ old/
 *blah*
 coapp_tables/
 output/
+tsvs/
 
 # OS generated files #
 ######################

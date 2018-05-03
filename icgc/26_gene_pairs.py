@@ -1,7 +1,6 @@
 #! /usr/bin/python
 
 
-import MySQLdb
 from icgc_utils.mysql   import  *
 #########################################
 def get_canonical_transcript_ids(cursor, ensembl_gene_ids):

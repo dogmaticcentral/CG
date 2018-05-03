@@ -18,6 +18,7 @@ def make_mutations_table(cursor, db_name, mutations_table):
 	qry = "drop table " + mutations_table
 	search_db(cursor, qry, verbose=True)
 
+
 	qry = ""
 	qry += "  CREATE TABLE  %s (" % mutations_table
 	qry += "     id INT NOT NULL, "
@@ -48,6 +49,8 @@ def make_mutations_table(cursor, db_name, mutations_table):
 	# it looks like these are always ENS identifiers - nice
 	qry += "     gene_affected  VARCHAR (20), "
 	qry += "     transcript_affected  VARCHAR (20), "
+	qry += "     total_read_count INT, "
+	qry += "     mutant_allele_read_count INT, "
 
 
 	qry += "	 PRIMARY KEY (id) "
@@ -57,11 +60,62 @@ def make_mutations_table(cursor, db_name, mutations_table):
 	print qry
 	print rows
 
+#########################################
+# icgc_donor_id,submitted_donor_id,donor_sex,donor_diagnosis_icd10
+def make_donors_table(cursor, db_name, donor_table):
+
+	switch_to_db (cursor, db_name)
+
+	qry = "drop table " + donor_table
+	search_db(cursor, qry, verbose=True)
+
+
+	qry = ""
+	qry += "  CREATE TABLE  %s (" % donor_table
+	qry += "     id INT NOT NULL, "
+	qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
+	qry += "     submitted_donor_id VARCHAR (50) NOT NULL, "
+	qry += "	 donor_sex VARCHAR (10), "
+	qry += "	 donor_diagnosis_icd10  VARCHAR (20), "
+
+	qry += "	 PRIMARY KEY (id) "
+	qry += ") ENGINE=MyISAM"
+
+	rows = search_db(cursor, qry)
+	print qry
+	print rows
+
+
+#########################################
+# icgc_specimen_id, icgc_donor_id, specimen_type, tumour_histological_type
+def make_specimen_table(cursor, db_name, specimen_table):
+
+	switch_to_db (cursor, db_name)
+
+	qry = "drop table " + specimen_table
+	search_db(cursor, qry, verbose=True)
+
+
+	qry = ""
+	qry += "  CREATE TABLE  %s (" % specimen_table
+	qry += "     id INT NOT NULL, "
+	qry += "  	 icgc_specimen_id VARCHAR (20) NOT NULL, "
+	qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
+	qry += "     specimen_type VARCHAR (150), "
+	qry += "     tumour_histological_type VARCHAR (150), "
+	qry += "	 PRIMARY KEY (id) "
+	qry += ") ENGINE=MyISAM"
+
+	rows = search_db(cursor, qry)
+	print qry
+	print rows
 
 
 #########################################
 #########################################
 def main():
+	print "disabled"
+	return
 
 	homedir = "/data/icgc"
 	cancer_types = []
@@ -73,8 +127,13 @@ def main():
 
 	db_name =  "icgc"
 	for ct in cancer_types:
-		mutations_table = ct + "_simple_somatic"
+		mutations_table = ct + "_simple_somatic_temp"
 		make_mutations_table(cursor, db_name, mutations_table)
+		#donors_table = ct + "_donor"
+		#make_donors_table(cursor, db_name, donors_table)
+		#specimen_table = ct + "_specimen"
+		#make_specimen_table(cursor, db_name, specimen_table)
+
 
 	cursor.close()
 	db.close()
@@ -85,7 +144,7 @@ if __name__ == '__main__':
 
 
 '''
-icgc fields
+somatic fields
 1   icgc_mutation_id
 2   icgc_donor_id
 3   project_code
@@ -131,4 +190,61 @@ icgc fields
 43   raw_data_repository
 44   raw_data_accession
 45   initial_data_release_date
+
+donor fields
+1 icgc_donor_id
+2 project_code
+3 study_donor_involved_in
+4 submitted_donor_id
+5 donor_sex
+6 donor_vital_status
+7 disease_status_last_followup
+8 donor_relapse_type
+9 donor_age_at_diagnosis
+10 donor_age_at_enrollment
+11 donor_age_at_last_followup
+12 donor_relapse_interval
+13 donor_diagnosis_icd10
+14 donor_tumour_staging_system_at_diagnosis
+15 donor_tumour_stage_at_diagnosis
+16 donor_tumour_stage_at_diagnosis_supplemental
+17 donor_survival_time
+18 donor_interval_of_last_followup
+19 prior_malignancy
+20 cancer_type_prior_malignancy
+21 cancer_history_first_degree_relative
+
+specimen fields
+1 icgc_specimen_id
+2 project_code
+3 study_specimen_involved_in
+4 submitted_specimen_id
+5 icgc_donor_id
+6 submitted_donor_id
+7 specimen_type
+8 specimen_type_other
+9 specimen_interval
+10 specimen_donor_treatment_type
+11 specimen_donor_treatment_type_other
+12 specimen_processing
+13 specimen_processing_other
+14 specimen_storage
+15 specimen_storage_other
+16 tumour_confirmed
+17 specimen_biobank
+18 specimen_biobank_id
+19 specimen_available
+20 tumour_histological_type
+21 tumour_grading_system
+22 tumour_grade
+23 tumour_grade_supplemental
+24 tumour_stage_system
+25 tumour_stage
+26 tumour_stage_supplemental
+27 digital_image_of_stained_section
+28 percentage_cellularity
+29 level_of_cellularity
+
+
 '''
+
