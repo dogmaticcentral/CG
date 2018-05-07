@@ -121,8 +121,8 @@ def make_location_tables(cursor):
 #########################################
 def main():
 
-	#print "disabled"
-	#exit()
+	print "disabled"
+	exit()
 
 	db     = connect_to_mysql()
 	cursor = db.cursor()

@@ -9,45 +9,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DockManager">
-    <window id="3">
-      <content type="file-editors">
-        <state>
-          <leaf>
-            <file leaf-file-name="03_make_tables.py" pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/03_make_tables.py">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="245">
-                    <caret line="30" column="52" lean-forward="true" selection-start-line="30" selection-start-column="52" selection-end-line="30" selection-end-column="52" />
-                    <folding />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="10_check_mut_tables_and_make_new_ones.py" pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="594">
-                    <caret line="72" column="52" lean-forward="true" selection-start-line="72" selection-start-column="52" selection-end-line="72" selection-end-column="52" />
-                    <folding>
-                      <element signature="e#102#135#0" expanded="true" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="19_patient_stats.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/19_patient_stats.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="821">
-              <caret line="46" column="16" lean-forward="false" selection-start-line="46" selection-start-column="16" selection-end-line="46" selection-end-column="16" />
+            <state relative-caret-position="0">
+              <caret line="16" column="79" lean-forward="false" selection-start-line="16" selection-start-column="79" selection-end-line="16" selection-end-column="79" />
               <folding />
             </state>
           </provider>
@@ -56,23 +24,48 @@
       <file leaf-file-name="08_make_indices.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/08_make_indices.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+            <state relative-caret-position="324">
+              <caret line="20" column="97" lean-forward="true" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="97" />
               <folding>
                 <element signature="e#69#110#0" expanded="false" />
-                <element signature="e#792#3166#1" expanded="false" />
+                <element signature="e#888#3262#1" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="12_reorganize_mutations.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="12_reorganize_mutations.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/12_reorganize_mutations.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="409">
-              <caret line="114" column="14" lean-forward="false" selection-start-line="114" selection-start-column="14" selection-end-line="114" selection-end-column="14" />
+            <state relative-caret-position="227">
+              <caret line="247" column="10" lean-forward="true" selection-start-line="247" selection-start-column="10" selection-end-line="247" selection-end-column="10" />
               <folding>
-                <element signature="e#4380#5959#0" expanded="false" />
+                <element signature="e#21#32#0" expanded="true" />
+                <element signature="e#2523#3375#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="10_check_mut_tables_and_make_new_ones.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="342">
+              <caret line="124" column="4" lean-forward="false" selection-start-line="124" selection-start-column="4" selection-end-line="124" selection-end-column="4" />
+              <folding>
+                <element signature="e#102#135#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="processes.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/icgc_utils/processes.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="378">
+              <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+              <folding>
+                <element signature="e#1#23#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -91,8 +84,8 @@
       <file leaf-file-name="mysql.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+            <state relative-caret-position="576">
+              <caret line="244" column="0" lean-forward="false" selection-start-line="244" selection-start-column="0" selection-end-line="244" selection-end-column="0" />
               <folding>
                 <element signature="e#25#26#0" expanded="false" />
                 <element signature="e#877#1010#0" expanded="false" />
@@ -120,26 +113,25 @@
                 <element signature="e#5906#6280#0" expanded="false" />
                 <element signature="e#6084#6249#0" expanded="false" />
                 <element signature="e#6122#6191#0" expanded="false" />
-                <element signature="e#6401#6728#0" expanded="false" />
                 <element signature="e#6608#6696#0" expanded="false" />
-                <element signature="e#6835#7137#0" expanded="false" />
-                <element signature="e#7017#7105#0" expanded="false" />
-                <element signature="e#7243#7597#0" expanded="false" />
-                <element signature="e#7505#7560#0" expanded="false" />
-                <element signature="e#7656#8223#0" expanded="false" />
-                <element signature="e#7726#7865#0" expanded="false" />
-                <element signature="e#7947#8085#0" expanded="false" />
-                <element signature="e#8124#8206#0" expanded="false" />
-                <element signature="e#8324#9281#0" expanded="false" />
-                <element signature="e#8346#8749#0" expanded="false" />
-                <element signature="e#8393#8462#0" expanded="false" />
-                <element signature="e#8638#8715#0" expanded="false" />
-                <element signature="e#8781#9281#0" expanded="false" />
-                <element signature="e#8798#9110#0" expanded="false" />
-                <element signature="e#9170#9247#0" expanded="false" />
-                <element signature="e#9350#9667#0" expanded="false" />
-                <element signature="e#9363#9526#0" expanded="false" />
-                <element signature="e#9565#9652#0" expanded="false" />
+                <element signature="e#7162#7464#0" expanded="false" />
+                <element signature="e#7344#7432#0" expanded="false" />
+                <element signature="e#7570#7924#0" expanded="false" />
+                <element signature="e#7832#7887#0" expanded="false" />
+                <element signature="e#7983#8550#0" expanded="false" />
+                <element signature="e#8053#8192#0" expanded="false" />
+                <element signature="e#8274#8412#0" expanded="false" />
+                <element signature="e#8451#8533#0" expanded="false" />
+                <element signature="e#8651#9608#0" expanded="false" />
+                <element signature="e#8673#9076#0" expanded="false" />
+                <element signature="e#8720#8789#0" expanded="false" />
+                <element signature="e#8965#9042#0" expanded="false" />
+                <element signature="e#9108#9608#0" expanded="false" />
+                <element signature="e#9125#9437#0" expanded="false" />
+                <element signature="e#9497#9574#0" expanded="false" />
+                <element signature="e#9677#9994#0" expanded="false" />
+                <element signature="e#9690#9853#0" expanded="false" />
+                <element signature="e#9892#9979#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -174,7 +166,6 @@
       <list>
         <option value="$PROJECT_DIR$/00_data_download/01_download_icgc_dir_structure.py" />
         <option value="$PROJECT_DIR$/02_find_max_allele_length.py" />
-        <option value="$PROJECT_DIR$/icgc_utils/mysql.py" />
         <option value="$PROJECT_DIR$/07_make_tables.py" />
         <option value="$PROJECT_DIR$/03_check_quality.py" />
         <option value="$PROJECT_DIR$/07_overview.py" />
@@ -198,12 +189,15 @@
         <option value="$PROJECT_DIR$/07_load_mysql.py" />
         <option value="$PROJECT_DIR$/10_reorganize_mutations.py" />
         <option value="$PROJECT_DIR$/18_mutation_stats.py" />
-        <option value="$PROJECT_DIR$/19_patient_stats.py" />
         <option value="$PROJECT_DIR$/11_consequence_vocab..py" />
         <option value="$PROJECT_DIR$/icgc_utils/common_queries.py" />
-        <option value="$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py" />
+        <option value="$PROJECT_DIR$/icgc_utils/mysql.py" />
+        <option value="$PROJECT_DIR$/19_patient_stats.py" />
+        <option value="$PROJECT_DIR$/icgc_utils/processes.py" />
+        <option value="$PROJECT_DIR$/icgc_utils/kernprof.py" />
         <option value="$PROJECT_DIR$/08_make_indices.py" />
         <option value="$PROJECT_DIR$/12_reorganize_mutations.py" />
+        <option value="$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py" />
       </list>
     </option>
   </component>
@@ -227,6 +221,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -248,8 +244,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -301,19 +295,19 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20201422" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32968238" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32968238" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -322,26 +316,15 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="8" />
+      <option name="time" value="13" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/19_patient_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/03_make_tables.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
           <caret line="20" column="12" lean-forward="false" selection-start-line="20" selection-start-column="12" selection-end-line="20" selection-end-column="12" />
-          <folding>
-            <element signature="e#19#33#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -349,9 +332,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1008">
           <caret line="57" column="20" lean-forward="false" selection-start-line="57" selection-start-column="20" selection-end-line="57" selection-end-column="20" />
-          <folding>
-            <element signature="e#85#106#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -359,7 +339,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="396">
           <caret line="23" column="48" lean-forward="false" selection-start-line="23" selection-start-column="48" selection-end-line="23" selection-end-column="48" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -367,7 +346,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="846">
           <caret line="48" column="0" lean-forward="true" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -375,7 +353,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
           <caret line="9" column="58" lean-forward="false" selection-start-line="9" selection-start-column="58" selection-end-line="9" selection-end-column="58" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -383,9 +360,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1350">
           <caret line="76" column="14" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="76" selection-end-column="14" />
-          <folding>
-            <element signature="e#19#33#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -393,7 +367,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
           <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -401,7 +374,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
           <caret line="5" column="132" lean-forward="false" selection-start-line="5" selection-start-column="132" selection-end-line="5" selection-end-column="132" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -409,9 +381,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1314">
           <caret line="74" column="0" lean-forward="false" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
-          <folding>
-            <element signature="e#85#106#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -426,9 +395,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2286">
           <caret line="128" column="16" lean-forward="false" selection-start-line="128" selection-start-column="16" selection-end-line="128" selection-end-column="16" />
-          <folding>
-            <element signature="e#19#33#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -436,213 +402,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5634">
           <caret line="313" column="4" lean-forward="false" selection-start-line="313" selection-start-column="4" selection-end-line="313" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
-    <entry file="file://$PROJECT_DIR$/00_data_download/05_unzip.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/03_make_tables.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2286">
-          <caret line="128" column="16" lean-forward="true" selection-start-line="128" selection-start-column="16" selection-end-line="128" selection-end-column="16" />
-          <folding>
-            <element signature="e#19#33#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5634">
-          <caret line="313" column="4" lean-forward="false" selection-start-line="313" selection-start-column="4" selection-end-line="313" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
-    <entry file="file://$PROJECT_DIR$/00_data_download/05_unzip.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/03_make_tables.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#19#33#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
-    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="4" column="1" lean-forward="false" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/00_data_download/05_unzip.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/03_make_tables.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#19#33#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
-    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/00_data_download/02_download_somatic_files.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
-    <entry file="file://$PROJECT_DIR$/icgc_utils/01_hgnc_name_resolution_table.py" />
-    <entry file="file://$PROJECT_DIR$/01_hgnc_name_resolution_table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="46" column="41" lean-forward="false" selection-start-line="46" selection-start-column="41" selection-end-line="46" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/00_data_download/05_unzip.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/00_data_download/01_download_icgc_dir_structure.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/26_gene_pairs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="54" column="33" lean-forward="true" selection-start-line="54" selection-start-column="33" selection-end-line="54" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/00_data_download/02_download_somatic_files.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-71">
-          <caret line="22" column="83" lean-forward="true" selection-start-line="22" selection-start-column="83" selection-end-line="22" selection-end-column="83" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/00_data_download/03_download_other_files.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="35" column="0" lean-forward="true" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/06_write_other_tsv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-71">
-          <caret line="31" column="55" lean-forward="false" selection-start-line="31" selection-start-column="14" selection-end-line="31" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/05_write_mutations_tsv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="64" column="54" lean-forward="false" selection-start-line="64" selection-start-column="54" selection-end-line="64" selection-end-column="54" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/07_load_mysql.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" column="4" lean-forward="false" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-75">
-          <caret line="6" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/18_mutation_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="22" lean-forward="false" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/19_patient_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="821">
-          <caret line="46" column="16" lean-forward="false" selection-start-line="46" selection-start-column="16" selection-end-line="46" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
           <folding>
             <element signature="e#25#26#0" expanded="false" />
             <element signature="e#877#1010#0" expanded="false" />
@@ -670,35 +429,294 @@
             <element signature="e#5906#6280#0" expanded="false" />
             <element signature="e#6084#6249#0" expanded="false" />
             <element signature="e#6122#6191#0" expanded="false" />
-            <element signature="e#6401#6728#0" expanded="false" />
             <element signature="e#6608#6696#0" expanded="false" />
-            <element signature="e#6835#7137#0" expanded="false" />
-            <element signature="e#7017#7105#0" expanded="false" />
-            <element signature="e#7243#7597#0" expanded="false" />
-            <element signature="e#7505#7560#0" expanded="false" />
-            <element signature="e#7656#8223#0" expanded="false" />
-            <element signature="e#7726#7865#0" expanded="false" />
-            <element signature="e#7947#8085#0" expanded="false" />
-            <element signature="e#8124#8206#0" expanded="false" />
-            <element signature="e#8324#9281#0" expanded="false" />
-            <element signature="e#8346#8749#0" expanded="false" />
-            <element signature="e#8393#8462#0" expanded="false" />
-            <element signature="e#8638#8715#0" expanded="false" />
-            <element signature="e#8781#9281#0" expanded="false" />
-            <element signature="e#8798#9110#0" expanded="false" />
-            <element signature="e#9170#9247#0" expanded="false" />
-            <element signature="e#9350#9667#0" expanded="false" />
-            <element signature="e#9363#9526#0" expanded="false" />
-            <element signature="e#9565#9652#0" expanded="false" />
+            <element signature="e#7162#7464#0" expanded="false" />
+            <element signature="e#7344#7432#0" expanded="false" />
+            <element signature="e#7570#7924#0" expanded="false" />
+            <element signature="e#7832#7887#0" expanded="false" />
+            <element signature="e#7983#8550#0" expanded="false" />
+            <element signature="e#8053#8192#0" expanded="false" />
+            <element signature="e#8274#8412#0" expanded="false" />
+            <element signature="e#8451#8533#0" expanded="false" />
+            <element signature="e#8651#9608#0" expanded="false" />
+            <element signature="e#8673#9076#0" expanded="false" />
+            <element signature="e#8720#8789#0" expanded="false" />
+            <element signature="e#8965#9042#0" expanded="false" />
+            <element signature="e#9108#9608#0" expanded="false" />
+            <element signature="e#9125#9437#0" expanded="false" />
+            <element signature="e#9497#9574#0" expanded="false" />
+            <element signature="e#9677#9994#0" expanded="false" />
+            <element signature="e#9690#9853#0" expanded="false" />
+            <element signature="e#9892#9979#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/11_consequence_vocab..py">
+    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="24" column="21" lean-forward="false" selection-start-line="24" selection-start-column="21" selection-end-line="24" selection-end-column="21" />
-          <folding />
+        <state relative-caret-position="216">
+          <caret line="12" column="0" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
+    <entry file="file://$PROJECT_DIR$/00_data_download/05_unzip.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03_make_tables.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2286">
+          <caret line="128" column="16" lean-forward="true" selection-start-line="128" selection-start-column="16" selection-end-line="128" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5634">
+          <caret line="313" column="4" lean-forward="false" selection-start-line="313" selection-start-column="4" selection-end-line="313" selection-end-column="4" />
+          <folding>
+            <element signature="e#25#26#0" expanded="false" />
+            <element signature="e#877#1010#0" expanded="false" />
+            <element signature="e#1062#1207#0" expanded="false" />
+            <element signature="e#1160#1191#0" expanded="false" />
+            <element signature="e#1288#2243#0" expanded="false" />
+            <element signature="e#1677#1978#0" expanded="false" />
+            <element signature="e#2057#2115#0" expanded="false" />
+            <element signature="e#2140#2226#0" expanded="false" />
+            <element signature="e#2340#4979#0" expanded="false" />
+            <element signature="e#2433#2737#0" expanded="false" />
+            <element signature="e#2979#3054#0" expanded="false" />
+            <element signature="e#3154#3659#0" expanded="false" />
+            <element signature="e#3316#3618#0" expanded="false" />
+            <element signature="e#3704#4728#0" expanded="false" />
+            <element signature="e#3954#4048#0" expanded="false" />
+            <element signature="e#4266#4709#0" expanded="false" />
+            <element signature="e#4557#4683#0" expanded="false" />
+            <element signature="e#4800#4858#0" expanded="false" />
+            <element signature="e#4883#4950#0" expanded="false" />
+            <element signature="e#5092#5805#0" expanded="false" />
+            <element signature="e#5356#5386#0" expanded="false" />
+            <element signature="e#5581#5664#0" expanded="false" />
+            <element signature="e#5754#5785#0" expanded="false" />
+            <element signature="e#5906#6280#0" expanded="false" />
+            <element signature="e#6084#6249#0" expanded="false" />
+            <element signature="e#6122#6191#0" expanded="false" />
+            <element signature="e#6608#6696#0" expanded="false" />
+            <element signature="e#7162#7464#0" expanded="false" />
+            <element signature="e#7344#7432#0" expanded="false" />
+            <element signature="e#7570#7924#0" expanded="false" />
+            <element signature="e#7832#7887#0" expanded="false" />
+            <element signature="e#7983#8550#0" expanded="false" />
+            <element signature="e#8053#8192#0" expanded="false" />
+            <element signature="e#8274#8412#0" expanded="false" />
+            <element signature="e#8451#8533#0" expanded="false" />
+            <element signature="e#8651#9608#0" expanded="false" />
+            <element signature="e#8673#9076#0" expanded="false" />
+            <element signature="e#8720#8789#0" expanded="false" />
+            <element signature="e#8965#9042#0" expanded="false" />
+            <element signature="e#9108#9608#0" expanded="false" />
+            <element signature="e#9125#9437#0" expanded="false" />
+            <element signature="e#9497#9574#0" expanded="false" />
+            <element signature="e#9677#9994#0" expanded="false" />
+            <element signature="e#9690#9853#0" expanded="false" />
+            <element signature="e#9892#9979#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
+    <entry file="file://$PROJECT_DIR$/00_data_download/05_unzip.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03_make_tables.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
+    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="1" lean-forward="false" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/00_data_download/05_unzip.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03_make_tables.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
+    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/00_data_download/02_download_somatic_files.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
+    <entry file="file://$PROJECT_DIR$/icgc_utils/01_hgnc_name_resolution_table.py" />
+    <entry file="file://$PROJECT_DIR$/01_hgnc_name_resolution_table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="46" column="41" lean-forward="false" selection-start-line="46" selection-start-column="41" selection-end-line="46" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/00_data_download/05_unzip.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/00_data_download/01_download_icgc_dir_structure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/26_gene_pairs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="54" column="33" lean-forward="true" selection-start-line="54" selection-start-column="33" selection-end-line="54" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/00_data_download/02_download_somatic_files.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-71">
+          <caret line="22" column="83" lean-forward="true" selection-start-line="22" selection-start-column="83" selection-end-line="22" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/00_data_download/03_download_other_files.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="35" column="0" lean-forward="true" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/06_write_other_tsv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-71">
+          <caret line="31" column="55" lean-forward="false" selection-start-line="31" selection-start-column="14" selection-end-line="31" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/05_write_mutations_tsv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="64" column="54" lean-forward="false" selection-start-line="64" selection-start-column="54" selection-end-line="64" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/07_load_mysql.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="9" column="4" lean-forward="false" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-75">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/18_mutation_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="22" lean-forward="false" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="576">
+          <caret line="244" column="0" lean-forward="false" selection-start-line="244" selection-start-column="0" selection-end-line="244" selection-end-column="0" />
+          <folding>
+            <element signature="e#25#26#0" expanded="false" />
+            <element signature="e#877#1010#0" expanded="false" />
+            <element signature="e#1062#1207#0" expanded="false" />
+            <element signature="e#1160#1191#0" expanded="false" />
+            <element signature="e#1288#2243#0" expanded="false" />
+            <element signature="e#1677#1978#0" expanded="false" />
+            <element signature="e#2057#2115#0" expanded="false" />
+            <element signature="e#2140#2226#0" expanded="false" />
+            <element signature="e#2340#4979#0" expanded="false" />
+            <element signature="e#2433#2737#0" expanded="false" />
+            <element signature="e#2979#3054#0" expanded="false" />
+            <element signature="e#3154#3659#0" expanded="false" />
+            <element signature="e#3316#3618#0" expanded="false" />
+            <element signature="e#3704#4728#0" expanded="false" />
+            <element signature="e#3954#4048#0" expanded="false" />
+            <element signature="e#4266#4709#0" expanded="false" />
+            <element signature="e#4557#4683#0" expanded="false" />
+            <element signature="e#4800#4858#0" expanded="false" />
+            <element signature="e#4883#4950#0" expanded="false" />
+            <element signature="e#5092#5805#0" expanded="false" />
+            <element signature="e#5356#5386#0" expanded="false" />
+            <element signature="e#5581#5664#0" expanded="false" />
+            <element signature="e#5754#5785#0" expanded="false" />
+            <element signature="e#5906#6280#0" expanded="false" />
+            <element signature="e#6084#6249#0" expanded="false" />
+            <element signature="e#6122#6191#0" expanded="false" />
+            <element signature="e#6608#6696#0" expanded="false" />
+            <element signature="e#7162#7464#0" expanded="false" />
+            <element signature="e#7344#7432#0" expanded="false" />
+            <element signature="e#7570#7924#0" expanded="false" />
+            <element signature="e#7832#7887#0" expanded="false" />
+            <element signature="e#7983#8550#0" expanded="false" />
+            <element signature="e#8053#8192#0" expanded="false" />
+            <element signature="e#8274#8412#0" expanded="false" />
+            <element signature="e#8451#8533#0" expanded="false" />
+            <element signature="e#8651#9608#0" expanded="false" />
+            <element signature="e#8673#9076#0" expanded="false" />
+            <element signature="e#8720#8789#0" expanded="false" />
+            <element signature="e#8965#9042#0" expanded="false" />
+            <element signature="e#9108#9608#0" expanded="false" />
+            <element signature="e#9125#9437#0" expanded="false" />
+            <element signature="e#9497#9574#0" expanded="false" />
+            <element signature="e#9677#9994#0" expanded="false" />
+            <element signature="e#9690#9853#0" expanded="false" />
+            <element signature="e#9892#9979#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -710,41 +728,77 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/11_consequence_vocab..py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="24" column="21" lean-forward="false" selection-start-line="24" selection-start-column="21" selection-end-line="24" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/19_patient_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="16" column="79" lean-forward="false" selection-start-line="16" selection-start-column="79" selection-end-line="16" selection-end-column="79" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/icgc_utils/processes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <folding>
+            <element signature="e#1#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/03_make_tables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="245">
-          <caret line="30" column="52" lean-forward="true" selection-start-line="30" selection-start-column="52" selection-end-line="30" selection-end-column="52" />
-          <folding />
+        <state relative-caret-position="522">
+          <caret line="30" column="52" lean-forward="false" selection-start-line="30" selection-start-column="52" selection-end-line="30" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/icgc_utils/kernprof.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="39" column="0" lean-forward="true" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <folding>
+            <element signature="e#131#147#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/08_make_indices.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+        <state relative-caret-position="324">
+          <caret line="20" column="97" lean-forward="true" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="97" />
           <folding>
             <element signature="e#69#110#0" expanded="false" />
-            <element signature="e#792#3166#1" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="72" column="52" lean-forward="true" selection-start-line="72" selection-start-column="52" selection-end-line="72" selection-end-column="52" />
-          <folding>
-            <element signature="e#102#135#0" expanded="true" />
+            <element signature="e#888#3262#1" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/12_reorganize_mutations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="114" column="14" lean-forward="false" selection-start-line="114" selection-start-column="14" selection-end-line="114" selection-end-column="14" />
+        <state relative-caret-position="227">
+          <caret line="247" column="10" lean-forward="true" selection-start-line="247" selection-start-column="10" selection-end-line="247" selection-end-column="10" />
           <folding>
-            <element signature="e#4380#5959#0" expanded="false" />
+            <element signature="e#21#32#0" expanded="true" />
+            <element signature="e#2523#3375#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="124" column="4" lean-forward="false" selection-start-line="124" selection-start-column="4" selection-end-line="124" selection-end-column="4" />
+          <folding>
+            <element signature="e#102#135#0" expanded="true" />
           </folding>
         </state>
       </provider>

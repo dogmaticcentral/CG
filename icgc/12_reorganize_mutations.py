@@ -1,12 +1,10 @@
 #! /usr/bin/python
 
 
-
-# consequence type
-# location:
-# actual consequence
+import time
 
 from icgc_utils.common_queries   import  *
+from icgc_utils.processes   import  *
 
 variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id',
                    'control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
@@ -45,43 +43,87 @@ def quotify(something):
 		return str(something)
 
 #########################################
+def insert (cursor, table, columns, values):
+
+	nonempty_values = []
+	corresponding_columns = []
+	for i in range(len(values)):
+		if not values[i] or  values[i] == "": continue
+		nonempty_values.append(values[i])
+		corresponding_columns.append(columns[i])
+	qry = "insert into %s (%s) " %(table, ",".join(corresponding_columns))
+	qry += "values (%s) " % ",".join(nonempty_values)
+	search_db(cursor, qry, verbose=False)
+
+#########################################
 def reorganize_donor_variants(cursor, table, columns):
+
 	variants_table = table.replace("_temp","")
 	donors = get_donors(cursor, table)
 	for donor in donors:
 		variants  = set([])
 		total_entries = 0
-		for fields in search_db (cursor, "select * from %s where icgc_donor_id='%s'" % (table, donor)):
+		qry  = "select * from %s where icgc_donor_id='%s' " % (table, donor)
+		qry += "and gene_affected is not null and gene_affected !='' "
+		ret  = search_db (cursor, qry)
+		if not ret: continue # it happens, check "select * from ALL_simple_somatic_temp where icgc_donor_id='DO282'"
+		#	print search_db (cursor, qry, verbose=True)
+		#	exit()
+		for fields in ret:
 			total_entries += 1
 			named_field = dict(zip(columns,fields))
-
 			variant_values = []
 			for name in variant_columns:
 				variant_values.append(quotify(named_field[name]))
-			variants.add(",".join(variant_values)) # this is set, getting rid of duplicate info
+			variants.add(",".join(variant_values)) # set => getting rid of duplicates
 
-	for variant in variants:
-		qry = "insert into %s (%s) " %(variants_table, ",".join(variant_columns))
-		qry += "values (%s) " % variant
-		search_db(cursor, qry, verbose=True)
+		for variant in variants:
+			insert(cursor, variants_table, variant_columns, variant.split(","))
 
 #########################################
+# profile decorator is for the use with kernprof (a line profiler):
+#  ./icgc_utils/kernprof.py -l 12_reorganize_mutations.py
+# followed by
+# python -m line_profiler 12_reorganize_mutations.py.lprof
+# see here https://github.com/rkern/line_profiler#line-profiler
+# the reason I am using local kernprof.py is that I don't know where pip
+# installed its version (if anywhere)
+# i@profile
 def reorganize_mutations(cursor, table, columns):
 
 	mutations = get_mutations(cursor, table)
+	totmut = len(mutations)
+	print "\t\t\t total mutations:", totmut
+	ct = 0
+	time0 = time.time()
 	for mutation in mutations:
-
+		ct += 1
+		if ct%10000 == 0:
+			print "\t\t\t %10s  %6d  %.2f%%  %ds" % (table, ct, float(ct)/totmut, time.time()-time0)
+			time0 = time.time()
+		mutation_already_seen = False
 		conseqs   = set([])
 		mutation_values = None
 		chromosome = None
-		for fields in search_db (cursor, "select * from %s where icgc_mutation_id='%s'" % (table, mutation)):
+		mutation_table = None
+
+		# this hinges on index
+		# qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" % mutations_table
+		qry = "select * from %s where icgc_mutation_id='%s' " % (table, mutation)
+		qry += "and gene_affected is not null and gene_affected !='' "
+		ret  = search_db (cursor, qry)
+		if not ret: continue
+		for fields in ret:
 
 			named_field = dict(zip(columns,fields))
 
 			if not mutation_values: # we need to set this only once
 				mutation_values = [quotify(named_field[name]) for name in mutation_columns]
 				chromosome = named_field['chromosome']
-
+				mutation_table = "mutations_chrom_{}".format(chromosome)
+				if entry_exists(cursor, "icgc", mutation_table, "icgc_mutation_id", quotify(mutation)):
+					mutation_already_seen = True
+					continue
 			# this is not ready to be stored, because we need to work through the consequences
 			csq = named_field['consequence_type']
 			if csq in consequence_vocab:
@@ -93,6 +135,7 @@ def reorganize_mutations(cursor, table, columns):
 			else:
 				print "unrecognized consequence field:", csq
 				exit()
+		if mutation_already_seen: continue
 
 		if not mutation_values:
 			print "mutation values not assigned for %s (!?)" % mutation
@@ -108,11 +151,7 @@ def reorganize_mutations(cursor, table, columns):
 			mutation_values.append("0")
 
 		# now we are ready to store
-		mutation_table = "mutations_chrom_{}".format(chromosome)
-		qry = "insert into %s (%s) " %(mutation_table, ",".join(mutation_columns + ['consequence', 'pathogenic_estimate']))
-		qry += "values (%s) " % ",".join(mutation_values)
-		search_db(cursor, qry, verbose=True)
-		exit()
+		insert(cursor, mutation_table, mutation_columns + ['consequence', 'pathogenic_estimate'], mutation_values)
 
 #########################################
 def reorganize_locations(cursor, table, columns):
@@ -120,14 +159,23 @@ def reorganize_locations(cursor, table, columns):
 	chromosomes = [str(i) for i in range(1,23)] + ["X", "Y", "MT"]
 
 	for chromosome in chromosomes:
-		qry =  "select distinct start_position from %s  where chromosome='%s'" % (table, chromosome)
-		positions = [ret[0] for ret in  search_db (cursor, qry)]
+		location_table = "locations_chrom_{}".format(chromosome)
+		qry =  "select distinct start_position from %s  where chromosome='%s' " % (table, chromosome)
+		qry += "and gene_affected is not null and gene_affected !='' "
+		ret  = search_db (cursor, qry)
+		if not ret: continue
+		positions = [r[0] for r in ret]
 		for position in positions:
+
+			if entry_exists(cursor, "icgc", location_table, "position", position): continue
+
 			gene_relative       = set([])
 			transcript_relative = set([])
-			qry =  "select * from %s where chromosome='%s' and start_position=%d" % (table, chromosome, position)
+			# this hinges on
+			# qry  = "create index chrom_pos_idx on %s (chromosome, start_position)" % mutations_table
+			qry =  "select * from %s where chromosome='%s' and start_position=%d " % (table, chromosome, position)
+			qry += "and gene_affected is not null and gene_affected !='' "
 			for fields in search_db (cursor,qry):
-
 				named_field = dict(zip(columns,fields))
 				# this is not ready to be stored, because we need to work through the consequences
 				gene   = named_field['gene_affected']
@@ -148,28 +196,54 @@ def reorganize_locations(cursor, table, columns):
 					print "unrecognized consequence field:", csq
 					exit()
 
+				# gene and transcript are listed, but no relative position is specified:
+				if len(gene_relative)==0 and gene and 'ENSG' in gene:
+					gene_relative.add("{}:{}".format(gene,"unk"))
+				if len(transcript_relative)==0 and tscrpt and 'ENST' in tscrpt:
+					transcript_relative.add("{}:{}".format(tscrpt,"unk"))
+
 			# now we are ready to store
 			location_values = [str(position), quotify(";".join(gene_relative)), quotify(";".join(transcript_relative))]
-			location_table = "locations_chrom_{}".format(chromosome)
-			qry = "insert into %s (%s) " %(location_table, ",".join(location_columns))
-			qry += "values (%s) " % ",".join(location_values)
-			print qry
+			insert (cursor, location_table, location_columns, location_values)
 
 #########################################
-def reorganize(cursor, table, columns):
-	# line by line: move id info into new table
-	# for mutation and location check if the info exists; if not make new entry
-	print "===================="
-	print "reorganizing ", table
-	###################################
-	#reorganize_donor_variants(cursor, table, columns)
-	reorganize_mutations(cursor, table, columns)
-	#reorganize_locations(cursor, table, columns)
+def reorganize(tables, other_args):
 
 
-	exit()
+	db     = connect_to_mysql()
+	cursor = db.cursor()
+	switch_to_db(cursor,"icgc")
+	for table in tables:
+
+		# the tables should all have the same columns
+		qry = "select column_name from information_schema.columns where table_name='%s'"%table
+		columns = [field[0] for field in  search_db(cursor,qry)]
+		# line by line: move id info into new table
+		# for mutation and location check if the info exists; if not make new entry
+		time0 = time.time()
+		print "===================="
+		print "reorganizing ", table, os.getpid()
+		###############
+		print "\t variants", os.getpid()
+		reorganize_donor_variants(cursor, table, columns)
+		time1 = time.time()
+		print ("\t\t done in %.3f mins" % (float(time1-time0)/60)), os.getpid()
+		###############
+		print "\t mutations", os.getpid()
+		reorganize_mutations(cursor, table, columns)
+		time2 = time.time()
+		print ("\t\t done in %.3f mins" % (float(time2-time1)/60)), os.getpid()
+		###############
+		print "\t locations", os.getpid()
+		reorganize_locations(cursor, table, columns)
+		time3 = time.time()
+		print ("\t\t done in %.3f mins" % (float(time3-time2)/60)), os.getpid()
+
+		print ("\t overall time for %s: %.3f mins" % (table, float(time3-time0)/60)), os.getpid()
 
 
+	cursor.close()
+	db.close()
 
 	return
 
@@ -180,28 +254,21 @@ def main():
 
 	db     = connect_to_mysql()
 	cursor = db.cursor()
-
 	#########################
 	# which temp somatic tables do we have
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic_temp'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
-
-	# the tables should all have the same columns
-	qry = "select column_name from information_schema.columns where table_name='%s'"%tables[0]
-	columns = [field[0] for field in  search_db(cursor,qry)]
-
-	switch_to_db(cursor,"icgc")
-	# enable if run for the first time
-	#sanity_checks(cursor, tables)
-
-	tables = ["EOPC_simple_somatic_temp"]
-
-	for table in tables:
-		reorganize (cursor, table, columns)
-
 	cursor.close()
 	db.close()
+
+	#tables  = ["BRCA_simple_somatic_temp"]
+	number_of_chunks = 8 # is this  deadlocking?
+	#number_of_chunks = 1
+	parallelize (number_of_chunks, reorganize, tables, [])
+
+
+
 
 
 #########################################

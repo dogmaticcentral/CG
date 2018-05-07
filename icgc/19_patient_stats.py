@@ -14,7 +14,7 @@ def main():
 	#########################
 	# which simple somatic tables do we have
 	qry  = "select table_name from information_schema.tables "
-	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
+	qry += "where table_schema='icgc' and table_name like '%simple_somatic_temp'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
 	#########################
 

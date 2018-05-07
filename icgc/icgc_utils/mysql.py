@@ -244,6 +244,16 @@ def check_column_exists (cursor, db_name, table_name, column_name):
         return False
 
 #########################################
+def entry_exists(cursor, db_name, table_name, column_name, column_value):
+    qry = "select 1 from %s.%s where %s=%s" % (db_name, table_name, column_name, column_value)
+    rows = search_db (cursor, qry, verbose=False)
+    if rows:
+        return True
+    else:
+        return False
+
+
+#########################################
 def check_table_exists (cursor, db_name, table_name):
     
     if  not switch_to_db (cursor, db_name):

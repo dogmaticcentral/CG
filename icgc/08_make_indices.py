@@ -18,8 +18,9 @@ def main():
 	switch_to_db(cursor,"icgc")
 	for ct in cancer_types:
 		mutations_table = ct + "_simple_somatic_temp"
-		qry  = "create index chrom_pos_idx on %s (chromosome, start_position)" % mutations_table
+		#qry  = "create index chrom_pos_idx on %s (chromosome, start_position)" % mutations_table
 		#qry  = "create index donor_mutation_idx on %s (icgc_donor_id)" % mutations_table
+		qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" % mutations_table
 		search_db(cursor,qry,verbose=True)
 
 
