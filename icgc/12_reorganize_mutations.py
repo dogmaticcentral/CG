@@ -3,15 +3,16 @@
 
 import time
 
-from icgc_utils.common_queries   import  *
+from icgc_utils.common_queries  import  *
 from icgc_utils.processes   import  *
 
 variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id',
-                   'control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
+                   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
 
+# we'll take care of 'aa_mutation' and 'consequence_type will be handled separately
 mutation_columns = ['icgc_mutation_id', 'start_position', 'end_position', 'mutation_type',
-					'mutated_from_allele', 'mutated_to_allele', 'reference_genome_allele',
-					'aa_mutation', 'cds_mutation']
+					'mutated_from_allele', 'mutated_to_allele', 'reference_genome_allele']
+
 
 location_columns = ['position', 'gene_relative', 'transcript_relative']
 
@@ -21,10 +22,7 @@ consequence_vocab = ['stop_lost', 'synonymous', 'inframe_deletion', 'inframe_ins
                      '5_prime_UTR_premature_start_codon_gain',
                      'start_lost', 'frameshift', 'disruptive_inframe_deletion', 'stop_retained',
                      'exon_loss', 'disruptive_inframe_insertion', 'missense']
-# this is set literal
-pathogenic =  {'stop_lost', 'inframe_deletion', 'stop_gained', '5_prime_UTR_premature_start_codon_gain',
-                     'start_lost', 'frameshift', 'disruptive_inframe_deletion',
-                     'exon_loss', 'disruptive_inframe_insertion', 'missense'}
+
 
 # location_vocab[1:4] is gene-relative
 # location_vocab[1:4] is transcript-relative
@@ -32,6 +30,13 @@ location_vocab = ['intergenic_region', 'intragenic', 'upstream', 'downstream',
                   '5_prime_UTR', 'exon',  'coding_sequence', 'initiator_codon',
                   'splice_acceptor', 'splice_region', 'splice_donor',
                   'intron', '3_prime_UTR', ]
+
+# this is set literal
+pathogenic =  {'stop_lost', 'inframe_deletion', 'stop_gained', '5_prime_UTR_premature_start_codon_gain',
+                     'start_lost', 'frameshift', 'disruptive_inframe_deletion',
+                     'exon_loss', 'disruptive_inframe_insertion', 'missense',
+                     'splice_acceptor', 'splice_region', 'splice_donor'
+               }
 
 #########################################
 def quotify(something):
@@ -88,9 +93,9 @@ def reorganize_donor_variants(cursor, table, columns):
 # see here https://github.com/rkern/line_profiler#line-profiler
 # the reason I am using local kernprof.py is that I don't know where pip
 # installed its version (if anywhere)
-# i@profile
+# @profile
 def reorganize_mutations(cursor, table, columns):
-
+	# reorganize = divide into three tables: variants(per user), mutations, and locations
 	mutations = get_mutations(cursor, table)
 	totmut = len(mutations)
 	print "\t\t\t total mutations:", totmut
@@ -99,17 +104,18 @@ def reorganize_mutations(cursor, table, columns):
 	for mutation in mutations:
 		ct += 1
 		if ct%10000 == 0:
-			print "\t\t\t %10s  %6d  %.2f%%  %ds" % (table, ct, float(ct)/totmut, time.time()-time0)
+			print "\t\t\t %10s  %6d  %d%%  %ds" % (table, ct, float(ct)/totmut*100, time.time()-time0)
 			time0 = time.time()
 		mutation_already_seen = False
 		conseqs   = set([])
+		aa_mutations = set([])
 		mutation_values = None
 		chromosome = None
 		mutation_table = None
 
-		# this hinges on index
+		# this hinges on index on the *simple_somatic_temp
 		# qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" % mutations_table
-		qry = "select * from %s where icgc_mutation_id='%s' " % (table, mutation)
+		qry  = "select * from %s where icgc_mutation_id='%s' " % (table, mutation)
 		qry += "and gene_affected is not null and gene_affected !='' "
 		ret  = search_db (cursor, qry)
 		if not ret: continue
@@ -124,17 +130,27 @@ def reorganize_mutations(cursor, table, columns):
 				if entry_exists(cursor, "icgc", mutation_table, "icgc_mutation_id", quotify(mutation)):
 					mutation_already_seen = True
 					continue
-			# this is not ready to be stored, because we need to work through the consequences
+
+			# aa_mutation
+			aa = named_field['aa_mutation']
+			if aa and  aa!="":
+				transcript =  named_field['transcript_affected']
+				if not transcript: transcript="unk"
+				aa_mutations.add("{}:{}".format(transcript,aa))
+
+			# consequences
 			csq = named_field['consequence_type']
 			if csq in consequence_vocab:
 				conseqs.add(csq)
 			elif csq in location_vocab:
-				pass
+				if "splice" in csq.lower():
+					conseqs.add(csq)
 			elif csq == "":
 				pass
 			else:
 				print "unrecognized consequence field:", csq
 				exit()
+
 		if mutation_already_seen: continue
 
 		if not mutation_values:
@@ -144,6 +160,7 @@ def reorganize_mutations(cursor, table, columns):
 			print "chromosome not assigned for %s (!?)" % mutation
 			exit()
 
+		mutation_values.append(quotify(";".join(list(aa_mutations))))
 		mutation_values.append(quotify(";".join(list(conseqs))))
 		if len(conseqs&pathogenic)>0:
 			mutation_values.append("1")
@@ -151,7 +168,7 @@ def reorganize_mutations(cursor, table, columns):
 			mutation_values.append("0")
 
 		# now we are ready to store
-		insert(cursor, mutation_table, mutation_columns + ['consequence', 'pathogenic_estimate'], mutation_values)
+		insert(cursor, mutation_table, mutation_columns + ['aa_mutation','consequence', 'pathogenic_estimate'], mutation_values)
 
 #########################################
 def reorganize_locations(cursor, table, columns):
@@ -262,9 +279,9 @@ def main():
 	cursor.close()
 	db.close()
 
-	#tables  = ["BRCA_simple_somatic_temp"]
-	number_of_chunks = 8 # is this  deadlocking?
+	#tables  = ["KIRC_simple_somatic_temp"]
 	#number_of_chunks = 1
+	number_of_chunks = 8  # myISAM does not deadlock
 	parallelize (number_of_chunks, reorganize, tables, [])
 
 

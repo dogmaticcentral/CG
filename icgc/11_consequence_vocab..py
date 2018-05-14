@@ -20,7 +20,7 @@ def main():
 	for ct in cancer_types:
 		mutations_table = ct + "_simple_somatic_temp"
 
-		qry  = "select distinct consequence_type from %s" % mutations_table
+		qry = "select distinct consequence_type from %s" % mutations_table
 		csq = [ret[0] for ret in search_db(cursor,qry)]
 		cons_vocab = cons_vocab.union(csq)
 

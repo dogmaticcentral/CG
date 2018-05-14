@@ -7,22 +7,26 @@ from icgc_utils.mysql   import  *
 #########################################
 def main():
 
-	homedir = "/data/icgc"
-	cancer_types = []
-	for name in os.listdir(homedir):
-		if os.path.isdir("/".join([homedir,name])): cancer_types.append(name)
 
 	db     = connect_to_mysql()
 	cursor = db.cursor()
 
 	switch_to_db(cursor,"icgc")
-	for ct in cancer_types:
-		mutations_table = ct + "_simple_somatic_temp"
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
+	tables = [field[0] for field in  search_db(cursor,qry)]
+
+	#for ct in cancer_types:
+		#mutations_table = ct + "_simple_somatic_temp"
 		#qry  = "create index chrom_pos_idx on %s (chromosome, start_position)" % mutations_table
 		#qry  = "create index donor_mutation_idx on %s (icgc_donor_id)" % mutations_table
-		qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" % mutations_table
-		search_db(cursor,qry,verbose=True)
+		#qqry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" % mutations_table
+		#qsearch_db(cursor,qry,verbose=True)
 
+	for mutations_table in tables:
+		#qry  = "create index donor_mutation_idx on %s (icgc_donor_id)" % mutations_table
+		qry  = "create index mut_idx on %s (icgc_mutation_id)" % mutations_table
+		search_db(cursor,qry,verbose=True)
 
 	cursor.close()
 	db.close()

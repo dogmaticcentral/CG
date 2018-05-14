@@ -228,7 +228,7 @@ def get_column_names (cursor, db_name, table_name):
         return False
 
 #########################################
-def check_column_exists (cursor, db_name, table_name, column_name):
+def column_exists (cursor, db_name, table_name, column_name):
     
     if  not switch_to_db (cursor, db_name):
         return False
@@ -293,14 +293,13 @@ def search_db (cursor, qry, verbose=False):
             print "Error running cursor.execute() for  qry: %s: %s " % (qry, e.args[1])
         return  [["ERROR: "+e.args[1]]]
 
-
     try:
         rows = cursor.fetchall()
     except MySQLdb.Error, e:
         if verbose:
             print "Error running cursor.fetchall() for  qry: %s: %s " % (qry, e.args[1])
         return  ["ERROR: "+e.args[1]]
-    
+
     if (len(rows) == 0):
         if verbose:
             print "No return for query %s"  % qry

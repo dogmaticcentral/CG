@@ -46,10 +46,13 @@ def make_new_somatic_tables(cursor, tables):
 		qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
 		qry += "     icgc_specimen_id VARCHAR (20), "
 		qry += "     icgc_sample_id VARCHAR (20), "
+		qry += "     submitted_sample_id VARCHAR (50), "
 		qry += "	 control_genotype VARCHAR (430) NOT NULL, "
 		qry += "	 tumor_genotype VARCHAR (430) NOT NULL, "
 		qry += "     total_read_count INT, "
 		qry += "     mutant_allele_read_count INT, "
+		qry += "     mut_to_total_read_count_ratio float default 0.0,"
+		qry += "     pathogenic_estimate boolean default 0,"
 
 		qry += "	 PRIMARY KEY (id) "
 		qry += ") ENGINE=MyISAM"
@@ -79,8 +82,6 @@ def make_mutation_tables(cursor):
 		qry += "	 reference_genome_allele VARCHAR (210) NOT NULL, "
 		# the longest entry for aa_mutation I could find was 59
 		qry += "     aa_mutation  VARCHAR (100), "
-		# the longest entry for cds_mutation I could find was 11
-		qry += "     cds_mutation  VARCHAR (50), "
 		#
 		qry += "     consequence  VARCHAR (100), "
 		qry += "     pathogenic_estimate BOOLEAN, "
@@ -133,17 +134,13 @@ def main():
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic_temp'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
 
-	# the tables should all have the same columns
-	qry = "select column_name from information_schema.columns where table_name='%s'"%tables[0]
-	columns = [field[0] for field in  search_db(cursor,qry)]
-
 	switch_to_db(cursor,"icgc")
 	# enable if run for the first time
-	#sanity_checks(cursor, tables)
+	# sanity_checks(cursor, tables)
 
 	# make new somatic mutation tables, per cancer
 	make_new_somatic_tables(cursor, tables)
-	# make new mutation table, divided into chromosomes and indexed by mutation_id
+	# make new mutation table, divided into chromosomes
 	make_mutation_tables(cursor)
 	# make new location table, divided into chromosomes
 	make_location_tables(cursor)

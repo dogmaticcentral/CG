@@ -9,7 +9,7 @@ from icgc_utils.mysql   import  *
 
 
 header_names = ["hgnc_id", "approved_symbol", "approved_name",
-                "locus_group", "synonyms",
+                "locus_group", "synonyms", "chromosome",
                 "ensembl_gene_id_by_hgnc", "refseq_ids", "uniprot_ids",
                 "ensembl_gene_id"]
 
@@ -28,7 +28,7 @@ def make_hgnc_table(cursor, db_name, hgnc_table):
 			charlen = 150
 		elif name == 'uniprot_ids':
 			charlen = 300
-		elif name == 'approved_symbol':
+		elif name in ['approved_symbol', 'chromosome']: # chrom can have annotation such as "not on reference assembly"
 			charlen = 30
 		else:
 			charlen = 20
@@ -42,7 +42,13 @@ def make_hgnc_table(cursor, db_name, hgnc_table):
 	print rows
 	return
 
-
+#########################################
+def strip_arm_annotation(chrom_address):
+	if "p" in chrom_address:
+		return chrom_address.split("p")[0]
+	if "q" in chrom_address:
+		return chrom_address.split("q")[0]
+	return chrom_address
 #########################################
 #########################################
 def main():
@@ -52,9 +58,12 @@ def main():
 	ct = 0
 	outf = open ("hgnctmp.tsv", "w")
 	with open(hgncfile, "r") as inf:
-		next(inf)
+		headers = inf.readline().rstrip("\n").split("\t")
+		chromosome_column = headers.index('Chromosome')
+		print chromosome_column
 		for line in inf:
 			fields = line.rstrip("\n").split("\t")
+			fields[chromosome_column] = strip_arm_annotation(fields[chromosome_column])
 			ct += 1
 			outfields = [str(ct)] + fields
 			outf.write("\t".join(outfields)+"\n")
