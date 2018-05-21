@@ -31,53 +31,39 @@ from bs4 import BeautifulSoup
 ##################################################################################
 ##################################################################################
 def main():
-    db = connect_to_mysql()
-    cursor = db.cursor()
-    db_names = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH", "KIRC",
-                "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC", "MESO", "OV", "PAAD", "PCPG", "PRAD", "REA",
-                "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
+	db = connect_to_mysql()
+	cursor = db.cursor()
 
+	qry = "select table_name from information_schema.tables "
+	qry += "where table_schema='tcga' and table_name like '%_mutations_meta'"
+	tables = [field[0] for field in  search_db(cursor,qry)]
 
-    for db_name in db_names:
-        # check db exists
-        qry = "show databases like '%s'" % db_name
-        rows = search_db(cursor, qry)
-        if not rows:
-            print db_name, "not found"
-            continue
+	switch_to_db(cursor, "tcga")
 
-        print " ** ", db_name
-        switch_to_db(cursor, db_name)
+	for table in tables:
 
-        db_dir = "/mnt/databases/TCGA/" + db_name + "/Somatic_Mutations"
-        if not os.path.isdir(db_dir):
-            print "directory " + db_dir + " not found"
-            exit(1)
+		print table
+		qry = "select * from %s" % table
+		rows = search_db(cursor,qry)
+		if not rows:
+			print "\t no meta info found"
+			continue
+		for row in rows:
+			[meta_id, file_name, quality_check, assembly, diagnostics] = row
+			#if diagnostics and "tumor alleles identical" in diagnostics:
+			if True:
+				print "\t %4d  %50s   " % (meta_id, file_name)
+				print "\t\t quality check: %6s" % (quality_check)
+				print "\t\t assembly: %6s" % (assembly)
+				if diagnostics:
+					print "\t\t diagnostics:"
+					for diag in diagnostics.split(';'):
+						print "\t\t\t %6s" % diag.strip()
 
-        qry = "select * from mutations_meta"
-        rows = search_db(cursor, qry)
-        if not rows:
-            print "no meta info found"
-            continue
-
-        maf_file = {}
-        maf_diagnostics = {}
-        for row in rows:
-            [meta_id, file_name, quality_check, assembly, diagnostics] = row
-            #if diagnostics and "tumor alleles identical" in diagnostics:
-            if True:
-                print "\t %4d  %50s   " % (meta_id, file_name)
-                print "\t\t quality check: %6s" % (quality_check)
-                print "\t\t assembly: %6s" % (assembly)
-                if diagnostics:
-                    print "\t\t diagnostics:"
-                    for diag in diagnostics.split(';'):
-                        print "\t\t\t %6s" % diag.strip()
-
-    cursor.close()
-    db.close()
+	cursor.close()
+	db.close()
 
 
 #########################################
 if __name__ == '__main__':
-    main()
+	main()

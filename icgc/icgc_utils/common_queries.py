@@ -1,5 +1,7 @@
 
 from icgc_utils.mysql   import  *
+
+
 ########################################
 def find_chromosome(cursor, gene):
 	qry = "select chromosome from hgnc where approved_symbol = '%s'" % gene
@@ -18,6 +20,17 @@ def get_donors(cursor, table):
 def get_mutations(cursor, table):
 	qry = "select  distinct(icgc_mutation_id)  from %s " % table
 	return [ret[0] for ret in search_db(cursor,qry)]
+
+def get_number_of_path_mutations_per_specimen(cursor, table, specimen_id):
+	qry  = "select count( distinct icgc_mutation_id)  from %s " % table
+	qry += "where icgc_specimen_id = '%s' " % specimen_id
+	qry += "and pathogenic_estimate=1 and reliability_estimate=1"
+	return search_db(cursor,qry)[0][0]
+
+def get_consequence(cursor, chromosome, mutation):
+	qry  = "select consequence, aa_mutation from mutations_chrom_%s " % chromosome
+	qry += "where icgc_mutation_id='%s' " % mutation
+	return search_db(cursor,qry)[0]
 
 def get_specimens_from_donor(cursor, table, icgc_donor_id):
 	qry = "select  distinct(icgc_specimen_id)  from %s " % table
@@ -117,7 +130,31 @@ def get_approved_symbol(cursor, ensembl_gene_id):
 		# if it cannot be resolved, just use the ensembl_id_itself
 		if not symbol: symbol=ensembl_gene_id
 		switch_to_db(cursor,"icgc")
-
 	else:
 		symbol = ret[0][0]
 	return symbol
+
+
+def get_stable_id_for_canonical_transcript(cursor, list_of_stable_transcript_ids, gene_stable_id=None):
+
+	# do I have ensembl database locally?
+	qry = "show databases like 'homo_sapiens_core%'"
+	ret = search_db(cursor,qry)
+	if not ret or not 'homo' in ret[0][0]:
+		print "no database like homo_sapiens_core% available (to resolve ENSTs)"
+		exit()
+	ensembl_homo_sapiens_db = ret[0][0]
+	# list_od_stable_transcript_ids - refers to ensembl --> ENST00... identifier
+	ensts = ",".join(["'%s'"%enst for enst in list_of_stable_transcript_ids])
+	qry  = "select t.stable_id from %s.gene g, %s.transcript t " % (ensembl_homo_sapiens_db, ensembl_homo_sapiens_db)
+	qry += "where g.gene_id = t.gene_id and  g.canonical_transcript_id=t.transcript_id "
+	qry += "and t.stable_id in  (%s) " % ensts
+	if gene_stable_id: # if we know which gene we are looking for, use theat knowledge here
+		qry += "and g.stable_id='%s' " % gene_stable_id
+	ret = search_db(cursor,qry)
+	if not ret or len(ret) != 1:
+		print "Warning: no unique canonical id could be found for %s" % ensts
+		return None
+	return ret[0][0]
+
+

@@ -25,6 +25,18 @@ def make_map_table(cursor, db_name, table_name):
 
 #########################################
 def store (cursor, mut_id, gene_symbols):
+
+	# check existing
+	qry = "select gene_symbol from mutation2gene "
+	qry += "where icgc_mutation_id='%s'" % mut_id
+	ret = search_db(cursor,qry)
+	if not ret:
+		existing = None
+	else:
+		existing = set([r[0] for r in search_db(cursor,qry)])
+	if existing:
+		gene_symbols = list(set(gene_symbols).difference(existing))
+	#insert new
 	for symbol in gene_symbols:
 		qry  = "insert into mutation2gene (icgc_mutation_id,gene_symbol) "
 		qry += "values ('%s','%s')" % (mut_id, symbol)
@@ -123,6 +135,7 @@ def main():
 
 	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
 	shuffle(chromosomes)
+
 	number_of_chunks = 8
 	parallelize (number_of_chunks, store_maps, chromosomes, [])
 

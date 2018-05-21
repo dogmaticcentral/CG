@@ -75,15 +75,16 @@ def make_mutation_tables(cursor):
 		qry += "  	 icgc_mutation_id VARCHAR (20) NOT NULL, "
 		qry += "	 start_position INT  NOT NULL, "
 		qry += "	 end_position INT NOT NULL, "
-		# for mut type use ins, del, indel and sbs (=single base substitution)
+		# for mut type use deletion, insertion, single and multiple
 		qry += "	 mutation_type VARCHAR (10), "
 		qry += "	 mutated_from_allele VARCHAR (210) NOT NULL, "
 		qry += "	 mutated_to_allele VARCHAR (210) NOT NULL, "
 		qry += "	 reference_genome_allele VARCHAR (210) NOT NULL, "
 		# the longest entry for aa_mutation I could find was 59
-		qry += "     aa_mutation  VARCHAR (100), "
+		# --> yes, but I will be merging several, including ENST identifiers
+		qry += "     aa_mutation  TEXT, "
 		#
-		qry += "     consequence  VARCHAR (100), "
+		qry += "     consequence TEXT, "
 		qry += "     pathogenic_estimate BOOLEAN, "
 
 		qry += "	 PRIMARY KEY (icgc_mutation_id) " # automatically indexed

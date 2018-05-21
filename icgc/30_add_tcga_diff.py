@@ -1,6 +1,5 @@
 #! /usr/bin/python
-
-
+import subprocess
 import time
 
 from icgc_utils.common_queries  import  *
@@ -224,43 +223,46 @@ def reorganize_locations(cursor, table, columns):
 			location_values = [str(position), quotify(";".join(gene_relative)), quotify(";".join(transcript_relative))]
 			insert (cursor, location_table, location_columns, location_values)
 
+
+
+
+
 #########################################
-def reorganize(tables, other_args):
-
-	print "disabled"
-	exit()
-
+def add_tcga_diff(cancer_types, other_args):
 
 	db     = connect_to_mysql()
 	cursor = db.cursor()
 	switch_to_db(cursor,"icgc")
-	for table in tables:
+	tcga_home = "/data/tcga"
 
-		# the tables should all have the same columns
-		qry = "select column_name from information_schema.columns where table_name='%s'"%table
-		columns = [field[0] for field in  search_db(cursor,qry)]
-		# line by line: move id info into new table
-		# for mutation and location check if the info exists; if not make new entry
-		time0 = time.time()
-		print "===================="
-		print "reorganizing ", table, os.getpid()
-		###############
-		print "\t variants", os.getpid()
-		#reorganize_donor_variants(cursor, table, columns)
-		time1 = time.time()
-		print ("\t\t done in %.3f mins" % (float(time1-time0)/60)), os.getpid()
-		###############
-		print "\t mutations", os.getpid()
-		reorganize_mutations(cursor, table, columns)
-		time2 = time.time()
-		print ("\t\t done in %.3f mins" % (float(time2-time1)/60)), os.getpid()
-		###############
-		print "\t locations", os.getpid()
-		#reorganize_locations(cursor, table, columns)
-		time3 = time.time()
-		print ("\t\t done in %.3f mins" % (float(time3-time2)/60)), os.getpid()
+	for cancer_type in cancer_types:
+		cmd = "find %s/%s -name '*.maf'" % (tcga_home, cancer_type)
+		files = [fnm.rstrip() for fnm in subprocess.Popen(["bash", "-c", cmd], stdout=subprocess.PIPE).stdout.readlines()]
 
-		print ("\t overall time for %s: %.3f mins" % (table, float(time3-time0)/60)), os.getpid()
+		for filename in files:
+			# line by line: check if the info for that patient already stored, if not - store
+			# for mutation and location check if the info exists; if not make new entry
+			time0 = time.time()
+			print "===================="
+			print "processing file ", filename, os.getpid()
+			continue
+			###############
+			print "\t variants", os.getpid()
+			#reorganize_donor_variants(cursor, table, columns)
+			time1 = time.time()
+			print ("\t\t done in %.3f mins" % (float(time1-time0)/60)), os.getpid()
+			###############
+			print "\t mutations", os.getpid()
+			reorganize_mutations(cursor, table, columns)
+			time2 = time.time()
+			print ("\t\t done in %.3f mins" % (float(time2-time1)/60)), os.getpid()
+			###############
+			print "\t locations", os.getpid()
+			#reorganize_locations(cursor, table, columns)
+			time3 = time.time()
+			print ("\t\t done in %.3f mins" % (float(time3-time2)/60)), os.getpid()
+
+			print ("\t overall time for %s: %.3f mins" % (table, float(time3-time0)/60)), os.getpid()
 
 
 	cursor.close()
@@ -273,20 +275,14 @@ def reorganize(tables, other_args):
 #########################################
 def main():
 
-	db     = connect_to_mysql()
-	cursor = db.cursor()
-	#########################
-	# which temp somatic tables do we have
-	qry  = "select table_name from information_schema.tables "
-	qry += "where table_schema='icgc' and table_name like '%simple_somatic_temp'"
-	tables = [field[0] for field in  search_db(cursor,qry)]
-	cursor.close()
-	db.close()
+	# divide by cancer types, because I have duplicates within each cancer type
+	# that I'll resolve as I go, but I do not want the threads competing)
+	tcga_home = "/data/tcga"
+	cmd = "find %s -name Somatic_Mutations" % tcga_home
+	cancer_types = [dirnm.split("/")[3] for dirnm in subprocess.Popen(["bash", "-c", cmd], stdout=subprocess.PIPE).stdout.readlines()]
 
-	#tables  = ["BRCA_simple_somatic_temp"]
-	#number_of_chunks = 1
-	number_of_chunks = 8  # myISAM does not deadlock
-	parallelize(number_of_chunks, reorganize, tables, [])
+	number_of_chunks = 1  # myISAM does not deadlock
+	parallelize(number_of_chunks, add_tcga_diff, cancer_types, [])
 
 
 

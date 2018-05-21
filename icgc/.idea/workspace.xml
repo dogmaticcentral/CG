@@ -11,20 +11,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="common_queries.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/icgc_utils/common_queries.py">
+      <file leaf-file-name="24_gene_stats.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/24_gene_stats.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-144">
-              <caret line="43" selection-start-line="43" selection-end-line="43" />
+            <state relative-caret-position="684">
+              <caret line="38" column="41" selection-start-line="38" selection-start-column="41" selection-end-line="38" selection-end-column="41" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="24_gene_stats.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/24_gene_stats.py">
+      <file leaf-file-name="22_cancer_stats.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/22_cancer_stats.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="756">
-              <caret line="81" column="50" selection-start-line="81" selection-start-column="50" selection-end-line="81" selection-end-column="50" />
+            <state relative-caret-position="24">
+              <caret line="85" column="37" selection-start-line="85" selection-start-column="37" selection-end-line="85" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -46,7 +46,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/00_data_download/01_download_icgc_dir_structure.py" />
         <option value="$PROJECT_DIR$/02_find_max_allele_length.py" />
         <option value="$PROJECT_DIR$/07_make_tables.py" />
         <option value="$PROJECT_DIR$/03_check_quality.py" />
@@ -75,38 +74,43 @@
         <option value="$PROJECT_DIR$/19_patient_stats.py" />
         <option value="$PROJECT_DIR$/18_mutation_stats.py" />
         <option value="$PROJECT_DIR$/14_decorate_mutatsions.py" />
-        <option value="$PROJECT_DIR$/icgc_utils/mysql.py" />
-        <option value="$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py" />
-        <option value="$PROJECT_DIR$/12_reorganize_mutations.py" />
         <option value="$PROJECT_DIR$/22_var_sanity_checks.py" />
         <option value="$PROJECT_DIR$/20_patient_stats.py" />
         <option value="$PROJECT_DIR$/22a_patient_stats.py" />
         <option value="$PROJECT_DIR$/14_decorate_mutations.py" />
         <option value="$PROJECT_DIR$/14_decorate_simple_somatic.py" />
         <option value="$PROJECT_DIR$/16_mutation2gene_maps.py" />
-        <option value="$PROJECT_DIR$/15_decorate_mutations.py" />
         <option value="$PROJECT_DIR$/22b_cancer_stats.py" />
-        <option value="$PROJECT_DIR$/icgc_utils/common_queries.py" />
         <option value="$PROJECT_DIR$/11_consequence_vocab..py" />
         <option value="$PROJECT_DIR$/08_make_indices.py" />
         <option value="$PROJECT_DIR$/17_mutation2gene_index.py" />
         <option value="$PROJECT_DIR$/22a_cancer_stats.py" />
+        <option value="$PROJECT_DIR$/16_copy_realiability_annotation_to_somatic_table.py" />
+        <option value="$PROJECT_DIR$/16_copy_realiability_annotation_to_somatic_tables.py" />
+        <option value="$PROJECT_DIR$/icgc_utils/mysql.py" />
+        <option value="$PROJECT_DIR$/13_cleanup_duplicate_entries.py" />
+        <option value="$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py" />
+        <option value="$PROJECT_DIR$/15_decorate_mutations.py" />
+        <option value="$PROJECT_DIR$/17_mutation2gene_maps.py" />
+        <option value="$PROJECT_DIR$/12_reorganize_mutations.py" />
+        <option value="$PROJECT_DIR$/icgc_utils/common_queries.py" />
         <option value="$PROJECT_DIR$/24_gene_stats.py" />
+        <option value="$PROJECT_DIR$/30_add_tcga_diff.py" />
+        <option value="$PROJECT_DIR$/22_cancer_stats.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1995" />
-    <option name="y" value="95" />
-    <option name="width" value="1760" />
-    <option name="height" value="954" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="117" />
+    <option name="y" value="86" />
+    <option name="width" value="1717" />
+    <option name="height" value="966" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -128,20 +132,21 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Python" />
-    <property name="last_opened_file_path" value="$USER_HOME$/games/tissot/ton_utils" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../tcga" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Python" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/icgc_utils" />
       <recent name="$PROJECT_DIR$/00_data_download" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -170,25 +175,26 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1920" y="0" width="1920" height="1080" extended-state="6" />
+    <frame x="117" y="86" width="1717" height="966" extended-state="1" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15814444" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20425029" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32954547" />
     </layout>
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -200,14 +206,14 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Python Console" order="9" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Python Console" order="9" />
     </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -215,17 +221,10 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="21" />
+      <option name="time" value="22" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/07_load_mysql.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/00_data_download/02_download_somatic_files.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -298,9 +297,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
-    <entry file="file://$PROJECT_DIR$/03_make_tables.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
     <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -308,9 +304,6 @@
           <caret line="4" column="1" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/03_make_tables.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/03_check_quality.py" />
     <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
@@ -351,20 +344,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/06_write_other_tsv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-71">
-          <caret line="31" column="55" selection-start-line="31" selection-start-column="14" selection-end-line="31" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/05_write_mutations_tsv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="64" column="54" selection-start-line="64" selection-start-column="54" selection-end-line="64" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/07_load_mysql.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
@@ -394,48 +373,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/18_mutation_stats.py" />
-    <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="173">
-          <caret line="283" column="25" lean-forward="true" selection-start-line="283" selection-start-column="25" selection-end-line="283" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="125" column="4" selection-start-line="125" selection-start-column="4" selection-end-line="125" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/16_mutation2gene_maps.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1076">
-          <caret line="127" lean-forward="true" selection-start-line="127" selection-end-line="127" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/14_decorate_simple_somatic.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="69" lean-forward="true" selection-start-line="69" selection-end-line="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/15_decorate_mutations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="25" column="24" lean-forward="true" selection-start-line="25" selection-start-column="24" selection-end-line="25" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="545">
-          <caret line="43" selection-start-line="39" selection-end-line="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/03_make_tables.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="522">
@@ -443,42 +380,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/22b_cancer_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="17" column="8" lean-forward="true" selection-start-line="17" selection-start-column="8" selection-end-line="17" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/20_var_sanity_checks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="31" column="18" lean-forward="true" selection-start-line="31" selection-start-column="18" selection-end-line="31" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/12_reorganize_mutations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1656">
-          <caret line="95" column="10" selection-start-line="87" selection-end-line="95" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/11_consequence_vocab..py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="25" selection-start-line="25" selection-end-line="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/22a_cancer_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="530">
-          <caret line="127" column="64" lean-forward="true" selection-start-line="127" selection-start-column="64" selection-end-line="127" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/17_mutation2gene_index.py">
+    <entry file="file://$PROJECT_DIR$/22b_cancer_stats.py" />
+    <entry file="file://$PROJECT_DIR$/22a_cancer_stats.py" />
+    <entry file="file://$PROJECT_DIR$/18_mutation2gene_index.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="396">
           <caret line="26" selection-start-line="26" selection-end-line="26" />
@@ -492,29 +396,129 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/old/22a_cancer_stats.py">
+    <entry file="file://$PROJECT_DIR$/old/22a_cancer_stats.py" />
+    <entry file="file://$PROJECT_DIR$/05_write_mutations_tsv.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1620" />
+        <state relative-caret-position="425">
+          <caret line="64" column="54" selection-start-line="64" selection-start-column="54" selection-end-line="64" selection-end-column="54" />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/22_cancer_stats.py">
+    <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
+        <state relative-caret-position="3834">
+          <caret line="213" column="50" selection-start-line="213" selection-start-column="4" selection-end-line="213" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/13_cleanup_duplicate_entries.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="452">
+          <caret line="102" selection-start-line="102" selection-end-line="102" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="774">
+          <caret line="43" selection-start-line="39" selection-end-line="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/11_consequence_vocab.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="25" selection-start-line="25" selection-end-line="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/20_var_sanity_checks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="558">
+          <caret line="31" column="18" selection-start-line="31" selection-start-column="18" selection-end-line="31" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="296">
+          <caret line="128" lean-forward="true" selection-start-line="125" selection-end-line="128" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/14_decorate_simple_somatic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="58" column="42" selection-start-line="58" selection-start-column="42" selection-end-line="58" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/16_copy_realiability_annotation_to_somatic_tables.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/17_mutation2gene_maps.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1635">
+          <caret line="135" column="59" selection-start-line="135" selection-start-column="59" selection-end-line="135" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/15_decorate_mutations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="792">
+          <caret line="81" selection-start-line="81" selection-end-line="81" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/icgc_utils/common_queries.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-144">
-          <caret line="43" selection-start-line="43" selection-end-line="43" />
+        <state relative-caret-position="594">
+          <caret line="151" column="53" selection-start-line="151" selection-start-column="53" selection-end-line="151" selection-end-column="53" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/24_gene_stats.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="756">
-          <caret line="81" column="50" selection-start-line="81" selection-start-column="50" selection-end-line="81" selection-end-column="50" />
+        <state relative-caret-position="684">
+          <caret line="38" column="41" selection-start-line="38" selection-start-column="41" selection-end-line="38" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/12_reorganize_mutations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3348">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
+          <folding>
+            <element signature="e#21#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/06_write_other_tsv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-160">
+          <caret line="31" column="55" selection-start-line="31" selection-start-column="14" selection-end-line="31" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_add_tcga_diff.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="270" column="10" lean-forward="true" selection-start-line="270" selection-start-column="10" selection-end-line="270" selection-end-column="10" />
+          <folding>
+            <element signature="e#19#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/22_cancer_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="24">
+          <caret line="85" column="37" selection-start-line="85" selection-start-column="37" selection-end-line="85" selection-end-column="37" />
         </state>
       </provider>
     </entry>

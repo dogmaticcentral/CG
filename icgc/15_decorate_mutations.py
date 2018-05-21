@@ -43,7 +43,6 @@ def decorate_mutations(tables, other_args):
 		time0 = time.time()
 		print "===================="
 		print "using annotations from  ", table,  "to add reliability info to  mutations; pid:", os.getpid()
-
 		update_reliability_column_in_mutation_tables(cursor, table)
 		time1 = time.time()
 		print ("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid()

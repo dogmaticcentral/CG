@@ -673,7 +673,7 @@ def load_maf (cursor, db_name, table, maffile, maf_diagnostics, meta_id, stats):
             continue
         tot_entries += 1
         line = line.rstrip()
-        maf_fields = line.split ('\t')
+        maf_fields = line.split('\t')
 
         sample_barcode_short = check_tumor_type(tumor_type_ids, maf_header_fields, maf_fields)
         if not sample_barcode_short: continue # this can happen if the tumor type is not the one we are looking for
