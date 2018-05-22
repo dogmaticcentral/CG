@@ -32,7 +32,7 @@ def main():
 
 	tcga_home = "/storage/databases/tcga"
 	cmd = "find %s -name Somatic_Mutations" % tcga_home
-	cancer_types = [dirnm.split("/")[3] for dirnm in subprocess.Popen(["bash", "-c", cmd], stdout=subprocess.PIPE).stdout.readlines()]
+	cancer_types = [dirnm.split("/")[4] for dirnm in subprocess.Popen(["bash", "-c", cmd], stdout=subprocess.PIPE).stdout.readlines()]
 
 	# I don't want to start this by mistake - remove comment and put in db names as needed
 	print "please comment out if you are sure you want to delete database tables"
@@ -43,8 +43,9 @@ def main():
 
 	for cancer_type in cancer_types:
 		# check somatic mutations table exist
-		for table in ( '%s_somatic_mutations'%cancer_type, '%s_mutations_meta'%cancer_type, '%s_conflict_mutations'%cancer_type):
-			if ( check_table_exists (cursor, db_name, table)):
+		#for table in ( '%s_somatic_mutations'%cancer_type, '%s_mutations_meta'%cancer_type, '%s_conflict_mutations'%cancer_type):
+		for table in ( '%s_somatic_mutations'%cancer_type, '%s_conflict_mutations'%cancer_type):
+			if (check_table_exists (cursor, db_name, table)):
 				print table, " found in ", db_name
 				qry = "drop table %s "  % table
 				rows = search_db(cursor, qry)

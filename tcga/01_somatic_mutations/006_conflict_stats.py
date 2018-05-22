@@ -31,49 +31,36 @@ from time import time
 #########################################
 def main():
 
-    db     = connect_to_mysql()
-    cursor = db.cursor()
+	db     = connect_to_mysql()
+	cursor = db.cursor()
 
-    sample_type = "metastatic"
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
+	tables = [field[0] for field in search_db(cursor,qry)]
 
-    if sample_type == "primary":
-        table = 'somatic_mutations'
-    elif sample_type == "metastatic":
-        table = 'metastatic_mutations'
-    else:
-        print "I don't know how to hadndle ", sample_type, " sample types"
-        exit(1) # unknown sample type
+	db_name = "tcga"
+	switch_to_db(cursor,db_name)
 
-    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
-                 "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
-                 "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
-    conflicts = {}
-    for db_name in db_names:
-        switch_to_db (cursor, db_name)
-        if not check_table_exists (cursor, db_name, table):
-            print table, " table not found in ", db_name
-            continue
-        else:
-            print "checking", table, "in", db_name
-        qry = "select count(1) from %s " % table
-        rows = search_db(cursor, qry)
-        if not rows or rows[0][0]==0:  continue
-        qry = "select count(1) from %s where conflict is not null" % table
-        rows = search_db(cursor, qry)
-        conflicts[db_name] = int(rows[0][0])
+	conflicts = {}
+	entries = {}
+	for table in tables:
+		qry = "select count(1) from %s " % table
+		number_of_entries = search_db(cursor, qry)[0][0]
+		entries[table] = number_of_entries
+		qry = "select count(1) from %s where conflict is not null" % table
+		rows = search_db(cursor, qry)
+		conflicts[table] = int(rows[0][0])
+
+	tables_sorted = sorted(conflicts, key=conflicts.__getitem__, reverse=True)
+	for table in tables_sorted:
+		print table, "entries:", entries[table], "conflicts:", conflicts[table]
 
 
-    db_names_sorted = sorted(conflicts, key=conflicts.__getitem__, reverse=True)
-    for db_name in db_names_sorted:
-        print
-        print db_name, conflicts[db_name], "conflicts"
-        print
 
-
-    cursor.close()
-    db.close()
+	cursor.close()
+	db.close()
 
 
 #########################################
 if __name__ == '__main__':
-    main()
+	main()

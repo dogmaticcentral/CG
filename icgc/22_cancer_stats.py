@@ -104,7 +104,7 @@ def main():
 		fields.append(len(specimens))
 
 		# number of unique mutations for each patient
-		number_of_patients_w_pathogenic_mutations,avg_no_muts =  avg_number_of_muts_per_patient(cursor, table, donors)
+		number_of_patients_w_pathogenic_mutations,avg_no_muts = avg_number_of_muts_per_patient(cursor, table, donors)
 		if verbose: print "\t number of patients with pathogenic mutations: %d" % number_of_patients_w_pathogenic_mutations,
 		pct = float(number_of_patients_w_pathogenic_mutations)/len(donors)*100
 		if verbose: print "\t (%d%%)" % (pct)

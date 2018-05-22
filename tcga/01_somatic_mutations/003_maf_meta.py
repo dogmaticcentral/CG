@@ -289,7 +289,6 @@ def inspect(cancer_types, other_args):
 			print cancer_type, bare_filename,
 			print fullpath
 
-
 			# first make sure that the file is not empty - in which case
 			# we might have to go and check what's wiht the download
 			if os.path.getsize(fullpath) == 0:
@@ -358,9 +357,9 @@ def main():
 	cmd = "find %s -name Somatic_Mutations" % tcga_home
 	cancer_types = [dirnm.split("/")[4] for dirnm in subprocess.Popen(["bash", "-c", cmd], stdout=subprocess.PIPE).stdout.readlines()]
 
-	cancer_types = ['UCS', "KICH", "COAD", "ALL"]
+	#cancer_types = ["GBM"]
 
-	number_of_chunks = 4  # myISAM does not deadlock
+	number_of_chunks = 1  # myISAM does not deadlock
 	parallelize(number_of_chunks, inspect, cancer_types, [])
 
 
