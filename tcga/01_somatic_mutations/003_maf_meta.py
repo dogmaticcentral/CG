@@ -105,8 +105,8 @@ def check_headers(maffile, required_fields, expected_fields):
 	if len(missing_fields) > 0:
 		return ["fail", "missing required fields:  " + " ".join(missing_fields)]
 
-	# we know we eill add tthese two filds to the original maf: 'sample_barcode_short', 'meta_info_index'
-	missing_fields = filter(lambda x: not x in header_fields+['sample_barcode_short', 'meta_info_index'], expected_fields)
+	# we know we eill add tthese two filds to the original maf: 'sample_barcode_short', 'meta_info_id'
+	missing_fields = filter(lambda x: not x in header_fields+['sample_barcode_short', 'meta_info_id'], expected_fields)
 	if len(missing_fields) > 0:
 		return ["warn", "missing expected fields:  " + " ".join(missing_fields)]
 
@@ -281,7 +281,7 @@ def inspect(cancer_types, other_args):
 		mafs = filter(lambda x: x.endswith(".maf") and not 'mitochondria' in x, os.listdir(sommut_dir))
 
 		required_fields = get_required_fields()
-		expected_fields = filter (lambda x: x not in ['sample_barcode_short', 'meta_info_index', 'conflict'], get_expected_fields(cursor, db_name, "somatic_mutations"))
+		expected_fields = filter (lambda x: x not in ['sample_barcode_short', 'meta_info_id', 'conflict'], get_expected_fields(cursor, db_name, "somatic_mutations"))
 
 		for bare_filename in mafs:
 			fullpath = sommut_dir + "/" + bare_filename

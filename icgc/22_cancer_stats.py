@@ -38,22 +38,6 @@ def avg_number_of_muts_per_patient(cursor, table, donors):
 
 
 #########################################
-def patients_per_gene_breakdown(cursor, table):
-
-	# this hinges on s.icgc_mutation_id=g.icgc_mutation_id
-	# having icgc_mutation_id indexed both on s and g:
-	qry  = "select g.gene_symbol symbol, count(distinct  s.icgc_donor_id) ct "
-	qry += "from mutation2gene g, %s s  " % table
-	qry += "where s.icgc_mutation_id=g.icgc_mutation_id and s.pathogenic_estimate=1  "
-	qry += "and (s.total_read_count is null or (s.mutant_allele_read_count>3 and s.mut_to_total_read_count_ratio>0.2)) "
-	qry += "group by symbol"
-	ret = search_db(cursor,qry)
-	if not ret:
-		search_db(cursor,qry, verbose=True)
-		exit()
-	return dict(ret)
-
-#########################################
 #########################################
 # produce table of the format
 # tumor short | tumor long | number of patients | avg number of mutations per patient |

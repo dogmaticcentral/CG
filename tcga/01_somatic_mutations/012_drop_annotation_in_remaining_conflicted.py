@@ -31,87 +31,79 @@ from time import time
 #########################################
 def main():
 
-    db     = connect_to_mysql()
-    cursor = db.cursor()
+	print "don't do this - there is a lot of screwed up annotation in some cancers"
+	print "while the underlying sequencing might be OK"
+	print "(it looks like some of the annotation at least might be referring to different splicing)"
+	exit()
 
-    sample_type = "metastatic"
+	db     = connect_to_mysql()
+	cursor = db.cursor()
 
-    if sample_type == "primary":
-        table = 'somatic_mutations'
-    elif sample_type == "metastatic":
-        table = 'metastatic_mutations'
-    else:
-        print "I don't know how to hadndle ", sample_type, " sample types"
-        exit(1) # unknown sample type
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
+	tables = [field[0] for field in search_db(cursor,qry)]
 
-    db_names  = ["ACC", "BLCA", "BRCA", "CESC", "CHOL",  "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH" ,"KIRC",
-                 "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC",  "MESO", "OV",   "PAAD", "PCPG", "PRAD", "REA",
-                 "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
-    conflicts = {}
-    for db_name in db_names:
-        switch_to_db (cursor, db_name)
-        if not check_table_exists (cursor, db_name, table):
-            print table, " table not found in ", db_name
-            continue
-        qry = "select count(1) from %s " % table
-        rows = search_db(cursor, qry)
-        if not rows or rows[0][0] ==0:  continue
-        qry = "select count(1) from %s where conflict is not null" % table
-        rows = search_db(cursor, qry)
-        conflicts[db_name] = int(rows[0][0])
+	switch_to_db (cursor, "tcga")
+
+	conflicts = {}
+	total = {}
+	for table in tables:
+		qry = "select count(1) from %s " % table
+		rows = search_db(cursor, qry)
+		if not rows or rows[0][0] ==0: continue
+		total[table] = rows[0][0]
+		qry = "select count(1) from %s where conflict is not null" % table
+		rows = search_db(cursor, qry)
+		conflicts[table] = int(rows[0][0])
 
 
-    db_names_sorted = sorted(conflicts, key=conflicts.__getitem__, reverse=True)
-    for db_name in db_names_sorted:
-        print
-        print db_name, conflicts[db_name], "conflicts"
-        print
-        # continue
+	tables_sorted = sorted(conflicts, key=conflicts.__getitem__, reverse=True)
+	for table in tables_sorted:
+		print table, conflicts[table], "conflicts, out of", total[table]
+		continue
 
-        switch_to_db (cursor, db_name)
+		expected_fields = get_expected_fields(cursor, table, table)
+		# get all conflicted groups
+		qry = "select * from %s where conflict is not null" % table
+		rows = search_db(cursor, qry)
+		if not rows: continue
 
-        expected_fields = get_expected_fields(cursor, db_name, table)
-        # get all conflicted groups
-        qry = "select * from %s where conflict is not null" % table
-        rows = search_db(cursor, qry)
-        if not rows: continue
+		existing_fields_by_database_id = dict(zip(map(lambda x: int(x[0]), rows),
+												  map(lambda x: make_named_fields(expected_fields, x[1:]), rows)))
 
-        existing_fields_by_database_id = dict(zip(map(lambda x: int(x[0]), rows),
-                                                  map(lambda x: make_named_fields(expected_fields, x[1:]), rows)))
+		bags = []
+		keyset = set (existing_fields_by_database_id.keys())
+		for db_id, fields in existing_fields_by_database_id.iteritems():
+			conflict_ids = set([int(a.split(" with ")[-1]) for a in fields['conflict'].split(";")])
+			if not conflict_ids <= keyset:
+				print "error - conflicting ids not reciprocally labelled or not in the database"
+				exit(1)
+			new_bag = set(conflict_ids) | set([db_id])  # set unioin
+			new_bags = []
+			for bag in bags:
+				if not bag & new_bag: # intersection is empty
+					new_bags.append(bag)
+				else:
+					new_bag |= bag  # add the elements of this bag to the new bag
+			new_bags.append(new_bag)
+			bags = new_bags
 
-        bags = []
-        keyset = set (existing_fields_by_database_id.keys())
-        for db_id, fields in existing_fields_by_database_id.iteritems():
-            conflict_ids = set([int(a.split(" with ")[-1]) for a in fields['conflict'].split(";")])
-            if not conflict_ids <= keyset:
-                print "error - conflicting ids not reciprocally labelled or not in the database"
-                exit(1)
-            new_bag = set(conflict_ids) | set([db_id])  # set unioin
-            new_bags = []
-            for bag in bags:
-                if not bag & new_bag: # intersection is empty
-                    new_bags.append(bag)
-                else:
-                    new_bag |= bag  # add the elements of this bag to the new bag
-            new_bags.append(new_bag)
-            bags = new_bags
-
-        #ef = existing_fields_by_database_id # I neeed a shorthand
-        for bag in bags: # bag is a collection of conflicting ids
-            conflicting_ids = list(bag)
-            print conflicting_ids[0], conflicting_ids[1:]
-            keep_id = int(conflicting_ids[0])
-            qry = "update %s set aa_change=NULL, conflict=null where id=%d" % (table, keep_id)
-            search_db(cursor, qry)
-            for delete_id in conflicting_ids[1:]:
-                qry = "delete from %s where  id=%d" % (table, int(delete_id))
-                search_db(cursor, qry)
+		#ef = existing_fields_by_database_id # I neeed a shorthand
+		for bag in bags: # bag is a collection of conflicting ids
+			conflicting_ids = list(bag)
+			print conflicting_ids[0], conflicting_ids[1:]
+			keep_id = int(conflicting_ids[0])
+			qry = "update %s set aa_change=NULL, conflict=null where id=%d" % (table, keep_id)
+			search_db(cursor, qry)
+			for delete_id in conflicting_ids[1:]:
+				qry = "delete from %s where  id=%d" % (table, int(delete_id))
+				search_db(cursor, qry)
 
 
-    cursor.close()
-    db.close()
+	cursor.close()
+	db.close()
 
 
 #########################################
 if __name__ == '__main__':
-    main()
+	main()

@@ -213,7 +213,6 @@ def reorganize_locations(cursor, table, columns):
 				else:
 					print "unrecognized consequence field:", csq
 					exit()
-
 				# gene and transcript are listed, but no relative position is specified:
 				if len(gene_relative)==0 and gene and 'ENSG' in gene:
 					gene_relative.add("{}:{}".format(gene,"unk"))

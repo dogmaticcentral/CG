@@ -21,7 +21,7 @@
 #
 # the fields in the tumor sample barcode are
 # project - tissue source site (TSS)  - participant -
-# source.vial - portion.analyte  - plate - (sequencing or characterization center)
+# sample.vial - portion.analyte  - plate - (sequencing or characterization center)
 #
 #
 # sample codes:

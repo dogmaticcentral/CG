@@ -25,40 +25,48 @@ from old_tcga_tools.tcga_utils.utils import *
 from random import random
 from old_tcga_tools.tcga_utils.ucsc import segment_from_das
 
-
-
 ##################################################################################
 ##################################################################################
 def main():
-    db = connect_to_mysql()
-    cursor = db.cursor()
-    db_names = ["ACC", "BLCA", "BRCA", "CESC", "CHOL", "COAD", "DLBC", "ESCA", "GBM", "HNSC", "KICH", "KIRC",
-                "KIRP", "LAML", "LGG", "LIHC", "LUAD", "LUSC", "MESO", "OV", "PAAD", "PCPG", "PRAD", "REA",
-                "SARC", "SKCM", "STAD", "TGCT", "THCA", "THYM", "UCEC", "UCS", "UVM"]
 
-    for db_name in db_names:
+	print "make sure that that the stutter sample entry comes "
+	print "from the file that meta info corresponds to (that is, I have some" \
+	      "revised fiels that might be addressing precisely that issue"
+	exit()
 
-        switch_to_db(cursor, db_name)
-        qry  = "select * from mutations_meta where diagnostics like '%stutter%'"
-        rows = search_db(cursor,qry)
-        if not rows: continue
-        print
-        print " ** ", db_name
-        for row in rows:
-            terms = row[-1].split(";")
-            for term in terms:
-                if not "stutter" in term: continue
-                sample_ids = term.split("=>")[-1].replace(" ","").split(",")
-                sample_ids_quoted = ",".join(map(lambda x: '"' + x + '"', sample_ids))
-                qry = "delete from somatic_mutations where tumor_sample_barcode in (%s) " % sample_ids_quoted
-                search_db(cursor,qry)
-                qry = "delete from metastatic_mutations where tumor_sample_barcode in (%s) " % sample_ids_quoted
-                search_db(cursor,qry)
+	db = connect_to_mysql()
+	cursor = db.cursor()
 
-    cursor.close()
-    db.close()
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
+	tables = [field[0] for field in search_db(cursor,qry)]
+
+	switch_to_db(cursor, "tcga")
+
+	for table in tables:
+		# total number of samples:
+		qry = "select count(distinct tumor_sample_barcode) from %s" % table
+		total_samples = search_db(cursor,qry)[0][0]
+		mutations_meta = table.split("_")[0]+"_mutations_meta"
+		qry  = "select * from %s where diagnostics like '%%stutter%%'" % mutations_meta
+		rows = search_db(cursor,qry)
+		if not rows: continue
+		print
+		print " ** ", table, "total samples:", total_samples
+		for row in rows:
+			terms = row[-1].split(";")
+			for term in terms:
+				if not "stutter" in term: continue
+				sample_ids = term.split("=>")[-1].replace(" ","").split(",")
+				sample_ids_quoted = ",".join(map(lambda x: '"' + x + '"', sample_ids))
+				print "\t ", sample_ids_quoted
+				#qry = "delete from somatic_mutations where tumor_sample_barcode in (%s) " % sample_ids_quoted
+				#search_db(cursor,qry)
+
+	cursor.close()
+	db.close()
 
 
 #########################################
 if __name__ == '__main__':
-    main()
+	main()

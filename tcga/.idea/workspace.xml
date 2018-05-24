@@ -9,154 +9,45 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DockManager">
+    <window id="2">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file leaf-file-name="010_add_annotation_from_annovar.py" pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="535">
+                    <caret line="188" column="34" lean-forward="true" selection-start-line="188" selection-start-column="34" selection-end-line="188" selection-end-column="34" />
+                    <folding>
+                      <element signature="n#!!doc" />
+                      <element signature="e#826#835#0" expanded="true" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="004_read_maf_meta.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/004_read_maf_meta.py">
+      <file leaf-file-name="014_drop_stuttering_samples.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/014_drop_stuttering_samples.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="46" column="36" lean-forward="true" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+            <state relative-caret-position="229">
+              <caret line="34" column="10" selection-start-line="34" selection-start-column="10" selection-end-line="34" selection-end-column="10" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="005_load_maf.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005_load_maf.py">
+      <file leaf-file-name="020_db_stats.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/020_db_stats.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="619">
-              <caret line="689" selection-start-line="689" selection-end-line="690" />
-              <folding>
-                <element signature="n#!!doc" />
-                <element signature="e#1148#1543#0" />
-                <element signature="e#1222#1522#0" />
-                <element signature="e#1304#1401#0" />
-                <element signature="e#1304#1333#0" />
-                <element signature="e#1646#2258#0" />
-                <element signature="e#1753#2018#0" />
-                <element signature="e#2171#2258#0" />
-                <element signature="e#2337#2529#0" />
-                <element signature="e#2632#2781#0" />
-                <element signature="e#2681#2764#0" />
-                <element signature="e#2906#3195#0" />
-                <element signature="e#3346#3609#0" />
-                <element signature="e#3732#4699#0" />
-                <element signature="e#4469#4522#0" />
-                <element signature="e#4599#4665#0" />
-                <element signature="e#4817#5423#0" />
-                <element signature="e#4925#5389#0" />
-                <element signature="e#5021#5293#0" />
-                <element signature="e#5237#5293#0" />
-                <element signature="e#5342#5389#0" />
-                <element signature="e#5521#5899#0" />
-                <element signature="e#5901#5942#0" />
-                <element signature="e#6069#15995#0" />
-                <element signature="e#6636#15971#0" />
-                <element signature="e#6749#13945#0" />
-                <element signature="e#7140#11278#0" />
-                <element signature="e#9064#9541#0" />
-                <element signature="e#9584#11278#0" />
-                <element signature="e#9835#10258#0" />
-                <element signature="e#10212#10258#0" />
-                <element signature="e#10279#10397#0" />
-                <element signature="e#10596#10897#0" />
-                <element signature="e#10954#11278#0" />
-                <element signature="e#11034#11246#0" />
-                <element signature="e#11369#13945#0" />
-                <element signature="e#11625#12343#0" />
-                <element signature="e#11883#12343#0" />
-                <element signature="e#12702#13761#0" />
-                <element signature="e#14421#14498#0" />
-                <element signature="e#14912#15971#0" />
-                <element signature="e#15063#15087#0" />
-                <element signature="e#15479#15621#0" />
-                <element signature="e#15734#15843#0" />
-                <element signature="e#15878#15971#0" />
-                <element signature="e#13974#15139#0" />
-                <element signature="e#14639#15012#0" />
-                <element signature="e#17149#17248#0" />
-                <element signature="e#17454#23395#0" />
-                <element signature="e#18031#18518#0" />
-                <element signature="e#18279#18490#0" />
-                <element signature="e#18524#18556#0" />
-                <element signature="e#18797#19980#0" />
-                <element signature="e#19265#19514#0" />
-                <element signature="e#19332#19423#0" />
-                <element signature="e#19552#19850#0" />
-                <element signature="e#19671#19762#0" />
-                <element signature="e#20334#21767#0" />
-                <element signature="e#20378#21090#0" />
-                <element signature="e#20504#20856#0" />
-                <element signature="e#20924#21060#0" />
-                <element signature="e#21206#21767#0" />
-                <element signature="e#21372#21543#0" />
-                <element signature="e#21578#21767#0" />
-                <element signature="e#21773#21859#0" />
-                <element signature="e#22080#22381#0" />
-                <element signature="e#22185#22381#0" />
-                <element signature="e#22387#22470#0" />
-                <element signature="e#22540#23372#0" />
-                <element signature="e#22805#22952#0" />
-                <element signature="e#23013#23100#0" />
-                <element signature="e#23185#23372#0" />
-                <element signature="e#23488#24592#0" />
-                <element signature="e#23638#23720#0" />
-                <element signature="e#23878#24179#0" />
-                <element signature="e#24304#24391#0" />
-                <element signature="e#24489#24564#0" />
-                <element signature="e#24713#25626#0" />
-                <element signature="e#25397#25459#0" />
-                <element signature="e#25478#25611#0" />
-                <element signature="e#26480#26567#0" />
-                <element signature="e#24225#24275#0" />
-                <element signature="e#24526#24874#0" />
-                <element signature="e#27907#28318#0" />
-                <element signature="e#28497#28595#0" />
-                <element signature="e#28660#28755#0" />
-                <element signature="e#28967#29025#0" />
-                <element signature="e#29713#29816#0" />
-                <element signature="e#30269#30428#0" />
-                <element signature="e#27067#27155#0" />
-                <element signature="e#27323#27356#0" />
-                <element signature="e#30574#31489#0" />
-                <element signature="e#30574#30662#0" />
-                <element signature="e#30839#30872#0" />
-                <element signature="e#31096#31178#0" />
-                <element signature="e#29453#29474#0" />
-                <element signature="e#32744#32778#0" />
-                <element signature="e#31874#31951#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="008_duplicate_check.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/008_duplicate_check.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1296" />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="009_no_protein_level_annotation_check.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/009_no_protein_level_annotation_check.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-719">
-              <caret line="11" column="59" selection-start-line="11" selection-start-column="59" selection-end-line="11" selection-end-column="59" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="010_add_annotation_from_annovar.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2430" />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="011_drop_unannotatable.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/011_drop_unannotatable.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="181">
-              <caret line="79" column="38" lean-forward="true" selection-start-line="79" selection-start-column="38" selection-end-line="79" selection-end-column="38" />
+            <state relative-caret-position="594">
+              <caret line="45" column="47" lean-forward="true" selection-start-line="45" selection-start-column="47" selection-end-line="45" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -169,7 +60,11 @@
       <find>fields length mismatch</find>
       <find>insert_into_db</find>
       <find>entres</find>
+      <find>meta_info_index</find>
     </findStrings>
+    <replaceStrings>
+      <replace>meta_info_id</replace>
+    </replaceStrings>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -178,21 +73,29 @@
         <option value="$PROJECT_DIR$/00_common_tasks/200_find_maf_files_in_GDC.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/001_maf_tables_cleanup.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/004_read_maf_meta.py" />
-        <option value="$PROJECT_DIR$/01_somatic_mutations/003_maf_meta.py" />
-        <option value="$PROJECT_DIR$/01_somatic_mutations/002_create_maf_tables.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/tcga_utils/utils.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/006_conflict_stats.py" />
-        <option value="$PROJECT_DIR$/01_somatic_mutations/005_load_maf.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/009_no_protein_level_annotation_check.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/001_drop_maf_tables.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/002_create_maf_tables.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/tmp_hack.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/003_maf_meta.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/005_load_maf.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/005b_maf_indices.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/011_drop_unannotatable.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/012_drop_annotation_in_remaining_conflicted.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/005a_load_maf.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/020_db_stats.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/014_drop_stuttering_samples.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1965" />
-    <option name="y" value="54" />
-    <option name="width" value="1807" />
-    <option name="height" value="950" />
+    <option name="x" value="2096" />
+    <option name="y" value="14" />
+    <option name="width" value="1633" />
+    <option name="height" value="1013" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -227,6 +130,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/01_somatic_mutations" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -253,12 +161,12 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1965" y="54" width="1807" height="950" extended-state="0" />
+    <frame x="2096" y="14" width="1633" height="1013" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24551569" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2720497" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Find" order="1" visible="true" weight="0.092364535" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" />
@@ -272,6 +180,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info active="true" anchor="bottom" id="Find" order="1" visible="true" weight="0.092364535" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -279,10 +188,58 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="2" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/004_read_maf_meta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="720">
+          <caret line="46" column="36" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005a_load_maf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="11988">
+          <caret line="690" lean-forward="true" selection-start-line="690" selection-end-line="690" />
+          <folding>
+            <element signature="n#!!doc" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/004_read_maf_meta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="720">
+          <caret line="46" column="36" lean-forward="true" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005a_load_maf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="11970">
+          <caret line="689" selection-start-line="689" selection-end-line="690" />
+          <folding>
+            <element signature="n#!!doc" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/009_no_protein_level_annotation_check.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="59" selection-start-line="11" selection-start-column="59" selection-end-line="11" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/011_drop_unannotatable.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1350">
+          <caret line="79" column="38" lean-forward="true" selection-start-line="79" selection-start-column="38" selection-end-line="79" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/004_read_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="774">
@@ -304,108 +261,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005_load_maf.py">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005a_load_maf.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1566">
           <caret line="676" selection-start-line="676" selection-end-line="676" />
           <folding>
             <element signature="n#!!doc" />
-            <element signature="e#1148#1543#0" />
-            <element signature="e#1222#1522#0" />
-            <element signature="e#1304#1401#0" />
-            <element signature="e#1304#1333#0" />
-            <element signature="e#1646#2258#0" />
-            <element signature="e#1753#2018#0" />
-            <element signature="e#2171#2258#0" />
-            <element signature="e#2337#2529#0" />
-            <element signature="e#2632#2781#0" />
-            <element signature="e#2681#2764#0" />
-            <element signature="e#2906#3195#0" />
-            <element signature="e#3346#3609#0" />
-            <element signature="e#3732#4699#0" />
-            <element signature="e#4469#4522#0" />
-            <element signature="e#4599#4665#0" />
-            <element signature="e#4817#5423#0" />
-            <element signature="e#4925#5389#0" />
-            <element signature="e#5021#5293#0" />
-            <element signature="e#5237#5293#0" />
-            <element signature="e#5342#5389#0" />
-            <element signature="e#5521#5899#0" />
-            <element signature="e#5901#5942#0" />
-            <element signature="e#6069#15995#0" />
-            <element signature="e#6636#15971#0" />
-            <element signature="e#6749#13945#0" />
-            <element signature="e#7140#11278#0" />
-            <element signature="e#9064#9541#0" />
-            <element signature="e#9584#11278#0" />
-            <element signature="e#9835#10258#0" />
-            <element signature="e#10212#10258#0" />
-            <element signature="e#10279#10397#0" />
-            <element signature="e#10596#10897#0" />
-            <element signature="e#10954#11278#0" />
-            <element signature="e#11034#11246#0" />
-            <element signature="e#11369#13945#0" />
-            <element signature="e#11625#12343#0" />
-            <element signature="e#11883#12343#0" />
-            <element signature="e#12702#13761#0" />
-            <element signature="e#14421#14498#0" />
-            <element signature="e#14912#15971#0" />
-            <element signature="e#15063#15087#0" />
-            <element signature="e#15479#15621#0" />
-            <element signature="e#15734#15843#0" />
-            <element signature="e#15878#15971#0" />
-            <element signature="e#16118#17322#0" />
-            <element signature="e#16790#17121#0" />
-            <element signature="e#17149#17248#0" />
-            <element signature="e#17454#23395#0" />
-            <element signature="e#18031#18518#0" />
-            <element signature="e#18279#18490#0" />
-            <element signature="e#18524#18556#0" />
-            <element signature="e#18797#19980#0" />
-            <element signature="e#19265#19514#0" />
-            <element signature="e#19332#19423#0" />
-            <element signature="e#19552#19850#0" />
-            <element signature="e#19671#19762#0" />
-            <element signature="e#20334#21767#0" />
-            <element signature="e#20378#21090#0" />
-            <element signature="e#20504#20856#0" />
-            <element signature="e#20924#21060#0" />
-            <element signature="e#21206#21767#0" />
-            <element signature="e#21372#21543#0" />
-            <element signature="e#21578#21767#0" />
-            <element signature="e#21773#21859#0" />
-            <element signature="e#22080#22381#0" />
-            <element signature="e#22185#22381#0" />
-            <element signature="e#22387#22470#0" />
-            <element signature="e#22540#23372#0" />
-            <element signature="e#22805#22952#0" />
-            <element signature="e#23013#23100#0" />
-            <element signature="e#23185#23372#0" />
-            <element signature="e#23488#24592#0" />
-            <element signature="e#23638#23720#0" />
-            <element signature="e#23878#24179#0" />
-            <element signature="e#24304#24391#0" />
-            <element signature="e#24489#24564#0" />
-            <element signature="e#24713#25626#0" />
-            <element signature="e#25397#25459#0" />
-            <element signature="e#25478#25611#0" />
-            <element signature="e#25773#30456#0" />
-            <element signature="e#26480#26567#0" />
-            <element signature="e#27083#27133#0" />
-            <element signature="e#27447#27831#0" />
-            <element signature="e#27907#28318#0" />
-            <element signature="e#28497#28595#0" />
-            <element signature="e#28660#28755#0" />
-            <element signature="e#28967#29025#0" />
-            <element signature="e#29713#29816#0" />
-            <element signature="e#30269#30428#0" />
-            <element signature="e#30574#31489#0" />
-            <element signature="e#30574#30662#0" />
-            <element signature="e#30839#30872#0" />
-            <element signature="e#31096#31178#0" />
-            <element signature="e#31659#31737#0" />
-            <element signature="e#32093#32193#0" />
-            <element signature="e#32744#32778#0" />
           </folding>
         </state>
       </provider>
@@ -414,9 +275,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6300">
           <caret line="355" column="11" lean-forward="true" selection-start-line="355" selection-start-column="11" selection-end-line="355" selection-end-column="11" />
-          <folding>
-            <element signature="e#996#1013#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -431,9 +289,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2124">
           <caret line="122" column="58" lean-forward="true" selection-start-line="122" selection-start-column="58" selection-end-line="122" selection-end-column="58" />
-          <folding>
-            <element signature="e#828#845#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -444,117 +299,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/002_create_maf_tables.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#828#845#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005_load_maf.py">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005a_load_maf.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1944">
           <caret line="697" lean-forward="true" selection-start-line="697" selection-end-line="697" />
           <folding>
             <element signature="n#!!doc" />
-            <element signature="e#1148#1543#0" />
-            <element signature="e#1222#1522#0" />
-            <element signature="e#1304#1401#0" />
-            <element signature="e#1304#1333#0" />
-            <element signature="e#1646#2258#0" />
-            <element signature="e#1753#2018#0" />
-            <element signature="e#2171#2258#0" />
-            <element signature="e#2337#2529#0" />
-            <element signature="e#2632#2781#0" />
-            <element signature="e#2681#2764#0" />
-            <element signature="e#2906#3195#0" />
-            <element signature="e#3346#3609#0" />
-            <element signature="e#3732#4699#0" />
-            <element signature="e#4469#4522#0" />
-            <element signature="e#4599#4665#0" />
-            <element signature="e#4817#5423#0" />
-            <element signature="e#4925#5389#0" />
-            <element signature="e#5021#5293#0" />
-            <element signature="e#5237#5293#0" />
-            <element signature="e#5342#5389#0" />
-            <element signature="e#5521#5899#0" />
-            <element signature="e#5901#5942#0" />
-            <element signature="e#6069#15995#0" />
-            <element signature="e#6636#15971#0" />
-            <element signature="e#6749#13945#0" />
-            <element signature="e#7140#11278#0" />
-            <element signature="e#9064#9541#0" />
-            <element signature="e#9584#11278#0" />
-            <element signature="e#9835#10258#0" />
-            <element signature="e#10212#10258#0" />
-            <element signature="e#10279#10397#0" />
-            <element signature="e#10596#10897#0" />
-            <element signature="e#10954#11278#0" />
-            <element signature="e#11034#11246#0" />
-            <element signature="e#11369#13945#0" />
-            <element signature="e#11625#12343#0" />
-            <element signature="e#11883#12343#0" />
-            <element signature="e#12702#13761#0" />
-            <element signature="e#14421#14498#0" />
-            <element signature="e#14912#15971#0" />
-            <element signature="e#15063#15087#0" />
-            <element signature="e#15479#15621#0" />
-            <element signature="e#15734#15843#0" />
-            <element signature="e#15878#15971#0" />
-            <element signature="e#16118#17322#0" />
-            <element signature="e#16790#17121#0" />
-            <element signature="e#17149#17248#0" />
-            <element signature="e#17454#23395#0" />
-            <element signature="e#18031#18518#0" />
-            <element signature="e#18279#18490#0" />
-            <element signature="e#18524#18556#0" />
-            <element signature="e#18797#19980#0" />
-            <element signature="e#19265#19514#0" />
-            <element signature="e#19332#19423#0" />
-            <element signature="e#19552#19850#0" />
-            <element signature="e#19671#19762#0" />
-            <element signature="e#20334#21767#0" />
-            <element signature="e#20378#21090#0" />
-            <element signature="e#20504#20856#0" />
-            <element signature="e#20924#21060#0" />
-            <element signature="e#21206#21767#0" />
-            <element signature="e#21372#21543#0" />
-            <element signature="e#21578#21767#0" />
-            <element signature="e#21773#21859#0" />
-            <element signature="e#22080#22381#0" />
-            <element signature="e#22185#22381#0" />
-            <element signature="e#22387#22470#0" />
-            <element signature="e#22540#23372#0" />
-            <element signature="e#22805#22952#0" />
-            <element signature="e#23013#23100#0" />
-            <element signature="e#23185#23372#0" />
-            <element signature="e#23488#24592#0" />
-            <element signature="e#23638#23720#0" />
-            <element signature="e#23878#24179#0" />
-            <element signature="e#24304#24391#0" />
-            <element signature="e#24489#24564#0" />
-            <element signature="e#24713#25626#0" />
-            <element signature="e#25397#25459#0" />
-            <element signature="e#25478#25611#0" />
-            <element signature="e#25773#30456#0" />
-            <element signature="e#26480#26567#0" />
-            <element signature="e#27083#27133#0" />
-            <element signature="e#27447#27831#0" />
-            <element signature="e#27907#28318#0" />
-            <element signature="e#28497#28595#0" />
-            <element signature="e#28660#28755#0" />
-            <element signature="e#28967#29025#0" />
-            <element signature="e#29713#29816#0" />
-            <element signature="e#30269#30428#0" />
-            <element signature="e#30574#31489#0" />
-            <element signature="e#30574#30662#0" />
-            <element signature="e#30839#30872#0" />
-            <element signature="e#31096#31178#0" />
-            <element signature="e#31659#31737#0" />
-            <element signature="e#32093#32193#0" />
-            <element signature="e#32744#32778#0" />
           </folding>
         </state>
       </provider>
@@ -573,7 +323,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005_load_maf.py">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005a_load_maf.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3996">
           <caret line="227" column="29" lean-forward="true" selection-start-line="227" selection-start-column="29" selection-end-line="227" selection-end-column="29" />
@@ -601,23 +351,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/003_maf_meta.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="310">
-          <caret line="274" column="46" lean-forward="true" selection-start-line="274" selection-start-column="37" selection-end-line="274" selection-end-column="46" />
-          <folding>
-            <element signature="e#996#1013#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/004_read_maf_meta.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="46" column="36" lean-forward="true" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/tcga_utils/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="218">
@@ -632,168 +365,102 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/002_create_maf_tables.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1620">
-          <caret line="128" column="45" selection-start-line="128" selection-start-column="45" selection-end-line="128" selection-end-column="45" />
-          <folding>
-            <element signature="e#828#845#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005_load_maf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="619">
-          <caret line="689" selection-start-line="689" selection-end-line="690" />
-          <folding>
-            <element signature="n#!!doc" />
-            <element signature="e#1148#1543#0" />
-            <element signature="e#1222#1522#0" />
-            <element signature="e#1304#1401#0" />
-            <element signature="e#1304#1333#0" />
-            <element signature="e#1646#2258#0" />
-            <element signature="e#1753#2018#0" />
-            <element signature="e#2171#2258#0" />
-            <element signature="e#2337#2529#0" />
-            <element signature="e#2632#2781#0" />
-            <element signature="e#2681#2764#0" />
-            <element signature="e#2906#3195#0" />
-            <element signature="e#3346#3609#0" />
-            <element signature="e#3732#4699#0" />
-            <element signature="e#4469#4522#0" />
-            <element signature="e#4599#4665#0" />
-            <element signature="e#4817#5423#0" />
-            <element signature="e#4925#5389#0" />
-            <element signature="e#5021#5293#0" />
-            <element signature="e#5237#5293#0" />
-            <element signature="e#5342#5389#0" />
-            <element signature="e#5521#5899#0" />
-            <element signature="e#5901#5942#0" />
-            <element signature="e#6069#15995#0" />
-            <element signature="e#6636#15971#0" />
-            <element signature="e#6749#13945#0" />
-            <element signature="e#7140#11278#0" />
-            <element signature="e#9064#9541#0" />
-            <element signature="e#9584#11278#0" />
-            <element signature="e#9835#10258#0" />
-            <element signature="e#10212#10258#0" />
-            <element signature="e#10279#10397#0" />
-            <element signature="e#10596#10897#0" />
-            <element signature="e#10954#11278#0" />
-            <element signature="e#11034#11246#0" />
-            <element signature="e#11369#13945#0" />
-            <element signature="e#11625#12343#0" />
-            <element signature="e#11883#12343#0" />
-            <element signature="e#12702#13761#0" />
-            <element signature="e#14421#14498#0" />
-            <element signature="e#14912#15971#0" />
-            <element signature="e#15063#15087#0" />
-            <element signature="e#15479#15621#0" />
-            <element signature="e#15734#15843#0" />
-            <element signature="e#15878#15971#0" />
-            <element signature="e#13974#15139#0" />
-            <element signature="e#14639#15012#0" />
-            <element signature="e#17149#17248#0" />
-            <element signature="e#17454#23395#0" />
-            <element signature="e#18031#18518#0" />
-            <element signature="e#18279#18490#0" />
-            <element signature="e#18524#18556#0" />
-            <element signature="e#18797#19980#0" />
-            <element signature="e#19265#19514#0" />
-            <element signature="e#19332#19423#0" />
-            <element signature="e#19552#19850#0" />
-            <element signature="e#19671#19762#0" />
-            <element signature="e#20334#21767#0" />
-            <element signature="e#20378#21090#0" />
-            <element signature="e#20504#20856#0" />
-            <element signature="e#20924#21060#0" />
-            <element signature="e#21206#21767#0" />
-            <element signature="e#21372#21543#0" />
-            <element signature="e#21578#21767#0" />
-            <element signature="e#21773#21859#0" />
-            <element signature="e#22080#22381#0" />
-            <element signature="e#22185#22381#0" />
-            <element signature="e#22387#22470#0" />
-            <element signature="e#22540#23372#0" />
-            <element signature="e#22805#22952#0" />
-            <element signature="e#23013#23100#0" />
-            <element signature="e#23185#23372#0" />
-            <element signature="e#23488#24592#0" />
-            <element signature="e#23638#23720#0" />
-            <element signature="e#23878#24179#0" />
-            <element signature="e#24304#24391#0" />
-            <element signature="e#24489#24564#0" />
-            <element signature="e#24713#25626#0" />
-            <element signature="e#25397#25459#0" />
-            <element signature="e#25478#25611#0" />
-            <element signature="e#26480#26567#0" />
-            <element signature="e#24225#24275#0" />
-            <element signature="e#24526#24874#0" />
-            <element signature="e#27907#28318#0" />
-            <element signature="e#28497#28595#0" />
-            <element signature="e#28660#28755#0" />
-            <element signature="e#28967#29025#0" />
-            <element signature="e#29713#29816#0" />
-            <element signature="e#30269#30428#0" />
-            <element signature="e#27067#27155#0" />
-            <element signature="e#27323#27356#0" />
-            <element signature="e#30574#31489#0" />
-            <element signature="e#30574#30662#0" />
-            <element signature="e#30839#30872#0" />
-            <element signature="e#31096#31178#0" />
-            <element signature="e#29453#29474#0" />
-            <element signature="e#32744#32778#0" />
-            <element signature="e#31874#31951#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/008_duplicate_check.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1296" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/001_drop_maf_tables.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="235">
           <caret line="37" column="4" selection-start-line="37" selection-start-column="4" selection-end-line="37" selection-end-column="4" />
-          <folding>
-            <element signature="e#828#845#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/009_no_protein_level_annotation_check.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-719">
+        <state relative-caret-position="18">
           <caret line="11" column="59" selection-start-line="11" selection-start-column="59" selection-end-line="11" selection-end-column="59" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/014_drop_stuttering_samples.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/020_db_stats.py">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/004_read_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-972" />
+        <state relative-caret-position="720">
+          <caret line="46" column="36" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/012_drop_annotation_in_remaining_conflicted.py">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/tmp_hack.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-216" />
+        <state relative-caret-position="319">
+          <caret line="36" column="9" selection-start-line="36" selection-start-column="9" selection-end-line="36" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005b_maf_indices.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/002_create_maf_tables.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-613">
+          <caret line="82" column="33" lean-forward="true" selection-start-line="82" selection-start-column="33" selection-end-line="82" selection-end-column="33" />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/011_drop_unannotatable.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="79" column="38" lean-forward="true" selection-start-line="79" selection-start-column="38" selection-end-line="79" selection-end-column="38" />
+        <state relative-caret-position="49">
+          <caret line="43" selection-start-line="43" selection-end-line="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/012_drop_annotation_in_remaining_conflicted.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-59">
+          <caret line="48" column="14" lean-forward="true" selection-start-line="48" selection-start-column="14" selection-end-line="48" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005a_load_maf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="787">
+          <caret line="733" column="18" lean-forward="true" selection-start-line="733" selection-start-column="18" selection-end-line="733" selection-end-column="18" />
+          <folding>
+            <element signature="n#!!doc" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/003_maf_meta.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5004">
+          <caret line="283" column="94" selection-start-line="283" selection-start-column="94" selection-end-line="283" selection-end-column="94" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/020_db_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="594">
+          <caret line="45" column="47" lean-forward="true" selection-start-line="45" selection-start-column="47" selection-end-line="45" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2430" />
+        <state relative-caret-position="535">
+          <caret line="188" column="34" lean-forward="true" selection-start-line="188" selection-start-column="34" selection-end-line="188" selection-end-column="34" />
+          <folding>
+            <element signature="n#!!doc" />
+            <element signature="e#826#835#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/014_drop_stuttering_samples.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="34" column="10" selection-start-line="34" selection-start-column="10" selection-end-line="34" selection-end-column="10" />
+        </state>
       </provider>
     </entry>
   </component>

@@ -685,7 +685,7 @@ def load_maf (cursor, db_name, table, maffile, maf_diagnostics, meta_id, stats):
 		clean_fields = field_cleanup(maf_header_fields, sample_barcode_short, maf_diagnostics, meta_id, maf_fields)
 
 		retval = store(cursor, table, expected_fields,
-			  maf_header_fields + ['sample_barcode_short', 'meta_info_index', 'conflict'], clean_fields)
+			  maf_header_fields + ['sample_barcode_short', 'meta_info_id', 'conflict'], clean_fields)
 		if not retval in stats.keys(): stats[retval] = 0
 		stats[retval] += 1
 

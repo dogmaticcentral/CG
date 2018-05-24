@@ -75,7 +75,7 @@ def make_mutations_table(cursor, db_name, mutations_table):
 	qry += "	 verification_status VARCHAR (20), "
 	qry += "	 validation_status VARCHAR (20) NOT NULL, "
 	qry += "	 mutation_status VARCHAR (50) NOT NULL, "
-	qry += "	 meta_info_index INT (11)  NOT NULL, "
+	qry += "	 meta_info_id INT (11)  NOT NULL, "
 	qry += "	 conflict BLOB, "
 	qry += "	 PRIMARY KEY (id) "
 	qry += ") ENGINE=MyISAM"
