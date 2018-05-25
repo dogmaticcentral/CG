@@ -95,9 +95,9 @@ def store_annotation(cursor, table_name, avoutput):
 			# I am not sure wha to do in such case, and I am so sick and tired
 			# of this godawful data set
 			if len(fields)<2: continue
-			[cdna_change_position, val1, val2] =  parse_mutation(fields[-2])
+			[cdna_change_position, val1, val2] = parse_mutation(fields[-2])
 			if not cdna_change_position: continue
-			[aa_change_position, val1, val2] =  parse_mutation(fields[-1].replace('p.','').replace(' ', ''))
+			[aa_change_position, val1, val2] = parse_mutation(fields[-1].replace('p.','').replace(' ', ''))
 			if not aa_change_position: continue
 			aa_change = val1 + str(aa_change_position) + val2
 			if val1==val2:
@@ -111,6 +111,7 @@ def store_annotation(cursor, table_name, avoutput):
 			qry += 'where chromosome="%s"  ' % chrom
 			qry += 'and start_position="%s" and end_position="%s"  ' % (start,end)
 			search_db(cursor,qry)
+
 		inf.close()
 		print
 		print

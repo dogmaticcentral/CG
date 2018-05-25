@@ -9,45 +9,42 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DockManager">
-    <window id="2">
-      <content type="file-editors">
-        <state>
-          <leaf>
-            <file leaf-file-name="010_add_annotation_from_annovar.py" pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="535">
-                    <caret line="188" column="34" lean-forward="true" selection-start-line="188" selection-start-column="34" selection-end-line="188" selection-end-column="34" />
-                    <folding>
-                      <element signature="n#!!doc" />
-                      <element signature="e#826#835#0" expanded="true" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="014_drop_stuttering_samples.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/014_drop_stuttering_samples.py">
+      <file leaf-file-name="020_db_stats.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/020_db_stats.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="229">
-              <caret line="34" column="10" selection-start-line="34" selection-start-column="10" selection-end-line="34" selection-end-column="10" />
+            <state relative-caret-position="-108">
+              <caret line="45" column="47" selection-start-line="45" selection-start-column="47" selection-end-line="45" selection-end-column="47" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="020_db_stats.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/020_db_stats.py">
+      <file leaf-file-name="032_gene_vs_TP53_background.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/032_gene_vs_TP53_background.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="594">
-              <caret line="45" column="47" lean-forward="true" selection-start-line="45" selection-start-column="47" selection-end-line="45" selection-end-column="47" />
+            <state relative-caret-position="-594" />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="030_gene_pair_mutations.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/030_gene_pair_mutations.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="612">
+              <caret line="55" column="19" lean-forward="true" selection-start-line="55" selection-start-column="19" selection-end-line="55" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="010_add_annotation_from_annovar.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="514">
+              <caret line="106" lean-forward="true" selection-start-line="86" selection-end-line="106" />
+              <folding>
+                <element signature="n#!!doc" />
+                <element signature="e#826#835#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -73,7 +70,6 @@
         <option value="$PROJECT_DIR$/00_common_tasks/200_find_maf_files_in_GDC.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/001_maf_tables_cleanup.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/004_read_maf_meta.py" />
-        <option value="$PROJECT_DIR$/01_somatic_mutations/tcga_utils/utils.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/006_conflict_stats.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/009_no_protein_level_annotation_check.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/001_drop_maf_tables.py" />
@@ -82,27 +78,28 @@
         <option value="$PROJECT_DIR$/01_somatic_mutations/003_maf_meta.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/005_load_maf.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/005b_maf_indices.py" />
-        <option value="$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/011_drop_unannotatable.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/012_drop_annotation_in_remaining_conflicted.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/005a_load_maf.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/020_db_stats.py" />
         <option value="$PROJECT_DIR$/01_somatic_mutations/014_drop_stuttering_samples.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/030_gene_pair_mutations.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/tcga_utils/utils.py" />
+        <option value="$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2096" />
-    <option name="y" value="14" />
-    <option name="width" value="1633" />
-    <option name="height" value="1013" />
+    <option name="x" value="162" />
+    <option name="y" value="69" />
+    <option name="width" value="1641" />
+    <option name="height" value="956" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -113,17 +110,13 @@
             <path>
               <item name="tcga" type="b2602c69:ProjectViewProjectNode" />
               <item name="tcga" type="462c0819:PsiDirectoryNode" />
-              <item name="00_common_tasks" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="tcga" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tcga" type="462c0819:PsiDirectoryNode" />
               <item name="01_somatic_mutations" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -161,19 +154,19 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="2096" y="14" width="1633" height="1013" extended-state="0" />
+    <frame x="162" y="69" width="1641" height="956" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2720497" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27070457" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -192,6 +185,20 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/014_drop_stuttering_samples.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="576">
+          <caret line="34" column="10" selection-start-line="34" selection-start-column="10" selection-end-line="34" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/020_db_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="810">
+          <caret line="45" column="47" lean-forward="true" selection-start-line="45" selection-start-column="47" selection-end-line="45" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/004_read_maf_meta.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="720">
@@ -203,9 +210,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="11988">
           <caret line="690" lean-forward="true" selection-start-line="690" selection-end-line="690" />
-          <folding>
-            <element signature="n#!!doc" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -220,9 +224,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="11970">
           <caret line="689" selection-start-line="689" selection-end-line="690" />
-          <folding>
-            <element signature="n#!!doc" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -265,9 +266,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1566">
           <caret line="676" selection-start-line="676" selection-end-line="676" />
-          <folding>
-            <element signature="n#!!doc" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -303,9 +301,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1944">
           <caret line="697" lean-forward="true" selection-start-line="697" selection-end-line="697" />
-          <folding>
-            <element signature="n#!!doc" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -351,13 +346,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/tcga_utils/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="39" column="4" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/006_conflict_stats.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="379">
@@ -386,13 +374,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/tmp_hack.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="319">
-          <caret line="36" column="9" selection-start-line="36" selection-start-column="9" selection-end-line="36" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/tmp_hack.py" />
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/005b_maf_indices.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="697">
@@ -425,9 +407,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="787">
           <caret line="733" column="18" lean-forward="true" selection-start-line="733" selection-start-column="18" selection-end-line="733" selection-end-column="18" />
-          <folding>
-            <element signature="n#!!doc" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -440,26 +419,45 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/020_db_stats.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="45" column="47" lean-forward="true" selection-start-line="45" selection-start-column="47" selection-end-line="45" selection-end-column="47" />
+        <state relative-caret-position="-108">
+          <caret line="45" column="47" selection-start-line="45" selection-start-column="47" selection-end-line="45" selection-end-column="47" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/032_gene_vs_TP53_background.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="535">
-          <caret line="188" column="34" lean-forward="true" selection-start-line="188" selection-start-column="34" selection-end-line="188" selection-end-column="34" />
-          <folding>
-            <element signature="n#!!doc" />
-            <element signature="e#826#835#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-594" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/tcga_utils/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="139" column="13" lean-forward="true" selection-start-line="139" selection-start-column="13" selection-end-line="139" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/014_drop_stuttering_samples.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="229">
-          <caret line="34" column="10" selection-start-line="34" selection-start-column="10" selection-end-line="34" selection-end-column="10" />
+        <state relative-caret-position="139">
+          <caret line="29" column="11" lean-forward="true" selection-start-line="29" selection-start-column="11" selection-end-line="29" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/030_gene_pair_mutations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="55" column="19" lean-forward="true" selection-start-line="55" selection-start-column="19" selection-end-line="55" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="514">
+          <caret line="106" lean-forward="true" selection-start-line="86" selection-end-line="106" />
+          <folding>
+            <element signature="n#!!doc" />
+            <element signature="e#826#835#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

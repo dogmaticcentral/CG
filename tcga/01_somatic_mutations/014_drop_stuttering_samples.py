@@ -29,11 +29,6 @@ from old_tcga_tools.tcga_utils.ucsc import segment_from_das
 ##################################################################################
 def main():
 
-	print "make sure that that the stutter sample entry comes "
-	print "from the file that meta info corresponds to (that is, I have some" \
-	      "revised fiels that might be addressing precisely that issue"
-	exit()
-
 	db = connect_to_mysql()
 	cursor = db.cursor()
 
@@ -46,7 +41,7 @@ def main():
 	for table in tables:
 		# total number of samples:
 		qry = "select count(distinct tumor_sample_barcode) from %s" % table
-		total_samples = search_db(cursor,qry)[0][0]
+		total_samples  = search_db(cursor,qry)[0][0]
 		mutations_meta = table.split("_")[0]+"_mutations_meta"
 		qry  = "select * from %s where diagnostics like '%%stutter%%'" % mutations_meta
 		rows = search_db(cursor,qry)
@@ -54,14 +49,17 @@ def main():
 		print
 		print " ** ", table, "total samples:", total_samples
 		for row in rows:
+			meta_id = row[0]
 			terms = row[-1].split(";")
 			for term in terms:
 				if not "stutter" in term: continue
 				sample_ids = term.split("=>")[-1].replace(" ","").split(",")
 				sample_ids_quoted = ",".join(map(lambda x: '"' + x + '"', sample_ids))
-				print "\t ", sample_ids_quoted
-				#qry = "delete from somatic_mutations where tumor_sample_barcode in (%s) " % sample_ids_quoted
-				#search_db(cursor,qry)
+				# make sure it is the same meta_info_id,
+				# because we might have the replacement
+				qry  = "delete from %s where tumor_sample_barcode in (%s) " % (table, sample_ids_quoted)
+				qry += "and meta_info_id=%d" % meta_id
+				search_db(cursor,qry)
 
 	cursor.close()
 	db.close()

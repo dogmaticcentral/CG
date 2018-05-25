@@ -213,10 +213,9 @@ def create_index (cursor, db_name, index_name, table, columns):
 #########################################
 def get_column_names (cursor, db_name, table_name):
 
-    if  not switch_to_db (cursor, db_name):
-        return False
+    qry  = "select c.column_name from information_schema.columns c "
+    qry += "where c.table_schema='%s' and c.table_name='%s'" % (db_name, table_name)
 
-    qry = "show columns from "+ table_name
     rows = search_db (cursor, qry, verbose=False)
     if (rows):
         if ( 'Error' in rows[0]):

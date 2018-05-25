@@ -137,14 +137,13 @@ def hugo2ensembl (cursor, hugo_id):
 				for field in fields:
 					if field == hugo_id:
 						return possible_ensembl
- 
 	return ""
 
 
 #########################################
 def read_cancer_names ():
 	full_name= {}
-	inf = open ("/home/ivana/pypeworks/tcga/cancer_names.txt", "r")
+	inf = open ("/home/ivana/pypeworks/cg/cancer_names.tsv", "r")
 	for line in inf:
 		line   = line.rstrip()
 		field = line.split ("\t")
