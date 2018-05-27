@@ -31,10 +31,13 @@ location_vocab = ['intergenic_region', 'intragenic', 'upstream', 'downstream',
                   'intron', '3_prime_UTR', ]
 
 # this is set literal
-pathogenic = {'stop_lost', 'inframe_deletion', 'stop_gained', '5_prime_UTR_premature_start_codon_gain',
+pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained',
+                    '5_prime_UTR_premature_start_codon_gain',
                      'start_lost', 'frameshift', 'disruptive_inframe_deletion',
                      'exon_loss', 'disruptive_inframe_insertion', 'missense',
-                     'splice_acceptor', 'splice_region', 'splice_donor'
+                     'splice_acceptor', 'splice_region', 'splice_donor',
+                      'inframe'   # there is no way we can know at this level whether an inframe change is nondsisruptive
+									# more likely it is than not
              }
 
 #########################################

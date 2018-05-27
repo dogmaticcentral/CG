@@ -178,6 +178,24 @@ def get_approved_symbol(cursor, ensembl_gene_id):
 		symbol = ret[0][0]
 	return symbol
 
+#########################################
+def canonical_transcript_id_from_gene_stable_id(cursor, gene_stable_id):
+	# do I have ensembl database locally?
+	qry = "show databases like 'homo_sapiens_core%'"
+	ret = search_db(cursor,qry)
+	if not ret or not 'homo' in ret[0][0]:
+		print "no database like homo_sapiens_core% available (to find canonical tr ids)"
+		exit()
+	ensembl_homo_sapiens_db = ret[0][0]
+	qry  = "select t.stable_id from %s.gene g, %s.transcript t " % (ensembl_homo_sapiens_db, ensembl_homo_sapiens_db)
+	qry += "where g.canonical_transcript_id=t.transcript_id "
+	qry += "and g.stable_id='%s' " % gene_stable_id
+	ret = search_db(cursor,qry)
+	if not ret or len(ret) != 1:
+		print "Warning: no unique canonical id could be found for %s" % gene_stable_id
+		return None
+	return ret[0][0]
+
 
 def get_stable_id_for_canonical_transcript(cursor, list_of_stable_transcript_ids, gene_stable_id=None):
 
@@ -193,7 +211,8 @@ def get_stable_id_for_canonical_transcript(cursor, list_of_stable_transcript_ids
 	qry  = "select t.stable_id from %s.gene g, %s.transcript t " % (ensembl_homo_sapiens_db, ensembl_homo_sapiens_db)
 	qry += "where g.gene_id = t.gene_id and  g.canonical_transcript_id=t.transcript_id "
 	qry += "and t.stable_id in  (%s) " % ensts
-	if gene_stable_id: # if we know which gene we are looking for, use theat knowledge here
+	if gene_stable_id: # if we know which gene we are looking for, use that knowledge here
+		# why all the fuss if I know the gene stable id?
 		qry += "and g.stable_id='%s' " % gene_stable_id
 	ret = search_db(cursor,qry)
 	if not ret or len(ret) != 1:

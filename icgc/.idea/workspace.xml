@@ -11,45 +11,121 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="30_add_tcga_diff.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/30_add_tcga_diff.py">
+      <file leaf-file-name="30_tcga_diff_1_annotation.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/30_tcga_diff_1_annotation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="387">
-              <caret line="201" column="6" selection-start-line="201" selection-start-column="6" selection-end-line="201" selection-end-column="6" />
+            <state relative-caret-position="578">
+              <caret line="337" column="24" selection-start-line="337" selection-start-column="24" selection-end-line="337" selection-end-column="24" />
               <folding>
-                <element signature="e#19#36#0" expanded="true" />
-                <element signature="e#149#364#0" />
-                <element signature="e#469#616#0" />
-                <element signature="e#692#756#0" />
-                <element signature="e#900#1221#0" />
-                <element signature="e#1223#1261#0" />
-                <element signature="e#1324#1580#0" />
-                <element signature="e#1617#1952#0" />
-                <element signature="e#2021#2136#0" />
-                <element signature="e#2308#2433#0" />
-                <element signature="e#10323#10398#0" />
+                <element signature="e#1731#1946#0" />
+                <element signature="e#2051#2198#0" />
+                <element signature="e#2275#2339#0" />
+                <element signature="e#2483#2804#0" />
+                <element signature="e#2806#2844#0" />
+                <element signature="e#2907#3163#0" />
+                <element signature="e#3200#3567#0" />
+                <element signature="e#3680#4641#0" />
+                <element signature="e#4818#5076#0" />
+                <element signature="e#5841#7738#0" />
+                <element signature="e#5936#5970#0" />
+                <element signature="e#6685#6794#0" />
+                <element signature="e#6816#7503#0" />
+                <element signature="e#6817#6948#0" />
+                <element signature="e#7140#7239#0" />
+                <element signature="e#7536#7720#0" />
+                <element signature="e#7814#8514#0" />
+                <element signature="e#7879#8496#0" />
+                <element signature="e#8040#8496#0" />
+                <element signature="e#8517#8558#0" />
+                <element signature="e#8688#9001#0" />
+                <element signature="e#9066#9506#0" />
+                <element signature="e#9111#9254#0" />
+                <element signature="e#9271#9413#0" />
+                <element signature="e#15094#15588#0" />
+                <element signature="e#15771#15805#0" />
+                <element signature="e#16051#16151#0" />
+                <element signature="e#16181#16385#0" />
+                <element signature="e#16331#16379#0" />
+                <element signature="e#16958#17033#0" />
+                <element signature="e#17001#17033#0" />
+                <element signature="e#17178#17308#0" />
+                <element signature="e#17615#18305#0" />
+                <element signature="e#18235#19775#0" />
+                <element signature="e#19362#19438#0" />
+                <element signature="e#19778#19819#0" />
+                <element signature="e#19876#19951#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="12_reorganize_mutations.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/12_reorganize_mutations.py">
+      <file leaf-file-name="common_queries.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/icgc_utils/common_queries.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3266">
-              <caret line="215" selection-start-line="215" selection-end-line="215" />
+            <state relative-caret-position="72">
+              <caret line="181" column="71" lean-forward="true" selection-start-line="181" selection-start-column="4" selection-end-line="181" selection-end-column="71" />
               <folding>
-                <element signature="e#21#32#0" expanded="true" />
+                <element signature="e#139#727#0" />
+                <element signature="e#835#1461#0" />
+                <element signature="e#1399#1443#0" />
+                <element signature="e#1555#2041#0" />
+                <element signature="e#1555#1609#0" />
+                <element signature="e#1979#2023#0" />
+                <element signature="e#2120#2356#0" />
+                <element signature="e#2248#2338#0" />
+                <element signature="e#2431#2537#0" />
+                <element signature="e#2574#2684#0" />
+                <element signature="e#2762#2983#0" />
+                <element signature="e#3037#3198#0" />
+                <element signature="e#3261#3420#0" />
+                <element signature="e#3471#3729#0" />
+                <element signature="e#3518#3707#0" />
+                <element signature="e#3792#3951#0" />
+                <element signature="e#4027#4230#0" />
+                <element signature="e#4327#5085#0" />
+                <element signature="e#4595#4741#0" />
+                <element signature="e#5178#5375#0" />
+                <element signature="e#5513#5920#0" />
+                <element signature="e#6014#7256#0" />
+                <element signature="e#6014#6094#0" />
+                <element signature="e#6710#6890#0" />
+                <element signature="e#6892#6960#0" />
+                <element signature="e#7310#7661#0" />
+                <element signature="e#7439#7618#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="10_check_mut_tables_and_make_new_ones.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py">
+      <file leaf-file-name="08_make_indices.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/08_make_indices.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="693">
-              <caret line="62" selection-start-line="40" selection-end-line="62" />
+            <state relative-caret-position="774">
+              <caret line="54" column="22" selection-start-line="54" selection-start-column="22" selection-end-line="54" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="31_tcga_diff_2_variants_in_patients.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/31_tcga_diff_2_variants_in_patients.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="134">
+              <caret line="110" selection-start-line="110" selection-end-line="110" />
+              <folding>
+                <element signature="e#168#1830#0" />
+                <element signature="e#2051#2198#0" />
+                <element signature="e#2275#2339#0" />
+                <element signature="e#2483#2804#0" />
+                <element signature="e#2806#2844#0" />
+                <element signature="e#2907#3163#0" />
+                <element signature="e#3200#3567#0" />
+                <element signature="e#13236#13481#0" />
+                <element signature="e#13581#13956#0" />
+                <element signature="e#19419#19495#0" />
+                <element signature="e#19835#19876#0" />
+                <element signature="e#19933#20444#0" />
+                <element signature="e#19933#20008#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -66,13 +142,12 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>ben</find>
+      <find>pathogenic</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/07_overview.py" />
-        <option value="$PROJECT_DIR$/05_load_tables.py" />
         <option value="$PROJECT_DIR$/07_read_mysql.py" />
         <option value="$PROJECT_DIR$/00_data_download/02_download_somatic_files.py" />
         <option value="$PROJECT_DIR$/icgc_utils/01_hgnc_name_resolution_table.py" />
@@ -103,7 +178,6 @@
         <option value="$PROJECT_DIR$/16_mutation2gene_maps.py" />
         <option value="$PROJECT_DIR$/22b_cancer_stats.py" />
         <option value="$PROJECT_DIR$/11_consequence_vocab..py" />
-        <option value="$PROJECT_DIR$/08_make_indices.py" />
         <option value="$PROJECT_DIR$/17_mutation2gene_index.py" />
         <option value="$PROJECT_DIR$/22a_cancer_stats.py" />
         <option value="$PROJECT_DIR$/16_copy_realiability_annotation_to_somatic_table.py" />
@@ -113,23 +187,26 @@
         <option value="$PROJECT_DIR$/15_decorate_mutations.py" />
         <option value="$PROJECT_DIR$/17_mutation2gene_maps.py" />
         <option value="$PROJECT_DIR$/24_gene_stats.py" />
-        <option value="$PROJECT_DIR$/12_reorganize_mutations.py" />
         <option value="$PROJECT_DIR$/22_cancer_stats.py" />
-        <option value="$PROJECT_DIR$/icgc_utils/common_queries.py" />
         <option value="$PROJECT_DIR$/25_co-ocurrence_of_mutations_and_lack_thereof.py" />
         <option value="$PROJECT_DIR$/25_co-ocurrence_of_RPL5_and_TP53.py" />
         <option value="$PROJECT_DIR$/26_co-ocurrence_of_mutations_and_lack_thereof.py" />
-        <option value="$PROJECT_DIR$/icgc_utils/mysql.py" />
         <option value="$PROJECT_DIR$/03_make_tables.py" />
+        <option value="$PROJECT_DIR$/icgc_utils/common_queries.py" />
+        <option value="$PROJECT_DIR$/12_reorganize_mutations.py" />
+        <option value="$PROJECT_DIR$/icgc_utils/mysql.py" />
         <option value="$PROJECT_DIR$/30_add_tcga_diff.py" />
+        <option value="$PROJECT_DIR$/31_tcga_diff_2_variants_in_patients.py" />
+        <option value="$PROJECT_DIR$/08_make_indices.py" />
+        <option value="$PROJECT_DIR$/30_tcga_diff_1_annotation.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2044" />
-    <option name="y" value="25" />
-    <option name="width" value="1716" />
-    <option name="height" value="955" />
+    <option name="x" value="1945" />
+    <option name="y" value="37" />
+    <option name="width" value="1832" />
+    <option name="height" value="1020" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -160,13 +237,13 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Python" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/icgc_utils" />
       <recent name="$PROJECT_DIR$/00_data_download" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -195,45 +272,45 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="2044" y="25" width="1716" height="955" extended-state="0" />
+    <frame x="1945" y="37" width="1832" height="1020" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.28411105" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26589274" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32925338" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32954547" />
     </layout>
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20201422" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Python Console" order="9" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
+      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Python Console" order="9" />
     </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -241,17 +318,10 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="23" />
+      <option name="time" value="26" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/00_data_download/05_unzip.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" selection-start-line="7" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/03_make_tables.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2286">
@@ -381,13 +451,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/08_make_indices.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="18" column="28" selection-start-line="18" selection-start-column="28" selection-end-line="18" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/old/22a_cancer_stats.py" />
     <entry file="file://$PROJECT_DIR$/05_write_mutations_tsv.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -407,13 +470,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="558">
           <caret line="31" column="18" selection-start-line="31" selection-start-column="18" selection-end-line="31" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/14_decorate_simple_somatic.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="58" column="42" selection-start-line="58" selection-start-column="42" selection-end-line="58" selection-end-column="42" />
         </state>
       </provider>
     </entry>
@@ -456,10 +512,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1458">
           <caret line="100" column="79" selection-start-line="100" selection-start-column="8" selection-end-line="100" selection-end-column="79" />
-          <folding>
-            <element signature="e#82#123#0" />
-            <element signature="e#702#1173#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -477,72 +529,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/icgc_utils/common_queries.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="56" column="20" lean-forward="true" selection-start-line="56" selection-start-column="20" selection-end-line="56" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/02_find_max_allele_length.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="477">
           <caret line="43" selection-start-line="39" selection-end-line="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="213" column="20" selection-start-line="213" selection-start-column="4" selection-end-line="213" selection-end-column="20" />
-          <folding>
-            <element signature="e#25#26#0" />
-            <element signature="e#877#1010#0" />
-            <element signature="e#1062#1207#0" />
-            <element signature="e#1160#1191#0" />
-            <element signature="e#1288#2243#0" />
-            <element signature="e#1437#1519#0" />
-            <element signature="e#1677#1978#0" />
-            <element signature="e#2057#2115#0" />
-            <element signature="e#2140#2226#0" />
-            <element signature="e#2340#4979#0" />
-            <element signature="e#2433#2737#0" />
-            <element signature="e#2979#3054#0" />
-            <element signature="e#3154#3659#0" />
-            <element signature="e#3316#3618#0" />
-            <element signature="e#3704#4728#0" />
-            <element signature="e#3954#4048#0" />
-            <element signature="e#4266#4709#0" />
-            <element signature="e#4557#4683#0" />
-            <element signature="e#4800#4858#0" />
-            <element signature="e#4883#4950#0" />
-            <element signature="e#5092#5805#0" />
-            <element signature="e#5356#5386#0" />
-            <element signature="e#5581#5664#0" />
-            <element signature="e#5754#5785#0" />
-            <element signature="e#6122#6191#0" />
-            <element signature="e#6395#6722#0" />
-            <element signature="e#6602#6690#0" />
-            <element signature="e#6844#7048#0" />
-            <element signature="e#7156#7458#0" />
-            <element signature="e#7338#7426#0" />
-            <element signature="e#7564#7918#0" />
-            <element signature="e#7826#7881#0" />
-            <element signature="e#7977#8539#0" />
-            <element signature="e#8047#8186#0" />
-            <element signature="e#8267#8405#0" />
-            <element signature="e#8440#8522#0" />
-            <element signature="e#8640#9597#0" />
-            <element signature="e#8662#9065#0" />
-            <element signature="e#8709#8778#0" />
-            <element signature="e#8954#9031#0" />
-            <element signature="e#9097#9597#0" />
-            <element signature="e#9114#9426#0" />
-            <element signature="e#9486#9563#0" />
-            <element signature="e#9666#9983#0" />
-            <element signature="e#9679#9842#0" />
-            <element signature="e#9881#9968#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -567,39 +557,171 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="28" selection-start-line="28" selection-end-line="28" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/12_reorganize_mutations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3266">
-          <caret line="215" selection-start-line="215" selection-end-line="215" />
+        <state relative-caret-position="245">
+          <caret line="167" column="33" selection-start-line="167" selection-start-column="23" selection-end-line="167" selection-end-column="33" />
           <folding>
             <element signature="e#21#32#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py">
+    <entry file="file://$PROJECT_DIR$/14_decorate_simple_somatic.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="693">
-          <caret line="62" selection-start-line="40" selection-end-line="62" />
+        <state relative-caret-position="9">
+          <caret line="58" column="42" selection-start-line="58" selection-start-column="42" selection-end-line="58" selection-end-column="42" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/30_add_tcga_diff.py">
+    <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="201" column="6" selection-start-line="201" selection-start-column="6" selection-end-line="201" selection-end-column="6" />
+        <state relative-caret-position="276">
+          <caret line="282" column="4" selection-start-line="282" selection-start-column="4" selection-end-line="282" selection-end-column="4" />
           <folding>
-            <element signature="e#19#36#0" expanded="true" />
-            <element signature="e#149#364#0" />
-            <element signature="e#469#616#0" />
-            <element signature="e#692#756#0" />
-            <element signature="e#900#1221#0" />
-            <element signature="e#1223#1261#0" />
-            <element signature="e#1324#1580#0" />
-            <element signature="e#1617#1952#0" />
-            <element signature="e#2021#2136#0" />
-            <element signature="e#2308#2433#0" />
-            <element signature="e#10323#10398#0" />
+            <element signature="e#0#23#0" expanded="true" />
+            <element signature="e#25#26#0" />
+            <element signature="e#877#1010#0" />
+            <element signature="e#1062#1207#0" />
+            <element signature="e#1160#1191#0" />
+            <element signature="e#2340#4979#0" />
+            <element signature="e#2433#2737#0" />
+            <element signature="e#2979#3054#0" />
+            <element signature="e#3154#3659#0" />
+            <element signature="e#3316#3618#0" />
+            <element signature="e#3704#4728#0" />
+            <element signature="e#3954#4048#0" />
+            <element signature="e#4266#4709#0" />
+            <element signature="e#4557#4683#0" />
+            <element signature="e#4800#4858#0" />
+            <element signature="e#4883#4950#0" />
+            <element signature="e#5092#5805#0" />
+            <element signature="e#5356#5386#0" />
+            <element signature="e#5581#5664#0" />
+            <element signature="e#5754#5785#0" />
+            <element signature="e#5906#6326#0" />
+            <element signature="e#6441#6768#0" />
+            <element signature="e#6890#7094#0" />
+            <element signature="e#7202#7504#0" />
+            <element signature="e#7610#7964#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/31_tcga_diff_2_variants_in_patients.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="134">
+          <caret line="110" selection-start-line="110" selection-end-line="110" />
+          <folding>
+            <element signature="e#168#1830#0" />
+            <element signature="e#2051#2198#0" />
+            <element signature="e#2275#2339#0" />
+            <element signature="e#2483#2804#0" />
+            <element signature="e#2806#2844#0" />
+            <element signature="e#2907#3163#0" />
+            <element signature="e#3200#3567#0" />
+            <element signature="e#13236#13481#0" />
+            <element signature="e#13581#13956#0" />
+            <element signature="e#19419#19495#0" />
+            <element signature="e#19835#19876#0" />
+            <element signature="e#19933#20444#0" />
+            <element signature="e#19933#20008#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/08_make_indices.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="774">
+          <caret line="54" column="22" selection-start-line="54" selection-start-column="22" selection-end-line="54" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_tcga_diff_1_annotation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="337" column="24" selection-start-line="337" selection-start-column="24" selection-end-line="337" selection-end-column="24" />
+          <folding>
+            <element signature="e#1731#1946#0" />
+            <element signature="e#2051#2198#0" />
+            <element signature="e#2275#2339#0" />
+            <element signature="e#2483#2804#0" />
+            <element signature="e#2806#2844#0" />
+            <element signature="e#2907#3163#0" />
+            <element signature="e#3200#3567#0" />
+            <element signature="e#3680#4641#0" />
+            <element signature="e#4818#5076#0" />
+            <element signature="e#5841#7738#0" />
+            <element signature="e#5936#5970#0" />
+            <element signature="e#6685#6794#0" />
+            <element signature="e#6816#7503#0" />
+            <element signature="e#6817#6948#0" />
+            <element signature="e#7140#7239#0" />
+            <element signature="e#7536#7720#0" />
+            <element signature="e#7814#8514#0" />
+            <element signature="e#7879#8496#0" />
+            <element signature="e#8040#8496#0" />
+            <element signature="e#8517#8558#0" />
+            <element signature="e#8688#9001#0" />
+            <element signature="e#9066#9506#0" />
+            <element signature="e#9111#9254#0" />
+            <element signature="e#9271#9413#0" />
+            <element signature="e#15094#15588#0" />
+            <element signature="e#15771#15805#0" />
+            <element signature="e#16051#16151#0" />
+            <element signature="e#16181#16385#0" />
+            <element signature="e#16331#16379#0" />
+            <element signature="e#16958#17033#0" />
+            <element signature="e#17001#17033#0" />
+            <element signature="e#17178#17308#0" />
+            <element signature="e#17615#18305#0" />
+            <element signature="e#18235#19775#0" />
+            <element signature="e#19362#19438#0" />
+            <element signature="e#19778#19819#0" />
+            <element signature="e#19876#19951#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/icgc_utils/common_queries.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="181" column="71" lean-forward="true" selection-start-line="181" selection-start-column="4" selection-end-line="181" selection-end-column="71" />
+          <folding>
+            <element signature="e#139#727#0" />
+            <element signature="e#835#1461#0" />
+            <element signature="e#1399#1443#0" />
+            <element signature="e#1555#2041#0" />
+            <element signature="e#1555#1609#0" />
+            <element signature="e#1979#2023#0" />
+            <element signature="e#2120#2356#0" />
+            <element signature="e#2248#2338#0" />
+            <element signature="e#2431#2537#0" />
+            <element signature="e#2574#2684#0" />
+            <element signature="e#2762#2983#0" />
+            <element signature="e#3037#3198#0" />
+            <element signature="e#3261#3420#0" />
+            <element signature="e#3471#3729#0" />
+            <element signature="e#3518#3707#0" />
+            <element signature="e#3792#3951#0" />
+            <element signature="e#4027#4230#0" />
+            <element signature="e#4327#5085#0" />
+            <element signature="e#4595#4741#0" />
+            <element signature="e#5178#5375#0" />
+            <element signature="e#5513#5920#0" />
+            <element signature="e#6014#7256#0" />
+            <element signature="e#6014#6094#0" />
+            <element signature="e#6710#6890#0" />
+            <element signature="e#6892#6960#0" />
+            <element signature="e#7310#7661#0" />
+            <element signature="e#7439#7618#0" />
           </folding>
         </state>
       </provider>
