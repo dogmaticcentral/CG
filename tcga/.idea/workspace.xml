@@ -20,24 +20,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="030_gene_pair_mutations.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="030_gene_pair_mutations.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/01_somatic_mutations/030_gene_pair_mutations.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="936">
+            <state relative-caret-position="854">
               <caret line="55" column="19" selection-start-line="55" selection-start-column="19" selection-end-line="55" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="010_add_annotation_from_annovar.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="153" lean-forward="true" selection-start-line="153" selection-end-line="153" />
-              <folding>
-                <element signature="n#!!doc" />
-                <element signature="e#826#835#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -82,9 +69,9 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="324" />
-    <option name="y" value="141" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="2173" />
+    <option name="y" value="136" />
     <option name="width" value="1494" />
     <option name="height" value="883" />
   </component>
@@ -93,6 +80,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -109,7 +97,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -147,19 +134,19 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="324" y="141" width="1494" height="883" extended-state="0" />
+    <frame x="1920" y="0" width="1920" height="1080" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29775664" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23089088" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -178,6 +165,31 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/020_db_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="810">
+          <caret line="45" column="47" selection-start-line="45" selection-start-column="47" selection-end-line="45" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/030_gene_pair_mutations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="936">
+          <caret line="55" column="19" selection-start-line="55" selection-start-column="19" selection-end-line="55" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2484">
+          <caret line="158" column="66" lean-forward="true" selection-start-line="158" selection-start-column="66" selection-end-line="158" selection-end-column="66" />
+          <folding>
+            <element signature="n#!!doc" />
+            <element signature="e#826#835#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/020_db_stats.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="810">
@@ -481,21 +493,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/030_gene_pair_mutations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="936">
-          <caret line="55" column="19" selection-start-line="55" selection-start-column="19" selection-end-line="55" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/01_somatic_mutations/010_add_annotation_from_annovar.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="153" lean-forward="true" selection-start-line="153" selection-end-line="153" />
+        <state relative-caret-position="486">
+          <caret line="173" lean-forward="true" selection-start-line="173" selection-end-line="173" />
           <folding>
             <element signature="n#!!doc" />
             <element signature="e#826#835#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/01_somatic_mutations/030_gene_pair_mutations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="854">
+          <caret line="55" column="19" selection-start-line="55" selection-start-column="19" selection-end-line="55" selection-end-column="19" />
         </state>
       </provider>
     </entry>

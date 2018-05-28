@@ -159,7 +159,7 @@ def annotate_tables(tables,other_args):
 		qry += "where variant_classification='missense_mutation' "
 		qry += "and (aa_change is null or aa_change='')"
 		rows = search_db (cursor, qry)
-		meta_ids  = [str(row[0]) for row in rows]
+		meta_ids = [str(row[0]) for row in rows]
 
 		qry  = "select distinct(assembly) from %s where id in (%s)" % (meta_table, ",".join(meta_ids))
 		rows = search_db (cursor, qry)

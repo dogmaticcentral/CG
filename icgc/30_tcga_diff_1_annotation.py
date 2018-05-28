@@ -71,7 +71,7 @@ location_vocab = ['intergenic_region', 'intragenic', 'upstream', 'downstream',
 pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained', '5_prime_UTR_premature_start_codon_gain',
                      'start_lost', 'frameshift', 'disruptive_inframe_deletion',
                      'exon_loss', 'disruptive_inframe_insertion', 'missense',
-                     'splice_acceptor', 'splice_region', 'splice_donor', 'inframe'
+                     'splice_acceptor', 'splice_region', 'splice_donor', 'inframe', 'splice'
              }
 
 
@@ -92,12 +92,13 @@ def create_icgc_table(cursor, tcga_table):
 	qry += "     icgc_specimen_id VARCHAR (20), "
 	qry += "     icgc_sample_id VARCHAR (20), "
 	qry += "     submitted_sample_id VARCHAR (50), "
-	qry += "	 control_genotype VARCHAR (430) NOT NULL, "
+	qry += "	 control_genotype VARCHAR (430), "
 	qry += "	 tumor_genotype VARCHAR (430) NOT NULL, "
 	qry += "     total_read_count INT, "
 	qry += "     mutant_allele_read_count INT, "
 	qry += "     mut_to_total_read_count_ratio float default 0.0,"
 	qry += "     pathogenic_estimate boolean default 0,"
+	qry += "     reliability_estimate boolean default 0,"
 
 	qry += "	 PRIMARY KEY (id) "
 	qry += ") ENGINE=MyISAM"
@@ -152,7 +153,7 @@ def output_annovar_input_file (cursor, db_name, tcga_table, already_deposited_sa
 		if tumor_sample_barcode in already_deposited_samples: continue
 		differing_allele = tumor_seq_allele1
 		if differing_allele==reference_allele: differing_allele = tumor_seq_allele2
-		# somebody in  the TCGA decided to innovate and mark the insert with the before- and after- postion
+		# somebody in  the TCGA decided to innovate and mark the insert with the before- and after- position
 		# Annovar expects both numbers to be the same in such case
 		if reference_allele=="-": end_position=start_position
 		outrow = "%s\t%d\t%d\t%s\t%s" % (chromosome, start_position, end_position, reference_allele, differing_allele)
@@ -310,11 +311,10 @@ def check_location_seen(cursor, annovar_named_field, lock_alias=None):
 	ret = search_db(cursor,qry)
 	return False if not ret or ret[0][0]==0 else True
 
-
 #########################################
 def check_mutation_seen(cursor, annovar_named_field, lock_alias=None):
-	location_table = "mutations_chrom_%s" % annovar_named_field['chr']
-	qry = "select count(*) from %s " % location_table
+	mutation_table = "mutations_chrom_%s" % annovar_named_field['chr']
+	qry = "select count(*) from %s " % mutation_table
 	if lock_alias:
 		qry += "as %s "% lock_alias #
 	qry += "where start_position=%s "% annovar_named_field['start']
@@ -367,20 +367,27 @@ def store_mutation(cursor, annovar_named_field, mutation_type, consequences_stri
 		if ret:
 			ordinal = int( ret[0][0].split("_")[-1].lstrip("0") ) + 1
 		new_id = "MUT_%s_%08d"%(annovar_named_field['chr'],ordinal)
+		ref_allele = annovar_named_field['ref']
+		if len(ref_allele)>200: ref_allele=ref_allele[:200]+"etc"
+		to_allele  = annovar_named_field['alt']
+		if len(to_allele)>200: to_allele=to_allele[:200]+"etc"
+		print "storing"
+		print ref_allele
+		print to_allele
 		named_fields = {'icgc_mutation_id':	new_id,
 						'start_position': long(annovar_named_field['start']),
 						'end_position': long(annovar_named_field['end']),
 						'mutation_type':mutation_type,
-						'reference_genome_allele':annovar_named_field['ref'],
-						'mutated_from_allele':annovar_named_field['ref'],
-						'mutated_to_allele':annovar_named_field['alt'],
+						'reference_genome_allele': ref_allele,
+						'mutated_from_allele': ref_allele,
+						'mutated_to_allele': to_allele,
 						'aa_mutation':aa_change,
 						'consequence':consequences_string,
 						'pathogenic_estimate':pathogenic_estimate,
 						'reliability_estimate':1}
 		store_without_checking(cursor, mutation_table, named_fields, verbose=False)
 
-	# unlockmv
+	# unlock
 	qry = "unlock tables"
 	search_db(cursor,qry)
 	return
@@ -393,14 +400,14 @@ def store_annotation (cursor, tcga_table, avoutput):
 	# in principle, we should be working with icgc here
 	switch_to_db(cursor, 'icgc')
 	for assembly, avfile in avoutput.iteritems():
-		no_lines = int(subprocess.check_output( ["bash","-c", "wc -l %s"%avfile]).split()[0])
+		no_lines = int(subprocess.check_output(["bash","-c", "wc -l %s"%avfile]).split()[0])
 		inf = open (avfile, "r")
 		header_fields = None
 		ct = 0
 		time0 = time.time()
 		for line in inf:
 			ct += 1
-			if (ct%100==0):
+			if (ct%1000==0):
 				print "%30s   %6d lines out of %6d  (%d%%)  %d min" % \
 				      (tcga_table, ct, no_lines, float(ct)/no_lines*100, float(time.time()-time0)/60)
 			fields = line.rstrip().split('\t')
@@ -422,10 +429,11 @@ def store_annotation (cursor, tcga_table, avoutput):
 			[mutation_type, consequences_string, aa_change, gene_relative_string, tr_relative_string] = ret
 			pathogenic_estimate = 0
 			for description in pathogenic:
-				if description in tr_relative_string:
+				if description in consequences_string +";"+ tr_relative_string:
 					pathogenic_estimate=1
 					break
 			if not location_seen:
+				print "storing location:", annovar_named_field
 				store_location(cursor, annovar_named_field, gene_relative_string, tr_relative_string)
 			if not mutation_seen:
 				store_mutation(cursor, annovar_named_field, mutation_type,
@@ -473,7 +481,6 @@ def add_tcga_diff(tcga_tables, other_args):
 		print "processing tcga table ", tcga_table, os.getpid()
 		print "will be stored in ", icgc_table
 
-
 		if not icgc_table: create_icgc_table(cursor,tcga_table)
 
 		#tcga samples in tcga_table
@@ -496,7 +503,6 @@ def add_tcga_diff(tcga_tables, other_args):
 
 		process_table(home, cursor, tcga_table, already_deposited_samples)
 		print "\t overall time for %s: %.3f mins; pid: %d" % (tcga_table, float(time.time()-time0)/60, os.getpid())
-		exit()
 
 	cursor.close()
 	db.close()
@@ -517,7 +523,11 @@ def main():
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
 
-	number_of_chunks = 8  # myISAM does not deadlock
+	cursor.close()
+	db.close()
+
+	#tcga_tables =['SKCM_somatic_mutations']
+	number_of_chunks = 1  # myISAM does not deadlock
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
 
 #########################################

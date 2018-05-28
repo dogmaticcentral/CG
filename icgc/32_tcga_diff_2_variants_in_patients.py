@@ -2,44 +2,44 @@
 import subprocess
 import time, re
 
-from icgc_utils.common_queries  import  *
-from icgc_utils.processes   import  *
+from icgc_utils.common_queries import *
+from icgc_utils.processes import *
 
 tcga_icgc_table_correspondence = {
-"ACC_somatic_mutations" : "ACC_somatic_mutations",
-"ALL_somatic_mutations" : "ALL_simple_somatic",
+"ACC_somatic_mutations" :  "ACC_simple_somatic",
+"ALL_somatic_mutations" :  "ALL_simple_somatic",
 "BLCA_somatic_mutations": "BLCA_simple_somatic",
 "BRCA_somatic_mutations": "BRCA_simple_somatic",
 "CESC_somatic_mutations": "CESC_simple_somatic",
-"CHOL_somatic_mutations": "CHOL_somatic_mutations",
+"CHOL_somatic_mutations": "CHOL_simple_somatic",
 "COAD_somatic_mutations": "COCA_simple_somatic",
 "DLBC_somatic_mutations": "DLBC_simple_somatic",
 "ESCA_somatic_mutations": "ESAD_simple_somatic",
-"GBM_somatic_mutations" : "GBM_simple_somatic",
+"GBM_somatic_mutations" :  "GBM_simple_somatic",
 "HNSC_somatic_mutations": "HNSC_simple_somatic",
 "KICH_somatic_mutations": "KICH_simple_somatic",
 "KIRC_somatic_mutations": "KIRC_simple_somatic",
 "KIRP_somatic_mutations": "KIRP_simple_somatic",
-"LAML_somatic_mutations": "AML_simple_somatic",
-"LGG_somatic_mutations" : "LGG_simple_somatic",
+"LAML_somatic_mutations":  "AML_simple_somatic",
+"LGG_somatic_mutations" :  "LGG_simple_somatic",
 "LIHC_somatic_mutations": "LICA_simple_somatic",
 "LUAD_somatic_mutations": "LUAD_simple_somatic",
 "LUSC_somatic_mutations": "LUSC_simple_somatic",
-"MESO_somatic_mutations": "MESO_somatic_mutations",
-"OV_somatic_mutations"  : "OV_simple_somatic",
+"MESO_somatic_mutations": "MESO_simple_somatic",
+"OV_somatic_mutations"  :   "OV_simple_somatic",
 "PAAD_somatic_mutations": "PACA_simple_somatic",
-"PCPG_somatic_mutations": "PCPG_somatic_mutations",
+"PCPG_somatic_mutations": "PCPG_simple_somatic",
 "PRAD_somatic_mutations": "PRAD_simple_somatic",
 "READ_somatic_mutations": "COCA_simple_somatic",
 "SARC_somatic_mutations": "SARC_simple_somatic",
 "SKCM_somatic_mutations": "MELA_simple_somatic",
 "STAD_somatic_mutations": "GACA_simple_somatic",
-"TGCT_somatic_mutations": "TGCT_somatic_mutations",
+"TGCT_somatic_mutations": "TGCT_simple_somatic",
 "THCA_somatic_mutations": "THCA_simple_somatic",
-"THYM_somatic_mutations": "THYM_somatic_mutations",
+"THYM_somatic_mutations": "THYM_simple_somatic",
 "UCEC_somatic_mutations": "UCEC_simple_somatic",
 "UCS_somatic_mutations" : "UTCA_simple_somatic",
-"UVM_somatic_mutations" : "UVM_somatic_mutations"
+"UVM_somatic_mutations" :  "UVM_simple_somatic"
 }
 
 variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id',
@@ -84,35 +84,129 @@ def quotify(something):
 
 
 #########################################
-def check_location_seen(cursor, annovar_named_field):
-	location_table = "locations_chrom_%s" % annovar_named_field['chr']
-	qry = "select count(*) from %s where position=%s"%(location_table, annovar_named_field['start'])
+def check_location_stored(cursor, tcga_named_field):
+	location_table = "locations_chrom_%s" % tcga_named_field['chromosome']
+	qry = "select count(*) from %s where position=%s"%(location_table, tcga_named_field['start_position'])
 	ret = search_db(cursor,qry)
-	return False if not ret or ret[0][0]==0 else True;
+	if ret and len(ret)>1:
+		print "problem: non-unique location id"
+		print qry
+		print ret
+		exit()
+	return False if not ret else ret[0][0]
 
 
 #########################################
-def check_mutation_seen(cursor, annovar_named_field):
-	location_table = "mutations_chrom_%s" % annovar_named_field['chr']
-	qry = "select count(*) from %s where start_position=%s "%(location_table, annovar_named_field['start'])
-	qry += "and mutated_from_allele='%s' and mutated_to_allele='%s' "%(annovar_named_field['ref'],annovar_named_field['alt'])
+def find_mutation_id(cursor, tcga_named_field):
+	mutation_table = "mutations_chrom_%s" % tcga_named_field['chromosome']
+	qry = "select icgc_mutation_id, pathogenic_estimate from icgc.%s where start_position=%s "%(mutation_table, tcga_named_field['start_position'])
+	reference_allele = tcga_named_field['reference_allele']
+	differing_allele = tcga_named_field['tumor_seq_allele1']
+	if differing_allele == reference_allele: differing_allele = tcga_named_field['tumor_seq_allele2']
+	qry += "and mutated_from_allele='%s' and mutated_to_allele='%s' "%(reference_allele,differing_allele)
 	ret = search_db(cursor,qry)
-	return False if not ret or ret[0][0]==0 else True;
+
+	if not ret:
+		print "problem: no return for"
+		print qry
+		exit() # brilliant idea in case of multithreading
+	if len(ret)>1:
+		print "problem: non-unique mutation id"
+		print qry
+		print ret
+		exit()
+	return False if not ret else ret[0]
+
+
+#########################################
+def store_variant(cursor,  tcga_named_field, mutation_id, pathogenic_estimate, icgc_table):
+
+	# thread parallelization goes over tcga tables - no guarantee there won't be race condition
+	# for icgc tables
+	# lock table
+	lock_alias = "varslock"
+	qry = "lock tables %s write, %s as %s read" % (icgc_table, icgc_table, lock_alias)
+	search_db(cursor,qry)
+
+	#have we stored this by any chance?
+	qry  = "select submitted_sample_id from icgc.%s " % icgc_table
+	qry += "where icgc_mutation_id='%s' " % mutation_id
+	ret = search_db(cursor,qry)
+
+
+	# we have not stored this one yet
+	if ret and (tcga_named_field['tumor_sample_barcode'] in [r[0] for r in ret]):
+		#print "variant found"
+		pass
+	else:
+		tumor_short = icgc_table.split("_")[0]
+
+		# construct donor id
+		qry  = "select icgc_donor_id from icgc.%s as %s "  % (icgc_table, lock_alias)
+		qry += "where icgc_donor_id like 'DOT_%' order by icgc_donor_id desc limit 1"
+		ret = search_db(cursor,qry)
+		ordinal = 1
+		if ret:
+			ordinal = int( ret[0][0].split("_")[-1].lstrip("0") ) + 1
+		new_donor_id = "DOT_%s_%05d"%(tumor_short,ordinal)
+
+		# tcga could not agree in which column to place the cancer allele
+		reference_allele = tcga_named_field['reference_allele']
+		differing_allele = tcga_named_field['tumor_seq_allele1']
+		if differing_allele == reference_allele: differing_allele = tcga_named_field['tumor_seq_allele2']
+
+		# fill store hash
+		store_fields = {
+			'icgc_mutation_id': mutation_id,
+			'chromosome': tcga_named_field['chromosome'],
+			'icgc_donor_id': new_donor_id,
+			'submitted_sample_id':tcga_named_field['tumor_sample_barcode'],
+			'tumor_genotype': "{}/{}".format(reference_allele,differing_allele),
+			'pathogenic_estimate': pathogenic_estimate,
+			'reliability_estimate': 1,
+		}
+		# store
+		store_without_checking(cursor, icgc_table, store_fields, verbose=False, database='icgc')
+
+
+	# unlock
+	qry = "unlock tables"
+	search_db(cursor,qry)
+
+	return
 
 
 
 #########################################
-def process_table(home, cursor, tcga_table, icgc_table, already_deposited_samples):
+def process_table(cursor, tcga_table, icgc_table, already_deposited_samples):
+
+	standard_chromosomes = [str(i) for i in range(23)] +['X','Y']
 
 	# make a workdir and move there
 	tumor_short = tcga_table.split("_")[0]
+	no_rows = search_db(cursor,"select count(*) from tcga.%s"% tcga_table)[0][0]
 
+	column_names = get_column_names(cursor,'tcga',tcga_table)
 	qry  = "select * from tcga.%s " % tcga_table
+	ct = 0
+	time0 = time.time()
+	for row in search_db(cursor,qry):
+		ct += 1
+		if (ct%10000==0):
+			print "%30s   %6d lines out of %6d  (%d%%)  %d min" % \
+			      (tcga_table, ct, no_rows, float(ct)/no_rows*100, float(time.time()-time0)/60)
+		named_field = dict(zip(column_names,row))
+		if named_field['tumor_sample_barcode'] in already_deposited_samples: continue
+		if not  named_field['chromosome'] in standard_chromosomes: continue
+		mutation_id, pathogenic_estimate = find_mutation_id(cursor, named_field)
+		location_stored = check_location_stored(cursor, named_field)
+		if not mutation_id or not location_stored:
+			print "mutation id:", mutation_id
+			print "location stored:", location_stored
+			exit()
+		# all clear - store
+		store_variant(cursor, named_field, mutation_id, pathogenic_estimate, icgc_table)
 
-	exit()
-
-	# store the annotated input to icgc tables - *_simple_somatic, mutations_chrom*, and locations_chrom_*
-	store_variant (cursor, icgc_table)
 
 
 #########################################
@@ -120,7 +214,6 @@ def add_tcga_diff(tcga_tables, other_args):
 
 	db     = connect_to_mysql()
 	cursor = db.cursor()
-	home = os.getcwd()
 	for tcga_table in tcga_tables:
 
 		icgc_table =  tcga_icgc_table_correspondence[tcga_table]
@@ -138,7 +231,8 @@ def add_tcga_diff(tcga_tables, other_args):
 
 		#tcga samples already deposited in icgc
 		qry  = "select distinct(submitted_sample_id) from icgc.%s " % icgc_table
-		qry += "where submitted_sample_id like 'tcga%'"
+		qry += "where submitted_sample_id like 'tcga%' "
+		qry += "and icgc_donor_id not like 'DOT%' "  # these are new id's we are creating here
 		ret = search_db(cursor,qry)
 		icgc_tumor_sample_ids = [r[0] for r in ret] if ret else []
 
@@ -149,10 +243,10 @@ def add_tcga_diff(tcga_tables, other_args):
 		# I am taking a leap of faith here, and I believe that the deposited data is
 		# really identical to what we have in tcga
 		print "not deposited:", len(samples_not_deposited)
+		print "already deposited:", len(already_deposited_samples)
 
-		process_table(home, cursor, tcga_table, icgc_table, already_deposited_samples)
+		process_table(cursor, tcga_table, icgc_table, already_deposited_samples)
 		print "\t overall time for %s: %.3f mins; pid: %d" % (tcga_table, float(time.time()-time0)/60, os.getpid())
-		exit()
 
 	cursor.close()
 	db.close()
@@ -173,7 +267,8 @@ def main():
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
 
-	number_of_chunks = 1  # myISAM does not deadlock
+
+	number_of_chunks = 1 # myISAM does not deadlock
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
 
 #########################################

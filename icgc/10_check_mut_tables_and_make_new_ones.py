@@ -47,7 +47,7 @@ def make_new_somatic_tables(cursor, tables):
 		qry += "     icgc_specimen_id VARCHAR (20), "
 		qry += "     icgc_sample_id VARCHAR (20), "
 		qry += "     submitted_sample_id VARCHAR (50), "
-		qry += "	 control_genotype VARCHAR (430) NOT NULL, "
+		qry += "	 control_genotype VARCHAR (430), "
 		qry += "	 tumor_genotype VARCHAR (430) NOT NULL, "
 		qry += "     total_read_count INT, "
 		qry += "     mutant_allele_read_count INT, "

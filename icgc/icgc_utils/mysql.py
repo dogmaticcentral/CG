@@ -42,9 +42,11 @@ def switch_to_db (cursor, db_name):
 
 
 ########
-def store_without_checking(cursor, table, named_fields, verbose=False):
-
-	qry = "insert into %s " % table
+def store_without_checking(cursor, table, named_fields, verbose=False, database=None):
+	if database:
+		qry = "insert into %s.%s " % (database,table)
+	else:
+		qry = "insert into %s " % table
 	# column names
 	qry += "({}) ".format(",".join(named_fields.keys()))
 
