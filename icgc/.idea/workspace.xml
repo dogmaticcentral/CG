@@ -11,30 +11,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="32_tcga_diff_2_variants_in_patients.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="32_tcga_diff_2_variants_in_patients.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/32_tcga_diff_2_variants_in_patients.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="674">
-              <caret line="270" column="24" selection-start-line="270" selection-start-column="24" selection-end-line="270" selection-end-column="24" />
+            <state relative-caret-position="467">
+              <caret line="271" column="20" selection-start-line="271" selection-start-column="20" selection-end-line="271" selection-end-column="20" />
               <folding>
                 <element signature="e#19#36#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="30_tcga_diff_1_annotation.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/30_tcga_diff_1_annotation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3847">
-              <caret line="375" column="23" selection-start-line="375" selection-start-column="23" selection-end-line="375" selection-end-column="23" />
-              <folding>
-                <element signature="e#1731#1946#0" />
-                <element signature="e#2051#2198#0" />
-                <element signature="e#2275#2339#0" />
-                <element signature="e#2483#2804#0" />
-                <element signature="e#2806#2844#0" />
-                <element signature="e#2907#3163#0" />
               </folding>
             </state>
           </provider>
@@ -43,7 +26,7 @@
       <file leaf-file-name="12_reorganize_mutations.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/12_reorganize_mutations.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3006">
+            <state relative-caret-position="2952">
               <caret line="167" column="33" selection-start-line="167" selection-start-column="23" selection-end-line="167" selection-end-column="33" />
               <folding>
                 <element signature="e#21#32#0" expanded="true" />
@@ -55,7 +38,7 @@
       <file leaf-file-name="10_check_mut_tables_and_make_new_ones.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-36">
+            <state relative-caret-position="666">
               <caret line="38" column="44" selection-start-line="38" selection-start-column="44" selection-end-line="38" selection-end-column="44" />
             </state>
           </provider>
@@ -128,8 +111,8 @@
         <option value="$PROJECT_DIR$/icgc_utils/mysql.py" />
         <option value="$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py" />
         <option value="$PROJECT_DIR$/hack.py" />
-        <option value="$PROJECT_DIR$/32_tcga_diff_2_variants_in_patients.py" />
         <option value="$PROJECT_DIR$/30_tcga_diff_1_annotation.py" />
+        <option value="$PROJECT_DIR$/32_tcga_diff_2_variants_in_patients.py" />
       </list>
     </option>
   </component>
@@ -144,6 +127,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -155,7 +139,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -199,43 +182,44 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="2119" y="50" width="1599" height="905" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24809645" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32908705" />
-      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32908705" />
     </layout>
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20201422" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Python Console" order="9" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
+      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Python Console" order="9" />
     </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -458,35 +442,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="630">
           <caret line="212" column="13" selection-start-line="212" selection-start-column="13" selection-end-line="212" selection-end-column="13" />
-          <folding>
-            <element signature="e#139#727#0" />
-            <element signature="e#835#1461#0" />
-            <element signature="e#1399#1443#0" />
-            <element signature="e#1555#2041#0" />
-            <element signature="e#1555#1609#0" />
-            <element signature="e#1979#2023#0" />
-            <element signature="e#2120#2356#0" />
-            <element signature="e#2248#2338#0" />
-            <element signature="e#2431#2537#0" />
-            <element signature="e#2574#2684#0" />
-            <element signature="e#2762#2983#0" />
-            <element signature="e#3037#3198#0" />
-            <element signature="e#3261#3420#0" />
-            <element signature="e#3471#3729#0" />
-            <element signature="e#3518#3707#0" />
-            <element signature="e#3792#3951#0" />
-            <element signature="e#4027#4230#0" />
-            <element signature="e#4327#5085#0" />
-            <element signature="e#4595#4741#0" />
-            <element signature="e#5178#5375#0" />
-            <element signature="e#5513#5920#0" />
-            <element signature="e#6014#7256#0" />
-            <element signature="e#6014#6094#0" />
-            <element signature="e#6710#6890#0" />
-            <element signature="e#6892#6960#0" />
-            <element signature="e#7310#7661#0" />
-            <element signature="e#7439#7618#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -515,9 +470,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="674">
           <caret line="74" selection-start-line="74" selection-end-line="74" />
-          <folding>
-            <element signature="e#76#93#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -525,56 +477,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="396">
           <caret line="228" column="60" lean-forward="true" selection-start-line="228" selection-start-column="4" selection-end-line="228" selection-end-column="60" />
-          <folding>
-            <element signature="e#41#42#0" />
-            <element signature="e#890#1005#0" />
-            <element signature="e#1054#1178#0" />
-            <element signature="e#1140#1165#0" />
-            <element signature="e#1264#2138#0" />
-            <element signature="e#1560#1951#0" />
-            <element signature="e#1789#1915#0" />
-            <element signature="e#2072#2118#0" />
-            <element signature="e#2134#2208#0" />
-            <element signature="e#2232#4308#0" />
-            <element signature="e#2313#2557#0" />
-            <element signature="e#2778#2835#0" />
-            <element signature="e#2923#3302#0" />
-            <element signature="e#3058#3267#0" />
-            <element signature="e#3338#4118#0" />
-            <element signature="e#3555#3619#0" />
-            <element signature="e#3791#4105#0" />
-            <element signature="e#3986#4088#0" />
-            <element signature="e#4170#4216#0" />
-            <element signature="e#4232#4293#0" />
-            <element signature="e#4418#5030#0" />
-            <element signature="e#4653#4677#0" />
-            <element signature="e#4851#4913#0" />
-            <element signature="e#4988#5013#0" />
-            <element signature="e#5128#5491#0" />
-            <element signature="e#5337#5469#0" />
-            <element signature="e#5366#5426#0" />
-            <element signature="e#5599#5871#0" />
-            <element signature="e#5785#5849#0" />
-            <element signature="e#5990#6173#0" />
-            <element signature="e#6274#6521#0" />
-            <element signature="e#6435#6499#0" />
-            <element signature="e#6620#6940#0" />
-            <element signature="e#6864#6913#0" />
-            <element signature="e#6996#7468#0" />
-            <element signature="e#7051#7175#0" />
-            <element signature="e#7238#7361#0" />
-            <element signature="e#7387#7454#0" />
-            <element signature="e#7566#8328#0" />
-            <element signature="e#7582#7921#0" />
-            <element signature="e#7620#7680#0" />
-            <element signature="e#7826#7894#0" />
-            <element signature="e#7933#8328#0" />
-            <element signature="e#7941#8199#0" />
-            <element signature="e#8232#8300#0" />
-            <element signature="e#8394#8663#0" />
-            <element signature="e#8401#8540#0" />
-            <element signature="e#8570#8651#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -589,32 +491,19 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="432">
           <caret line="24" column="17" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
-          <folding>
-            <element signature="e#19#36#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/32_tcga_diff_2_variants_in_patients.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="674">
-          <caret line="270" column="24" selection-start-line="270" selection-start-column="24" selection-end-line="270" selection-end-column="24" />
-          <folding>
-            <element signature="e#19#36#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-36">
+        <state relative-caret-position="666">
           <caret line="38" column="44" selection-start-line="38" selection-start-column="44" selection-end-line="38" selection-end-column="44" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/12_reorganize_mutations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3006">
+        <state relative-caret-position="2952">
           <caret line="167" column="33" selection-start-line="167" selection-start-column="23" selection-end-line="167" selection-end-column="33" />
           <folding>
             <element signature="e#21#32#0" expanded="true" />
@@ -624,7 +513,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/30_tcga_diff_1_annotation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3847">
+        <state relative-caret-position="409">
           <caret line="375" column="23" selection-start-line="375" selection-start-column="23" selection-end-line="375" selection-end-column="23" />
           <folding>
             <element signature="e#1731#1946#0" />
@@ -633,6 +522,16 @@
             <element signature="e#2483#2804#0" />
             <element signature="e#2806#2844#0" />
             <element signature="e#2907#3163#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/32_tcga_diff_2_variants_in_patients.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="467">
+          <caret line="271" column="20" selection-start-line="271" selection-start-column="20" selection-end-line="271" selection-end-column="20" />
+          <folding>
+            <element signature="e#19#36#0" expanded="true" />
           </folding>
         </state>
       </provider>

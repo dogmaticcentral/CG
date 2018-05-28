@@ -103,6 +103,8 @@ def find_mutation_id(cursor, tcga_named_field):
 	reference_allele = tcga_named_field['reference_allele']
 	differing_allele = tcga_named_field['tumor_seq_allele1']
 	if differing_allele == reference_allele: differing_allele = tcga_named_field['tumor_seq_allele2']
+	if len(reference_allele)>200: reference_allele=reference_allele[:200]+"etc"
+	if len(differing_allele)>200: differing_allele=differing_allele[:200]+"etc"
 	qry += "and mutated_from_allele='%s' and mutated_to_allele='%s' "%(reference_allele,differing_allele)
 	ret = search_db(cursor,qry)
 
