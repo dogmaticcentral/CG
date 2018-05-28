@@ -14,8 +14,8 @@
       <file leaf-file-name="32_tcga_diff_2_variants_in_patients.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/32_tcga_diff_2_variants_in_patients.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="467">
-              <caret line="271" column="20" selection-start-line="271" selection-start-column="20" selection-end-line="271" selection-end-column="20" />
+            <state relative-caret-position="485">
+              <caret line="273" selection-start-line="273" selection-end-line="273" />
               <folding>
                 <element signature="e#19#36#0" expanded="true" />
               </folding>
@@ -528,8 +528,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/32_tcga_diff_2_variants_in_patients.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="467">
-          <caret line="271" column="20" selection-start-line="271" selection-start-column="20" selection-end-line="271" selection-end-column="20" />
+        <state relative-caret-position="485">
+          <caret line="273" selection-start-line="273" selection-end-line="273" />
           <folding>
             <element signature="e#19#36#0" expanded="true" />
           </folding>

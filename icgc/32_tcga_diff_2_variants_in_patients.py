@@ -156,6 +156,8 @@ def store_variant(cursor,  tcga_named_field, mutation_id, pathogenic_estimate, i
 		reference_allele = tcga_named_field['reference_allele']
 		differing_allele = tcga_named_field['tumor_seq_allele1']
 		if differing_allele == reference_allele: differing_allele = tcga_named_field['tumor_seq_allele2']
+		if len(reference_allele)>200: reference_allele=reference_allele[:200]+"etc"
+		if len(differing_allele)>200: differing_allele=differing_allele[:200]+"etc"
 
 		# fill store hash
 		store_fields = {
@@ -268,7 +270,6 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
-
 
 	number_of_chunks = 1 # myISAM does not deadlock
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
