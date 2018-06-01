@@ -14,18 +14,17 @@ def main():
 	cursor = db.cursor()
 
 	qry  = "select table_name from information_schema.tables "
-	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
+	qry += "where table_schema='icgc' and table_name like '%_simple_somatic'"
 	tables = [field[0] for field in search_db(cursor,qry)]
 
-	for table in tables:
-		if column_exists (cursor, 'icgc', table,'reliability_estimate'): continue
-		print table
-		qry  = "alter table icgc.%s " % table
-		#qry += "modify column control_genotype varchar(430) default null"
-		qry  += "add  reliability_estimate  boolean  default 0"
-		search_db(cursor,qry, verbose=True)
+	switch_to_db(cursor,'icgc')
 
-		#search_db(cursor,qry,verbose=True)
+	for table in tables:
+		print table
+		qry  = "select icgc_donor_id from icgc.%s " % table
+		qry += "where icgc_mutation_id ='MU1800992'"
+		search_db(cursor,qry)
+
 	cursor.close()
 	db.close()
 

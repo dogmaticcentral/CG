@@ -119,6 +119,21 @@ def find_mutation_id(cursor, tcga_named_field):
 		exit()
 	return False if not ret else ret[0]
 
+#########################################
+def construct_id(cursor, icgc_table, lock_alias):
+	# construct donor id
+	qry  = "select icgc_donor_id from icgc.%s as %s "  % (icgc_table, lock_alias)
+	qry += "where icgc_donor_id like 'DOT_%' order by icgc_donor_id desc limit 1"
+	ret = search_db(cursor,qry)
+	ordinal = 1
+	if ret:
+		ordinal = int( ret[0][0].split("_")[-1].lstrip("0") ) + 1
+	tumor_short = icgc_table.split("_")[0]
+	return "DOT_%s_%05d"%(tumor_short,ordinal)
+
+#########################################
+id_resolution = {}
+
 
 #########################################
 def store_variant(cursor,  tcga_named_field, mutation_id, pathogenic_estimate, icgc_table):
@@ -135,22 +150,17 @@ def store_variant(cursor,  tcga_named_field, mutation_id, pathogenic_estimate, i
 	qry += "where icgc_mutation_id='%s' " % mutation_id
 	ret = search_db(cursor,qry)
 
-
 	# we have not stored this one yet
 	if ret and (tcga_named_field['tumor_sample_barcode'] in [r[0] for r in ret]):
 		#print "variant found"
 		pass
 	else:
-		tumor_short = icgc_table.split("_")[0]
-
-		# construct donor id
-		qry  = "select icgc_donor_id from icgc.%s as %s "  % (icgc_table, lock_alias)
-		qry += "where icgc_donor_id like 'DOT_%' order by icgc_donor_id desc limit 1"
-		ret = search_db(cursor,qry)
-		ordinal = 1
-		if ret:
-			ordinal = int( ret[0][0].split("_")[-1].lstrip("0") ) + 1
-		new_donor_id = "DOT_%s_%05d"%(tumor_short,ordinal)
+		tcga_participant_id = "-".join(tcga_named_field['tumor_sample_barcode'].split("-")[:3])
+		if id_resolution.has_key(tcga_participant_id):
+			new_donor_id = id_resolution[tcga_participant_id]
+		else:
+			new_donor_id = construct_id(cursor, icgc_table, lock_alias)
+			id_resolution[tcga_participant_id] = new_donor_id
 
 		# tcga could not agree in which column to place the cancer allele
 		reference_allele = tcga_named_field['reference_allele']
@@ -234,8 +244,10 @@ def add_tcga_diff(tcga_tables, other_args):
 		tcga_tumor_sample_ids = [ret[0] for ret in search_db(cursor,qry)]
 
 		#tcga samples already deposited in icgc
+		# NOTE: it looks like in TCGA database the only id type different from TCGA*
+		# can be TARGET * (and that one in ALL set only)
 		qry  = "select distinct(submitted_sample_id) from icgc.%s " % icgc_table
-		qry += "where submitted_sample_id like 'tcga%' "
+		qry += "where (submitted_sample_id like 'tcga%' or submitted_sample_id like 'target%')"
 		qry += "and icgc_donor_id not like 'DOT%' "  # these are new id's we are creating here
 		ret = search_db(cursor,qry)
 		icgc_tumor_sample_ids = [r[0] for r in ret] if ret else []
@@ -271,7 +283,7 @@ def main():
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
 
-	number_of_chunks = 1 # myISAM does not deadlock
+	number_of_chunks = 8 # myISAM does not deadlock
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
 
 #########################################

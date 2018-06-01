@@ -1,68 +1,79 @@
 #! /usr/bin/python
 
-from icgc_utils.common_queries import *
 
+import time
+from icgc_utils.common_queries import *
+from icgc_utils.processes import  *
 verbose = False
 
-def co_ocurrence(cursor,table,gene):
-
-	total_rpl5 += patients_with_muts_in_gene.get('RPL5',0)
-	total_tp53 += patients_with_muts_in_gene.get('TP53',0)
-	cooc = co_ocurrence_count(cursor, table, 'RPL5', 'TP53')
-	print "co-ocurrence:", cooc
-	total_cooc += cooc
-
-# use littler to evaluate
+def hashinit(list_of_hashes, key):
+	for hash in list_of_hashes:
+		hash[key] = 0
 
 
-
-
-def main():
+######################
+def coocurrence(tables, other_args):
 
 	db     = connect_to_mysql()
 	cursor = db.cursor()
 
 	#########################
-	# which simple somatic tables do we have
-	qry  = "select table_name from information_schema.tables "
-	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
-	tables = [field[0] for field in  search_db(cursor,qry)]
-	#########################
 	switch_to_db(cursor,"icgc")
 
-	# the total sums are per gene, over tumors that have a mutation in this gene
-	total_donors = {}
-	total = {}
-	total_tp53 = {} # total tp53 mutated in tumors that have gene of interest mutated
-	total_cooc = {}
-	for line in search_db(cursor,"select distinct(gene_symbol) from mutation2gene"):
-		gene = line[0]
-		total_donors[gene] = 0
-		total[gene] = 0
-		total_tp53[gene] = 0
-		total_cooc[gene] = 0
-
 	for table in tables:
-		print "================================="
-		print table
+		t0 = time.time()
+		tumor_short = table.split("_")[0]
 		patients_with_muts_in_gene = patients_per_gene_breakdown(cursor, table)
 		donors = len(get_donors(cursor, table))
-		print "donors: ", donors
+		print "="*20, "\n", table, "donors: ", donors, "donors with mutated TP53:", patients_with_muts_in_gene.get('TP53',0)
+		if patients_with_muts_in_gene.get('TP53',0)==0: continue
+
+		# the total sums are per gene, over tumors that have a mutation in this gene
+		total_donors = {}
+		total = {}
+		total_tp53 = {} # total tp53 mutated in tumors that have gene of interest mutated
+		total_cooc = {}
 		for gene, number_of_patients in patients_with_muts_in_gene.iteritems():
 			if gene=='TP53': continue
+			if not total_donors.has_key(gene): hashinit([total_donors,total,total_tp53,total_cooc], gene)
 			total_donors[gene] += donors
 			total_tp53[gene]   += patients_with_muts_in_gene.get('TP53',0)
 			total[gene] += number_of_patients
 			total_cooc[gene] += co_ocurrence_count(cursor, table, gene, 'TP53')
 
-	outf = open("coocurrence.table","w")
-	for gene, donors in total_donors.iteritems():
-		if donors<10: continue
-		outf.write(" %10s  %5d  %4d  %4d  %4d \n" % (gene, donors, total_tp53[gene], total[gene], total_cooc[gene]))
-	outf.close()
+		print table, "donors: ", donors, "done, %.1f mins" % (float(time.time()-t0)/60)
+
+		outf = open("coocurrence/%s.tsv"%tumor_short,"w")
+		for gene, donors in total_donors.iteritems():
+			if donors<10: continue
+			outf.write("%s\t%d\t%d\t%d\t%d\n" % (gene, donors, total_tp53[gene], total[gene], total_cooc[gene]))
+		outf.close()
 
 	cursor.close()
 	db.close()
+
+#########################################
+#########################################
+def main():
+
+	if not os.path.exists("coocurrence"): os.mkdir("coocurrence")
+
+	# divide by cancer types, because I have duplicates within each cancer type
+	# that I'll resolve as I go, but I do not want the threads competing)
+	db     = connect_to_mysql()
+	cursor = db.cursor()
+
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%_simple_somatic'"
+	tables = [field[0] for field in search_db(cursor,qry)]
+
+	cursor.close()
+	db.close()
+
+	#tables= ['ALL_simple_somatic']
+	number_of_chunks = 1  # myISAM does not deadlock
+	parallelize(number_of_chunks, coocurrence, tables, [])
+
 
 
 #########################################

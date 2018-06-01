@@ -1,4 +1,7 @@
 #! /usr/bin/python
+
+# mutation2gene is not empty, do this before 37_mutation_to_gene
+
 import time
 
 from icgc_utils.mysql   import  *

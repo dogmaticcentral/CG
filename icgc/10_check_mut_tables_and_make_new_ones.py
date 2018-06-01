@@ -44,7 +44,7 @@ def make_new_somatic_tables(cursor, tables):
 		qry += "  	 icgc_mutation_id VARCHAR (20) NOT NULL, "
 		qry += "     chromosome CHAR(2) NOT NULL,"
 		qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
-		qry += "     icgc_specimen_id VARCHAR (20), "
+		qry += "     icgc_specimen_id VARCHAR (50), "  # we want to be able to stick the TCGA sample id later
 		qry += "     icgc_sample_id VARCHAR (20), "
 		qry += "     submitted_sample_id VARCHAR (50), "
 		qry += "	 control_genotype VARCHAR (430), "

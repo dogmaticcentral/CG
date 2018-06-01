@@ -1,6 +1,19 @@
 
 from icgc_utils.mysql   import  *
 
+def protein_coding_genes(cursor):
+	standard_chromosomes = [str(i) for i in range(23)] + ['X','Y']
+	genes = []
+	chrom = {}
+	qry  = "select approved_symbol, chromosome from icgc.hgnc "
+	qry += "where locus_group='protein-coding gene'"
+	for gene,chr in search_db(cursor,qry):
+		if not chr in standard_chromosomes: continue
+		genes.append(gene)
+		chrom[gene] = chr
+
+	return genes, chrom
+
 #########################################
 def co_ocurrence_raw(cursor, somatic_table, gene1, gene2):
 
@@ -17,18 +30,35 @@ def co_ocurrence_raw(cursor, somatic_table, gene1, gene2):
 #########################################
 def co_ocurrence_count(cursor, somatic_table, gene1, gene2):
 
-	qry =  "select count(distinct s1.icgc_donor_id) ct "
-	qry += "from mutation2gene g1, mutation2gene g2,  %s s1,  %s s2  " % (somatic_table, somatic_table)
-	qry += "where s1.icgc_donor_id=s2.icgc_donor_id "
-	qry += "and s1.icgc_mutation_id=g1.icgc_mutation_id and g1.gene_symbol='%s' " % gene1
-	qry += "and s2.icgc_mutation_id=g2.icgc_mutation_id and g2.gene_symbol='%s' " % gene2
-	qry += "and s1.pathogenic_estimate=1 and s1.reliability_estimate=1  "
-	qry += "and s2.pathogenic_estimate=1 and s2.reliability_estimate=1 "
-	ret = search_db(cursor,qry)
-	if not ret:
-		search_db(cursor,qry, verbose=True)
-		exit()
-	return ret[0][0]
+	if False: # this is still  twice as fast as the search below
+		# are we running thruoght the same row twice bcs of s1 <-> s2?
+		# still, distinct should get rid of double counting
+		qry =  "select count(distinct s1.icgc_donor_id) ct "
+		qry += "from mutation2gene g1, mutation2gene g2,  %s s1,  %s s2  " % (somatic_table, somatic_table)
+		qry += "where s1.icgc_donor_id=s2.icgc_donor_id "
+		qry += "and s1.icgc_mutation_id=g1.icgc_mutation_id and g1.gene_symbol='%s' " % gene1
+		qry += "and s2.icgc_mutation_id=g2.icgc_mutation_id and g2.gene_symbol='%s' " % gene2
+		qry += "and s1.pathogenic_estimate=1 and s1.reliability_estimate=1  "
+		qry += "and s2.pathogenic_estimate=1 and s2.reliability_estimate=1 "
+		ret = search_db(cursor,qry)
+		if not ret:
+			search_db(cursor,qry,verbose=True)
+			exit()
+		return ret[0][0]
+	else:
+		donors = {}
+		for gene in [gene1, gene2]:
+			qry  = "select distinct s.icgc_donor_id "
+			qry += "from mutation2gene g,  %s s  " % (somatic_table)
+			qry += "where s.icgc_mutation_id=g.icgc_mutation_id and g.gene_symbol='%s' " % gene
+			qry += "and s.pathogenic_estimate=1 and s.reliability_estimate=1  "
+			ret  = search_db(cursor,qry)
+			if not ret:
+				search_db(cursor,qry,verbose=True)
+				exit()
+			donors[gene] = [r[0] for r in ret]
+
+		return len(set(donors[gene1])&set(donors[gene2]))
 
 #########################################
 def patients_per_gene_breakdown(cursor, table):

@@ -23,6 +23,7 @@ def make_map_table(cursor, db_name, table_name):
 	print qry
 	print rows
 
+
 #########################################
 def store (cursor, mut_id, gene_symbols):
 
@@ -33,7 +34,7 @@ def store (cursor, mut_id, gene_symbols):
 	if not ret:
 		existing = None
 	else:
-		existing = set([r[0] for r in search_db(cursor,qry)])
+		existing = set([r[0] for r in ret])
 	if existing:
 		gene_symbols = list(set(gene_symbols).difference(existing))
 	#insert new
@@ -93,11 +94,20 @@ def store_maps(chromosomes, other_args ):
 		qry += "from mutations_chrom_%s m, locations_chrom_%s l " % (chrom, chrom)
 		qry += "where m.start_position=l.position and (l.gene_relative is not null or l.transcript_relative is not null)"
 		ret = search_db(cursor, qry, verbose=True)
+
 		if not ret:
 			print "(?) no ret for "
 			print  qry
 			exit()
+		no_rows = len(ret)
+		print "chrom ", chrom, "number of rows", no_rows
+
+		ct = 0
 		for mut_id, gene, transcr in ret:
+			ct += 1
+			if (ct%10000==0):
+				print "%30s   %6d lines out of %6d  (%d%%)  %d min" % \
+				      (chrom, ct, no_rows, float(ct)/no_rows*100, float(time.time()-time0)/60)
 			gene_found = False
 			if gene and gene != "":
 				geneids = set ([])
@@ -106,7 +116,6 @@ def store_maps(chromosomes, other_args ):
 					if loc == "intragenic": geneids.add(ensid)
 
 				if len(geneids)>0:
-					#print mut_id, ensids
 					gene_found = True
 					store (cursor, mut_id, ens2hgnc(cursor,geneids))
 			if not gene_found and transcr and transcr != "":

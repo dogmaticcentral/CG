@@ -287,8 +287,8 @@ def main():
         header +=  "total number of entries: " + str(db_entries)+ "\n"
         header +=  "number of functional mutations (not silent and not 'RNA') " + str(total_muts)+ "\n"
         header +=  " %8s   %4s   %4s %8s  %4s   %4s  %15s  %10s  %10s %10s  " % ("gene1", "#pts1", "#muts1", "gene2",
-                                                                                     "#pts2", "#muts2", "co-appearance",
-                                                                                     "expct_co-app", "pval <=", "pval >=")
+                                                                                "#pts2", "#muts2", "co-appearance",
+                                                                                "expct_co-app", "pval <=", "pval >=")
         #header += "\n"
         outstr = ""
         if tp53_mode:

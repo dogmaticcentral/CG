@@ -13,8 +13,8 @@ def main():
 
 	switch_to_db(cursor,"icgc")
 	qry  = "select table_name from information_schema.tables "
-	#qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
-	qry += "where table_schema='icgc' and table_name like 'mutations_chrom_%'"
+	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
+	#qry += "where table_schema='icgc' and table_name like 'mutations_chrom_%'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
 
 	#for ct in cancer_types:
@@ -24,12 +24,20 @@ def main():
 		#qqry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" % mutations_table
 		#qsearch_db(cursor,qry,verbose=True)
 
-	for mutations_table in tables:
+	#for mutations_table in tables:
+		#print mutations_table
 		#qry  = "create index donor_mutation_idx on %s (icgc_donor_id)" % mutations_table
 		#qry  = "create index mut_idx on %s (icgc_mutation_id)" % mutations_table
-		print mutations_table
-		qry = "create index fingerprint_idx on %s (start_position, mutated_from_allele, mutated_to_allele)" % mutations_table
+		#qry = "create index fingerprint_idx on %s (start_position, mutated_from_allele, mutated_to_allele)" % mutations_table
+		#search_db(cursor,qry,verbose=True)
+
+	for table in tables:
+		print table
+		#qry  = "create index somatic_mut_idx on %s (icgc_mutation_id)" % table
+		#qry  = "create index somatic_donor_idx on %s (icgc_donor_id)" % table
+		qry = "alter table %s drop index somatic_mut_idx " % table
 		search_db(cursor,qry,verbose=True)
+
 
 	cursor.close()
 	db.close()

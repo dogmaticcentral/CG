@@ -89,7 +89,7 @@ def create_icgc_table(cursor, tcga_table):
 	qry += "  	 icgc_mutation_id VARCHAR (20) NOT NULL, "
 	qry += "     chromosome CHAR(2) NOT NULL,"
 	qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
-	qry += "     icgc_specimen_id VARCHAR (20), "
+	qry += "     icgc_specimen_id VARCHAR (50), "
 	qry += "     icgc_sample_id VARCHAR (20), "
 	qry += "     submitted_sample_id VARCHAR (50), "
 	qry += "	 control_genotype VARCHAR (430), "
@@ -374,6 +374,7 @@ def store_mutation(cursor, annovar_named_field, mutation_type, consequences_stri
 		print "storing"
 		print ref_allele
 		print to_allele
+
 		named_fields = {'icgc_mutation_id':	new_id,
 						'start_position': long(annovar_named_field['start']),
 						'end_position': long(annovar_named_field['end']),

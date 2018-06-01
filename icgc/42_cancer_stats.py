@@ -23,7 +23,7 @@ def avg_number_of_muts_per_patient(cursor, table, donors):
 		qry  = "select distinct icgc_mutation_id from %s " % table
 		qry += "where  icgc_donor_id='%s' " % donor_id
 		qry += "and  pathogenic_estimate =1 "
-		qry += "and  (total_read_count is null or (mutant_allele_read_count>3 and mut_to_total_read_count_ratio>0.2) )"
+		qry += "and  reliability_estimate=1"
 		ret = search_db(cursor,qry)
 		if not ret: continue
 		number_of_muts = len(ret) if ret else 0
@@ -62,12 +62,12 @@ def main():
 							"donors w pathogenic mutations", "pct",
 							"avg mutations per patient",
 							"RPL5 donors", "pct of all donors",
-							"genes wiht path muts in more donors than RPL5", "pct genome",
+							"genes with path muts in more donors than RPL5", "pct genome",
 							"RPL11 donors", "pct of all donors",
 							"genes wiht path muts in more donors than RPL11", "pct genome"
 							])+"\n")
 
-	#tables = ["BRCA_simple_somatic"]
+	#tables = ["ALL_simple_somatic"]
 	for table in tables:
 		#if table=="BRCA_simple_somatic": continue
 
