@@ -49,60 +49,7 @@ def spec_from_TCGA(sample_barcode):
 
 	return "Other"
 
-#########################################
-def find_53_status(cursor, tumor_short, specimen):
-	# g = gene
-	# m = mutation
-	# v = variant
-	qry  = "select g.icgc_mutation_id, v.pathogenic_estimate, m.consequence, m.aa_mutation, l.transcript_relative "
-	qry += "from mutation2gene g, %s_simple_somatic v, mutations_chrom_17 m , locations_chrom_17 l " % (tumor_short)
-	qry += "where g.gene_symbol='TP53' "
-	qry += "and v.icgc_specimen_id = '%s' "  % specimen
-	qry += "and g.icgc_mutation_id = v.icgc_mutation_id "
-	qry += "and g.icgc_mutation_id = m.icgc_mutation_id "
-	qry += "and m.start_position = l.position "
-	ret = search_db(cursor,qry)
-	if not ret: return ["wt",""]
 
-	impact_estimate =  "benign"
-	cons = []
-	for line in ret:
-		if line[1]==1:  impact_estimate = "pathogenic"
-		if line[2]==None:
-			# canonical transcript is ENST00000269305
-			if line[-1]!=None: cons.append(transcript_location_cleanup(cursor,line[-1],'ENSG00000141510'))
-			continue
-		aa_change = aa_change_cleanup(cursor, line[3])
-		if aa_change and aa_change != "":
-			cons.append("%s:%s"%(line[2], aa_change))
-		else:
-			cons.append(line[2])
-	return [impact_estimate, ";".join(cons)]
-
-
-#########################################
-def transcript_location_cleanup(cursor, loc, gene_stable_id):
-	if not loc: return ""
-	if loc== "": return loc
-	location = {};
-	for enst_loc in loc.split(";"):
-		[e, c] = enst_loc.split(":")
-		location[e] = c
-	enst_canonical = get_stable_id_for_canonical_transcript(cursor, location.keys(), gene_stable_id)
-	if not enst_canonical: return loc
-	return location[enst_canonical]
-
-#########################################
-def aa_change_cleanup(cursor, aa_change):
-	if not aa_change: return ""
-	if aa_change=="": return aa_change
-	change = {};
-	for enst_change in aa_change.split(";"):
-		[e, c] = enst_change.split(":")
-		change[e] = c
-	enst_canonical = get_stable_id_for_canonical_transcript(cursor, change.keys())
-	if not enst_canonical: return aa_change
-	return change[enst_canonical]
 
 
 #########################################
