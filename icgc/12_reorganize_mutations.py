@@ -40,14 +40,6 @@ pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained
 									# more likely it is than not
              }
 
-#########################################
-def quotify(something):
-	if not something:
-		return ""
-	if type(something)==str:
-		return "\'"+something+"\'"
-	else:
-		return str(something)
 
 #########################################
 def insert (cursor, table, columns, values):

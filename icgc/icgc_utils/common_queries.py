@@ -26,6 +26,34 @@ def co_ocurrence_raw(cursor, somatic_table, gene1, gene2):
 	qry += "and s2.pathogenic_estimate=1 and s2.reliability_estimate=1 "
 	return search_db(cursor,qry)
 
+#########################################
+def quotify(something):
+	if not something:
+		return ""
+	if type(something)==str:
+		return "\'"+something+"\'"
+	else:
+		return str(something)
+
+
+#########################################
+def co_ocurrence_w_group_count(cursor, somatic_table, gene1, other_genes):
+	qry =  "select count(distinct s1.icgc_donor_id) ct "
+	qry += "from mutation2gene g1, mutation2gene g2,  %s s1,  %s s2  " % (somatic_table, somatic_table)
+	qry += "where s1.icgc_donor_id=s2.icgc_donor_id "
+	qry += "and s1.icgc_mutation_id=g1.icgc_mutation_id and g1.gene_symbol='%s' " % gene1
+	group_string = (",".join([quotify(gene2) for gene2 in other_genes]))
+	qry += "and s2.icgc_mutation_id=g2.icgc_mutation_id and g2.gene_symbol in (%s) " % group_string
+	qry += "and s1.pathogenic_estimate=1 and s1.reliability_estimate=1 "
+	qry += "and s2.pathogenic_estimate=1 and s2.reliability_estimate=1 "
+
+	ret = search_db(cursor,qry)
+
+	if not ret:
+		search_db(cursor,qry,verbose=True)
+		exit()
+	return ret[0][0]
+
 
 #########################################
 def co_ocurrence_count(cursor, somatic_table, gene1, gene2):
@@ -75,6 +103,26 @@ def patients_per_gene_breakdown(cursor, table):
 		search_db(cursor,qry, verbose=True)
 		exit()
 	return dict(ret)
+
+
+#########################################
+def patients_with_muts_in_gene_group(cursor, table, gene_list):
+
+	# this hinges on s.icgc_mutation_id=g.icgc_mutation_id
+	# having icgc_mutation_id indexed both on s and g:
+	qry  = "select count(distinct  s.icgc_donor_id) ct "
+	qry += "from mutation2gene g, %s s  " % table
+	qry += "where s.icgc_mutation_id=g.icgc_mutation_id and s.pathogenic_estimate=1  "
+	qry += "and s.reliability_estimate=1 "
+	group_string = (",".join([quotify(gene2) for gene2 in gene_list]))
+	qry += "and g.gene_symbol in (%s)" %  group_string
+
+	ret = search_db(cursor,qry)
+	if not ret:
+		search_db(cursor,qry, verbose=True)
+		exit()
+	return ret[0][0]
+
 
 ########################################
 def find_chromosome(cursor, gene):

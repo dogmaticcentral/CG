@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 #########################################
 def main():
 
-	extras = ['RPL5', 'RPL11', 'TP53','TTN', 'PTEN', 'SMAD4','SETD2',
+	extras = ['RPL5', 'RPL11', 'RPL22',
+	          'TP53','TTN', 'PTEN', 'SMAD4','SETD2',
 	          'RB1', 'VHL', 'PIK3CA', 'IDH1',
 	          'WDR41',
 	          'RABAC1','BEX5', 'DEFB116', 'NODAL','DDX3X','RAD9B', 'LUC7L2', 'FZD10',

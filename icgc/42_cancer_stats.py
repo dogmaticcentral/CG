@@ -104,7 +104,7 @@ def main():
 		for gene in ['RPL5', 'RPL11']:
 			if patients_with_muts_in_gene.has_key(gene):
 				nr_muts =  patients_with_muts_in_gene[gene]
-				genes_w_eq_or_gt_number_of_donors =  len([g for g in patients_with_muts_in_gene.keys() if patients_with_muts_in_gene[g]>=nr_muts])
+				genes_w_eq_or_gt_number_of_donors = len([g for g in patients_with_muts_in_gene.keys() if patients_with_muts_in_gene[g]>=nr_muts])
 				if verbose: print "\t\t ", gene, nr_muts,  nr_muts, genes_w_eq_or_gt_number_of_donors
 				pct  = float(nr_muts)/number_of_patients_w_pathogenic_mutations*100
 				fields.append(nr_muts)
