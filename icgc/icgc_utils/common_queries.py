@@ -2,6 +2,46 @@
 from icgc_utils.mysql   import  *
 
 #########################################
+def gnomad_mutations (cursor, gene_symbol):
+
+	mutations = []
+
+	chromosome = find_chromosome(cursor, gene_symbol)
+	#column_names
+	colnames = get_column_names(cursor,"gnomad","gnomad_freqs_chr_1")
+
+	# brute force approach seems to be fast enough for a single gene
+	qry = "select * from gnomad.gnomad_freqs_chr_{} where consequences like '%|{}|%' ".format(chromosome, gene_symbol)
+	ret = search_db(cursor,qry)
+	if not ret:
+		print "nothing found for {}, chromosome {}".formate(gene_symbol, chromosome)
+		exit()
+	for line in ret:
+		named_fields = dict(zip(colnames,line))
+		relevant_variants = []
+		for description in named_fields['consequences'].split(","):
+			if not 'RPL5' in description: continue
+			if not 'missense' in description: continue
+			description_field = description.split("|")
+			# I don't have ensembl info here - in a more through implementation one should
+			# at least go for annotator here
+			# for now just hope that the uniprot is canonical
+			if len(description_field[2])==0: continue
+			relevant_variants.append(description)
+		if len(relevant_variants)==0: continue
+		if float(named_fields['variant_count'])<2: continue
+		freqency = float(named_fields['variant_count'])/named_fields['total_count']
+		#print "%.1e" % freqency,
+		for description in relevant_variants:
+			description_field = description.split("|")
+			#print "  ", description_field[7], description_field[8], # example:  280 V/A
+			mutations.append(description_field[8].split("/")[0] + description_field[7] + description_field[8].split("/")[1])
+		#print
+
+	return list(set(mutations))
+
+
+#########################################
 def transcript_location_cleanup(cursor, loc, gene_stable_id):
 	if not loc: return ""
 	if loc== "": return loc
@@ -24,7 +64,6 @@ def aa_change_cleanup(cursor, aa_change):
 	enst_canonical = get_stable_id_for_canonical_transcript(cursor, change.keys())
 	if not enst_canonical: return aa_change
 	return change[enst_canonical]
-
 
 
 #########################################
@@ -184,7 +223,7 @@ def patients_with_muts_in_gene_group(cursor, table, gene_list):
 
 ########################################
 def find_chromosome(cursor, gene):
-	qry = "select chromosome from hgnc where approved_symbol = '%s'" % gene
+	qry = "select chromosome from icgc.hgnc where approved_symbol = '%s'" % gene
 	ret = search_db(cursor,qry)
 	if not ret or ret ==[]:
 		print "chromosome not found for %s (?)"%gene

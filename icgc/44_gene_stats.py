@@ -72,6 +72,8 @@ def gene_mutations(cursor, tumor_short, gene):
 	for line in ret:
 		[donor, sample, chromosome,  cgenotype, tgenotype, mutation, specimen] = line
 
+		# TODO: mutation: check if listed in gnomad
+
 		if donor[2]=="T":
 			# this came from TCGA => we do not have the specimen table,
 			# but we can tell its type from the TCGA code itself
@@ -96,13 +98,15 @@ def gene_mutations(cursor, tumor_short, gene):
 		if not consequence: consequence = ""
 		aa_change = aa_change_cleanup(cursor, aa_change)
 
+		# TODO: aa change: check if Ines tested
+
 		if not specimen: specimen=""
 		if not cgenotype: cgenotype=""
 		if not donor_rows.has_key(donor):
-			entry = "\t".join([tumor_short, donor, specimen, spec_type[:1], no_muts, mutation,  cgenotype, tgenotype, consequence, aa_change, out_p53_status])
+			entry = "\t".join([tumor_short, donor,  spec_type[:1], no_muts,cgenotype, tgenotype, consequence, aa_change, out_p53_status])
 			donor_rows[donor] = [entry]
 		else:
-			entry = "\t".join([tumor_short, "", specimen, spec_type[:1], no_muts, mutation,  cgenotype, tgenotype,  consequence, aa_change, out_p53_status])
+			entry = "\t".join([tumor_short, "",  spec_type[:1], no_muts, cgenotype, tgenotype,  consequence, aa_change, out_p53_status])
 			donor_rows[donor].append(entry)
 
 	return donor_rows
@@ -129,8 +133,8 @@ def main():
 
 	gene = 'RPL5'
 	outf = open("%s_per_cancer_breakdown.tsv"%gene, "w")
-	outf.write("\t".join(["tumor short",  "donor","specimen", "spec_type",
-							"no_muts", "mutation",  "cancer_genotype", "tumor_genotype",
+	outf.write("\t".join(["tumor short",  "donor", "spec_type",
+							"no_muts",   "control_genotype", "tumor_genotype",
 							"consequence", "aa_change", "p53_status"])+"\n")
 
 	for table in tables:
