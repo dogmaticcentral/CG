@@ -75,6 +75,7 @@ def make_mutation_tables(cursor):
 		qry += "  	 icgc_mutation_id VARCHAR (20) NOT NULL, "
 		qry += "	 start_position INT  NOT NULL, "
 		qry += "	 end_position INT NOT NULL, "
+		qry += "	 assembly VARCHAR (10) NOT NULL, "
 		# for mut type use deletion, insertion, single and multiple
 		qry += "	 mutation_type VARCHAR (10), "
 		qry += "	 mutated_from_allele VARCHAR (210) NOT NULL, "

@@ -73,6 +73,13 @@ def gene_mutations(cursor, tumor_short, gene):
 		[donor, sample, chromosome,  cgenotype, tgenotype, mutation, specimen] = line
 
 		# TODO: mutation: check if listed in gnomad
+		# check genome assembly:
+		# one more time:
+		# GRCh38 = hg38
+		# GRCh37 = hg19
+		# NCBI Build 36.1 = hg18
+
+		qry = "select assembly from %s_simple_somatic_temp"
 
 		if donor[2]=="T":
 			# this came from TCGA => we do not have the specimen table,

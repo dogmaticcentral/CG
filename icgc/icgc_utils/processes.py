@@ -15,7 +15,7 @@ def parallelize (number_of_chunks, embarassingly_pllbl_fn, list, other_args):
 
 
 	if (number_of_chunks < 1):
-		print "number of processs is expected to be >= 1"
+		print "number of processes is expected to be >= 1"
 		return False
 
 	if (number_of_chunks == 1):

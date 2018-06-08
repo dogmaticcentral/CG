@@ -267,6 +267,10 @@ def reorganize(tables, other_args):
 #########################################
 def main():
 
+	print 'add the piece of code to add assembly info to mutations_chrom*'
+	print 'see assembly_hack.py'
+	exit()
+
 	db     = connect_to_mysql()
 	cursor = db.cursor()
 	#########################
