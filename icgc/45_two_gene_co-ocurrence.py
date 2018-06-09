@@ -45,7 +45,7 @@ def main():
 
 	gene_1 = 'TP53'
 	#gene_1 = 'BRCA1'
-	other_genes = ['RPL5']
+	other_genes = ['RPL22']
 	#########################
 	# which simple somatic tables do we have
 	qry  = "select table_name from information_schema.tables "
@@ -60,6 +60,14 @@ def main():
 	total_gene_1 = 0
 	total_cooc = 0
 	#tables = ['UCEC_simple_somatic']
+
+	write_to_file =  len(other_genes)==1
+
+	if write_to_file:
+		outf = open("{}_{}_cooccurrence.tsv".format(gene_1, other_genes[0]),"w")
+		outf.write("\t".join(['cancer','donors', "mutations in %s"%gene_1,
+			                "mutations in %s"%other_genes[0], 'cooccurrence','expected',
+			                'p smaller', 'p bigger'])+"\n")
 
 	for table in tables:
 		tumor_short = table.split("_")[0]
@@ -98,6 +106,11 @@ def main():
 		print "   p_smaller: %.2f" % p_smaller
 		print "    p_bigger: %.2f" % p_bigger
 		print
+
+		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t%.2f\n"%
+		                (tumor_short,donors, patients_with_muts_in_gene.get(gene_1, 0),
+						patients_with_muts_in_gene.get(other_genes[0], 0),
+						cooc,expected,p_smaller,p_bigger))
 		total_cooc += cooc
 
 
@@ -116,6 +129,15 @@ def main():
 	#print "     pval_gt: %.1e" % pval_gt
 	print "   p_smaller: %.1e" % p_smaller
 	print "    p_bigger: %.1e" % p_bigger
+	expected = (float(total_gene_1)/total_donors*total_other)
+	if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
+								("total", total_donors, total_gene_1,
+								total_other, total_cooc, expected, p_smaller, p_bigger))
+
+
+	if write_to_file: outf.close()
+
+	print myfisher(total_donors*4, total_gene_1*4, total_other*4, total_cooc*4)
 	cursor.close()
 	db.close()
 

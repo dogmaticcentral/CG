@@ -11,11 +11,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="45_two_gene_co-ocurrence.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="45_two_gene_co-ocurrence.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/45_two_gene_co-ocurrence.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret line="6" column="25" selection-start-line="1" selection-end-line="6" selection-end-column="25" />
+            <state relative-caret-position="289">
+              <caret line="129" selection-start-line="127" selection-end-line="129" />
               <folding>
                 <element signature="e#19#36#0" expanded="true" />
               </folding>
@@ -23,59 +23,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="60_clustering_on_the_structure.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/60_clustering_on_the_structure.py">
+      <file leaf-file-name="47_co-ocurrence_postprocess.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/47_co-ocurrence_postprocess.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="19" column="61" selection-start-line="19" selection-start-column="61" selection-end-line="19" selection-end-column="61" />
-              <folding>
-                <element signature="e#19#36#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="44_gene_stats.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/44_gene_stats.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="85" column="64" lean-forward="true" selection-start-line="85" selection-start-column="64" selection-end-line="85" selection-end-column="64" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="assembly_hack.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/assembly_hack.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="199">
-              <caret line="71" selection-start-line="71" selection-end-line="71" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="30_tcga_diff_1_annotation.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/30_tcga_diff_1_annotation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2196">
-              <caret line="126" column="66" lean-forward="true" selection-start-line="126" selection-start-column="4" selection-end-line="126" selection-end-column="66" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="32_tcga_diff_2_variants_in_patients.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/32_tcga_diff_2_variants_in_patients.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="684">
-              <caret line="42" column="1" lean-forward="true" selection-start-line="6" selection-end-line="42" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="03_make_tables.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/03_make_tables.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="35" lean-forward="true" selection-start-line="34" selection-end-line="35" />
+            <state relative-caret-position="54">
+              <caret line="34" selection-start-line="34" selection-end-line="34" />
             </state>
           </provider>
         </entry>
@@ -98,10 +50,12 @@
       <find>'TP53'</find>
       <find>tp53</find>
       <find>assem</find>
+      <find>named_field['MUTATION']</find>
     </findStrings>
     <replaceStrings>
       <replace>other</replace>
       <replace>gene_1</replace>
+      <replace>field[0]</replace>
     </replaceStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -146,7 +100,6 @@
         <option value="$PROJECT_DIR$/49_silent_to_nonsilent_plot.py" />
         <option value="$PROJECT_DIR$/45_co-ocurrence_of_gene_with_TP53.py" />
         <option value="$PROJECT_DIR$/42_cancer_stats.py" />
-        <option value="$PROJECT_DIR$/45_two_gene_co-ocurrence.py" />
         <option value="$PROJECT_DIR$/icgc_utils/pymol.py" />
         <option value="$PROJECT_DIR$/icgc_utils/clustering.py" />
         <option value="$PROJECT_DIR$/60_clustering_on_the_structure.py" />
@@ -155,15 +108,16 @@
         <option value="$PROJECT_DIR$/icgc_utils/processes.py" />
         <option value="$PROJECT_DIR$/10_check_mut_tables_and_make_new_ones.py" />
         <option value="$PROJECT_DIR$/hack.py" />
-        <option value="$PROJECT_DIR$/44_gene_stats.py" />
         <option value="$PROJECT_DIR$/12_reorganize_mutations.py" />
         <option value="$PROJECT_DIR$/assembly_hack.py" />
+        <option value="$PROJECT_DIR$/44_gene_stats.py" />
+        <option value="$PROJECT_DIR$/45_two_gene_co-ocurrence.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1978" />
-    <option name="y" value="54" />
+    <option name="x" value="1994" />
+    <option name="y" value="131" />
     <option name="width" value="1833" />
     <option name="height" value="911" />
   </component>
@@ -231,7 +185,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1978" y="54" width="1833" height="911" extended-state="0" />
+    <frame x="1994" y="131" width="1833" height="911" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24861878" />
@@ -255,21 +209,21 @@
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20201422" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Python Console" order="9" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
+      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Python Console" order="9" />
     </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -277,7 +231,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="31" />
+      <option name="time" value="32" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -476,27 +430,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/47_co-ocurrence_postprocess.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="34" selection-start-line="34" selection-end-line="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/42_cancer_stats.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1044">
           <caret line="58" selection-start-line="51" selection-end-line="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/45_two_gene_co-ocurrence.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="6" column="25" selection-start-line="1" selection-end-line="6" selection-end-column="25" />
-          <folding>
-            <element signature="e#19#36#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -588,26 +525,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/03_make_tables.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="35" lean-forward="true" selection-start-line="34" selection-end-line="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/62_gnomad-clustering_on_the_structure.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="36">
           <caret line="7" selection-start-line="7" selection-end-line="7" />
-          <folding>
-            <element signature="e#19#36#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/60_clustering_on_the_structure.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
+        <state relative-caret-position="342">
           <caret line="19" column="61" selection-start-line="19" selection-start-column="61" selection-end-line="19" selection-end-column="61" />
           <folding>
             <element signature="e#19#36#0" expanded="true" />
@@ -622,13 +549,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/44_gene_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="85" column="64" lean-forward="true" selection-start-line="85" selection-start-column="64" selection-end-line="85" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/12_reorganize_mutations.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="293">
@@ -636,24 +556,55 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/32_tcga_diff_2_variants_in_patients.py">
+    <entry file="file://$PROJECT_DIR$/44_gene_stats.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="684">
-          <caret line="42" column="1" lean-forward="true" selection-start-line="6" selection-end-line="42" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/30_tcga_diff_1_annotation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2196">
-          <caret line="126" column="66" lean-forward="true" selection-start-line="126" selection-start-column="4" selection-end-line="126" selection-end-column="66" />
+        <state relative-caret-position="208">
+          <caret line="153" column="47" selection-start-line="153" selection-start-column="47" selection-end-line="153" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/assembly_hack.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
+        <state relative-caret-position="469">
           <caret line="71" selection-start-line="71" selection-end-line="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/30_tcga_diff_1_annotation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="685">
+          <caret line="126" column="66" selection-start-line="126" selection-start-column="4" selection-end-line="126" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/32_tcga_diff_2_variants_in_patients.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="684">
+          <caret line="42" column="1" selection-start-line="6" selection-end-line="42" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/03_make_tables.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="35" selection-start-line="34" selection-end-line="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/47_co-ocurrence_postprocess.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="34" selection-start-line="34" selection-end-line="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/45_two_gene_co-ocurrence.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="129" selection-start-line="127" selection-end-line="129" />
+          <folding>
+            <element signature="e#19#36#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
