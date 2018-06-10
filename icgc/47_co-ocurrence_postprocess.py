@@ -47,9 +47,9 @@ def main():
 			gene, donors, tot_tp53, tot, tot_cooc = line.split()
 			if not total_donors.has_key(gene): hashinit([total_donors,total,total_tp53,total_cooc], gene)
 			total_donors[gene] += int(donors)
-			total[gene] +=  int(tot)
-			total_tp53[gene] +=  int(tot_tp53)
-			total_cooc[gene] +=  int(tot_cooc)
+			total[gene]        += int(tot)
+			total_tp53[gene]   += int(tot_tp53)
+			total_cooc[gene]   += int(tot_cooc)
 		inf.close()
 
 	ct = 0
@@ -60,12 +60,19 @@ def main():
 		if expected==0: continue
 		ratio = total_cooc[gene]/(expected)
 		p_smaller, p_greater = myfisher(total_donors[gene], total_tp53[gene], total[gene], total_cooc[gene])
-		print "%10s   %5d %5d %5d    %5d    %6.2f   %.2f     %.1e    %.1e " % \
+		#print "%10s   %5d %5d %5d    %5d    %6.2f   %.2f     %.1e    %.1e " % \
+		#		(gene, total_donors[gene], total[gene], total_tp53[gene],
+		#		total_cooc[gene], expected, ratio, p_smaller, p_greater)
+		print "%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e" % \
 				(gene, total_donors[gene], total[gene], total_tp53[gene],
-				total_cooc[gene], expected, ratio, p_smaller, p_greater)
+				total_cooc[gene], expected,  p_smaller, p_greater)
 		ct += 1
 		#if ct==100: break
-
+#########################################
+'''
+further sorting (with rank number)
+sort -gk7 anticorrelates.txt | awk '{ct +=1; printf "%6d", ct; print}' |  grep RPL | grep -v MRPL
+'''
 
 #########################################
 if __name__ == '__main__':

@@ -107,15 +107,13 @@ def main():
 		print "    p_bigger: %.2f" % p_bigger
 		print
 
-		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t%.2f\n"%
+		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
 		                (tumor_short,donors, patients_with_muts_in_gene.get(gene_1, 0),
 						patients_with_muts_in_gene.get(other_genes[0], 0),
 						cooc,expected,p_smaller,p_bigger))
 		total_cooc += cooc
 
 
-
-	#pval_lt, pval_gt = fisher(total_donors, total_gene_1, total_other, total_cooc)
 	p_smaller, p_bigger = myfisher(total_donors, total_gene_1, total_other, total_cooc)
 	print
 	print "================================="
@@ -125,8 +123,6 @@ def main():
 	print "          %s: %d" % (gene_1, total_gene_1)
 	print "        cooc:", total_cooc
 	print "    expected: %.1f" % (float(total_gene_1)/total_donors*total_other)
-	#print "     pval_lt: %.1e" % pval_lt
-	#print "     pval_gt: %.1e" % pval_gt
 	print "   p_smaller: %.1e" % p_smaller
 	print "    p_bigger: %.1e" % p_bigger
 	expected = (float(total_gene_1)/total_donors*total_other)

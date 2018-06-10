@@ -11,23 +11,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="45_two_gene_co-ocurrence.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/45_two_gene_co-ocurrence.py">
+      <file leaf-file-name="49_silent_to_nonsilent_plot.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/49_silent_to_nonsilent_plot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="129" selection-start-line="127" selection-end-line="129" />
-              <folding>
-                <element signature="e#19#36#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="47_co-ocurrence_postprocess.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/47_co-ocurrence_postprocess.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="54">
-              <caret line="34" selection-start-line="34" selection-end-line="34" />
+            <state relative-caret-position="440">
+              <caret line="74" column="39" selection-start-line="74" selection-start-column="39" selection-end-line="74" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -61,7 +49,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/14_decorate_mutations.py" />
         <option value="$PROJECT_DIR$/14_decorate_simple_somatic.py" />
         <option value="$PROJECT_DIR$/16_mutation2gene_maps.py" />
         <option value="$PROJECT_DIR$/22b_cancer_stats.py" />
@@ -96,8 +83,6 @@
         <option value="$PROJECT_DIR$/icgc_utils/47_co-ocurrence_postprocess.py" />
         <option value="$PROJECT_DIR$/46_co-ocurrence_of_mutations_and_lack_thereof.py" />
         <option value="$PROJECT_DIR$/45_co-ocurrence_of_RPL5_and_TP53.py" />
-        <option value="$PROJECT_DIR$/47_co-ocurrence_postprocess.py" />
-        <option value="$PROJECT_DIR$/49_silent_to_nonsilent_plot.py" />
         <option value="$PROJECT_DIR$/45_co-ocurrence_of_gene_with_TP53.py" />
         <option value="$PROJECT_DIR$/42_cancer_stats.py" />
         <option value="$PROJECT_DIR$/icgc_utils/pymol.py" />
@@ -111,15 +96,18 @@
         <option value="$PROJECT_DIR$/12_reorganize_mutations.py" />
         <option value="$PROJECT_DIR$/assembly_hack.py" />
         <option value="$PROJECT_DIR$/44_gene_stats.py" />
+        <option value="$PROJECT_DIR$/40_cancer_types_table.py" />
         <option value="$PROJECT_DIR$/45_two_gene_co-ocurrence.py" />
+        <option value="$PROJECT_DIR$/47_co-ocurrence_postprocess.py" />
+        <option value="$PROJECT_DIR$/49_silent_to_nonsilent_plot.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1994" />
-    <option name="y" value="131" />
-    <option name="width" value="1833" />
-    <option name="height" value="911" />
+    <option name="x" value="1968" />
+    <option name="y" value="14" />
+    <option name="width" value="1648" />
+    <option name="height" value="1062" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -185,19 +173,19 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1994" y="131" width="1833" height="911" extended-state="0" />
+    <frame x="1968" y="14" width="1648" height="1062" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24861878" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2769231" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -209,21 +197,21 @@
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20201422" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
+      <window_info anchor="bottom" id="Python Console" order="9" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Python Console" order="9" />
     </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -231,17 +219,17 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="32" />
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/40_cancer_types_table.py</url>
+          <line>38</line>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="33" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/00_data_download/02_download_somatic_files.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-71">
-          <caret line="22" column="83" lean-forward="true" selection-start-line="22" selection-start-column="83" selection-end-line="22" selection-end-column="83" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/00_data_download/03_download_other_files.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="226">
@@ -359,27 +347,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/49b_silent_to_nonsilent_ratio_per_cancer.py" />
-    <entry file="file:///usr/local/lib/python2.7/dist-packages/matplotlib/text.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4116">
-          <caret line="1931" column="8" selection-start-line="1931" selection-start-column="8" selection-end-line="1931" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python2.7/dist-packages/matplotlib/axes/_axes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="644" column="24" selection-start-line="644" selection-start-column="18" selection-end-line="644" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python2.7/dist-packages/matplotlib/pyplot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="3732" column="19" lean-forward="true" selection-start-line="3732" selection-start-column="16" selection-end-line="3732" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/08_make_indices.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
@@ -416,24 +383,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/49_silent_to_nonsilent_plot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="32" column="59" lean-forward="true" selection-start-line="32" selection-start-column="59" selection-end-line="32" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/48_silent_to_nonsilent_ratio.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
           <caret line="12" selection-start-line="10" selection-end-line="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/42_cancer_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1044">
-          <caret line="58" selection-start-line="51" selection-end-line="58" />
         </state>
       </provider>
     </entry>
@@ -462,52 +415,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
           <caret line="212" column="4" selection-start-line="212" selection-start-column="4" selection-end-line="212" selection-end-column="4" />
-          <folding>
-            <element signature="e#41#42#0" />
-            <element signature="e#890#1005#0" />
-            <element signature="e#1054#1178#0" />
-            <element signature="e#1140#1165#0" />
-            <element signature="e#1278#2222#0" />
-            <element signature="e#1560#1951#0" />
-            <element signature="e#1789#1915#0" />
-            <element signature="e#2072#2118#0" />
-            <element signature="e#2134#2208#0" />
-            <element signature="e#2316#4392#0" />
-            <element signature="e#2397#2641#0" />
-            <element signature="e#2862#2919#0" />
-            <element signature="e#3007#3386#0" />
-            <element signature="e#3142#3351#0" />
-            <element signature="e#3422#4202#0" />
-            <element signature="e#3639#3703#0" />
-            <element signature="e#3875#4189#0" />
-            <element signature="e#4070#4172#0" />
-            <element signature="e#4254#4300#0" />
-            <element signature="e#4316#4377#0" />
-            <element signature="e#4502#5114#0" />
-            <element signature="e#4737#4761#0" />
-            <element signature="e#4935#4997#0" />
-            <element signature="e#5072#5097#0" />
-            <element signature="e#5421#5553#0" />
-            <element signature="e#5450#5510#0" />
-            <element signature="e#5683#5955#0" />
-            <element signature="e#5869#5933#0" />
-            <element signature="e#6074#6257#0" />
-            <element signature="e#6358#6605#0" />
-            <element signature="e#6519#6583#0" />
-            <element signature="e#6704#7024#0" />
-            <element signature="e#6948#6997#0" />
-            <element signature="e#7080#7552#0" />
-            <element signature="e#7135#7259#0" />
-            <element signature="e#7322#7445#0" />
-            <element signature="e#7471#7538#0" />
-            <element signature="e#7704#7764#0" />
-            <element signature="e#7910#7978#0" />
-            <element signature="e#8025#8283#0" />
-            <element signature="e#8316#8384#0" />
-            <element signature="e#8478#8747#0" />
-            <element signature="e#8485#8624#0" />
-            <element signature="e#8654#8735#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -536,9 +443,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
           <caret line="19" column="61" selection-start-line="19" selection-start-column="61" selection-end-line="19" selection-end-column="61" />
-          <folding>
-            <element signature="e#19#36#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -591,20 +495,62 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/42_cancer_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="750">
+          <caret line="131" lean-forward="true" selection-start-line="127" selection-end-line="131" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/40_cancer_types_table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="522">
+          <caret line="29" column="42" selection-start-line="29" selection-start-column="42" selection-end-line="29" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/47_co-ocurrence_postprocess.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="34" selection-start-line="34" selection-end-line="34" />
+        <state relative-caret-position="825">
+          <caret line="65" column="38" selection-start-line="65" selection-start-column="38" selection-end-line="65" selection-end-column="38" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/45_two_gene_co-ocurrence.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="129" selection-start-line="127" selection-end-line="129" />
+        <state relative-caret-position="1728">
+          <caret line="114" lean-forward="true" selection-start-line="114" selection-end-line="114" />
           <folding>
             <element signature="e#19#36#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/matplotlib/text.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2250">
+          <caret line="1931" column="8" selection-start-line="1931" selection-start-column="8" selection-end-line="1931" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/matplotlib/axes/_axes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="402">
+          <caret line="644" column="23" lean-forward="true" selection-start-line="644" selection-start-column="18" selection-end-line="644" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/dist-packages/matplotlib/pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="3732" column="21" lean-forward="true" selection-start-line="3732" selection-start-column="16" selection-end-line="3732" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/49_silent_to_nonsilent_plot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="74" column="39" selection-start-line="74" selection-start-column="39" selection-end-line="74" selection-end-column="39" />
         </state>
       </provider>
     </entry>
