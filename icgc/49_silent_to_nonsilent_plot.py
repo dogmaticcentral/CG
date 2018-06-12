@@ -27,7 +27,7 @@ def main():
 		          'RB1', 'VHL', 'PIK3CA',
 		          'WDR41',
 		          'RABAC1','BEX5', 'DEFB116', 'NODAL','DDX3X','RAD9B', 'LUC7L2', 'FZD10',
-		           'ATM' ,  'BRCA2', 'NF1', 'CASP8',  'B2M',
+		          'ATM' ,  'BRCA2', 'NF1', 'CASP8',  'B2M',
 		          'SOS1', 'GNAS',
 		          'PIK3CA', 'ZC3H13', 'APC',
 		          'BRCA1','MTOR', 'KRAS' , 'MDM2',
@@ -78,7 +78,6 @@ def main():
 #########################################
 if __name__ == '__main__':
 	main()
-
 
 
 '''

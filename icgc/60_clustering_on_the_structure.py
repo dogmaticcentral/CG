@@ -46,10 +46,10 @@ def protein_mutations (cursor, tables, gene_symbol):
 				p53_status_per_specimen[specimen_id] = find_53_status(cursor, tumor_short, specimen_id)
 
 			#print specimen_id, "    ", aa_change_cleanup(cursor, aa_change), "    ", p53_status_per_specimen[specimen_id]
-			if p53_status_per_specimen[specimen_id][0] == 'wt':
-				p53_wt.append(aa_change_cleanup(cursor, aa_change))
-			else:
+			if p53_status_per_specimen[specimen_id][0] == 'pathogenic':
 				p53_mut.append(aa_change_cleanup(cursor, aa_change))
+			else:
+				p53_wt.append(aa_change_cleanup(cursor, aa_change))
 
 	# TODO: note in the paper some mutations recurrent
 	p53_wt = set(p53_wt)
@@ -62,7 +62,7 @@ def main():
 
 
 
-	gene = 'RPL5'
+	gene = 'RPL11'
 	pdb_file       = "/home/ivana/Dropbox/Sinisa/ribosomal/data/structures/5s-rRNP.%s.pdb" % gene
 	clustering_prog = "/home/ivana/c-utils/pdb_clust/pc"
 

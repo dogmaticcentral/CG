@@ -16,19 +16,23 @@ def basic_pymol_input(pdb_file, isolated, clusters, output_file):
 	outf.write("color gray, isolated\n")
 
 	outf.write("\n")
-	outf.write("#clusters\n")
-	outf.write("\n")
-	outf.write("select red_clust, resi %s\n" % ("+".join(clusters[0])) )
-	outf.write("color red, red_clust\n")
-	outf.write("show spheres, red_clust\n")
-	outf.write("\n")
-	outf.write("select blue_clust, resi %s\n" % ("+".join(clusters[1])) )
-	outf.write("color blue, blue_clust\n")
-	outf.write("show spheres, blue_clust\n")
-	outf.write("\n")
-	outf.write("select green_clust, resi %s\n" % ("+".join(clusters[2])) )
-	outf.write("color green, green_clust\n")
-	outf.write("show spheres, green_clust\n")
+
+	if len(clusters)>0:
+		outf.write("#clusters\n")
+		outf.write("\n")
+		outf.write("select red_clust, resi %s\n" % ("+".join(clusters[0])) )
+		outf.write("color red, red_clust\n")
+		outf.write("show spheres, red_clust\n")
+		outf.write("\n")
+	if len(clusters)>1:
+		outf.write("select blue_clust, resi %s\n" % ("+".join(clusters[1])) )
+		outf.write("color blue, blue_clust\n")
+		outf.write("show spheres, blue_clust\n")
+		outf.write("\n")
+	if len(clusters)>2:
+		outf.write("select green_clust, resi %s\n" % ("+".join(clusters[2])) )
+		outf.write("color green, green_clust\n")
+		outf.write("show spheres, green_clust\n")
 
 	for cluster in clusters[3:]:
 		outf.write("\n")

@@ -11,11 +11,50 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="49_silent_to_nonsilent_plot.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="49_silent_to_nonsilent_plot.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/49_silent_to_nonsilent_plot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="74" column="39" selection-start-line="74" selection-start-column="39" selection-end-line="74" selection-end-column="39" />
+            <state relative-caret-position="1440">
+              <caret line="80" selection-start-line="80" selection-end-line="80" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="44_gene_stats.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/44_gene_stats.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="205">
+              <caret line="211" column="16" selection-start-line="211" selection-start-column="16" selection-end-line="211" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="common_queries.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/icgc_utils/common_queries.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="270">
+              <caret line="69" column="4" selection-start-line="69" selection-start-column="4" selection-end-line="69" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="60_clustering_on_the_structure.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/60_clustering_on_the_structure.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="72">
+              <caret line="67" selection-start-line="67" selection-end-line="67" />
+              <folding>
+                <element signature="e#19#36#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pymol.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/icgc_utils/pymol.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="602">
+              <caret line="38" column="57" lean-forward="true" selection-start-line="38" selection-start-column="57" selection-end-line="38" selection-end-column="57" />
             </state>
           </provider>
         </entry>
@@ -39,17 +78,18 @@
       <find>tp53</find>
       <find>assem</find>
       <find>named_field['MUTATION']</find>
+      <find>_</find>
     </findStrings>
     <replaceStrings>
       <replace>other</replace>
       <replace>gene_1</replace>
       <replace>field[0]</replace>
+      <replace />
     </replaceStrings>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/14_decorate_simple_somatic.py" />
         <option value="$PROJECT_DIR$/16_mutation2gene_maps.py" />
         <option value="$PROJECT_DIR$/22b_cancer_stats.py" />
         <option value="$PROJECT_DIR$/11_consequence_vocab..py" />
@@ -85,9 +125,7 @@
         <option value="$PROJECT_DIR$/45_co-ocurrence_of_RPL5_and_TP53.py" />
         <option value="$PROJECT_DIR$/45_co-ocurrence_of_gene_with_TP53.py" />
         <option value="$PROJECT_DIR$/42_cancer_stats.py" />
-        <option value="$PROJECT_DIR$/icgc_utils/pymol.py" />
         <option value="$PROJECT_DIR$/icgc_utils/clustering.py" />
-        <option value="$PROJECT_DIR$/60_clustering_on_the_structure.py" />
         <option value="$PROJECT_DIR$/icgc_utils/common_queries.py" />
         <option value="$PROJECT_DIR$/62_gnomad-clustering_on_the_structure.py" />
         <option value="$PROJECT_DIR$/icgc_utils/processes.py" />
@@ -95,19 +133,22 @@
         <option value="$PROJECT_DIR$/hack.py" />
         <option value="$PROJECT_DIR$/12_reorganize_mutations.py" />
         <option value="$PROJECT_DIR$/assembly_hack.py" />
-        <option value="$PROJECT_DIR$/44_gene_stats.py" />
         <option value="$PROJECT_DIR$/40_cancer_types_table.py" />
         <option value="$PROJECT_DIR$/45_two_gene_co-ocurrence.py" />
         <option value="$PROJECT_DIR$/47_co-ocurrence_postprocess.py" />
         <option value="$PROJECT_DIR$/49_silent_to_nonsilent_plot.py" />
+        <option value="$PROJECT_DIR$/64_conservatiion-clustering_on_the_structure.py" />
+        <option value="$PROJECT_DIR$/60_clustering_on_the_structure.py" />
+        <option value="$PROJECT_DIR$/icgc_utils/pymol.py" />
+        <option value="$PROJECT_DIR$/44_gene_stats.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1968" />
-    <option name="y" value="14" />
-    <option name="width" value="1648" />
-    <option name="height" value="1062" />
+    <option name="x" value="2308" />
+    <option name="y" value="28" />
+    <option name="width" value="1520" />
+    <option name="height" value="1052" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -138,13 +179,13 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Python" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/icgc_utils" />
       <recent name="$PROJECT_DIR$/00_data_download" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -173,10 +214,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1968" y="14" width="1648" height="1062" extended-state="0" />
+    <frame x="2308" y="28" width="1520" height="1052" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2769231" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3006012" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
@@ -197,21 +238,21 @@
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20201422" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Python Console" order="9" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
+      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Python Console" order="9" />
     </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -226,17 +267,10 @@
           <option name="timeStamp" value="32" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="33" />
+      <option name="time" value="34" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/00_data_download/03_download_other_files.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="35" lean-forward="true" selection-start-line="35" selection-end-line="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/icgc_utils/kernprof.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
@@ -397,13 +431,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/icgc_utils/pymol.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="1" column="65" lean-forward="true" selection-start-line="1" selection-end-line="1" selection-end-column="65" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/icgc_utils/clustering.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="666">
@@ -418,31 +445,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/icgc_utils/common_queries.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1206">
-          <caret line="67" selection-start-line="67" selection-end-line="67" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/icgc_utils/processes.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="324">
           <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/62_gnomad-clustering_on_the_structure.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/60_clustering_on_the_structure.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="19" column="61" selection-start-line="19" selection-start-column="61" selection-end-line="19" selection-end-column="61" />
         </state>
       </provider>
     </entry>
@@ -457,13 +463,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="293">
           <caret line="270" column="32" selection-start-line="270" selection-start-column="32" selection-end-line="270" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/44_gene_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="153" column="47" selection-start-line="153" selection-start-column="47" selection-end-line="153" selection-end-column="47" />
         </state>
       </provider>
     </entry>
@@ -520,9 +519,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1728">
           <caret line="114" lean-forward="true" selection-start-line="114" selection-end-line="114" />
-          <folding>
-            <element signature="e#19#36#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -547,10 +543,55 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/64_conservatiion-clustering_on_the_structure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="27" column="33" selection-start-line="27" selection-start-column="33" selection-end-line="27" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/62_gnomad-clustering_on_the_structure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/49_silent_to_nonsilent_plot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="74" column="39" selection-start-line="74" selection-start-column="39" selection-end-line="74" selection-end-column="39" />
+        <state relative-caret-position="1440">
+          <caret line="80" selection-start-line="80" selection-end-line="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/icgc_utils/common_queries.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="69" column="4" selection-start-line="69" selection-start-column="4" selection-end-line="69" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/60_clustering_on_the_structure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="67" selection-start-line="67" selection-end-line="67" />
+          <folding>
+            <element signature="e#19#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/icgc_utils/pymol.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="602">
+          <caret line="38" column="57" lean-forward="true" selection-start-line="38" selection-start-column="57" selection-end-line="38" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/44_gene_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="211" column="16" selection-start-line="211" selection-start-column="16" selection-end-line="211" selection-end-column="16" />
         </state>
       </provider>
     </entry>

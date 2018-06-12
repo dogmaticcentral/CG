@@ -101,6 +101,8 @@ def gnomad_info(cursor, mutation, chromosome):
 			returnval = "0.0"
 	return returnval
 
+patient_count = 0
+
 #########################################
 def gene_mutations(cursor, tumor_short, gene, exp_results):
 
@@ -156,7 +158,9 @@ def gene_mutations(cursor, tumor_short, gene, exp_results):
 		#if not specimen:  specimen="" # I am not putting this in production table
 		if not cgenotype: cgenotype=""
 		if not donor_rows.has_key(donor):
-			entry = "\t".join([tumor_short, donor,  spec_type[:1], no_muts, cgenotype,
+			global patient_count
+			patient_count += 1
+			entry = "\t".join([tumor_short, "patient %d"%patient_count,  spec_type[:1], no_muts, cgenotype,
 			                   tgenotype, consequence, aa_change, freq_in_gen_population,  out_p53_status, exp])
 			donor_rows[donor] = [entry]
 		else:
@@ -205,6 +209,8 @@ def parse_exp(exp_results_file):
 
 def main():
 
+	gene = 'RPL5'
+
 	exp_results_file = "/home/ivana/Dropbox/Sinisa/ribosomal/rezultati/Ines_rezultati_Feb2018/rpl5.csv"
 	if not os.path.exists(exp_results_file):
 		print exp_results_file, "not found"
@@ -223,12 +229,11 @@ def main():
 	#########################
 	switch_to_db(cursor,"icgc")
 
-	gene = 'RPL5'
 	outf = open("%s_per_cancer_breakdown.tsv"%gene, "w")
-	outf.write("\t".join(["tumor short",  "donor", "spec_type",
-							"no_muts",   "control_genotype", "tumor_genotype",
-							"consequence", "aa_change", "freq in general population",
-                            "p53_status", "p53_mutation","function"])+"\n")
+	outf.write("\t".join(["tumor short",  "donor", "spec type",
+							"no muts",   "control genotype", "tumor genotype",
+							"consequence", "aa change", "freq in general population",
+                            "p53 status", "p53 mutation","function"])+"\n")
 
 	for table in tables:
 		tumor_short = table.split("_")[0]
@@ -239,6 +244,7 @@ def main():
 		if not donor_rows: continue
 		for donor, entries in donor_rows.iteritems():
 			for entry in entries:
+				entry = entry.replace("_"," ")
 				outf.write(entry+"\n")
 		#if "BLCA" in table: break
 	outf.close()
