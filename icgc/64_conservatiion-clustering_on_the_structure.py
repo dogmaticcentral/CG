@@ -9,10 +9,10 @@ from icgc_utils.clustering import *
 ###############################
 def main():
 
-	gene = 'RPL5'
+	gene = 'RPL11'
 	pdb_file        = "/home/ivana/Dropbox/Sinisa/ribosomal/data/structures/5s-rRNP.%s.pdb" % gene
 	clustering_prog = "/home/ivana/c-utils/pdb_clust/pc"
-	conservation_score_file  = "/home/ivana/Dropbox/Sinisa/ribosomal/data/rpl5/"
+	conservation_score_file  = "/home/ivana/Dropbox/Sinisa/ribosomal/data/%s/" % gene.lower()
 	conservation_score_file += "conservation_animals_plants_fungi/specs_out.score"
 
 	for fnm in [pdb_file,clustering_prog,conservation_score_file]:
@@ -27,7 +27,7 @@ def main():
 	for line in inf:
 		if line[0]=='%': continue
 		fields = line.strip().split()
-		if float(fields[2]) <= 0.1:
+		if float(fields[2]) <= 0.05:
 			outf.write ("%s  %s\n" % (fields[3], fields[4]))
 	outf.close()
 

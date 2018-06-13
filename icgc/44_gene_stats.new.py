@@ -3,7 +3,7 @@
 
 from icgc_utils.common_queries   import  *
 
-verbose =True
+verbose =False
 
 #########################################
 # sample codes:
@@ -102,6 +102,25 @@ def gnomad_info(cursor, mutation, chromosome):
 	return returnval
 
 patient_count = 0
+ptct = {}
+#########################################
+def latex_table_friendly(cell_content_str):
+	ltx = cell_content_str
+	if ";" in cell_content_str:
+		cell_content_str = cell_content_str.replace(";", ";\\\\ ")
+		cell_content_str = cell_content_str.replace(":", ":\\\\ ")
+		ltx = "\makecell[l]{" + cell_content_str + "}"
+	return ltx
+
+
+def genotype_short(gtp):
+	if len(gtp)==0 or not "/" in gtp:
+		return gtp
+	blah = []
+	for seq in gtp.split("/"):
+		if len(seq)>4: seq="long"
+		blah.append(seq)
+	return "/".join(blah)
 
 #########################################
 def gene_mutations(cursor, tumor_short, gene, exp_results):
@@ -133,7 +152,7 @@ def gene_mutations(cursor, tumor_short, gene, exp_results):
 			# find the specimen type from the specimen table
 			spec_type = get_specimen_type(cursor,"%s_specimen"%tumor_short,[specimen])[specimen]
 
-		if sample[:4]=='TCGA': donor = sample[0:15]
+		if sample[:4]=='TCGA': donor = sample[0:12]
 
 		###################
 		# specimen related info
@@ -143,10 +162,12 @@ def gene_mutations(cursor, tumor_short, gene, exp_results):
 			table = "%s_simple_somatic" % tumor_short
 			mutations_per_specimen[specimen] = get_number_of_path_mutations_per_specimen(cursor, table, specimen)
 
-		out_p53_status = "\t".join(p53_status_per_specimen[specimen])
+		out_p53_status = "\t".join([latex_table_friendly(status) for status in p53_status_per_specimen[specimen]])
 		no_muts        = str(mutations_per_specimen[specimen])
 		consequence, aa_change = get_consequence(cursor, chromosome, mutation)
 		if not consequence: consequence = ""
+		if "premature_start" in consequence: consequence="start gained"
+
 		aa_change = aa_change_cleanup(cursor, aa_change)
 		exp = exp_results.get(aa_change,"")
 
@@ -157,16 +178,24 @@ def gene_mutations(cursor, tumor_short, gene, exp_results):
 
 		#if not specimen:  specimen="" # I am not putting this in production table
 		if not cgenotype: cgenotype=""
-		if not donor_rows.has_key(donor):
+		consequence    = latex_table_friendly(consequence)
+		cgenotype = genotype_short(cgenotype)
+		tgenotype = genotype_short(tgenotype)
+		exp = exp.replace("|","$|$") # latex messes up the pypes otherwise
+
+		if not ptct.has_key(donor):
 			global patient_count
 			patient_count += 1
-			entry = "\t".join([tumor_short, donor,  spec_type[:1], no_muts, cgenotype,
+			ptct[donor] = patient_count
+			donor_rows[patient_count] = []
+
+		#print donor, ptct[donor]
+
+		donor_alias = ptct[donor]
+		entry = "\t".join([tumor_short, str(donor_alias),  spec_type[:1], no_muts, cgenotype,
 			                   tgenotype, consequence, aa_change, freq_in_gen_population,  out_p53_status, exp])
-			donor_rows[donor] = [entry]
-		else:
-			entry = "\t".join([tumor_short, "",  spec_type[:1], no_muts, cgenotype,
-			                   tgenotype,  consequence,  aa_change, freq_in_gen_population, out_p53_status, exp])
-			donor_rows[donor].append(entry)
+		donor_rows[donor_alias].append(entry)
+
 	return donor_rows
 
 
@@ -209,9 +238,9 @@ def parse_exp(exp_results_file):
 
 def main():
 
-	gene = 'RPL5'
+	gene = 'RPL11'
 
-	exp_results_file = "/home/ivana/Dropbox/Sinisa/ribosomal/rezultati/Ines_rezultati_Feb2018/rpl5.csv"
+	exp_results_file = "/home/ivana/Dropbox/Sinisa/ribosomal/rezultati/Ines_rezultati_Feb2018/rpl11.csv"
 	if not os.path.exists(exp_results_file):
 		print exp_results_file, "not found"
 		exit()
@@ -230,10 +259,10 @@ def main():
 	switch_to_db(cursor,"icgc")
 
 	outf = open("%s_per_cancer_breakdown.tsv"%gene, "w")
-	outf.write("\t".join(["tumor short",  "donor", "spec type",
-							"no muts",   "control genotype", "tumor genotype",
-							"consequence", "aa change", "freq in general population",
-                            "p53 status", "p53 mutation","function"])+"\n")
+	#outf.write("\t".join(["tumor short",  "donor", "spec type",
+	#						"no muts",   "control genotype", "tumor genotype",
+	#						"consequence", "aa change", "freq in general population",
+    #                        "p53 status", "p53 mutation","function"])+"\n")
 
 	for table in tables:
 		tumor_short = table.split("_")[0]
@@ -242,7 +271,8 @@ def main():
 		if verbose: print table
 		donor_rows = gene_mutations(cursor, tumor_short, gene,exp_results)
 		if not donor_rows: continue
-		for donor, entries in donor_rows.iteritems():
+		for donor_alias  in sorted(donor_rows.keys()):
+			entries = donor_rows[donor_alias]
 			for entry in entries:
 				entry = entry.replace("_"," ")
 				outf.write(entry+"\n")
