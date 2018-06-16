@@ -27,10 +27,8 @@ def main():
 	switch_to_db(cursor,"icgc")
 
 	total_donors = 0
-	#tables = ["ALL_simple_somatic"]
+	donors_with_multiple_specimens = 0
 	for table in tables:
-		#if table=="BRCA_simple_somatic": continue
-
 		tumor_short = table.split("_")[0]
 		fields = [tumor_short]
 		if verbose: print "================================="
@@ -39,11 +37,18 @@ def main():
 		# total number of donors?
 		qry    = "select count(distinct icgc_donor_id) from  %s " % table
 		donors = search_db(cursor,qry)[0][0]
-
 		total_donors += donors
 
-	print "total_donors:", total_donors
+		# specimens per donor?
+		qry  = "select  icgc_donor_id, count(distinct  icgc_sample_id) ct "
+		qry += "from  %s  " % table
+		qry += "group by icgc_donor_id having ct>1 order by ct desc"
+		ret = search_db(cursor,qry)
+		if not ret: continue
+		donors_with_multiple_specimens += len(ret)
 
+	print "total_donors:", total_donors
+	print "donors_with_multiple_specimens:", donors_with_multiple_specimens
 	cursor.close()
 	db.close()
 

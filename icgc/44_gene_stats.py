@@ -104,11 +104,89 @@ def gnomad_info(cursor, mutation, chromosome):
 patient_count = 0
 
 #########################################
-def gene_mutations(cursor, tumor_short, gene, exp_results):
+def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations, exp_results, hide_id=True):
+
+	p53_status_per_specimen = {}
+	mutations_per_specimen  = {}
+	specimen_seen = {}
+	donor_rows = []
+	donor_ct = 0
+	for donor, mutations in donor_mutations.iteritems():
+		global patient_count
+		patient_count += 1
+		donor_display_name = donor
+		for mutation, mtn_info in mutations.iteritems():
+
+			chromosome = mtn_info['chromosome']
+			freq_in_gen_population = gnomad_info(cursor, mutation, chromosome)
+
+			###################
+			# sample types (primary, metastatic etc)
+			specimen_type_short = []
+			for sample in mtn_info['samples']:
+				idx = mtn_info['samples'].index(sample)
+				specimen = mtn_info['specimens'][idx]
+				if sample[:4] in ['TCGA','TARG']:
+					# this came from TCGA => sometimes we do not have the specimen table,
+					# but we can tell its type from the TCGA code itself
+					spec_type = spec_from_TCGA(sample)
+				else:
+					# find the specimen type from the specimen table
+					spec_type = get_specimen_type(cursor,tumor_short,[specimen])[specimen]
+				specimen_type_short.append(spec_type[0])
+
+				if sample[:4]=='TCGA': donor_display_name = sample[0:15] # for comparison with previous results
+
+			###################
+			# specimen related info
+			p53_gist   = "wt"
+			p53_detail = ""
+			specimen_number_of_mutations = []
+			for specimen in mtn_info['specimens']:
+				if not specimen_seen.has_key(specimen): # we might have seen it related to another mutation
+					specimen_seen[specimen] = True
+					table = "%s_simple_somatic" % tumor_short
+					mutations_per_specimen[specimen]  = get_number_of_path_mutations_per_specimen(cursor, table, specimen)
+					p53_status_per_specimen[specimen] = find_53_status(cursor, tumor_short, specimen)
+
+				specimen_number_of_mutations.append(str(mutations_per_specimen[specimen]))
+				if p53_gist!="pathogenic":
+					new_gist, detail = p53_status_per_specimen[specimen]
+					if new_gist!="wt":
+						p53_gist=new_gist
+						p53_detail = detail
+
+
+
+			###################
+			# output row for this mutation
+
+			consequence, aa_change = get_consequence(cursor, chromosome, mutation)
+			if not consequence: consequence = ""
+			aa_change = aa_change_cleanup(cursor, aa_change)
+			exp = exp_results.get(aa_change,"")
+
+			if consequence=='frameshift':
+				exp = " | ".join(['x']*5)
+
+			if exp == " | ".join(['o']*5): exp = ""
+
+			if hide_id: donor_display_name=str(patient_count)
+			entry = "\t".join([tumor_short, donor_display_name,  ",".join(specimen_type_short), ",".join(specimen_number_of_mutations),
+			                   mtn_info['cgenotype'], mtn_info['tgenotype'], consequence,
+				               aa_change, freq_in_gen_population, p53_gist, p53_detail , exp])
+			entry = entry.replace("_"," ")
+			donor_rows.append(entry)
+
+	return "\n".join(donor_rows)
+
+
+#########################################
+def gene_mutations(cursor, table, gene):
 
 	qry  = "select m.icgc_donor_id, m.submitted_sample_id, m.chromosome, m.control_genotype, m.tumor_genotype, "
 	qry += "g.icgc_mutation_id, m.icgc_specimen_id "
-	qry += "from mutation2gene g,  %s_simple_somatic m " % tumor_short
+	qry += "from mutation2gene g,  %s m " % table
 	qry += "where g.gene_symbol='%s' " % gene
 	qry += "and g.icgc_mutation_id = m.icgc_mutation_id "
 	qry += "and m.pathogenic_estimate=1 and m.reliability_estimate=1"
@@ -116,59 +194,42 @@ def gene_mutations(cursor, tumor_short, gene, exp_results):
 	ret = search_db(cursor,qry)
 	if not ret: return
 
-	donor_rows = {}
-	p53_status_per_specimen = {}
-	specimen_seen = {}
-	mutations_per_specimen = {}
+	donor_mutations = {}
+
 	for line in ret:
 		[donor, sample, chromosome,  cgenotype, tgenotype, mutation, specimen] = line
-
-		freq_in_gen_population = gnomad_info(cursor, mutation, chromosome)
-
-		if donor[2]=="T":
-			# this came from TCGA => we do not have the specimen table,
-			# but we can tell its type from the TCGA code itself
-			spec_type = spec_from_TCGA(sample)
+		if not donor_mutations.has_key(donor):
+			donor_mutations[donor] = {}
+		if not donor_mutations[donor].has_key(mutation):
+			donor_mutations[donor][mutation] = {
+				'chromosome' : chromosome,
+				'cgenotype' : cgenotype if cgenotype else "",
+				'tgenotype' : tgenotype if tgenotype else "",
+				'specimens' : [specimen],
+				'samples'   : [sample]
+			}
 		else:
-			# find the specimen type from the specimen table
-			spec_type = get_specimen_type(cursor,"%s_specimen"%tumor_short,[specimen])[specimen]
+			if donor_mutations[donor][mutation]['chromosome'] != chromosome:
+				print "different chromosome for mutation %s (?!)" % mutation
+				exit(1)
+			if donor_mutations[donor][mutation]['cgenotype'] !="" and cgenotype !="" and \
+					donor_mutations[donor][mutation]['cgenotype'] != cgenotype:
+				print "different cgenotype for mutation %s " % mutation
+				print "in ", donor_mutations[donor][mutation]['specimens'], "and", specimen
+				print donor_mutations[donor][mutation]['cgenotype'], "vs", cgenotype
+				exit(1)
+			if donor_mutations[donor][mutation]['tgenotype'] !="" and tgenotype !="" and \
+					donor_mutations[donor][mutation]['tgenotype'] != tgenotype:
+				print "different tgenotype for mutation %s " % mutation
+				print "in ", donor_mutations[donor][mutation]['specimens'], "and", specimen
+				print donor_mutations[donor][mutation]['tgenotype'], "vs", tgenotype
+				exit(1)
 
-		if sample[:4]=='TCGA': donor = sample[0:15]
+			donor_mutations[donor][mutation]['specimens'].append(specimen)
+			donor_mutations[donor][mutation]['samples'].append(sample)
 
-		###################
-		# specimen related info
-		if not specimen_seen.has_key(specimen):
-			specimen_seen[specimen] = True
-			p53_status_per_specimen[specimen] = find_53_status(cursor, tumor_short, specimen)
-			table = "%s_simple_somatic" % tumor_short
-			mutations_per_specimen[specimen] = get_number_of_path_mutations_per_specimen(cursor, table, specimen)
 
-		out_p53_status = "\t".join(p53_status_per_specimen[specimen])
-		no_muts        = str(mutations_per_specimen[specimen])
-		consequence, aa_change = get_consequence(cursor, chromosome, mutation)
-		if not consequence: consequence = ""
-		aa_change = aa_change_cleanup(cursor, aa_change)
-		exp = exp_results.get(aa_change,"")
-
-		if consequence=='frameshift':
-			exp = " | ".join(['x']*5)
-
-		if exp == " | ".join(['o']*5): exp = ""
-
-		#if not specimen:  specimen="" # I am not putting this in production table
-		if not cgenotype: cgenotype=""
-		if not donor_rows.has_key(donor):
-			global patient_count
-			patient_count += 1
-			entry = "\t".join([tumor_short, donor,  spec_type[:1], no_muts, cgenotype,
-			                   tgenotype, consequence, aa_change, freq_in_gen_population,  out_p53_status, exp])
-			donor_rows[donor] = [entry]
-		else:
-			entry = "\t".join([tumor_short, "",  spec_type[:1], no_muts, cgenotype,
-			                   tgenotype,  consequence,  aa_change, freq_in_gen_population, out_p53_status, exp])
-			donor_rows[donor].append(entry)
-	return donor_rows
-
+	return donor_mutations
 
 #########################################
 def parse_exp(exp_results_file):
@@ -209,7 +270,7 @@ def parse_exp(exp_results_file):
 
 def main():
 
-	gene = 'RPL5'
+	gene = 'RPL11'
 
 	exp_results_file = "/home/ivana/Dropbox/Sinisa/ribosomal/rezultati/Ines_rezultati_Feb2018/rpl5.csv"
 	if not os.path.exists(exp_results_file):
@@ -237,16 +298,14 @@ def main():
 
 	for table in tables:
 		tumor_short = table.split("_")[0]
-		fields = [tumor_short]
 		if verbose: print "================================="
 		if verbose: print table
-		donor_rows = gene_mutations(cursor, tumor_short, gene,exp_results)
+		donor_mutations = gene_mutations(cursor, table, gene)
+		if not donor_mutations: continue
+		donor_rows = donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations, exp_results, hide_id=True);
 		if not donor_rows: continue
-		for donor, entries in donor_rows.iteritems():
-			for entry in entries:
-				entry = entry.replace("_"," ")
-				outf.write(entry+"\n")
-		#if "BLCA" in table: break
+		outf.write(donor_rows+"\n")
+
 	outf.close()
 
 	cursor.close()

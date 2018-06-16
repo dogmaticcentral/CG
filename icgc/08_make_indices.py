@@ -35,7 +35,8 @@ def main():
 		print table
 		#qry  = "create index somatic_mut_idx on %s (icgc_mutation_id)" % table
 		#qry  = "create index somatic_donor_idx on %s (icgc_donor_id)" % table
-		qry = "alter table %s drop index somatic_mut_idx " % table
+		#qry  = "create index sample_idx on %s (submitted_sample_id)" % table
+		qry = "alter table %s drop index sample_idx " % table
 		search_db(cursor,qry,verbose=True)
 
 

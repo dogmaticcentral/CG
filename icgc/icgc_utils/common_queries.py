@@ -155,7 +155,7 @@ def co_ocurrence_w_group_count(cursor, somatic_table, gene1, other_genes):
 #########################################
 def co_ocurrence_count(cursor, somatic_table, gene1, gene2):
 
-	if False: # this is still  twice as fast as the search below
+	if True: # this is still  twice as fast as the search below
 		# are we running thruoght the same row twice bcs of s1 <-> s2?
 		# still, distinct should get rid of double counting
 		qry =  "select count(distinct s1.icgc_donor_id) ct "
@@ -256,10 +256,10 @@ def get_specimens_from_donor(cursor, table, icgc_donor_id):
 	qry += "where icgc_donor_id = '%s'" % icgc_donor_id
 	return [r[0] for r in search_db(cursor,qry)]
 
-def get_specimen_type(cursor, table, spec_ids):
+def get_specimen_type(cursor, tumor_short, spec_ids):
 	specimen_type = {}
 	for spec_id in spec_ids:
-		qry = " select specimen_type from %s " % table.replace("simple_somatic","specimen")
+		qry = " select specimen_type from %s_specimen " % tumor_short
 		qry += "where icgc_specimen_id = '%s'" % spec_id
 		specimen_type[spec_id] = search_db(cursor,qry)[0][0]
 	return specimen_type

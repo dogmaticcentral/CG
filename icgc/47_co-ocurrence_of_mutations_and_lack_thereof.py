@@ -71,7 +71,7 @@ def main():
 	db.close()
 
 	#tables= ['ALL_simple_somatic']
-	number_of_chunks = 1  # myISAM does not deadlock
+	number_of_chunks = 8  # myISAM does not deadlock
 	parallelize(number_of_chunks, coocurrence, tables, [])
 
 

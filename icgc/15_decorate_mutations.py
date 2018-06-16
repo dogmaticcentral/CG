@@ -20,6 +20,7 @@ def add_columns(cursor, table):
 
 
 #########################################
+# this will be set to 1 if we find support for this variant anywhere
 def update_reliability_column_in_mutation_tables(cursor, table):
 	qry = "select  distinct  chromosome  from %s " % table
 	chroms =[ret[0] for ret in  search_db(cursor,qry)]

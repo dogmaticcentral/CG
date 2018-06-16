@@ -3,7 +3,7 @@
 
 from icgc_utils.common_queries   import  *
 
-verbose = False
+verbose = True
 
 #########################################
 # profile decorator is for the use with kernprof (a line profiler):

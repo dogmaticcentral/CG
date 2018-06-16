@@ -134,7 +134,6 @@ def construct_id(cursor, icgc_table, lock_alias):
 #########################################
 id_resolution = {}
 
-
 #########################################
 def store_variant(cursor,  tcga_named_field, mutation_id, pathogenic_estimate, icgc_table):
 
@@ -273,6 +272,11 @@ def add_tcga_diff(tcga_tables, other_args):
 #########################################
 #########################################
 def main():
+
+	print "note there is a bug around the line 157: id_resolution"
+	print "it should be checked whether the saem _donor_ already exists in the database"
+	print "we have only checked whether the _sample_ from the same donor already exists"
+	exit()
 
 	# divide by cancer types, because I have duplicates within each cancer type
 	# that I'll resolve as I go, but I do not want the threads competing)

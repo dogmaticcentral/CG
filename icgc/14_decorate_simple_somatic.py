@@ -16,10 +16,10 @@ def add_columns(cursor, table):
 	if not column_exists(cursor, "icgc", table, column_name):
 		qry = "ALTER TABLE %s ADD  %s float default 0.0" % (table, column_name)
 		search_db(cursor,qry, verbose=True)
-	column_name = "pathogenic_estimate"
-	if not column_exists(cursor, "icgc", table, column_name):
-		qry = "ALTER TABLE %s ADD  %s boolean  default 0" % (table, column_name)
-		search_db(cursor,qry, verbose=True)
+	for column_name in  ["pathogenic_estimate","is_missense"]:
+		if not column_exists(cursor, "icgc", table, column_name):
+			qry = "ALTER TABLE %s ADD  %s boolean  default 0" % (table, column_name)
+			search_db(cursor,qry, verbose=True)
 
 
 
@@ -40,10 +40,22 @@ def update_pathogenicity_column(cursor, table):
 		qry += "where t.icgc_mutation_id=m.icgc_mutation_id "
 		search_db(cursor,qry)
 
+#########################################
+def update_missense_column(cursor, table):
+	qry = "select  distinct  chromosome  from %s " % table
+	chroms =[ret[0] for ret in  search_db(cursor,qry)]
+	for chrom in chroms:
+
+		qry = "update  %s t, mutations_chrom_%s m " % (table, chrom)
+		qry += "set t.is_missense = 1 "
+		qry += "where m.consequence like '%missense%' "
+		qry += "where t.icgc_mutation_id=m.icgc_mutation_id "
+		search_db(cursor,qry)
+
+
 
 ########################################
 def decorate(tables, other_args):
-
 
 	db     = connect_to_mysql()
 	cursor = db.cursor()
@@ -56,14 +68,21 @@ def decorate(tables, other_args):
 		print "decorating ", table, os.getpid()
 
 		add_columns(cursor, table)
-		update_ratio_column(cursor, table)
+		#update_ratio_column(cursor, table)
 
 		###############
-		print "\t\t updating pathogenicity column in %s " % table
-		update_pathogenicity_column(cursor, table)
+		##print "\t\t updating pathogenicity column in %s " % table
+		##update_pathogenicity_column(cursor, table)
+		##time1 = time.time()
+		##print ("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid()
+
+		###############
+		print "\t\t updating missense column in %s " % table
+		qry = "ALTER TABLE %s drop column is_missense " % table
+		search_db(cursor,qry,verbose=True)
+		#update_missense_column(cursor, table)
 		time1 = time.time()
 		print ("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid()
-
 
 	cursor.close()
 	db.close()
