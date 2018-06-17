@@ -45,7 +45,7 @@ def main():
 
 	gene_1 = 'TP53'
 	#gene_1 = 'BRCA1'
-	other_genes = ['RPL5']
+	other_genes = ['RPL22']
 	#########################
 	# which simple somatic tables do we have
 	qry  = "select table_name from information_schema.tables "

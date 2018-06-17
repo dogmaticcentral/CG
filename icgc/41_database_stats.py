@@ -40,12 +40,23 @@ def main():
 		total_donors += donors
 
 		# specimens per donor?
-		qry  = "select  icgc_donor_id, count(distinct  icgc_sample_id) ct "
-		qry += "from  %s  " % table
-		qry += "group by icgc_donor_id having ct>1 order by ct desc"
-		ret = search_db(cursor,qry)
-		if not ret: continue
-		donors_with_multiple_specimens += len(ret)
+		# qry  = "select  icgc_donor_id, count(distinct  icgc_sample_id) ct "
+		# qry += "from  %s  " % table
+		# qry += "group by icgc_donor_id having ct>1 order by ct desc"
+		# ret = search_db(cursor,qry)
+		# if not ret: continue
+		# donors_with_multiple_specimens += len(ret)
+
+	for chrom in [str(i) for i in range(1,23)] + ['X','Y']:
+		table = "mutations_chrom_%s" % chrom
+		qry = "select count(*) from %s where consequence like '%%missense%%'" % table
+		miss = search_db(cursor,qry)[0][0]
+		qry = "select count(*) from %s where consequence like '%%frameshift%%'" % table
+		frm  = search_db(cursor,qry)[0][0]
+
+		print "chromosome %2s   missense: %6d  frameshift: %6d   ratio: %.2f " % (chrom, miss, frm, float(frm)/miss)
+
+
 
 	print "total_donors:", total_donors
 	print "donors_with_multiple_specimens:", donors_with_multiple_specimens

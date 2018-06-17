@@ -201,7 +201,6 @@ def patients_per_gene_breakdown(cursor, table):
 		exit()
 	return dict(ret)
 
-
 #########################################
 def patients_with_muts_in_gene_group(cursor, table, gene_list):
 
@@ -219,7 +218,6 @@ def patients_with_muts_in_gene_group(cursor, table, gene_list):
 		search_db(cursor,qry, verbose=True)
 		exit()
 	return ret[0][0]
-
 
 ########################################
 def find_chromosome(cursor, gene):

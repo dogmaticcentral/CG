@@ -156,8 +156,6 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations, ex
 						p53_gist=new_gist
 						p53_detail = detail
 
-
-
 			###################
 			# output row for this mutation
 

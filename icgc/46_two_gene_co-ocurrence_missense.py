@@ -1,4 +1,7 @@
 #! /usr/bin/python
+
+# coocurrence of missense (only)  with wildtype
+
 import subprocess
 
 
@@ -34,7 +37,41 @@ def fisher(donors, gene_1_mutated, other_mutated, cooc):
 
 	return pval_lt, pval_gt
 
+###################################
+def patients_with_missense(cursor, somatic_table, gene_2):
 
+	mutations_table = "mutations_chrom_%s" % find_chromosome(cursor, gene_2)
+	qry  = "select count(distinct(s.icgc_donor_id)) from %s s, %s m, mutation2gene g " % (somatic_table, mutations_table)
+	qry += "where g.gene_symbol='%s' " % gene_2
+	qry += "and g.icgc_mutation_id=s.icgc_mutation_id "
+	qry += "and g.icgc_mutation_id=m.icgc_mutation_id "
+	qry += "and m.consequence like '%missense%' "
+	qry += "and s.reliability_estimate=1 "
+	ret = search_db(cursor,qry)
+
+	if ret: return ret[0][0]
+	return 0
+
+###################################
+def co_ocurrence_any_vs_missense(cursor, somatic_table, gene_1, gene_2):
+
+	mutations_table = "mutations_chrom_%s" % find_chromosome(cursor, gene_2)
+	qry  = "select count(distinct(s1.icgc_donor_id)) "
+	qry += "from %s s1, %s s2, %s m, mutation2gene g1, mutation2gene g2  " % (somatic_table, somatic_table, mutations_table)
+	qry += "where g1.gene_symbol='%s' " % gene_1
+	qry += "and g2.gene_symbol='%s' " % gene_2
+	qry += "and g2.icgc_mutation_id=s2.icgc_mutation_id "
+	qry += "and g2.icgc_mutation_id=m.icgc_mutation_id "
+	qry += "and m.consequence like '%missense%' "
+	qry += "and g1.icgc_mutation_id=s1.icgc_mutation_id "
+	qry += "and s1.pathogenic_estimate=1 "
+	qry += "and s1.reliability_estimate=1 "
+	qry += "and s2.reliability_estimate=1 "
+	qry += "and s1.icgc_donor_id=s2.icgc_donor_id "
+	ret = search_db(cursor,qry)
+
+	if ret: return ret[0][0]
+	return 0
 
 ###################################
 # ## file:///home/ivana/Dropbox/Sinisa/ribosomal/html/the_curious_case_of_rpl22.html
@@ -45,7 +82,7 @@ def main():
 
 	gene_1 = 'TP53'
 	#gene_1 = 'BRCA1'
-	other_genes = ['RPL22']
+	gene_2  = 'RPL11'
 	#########################
 	# which simple somatic tables do we have
 	qry  = "select table_name from information_schema.tables "
@@ -59,48 +96,41 @@ def main():
 	total_other = 0
 	total_gene_1 = 0
 	total_cooc = 0
-	#tables = ['UCEC_simple_somatic']
 
-	write_to_file =  len(other_genes)==1
+	write_to_file =  False
 
 	if write_to_file:
-		outf = open("{}_{}_cooccurrence.tsv".format(gene_1, other_genes[0]),"w")
+		outf = open("{}_{}_cooccurrence.tsv".format(gene_1, gene_2),"w")
 		outf.write("\t".join(['cancer','donors', "mutations in %s"%gene_1,
-			                "mutations in %s"%other_genes[0], 'cooccurrence','expected',
+			                "mutations in %s"%gene_2, 'cooccurrence','expected',
 			                'p smaller', 'p bigger'])+"\n")
 
 	for table in tables:
 		tumor_short = table.split("_")[0]
 		patients_with_muts_in_gene = patients_per_gene_breakdown(cursor, table)
+
 		if patients_with_muts_in_gene.get(gene_1,0)==0: continue
-		no_mutant = True
-		for gene_2 in other_genes:
-			if patients_with_muts_in_gene.get(gene_2,0)==0: continue
-			no_mutant = False
-			break
-		if no_mutant: continue
+		if patients_with_muts_in_gene.get(gene_2,0)==0: continue
+
 
 		print "================================="
 		print table
 		donors = len(get_donors(cursor, table))
 		print "donors: ", donors
 		total_donors += donors
-		for gene in [gene_1]+other_genes:
-			print gene, patients_with_muts_in_gene.get(gene, 0)
+		print gene_2, patients_with_muts_in_gene.get(gene_2, 0)
 
 		gene_1_mutated  = patients_with_muts_in_gene.get(gene_1,0)
-		other_mutated = patients_with_muts_in_gene_group(cursor, table, other_genes)
+		gene_2_missense = patients_with_missense(cursor, table, gene_2)
+		print "patients with missense:", gene_2_missense
 		total_gene_1   += gene_1_mutated
-		total_other  += other_mutated
+		total_other    += gene_2_missense
 
-		cooc = co_ocurrence_w_group_count(cursor, table, gene_1, other_genes)
+		cooc = co_ocurrence_any_vs_missense(cursor, table, gene_1, gene_2)
 
-		p_smaller, p_bigger = myfisher(donors, gene_1_mutated, other_mutated, cooc)
+		p_smaller, p_bigger = myfisher(donors, gene_1_mutated, gene_2_missense, cooc)
 
-
-		#pval_lt, pval_gt = fisher(donors, gene_1_mutated, other_mutated, cooc)
-
-		expected = float(gene_1_mutated)/donors*other_mutated
+		expected = float(gene_1_mutated)/donors*gene_2_missense
 		print "co-ocurrence:", cooc
 		print "    expected: %.1f" % expected
 		print "   p_smaller: %.2f" % p_smaller
@@ -109,15 +139,14 @@ def main():
 
 		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
 		                (tumor_short,donors, patients_with_muts_in_gene.get(gene_1, 0),
-						patients_with_muts_in_gene.get(other_genes[0], 0),
-						cooc,expected,p_smaller,p_bigger))
+						gene_2_missense, cooc,expected,p_smaller,p_bigger))
 		total_cooc += cooc
 
 
 	p_smaller, p_bigger = myfisher(total_donors, total_gene_1, total_other, total_cooc)
 	print
 	print "================================="
-	print other_genes
+	print  gene_2
 	print "total donors:", total_donors
 	print "        other:", total_other
 	print "          %s: %d" % (gene_1, total_gene_1)
@@ -133,7 +162,6 @@ def main():
 
 	if write_to_file: outf.close()
 
-	print myfisher(total_donors*4, total_gene_1*4, total_other*4, total_cooc*4)
 	cursor.close()
 	db.close()
 

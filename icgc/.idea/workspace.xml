@@ -14,20 +14,117 @@
       <file leaf-file-name="common_queries.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/icgc_utils/common_queries.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="386">
-              <caret line="86" column="47" selection-start-line="86" selection-start-column="47" selection-end-line="86" selection-end-column="47" />
+            <state relative-caret-position="270">
+              <caret line="69" column="4" selection-start-line="69" selection-start-column="4" selection-end-line="69" selection-end-column="4" />
+              <folding>
+                <element signature="e#124#1645#0" />
+                <element signature="e#500#585#0" />
+                <element signature="e#606#1606#0" />
+                <element signature="e#736#1123#0" />
+                <element signature="e#870#948#0" />
+                <element signature="e#1368#1606#0" />
+                <element signature="e#1753#2063#0" />
+                <element signature="e#1851#1897#0" />
+                <element signature="e#2150#2471#0" />
+                <element signature="e#2272#2319#0" />
+                <element signature="e#2568#2578#0" />
+                <element signature="e#3203#3586#0" />
+                <element signature="e#3273#3424#0" />
+                <element signature="e#3708#4055#0" />
+                <element signature="e#3948#4033#0" />
+                <element signature="e#4160#4748#0" />
+                <element signature="e#4817#4932#0" />
+                <element signature="e#5053#5759#0" />
+                <element signature="e#5698#5741#0" />
+                <element signature="e#5867#7186#0" />
+                <element signature="e#5929#6684#0" />
+                <element signature="e#5929#5991#0" />
+                <element signature="e#6621#6665#0" />
+                <element signature="e#6694#7186#0" />
+                <element signature="e#6739#7133#0" />
+                <element signature="e#7050#7095#0" />
+                <element signature="e#7280#7334#0" />
+                <element signature="e#7704#7748#0" />
+                <element signature="e#7877#8436#0" />
+                <element signature="e#7877#7931#0" />
+                <element signature="e#8374#8418#0" />
+                <element signature="e#8516#8757#0" />
+                <element signature="e#8649#8739#0" />
+                <element signature="e#8832#8938#0" />
+                <element signature="e#8975#9085#0" />
+                <element signature="e#9163#9384#0" />
+                <element signature="e#9438#9599#0" />
+                <element signature="e#9662#9821#0" />
+                <element signature="e#9878#10114#0" />
+                <element signature="e#9925#10092#0" />
+                <element signature="e#10177#10336#0" />
+                <element signature="e#10412#10615#0" />
+                <element signature="e#10712#11470#0" />
+                <element signature="e#10980#11126#0" />
+                <element signature="e#11563#11760#0" />
+                <element signature="e#11898#12305#0" />
+                <element signature="e#12399#13641#0" />
+                <element signature="e#12399#12479#0" />
+                <element signature="e#13095#13275#0" />
+                <element signature="e#13277#13345#0" />
+                <element signature="e#13695#14046#0" />
+                <element signature="e#13824#14003#0" />
+                <element signature="e#14164#14844#0" />
+                <element signature="e#14323#14412#0" />
+                <element signature="e#14734#14826#0" />
+                <element signature="e#14953#15980#0" />
+                <element signature="e#15112#15193#0" />
+                <element signature="e#15719#15817#0" />
+                <element signature="e#15879#15962#0" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="44_gene_stats.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="44_gene_stats.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/44_gene_stats.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="274" column="16" selection-start-line="274" selection-start-column="16" selection-end-line="274" selection-end-column="16" />
+            <state relative-caret-position="656">
+              <caret line="185" column="51" lean-forward="true" selection-start-line="185" selection-start-column="30" selection-end-line="185" selection-end-column="51" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="45_two_gene_co-ocurrence.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/45_two_gene_co-ocurrence.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="73" column="46" selection-start-line="73" selection-start-column="37" selection-end-line="73" selection-end-column="64" />
               <folding>
-                <element signature="e#5880#7063#0" />
+                <element signature="e#19#36#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="46_two_gene_co-ocurrence_missense.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/46_two_gene_co-ocurrence_missense.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="342">
+              <caret line="117" lean-forward="true" selection-start-line="115" selection-end-line="117" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="47_two_gene_co-ocurrence_path_subpopulation.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/47_two_gene_co-ocurrence_path_subpopulation.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="296">
+              <caret line="51" column="20" selection-start-line="51" selection-start-column="20" selection-end-line="51" selection-end-column="20" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="41_database_stats.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/41_database_stats.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="645">
+              <caret line="49" column="42" selection-start-line="49" selection-start-column="42" selection-end-line="49" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -53,6 +150,7 @@
       <find>named_field['MUTATION']</find>
       <find>_</find>
       <find>group</find>
+      <find>find_chromosome</find>
     </findStrings>
     <replaceStrings>
       <replace>other</replace>
@@ -64,8 +162,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/16_copy_realiability_annotation_to_somatic_tables.py" />
-        <option value="$PROJECT_DIR$/13_cleanup_duplicate_entries.py" />
         <option value="$PROJECT_DIR$/17_mutation2gene_maps.py" />
         <option value="$PROJECT_DIR$/24_gene_stats.py" />
         <option value="$PROJECT_DIR$/22_cancer_stats.py" />
@@ -103,18 +199,20 @@
         <option value="$PROJECT_DIR$/icgc_utils/pymol.py" />
         <option value="$PROJECT_DIR$/64_conservatiion-clustering_on_the_structure.py" />
         <option value="$PROJECT_DIR$/14_decorate_simple_somatic.py" />
-        <option value="$PROJECT_DIR$/45_two_gene_co-ocurrence.py" />
         <option value="$PROJECT_DIR$/32_tcga_diff_2_variants_in_patients.py" />
         <option value="$PROJECT_DIR$/15_decorate_mutations.py" />
         <option value="$PROJECT_DIR$/42_cancer_stats.py" />
         <option value="$PROJECT_DIR$/08_make_indices.py" />
         <option value="$PROJECT_DIR$/34_fix_donor_name_bug.py" />
         <option value="$PROJECT_DIR$/47_co-ocurrence_of_mutations_and_lack_thereof.py" />
-        <option value="$PROJECT_DIR$/41_database_stats.py" />
-        <option value="$PROJECT_DIR$/icgc_utils/common_queries.py" />
         <option value="$PROJECT_DIR$/35_drop_multiple_specimens.py" />
         <option value="$PROJECT_DIR$/44_gene_stats.new.py" />
+        <option value="$PROJECT_DIR$/45_two_gene_co-ocurrence.py" />
+        <option value="$PROJECT_DIR$/46_two_gene_co-ocurrence_missense.py" />
+        <option value="$PROJECT_DIR$/icgc_utils/common_queries.py" />
         <option value="$PROJECT_DIR$/44_gene_stats.py" />
+        <option value="$PROJECT_DIR$/47_two_gene_co-ocurrence_path_subpopulation.py" />
+        <option value="$PROJECT_DIR$/41_database_stats.py" />
       </list>
     </option>
   </component>
@@ -129,7 +227,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -151,6 +248,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -158,13 +256,13 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Python" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/icgc_utils" />
       <recent name="$PROJECT_DIR$/00_data_download" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -195,41 +293,41 @@
   <component name="ToolWindowManager">
     <frame x="1920" y="0" width="1920" height="1080" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23247233" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27148128" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.19320594" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.19320594" />
     </layout>
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20201422" />
-      <window_info id="Structure" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23247233" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Python Console" order="9" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.19320594" />
+      <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Terminal" order="10" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Version Control" order="10" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info id="Favorites" order="2" side_tool="true" />
     </layout-to-restore>
   </component>
@@ -440,9 +538,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/46_two_gene_co-ocurrence_missense.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/30_tcga_diff_1_annotation.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
@@ -492,31 +587,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/00_data_download/01_download_icgc_dir_structure.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/00_data_download/02_download_somatic_files.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-216" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/45_two_gene_co-ocurrence.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="644">
-          <caret line="91" column="37" selection-start-line="91" selection-start-column="24" selection-end-line="91" selection-end-column="56" />
-          <folding>
-            <element signature="e#19#36#0" expanded="true" />
-          </folding>
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/34_fix_donor_name_bug.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="20" column="74" selection-start-line="20" selection-start-column="74" selection-end-line="20" selection-end-column="74" />
-          <folding>
-            <element signature="e#234#276#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -534,21 +613,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/41_database_stats.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="633">
-          <caret line="53" lean-forward="true" selection-start-line="53" selection-end-line="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/48_co-ocurrence_postprocess.py">
+    <entry file="file://$PROJECT_DIR$/49_co-ocurrence_postprocess.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="532">
           <caret line="65" column="38" selection-start-line="65" selection-start-column="38" selection-end-line="65" selection-end-column="38" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/47_co-ocurrence_of_mutations_and_lack_thereof.py">
+    <entry file="file://$PROJECT_DIR$/48_co-ocurrence_of_mutations_and_lack_thereof.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="100">
           <caret line="25" column="50" selection-start-line="25" selection-start-column="37" selection-end-line="25" selection-end-column="64" />
@@ -562,30 +634,110 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/44_gene_stats.new.py">
+    <entry file="file://$PROJECT_DIR$/44_gene_stats.new.py" />
+    <entry file="file://$PROJECT_DIR$/45_two_gene_co-ocurrence.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1331">
-          <caret line="154" column="51" lean-forward="true" selection-start-line="154" selection-start-column="51" selection-end-line="154" selection-end-column="51" />
+        <state relative-caret-position="374">
+          <caret line="73" column="46" selection-start-line="73" selection-start-column="37" selection-end-line="73" selection-end-column="64" />
           <folding>
-            <element signature="e#6598#7781#0" />
+            <element signature="e#19#36#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/icgc_utils/common_queries.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="386">
-          <caret line="86" column="47" selection-start-line="86" selection-start-column="47" selection-end-line="86" selection-end-column="47" />
+        <state relative-caret-position="270">
+          <caret line="69" column="4" selection-start-line="69" selection-start-column="4" selection-end-line="69" selection-end-column="4" />
+          <folding>
+            <element signature="e#124#1645#0" />
+            <element signature="e#500#585#0" />
+            <element signature="e#606#1606#0" />
+            <element signature="e#736#1123#0" />
+            <element signature="e#870#948#0" />
+            <element signature="e#1368#1606#0" />
+            <element signature="e#1753#2063#0" />
+            <element signature="e#1851#1897#0" />
+            <element signature="e#2150#2471#0" />
+            <element signature="e#2272#2319#0" />
+            <element signature="e#2568#2578#0" />
+            <element signature="e#3203#3586#0" />
+            <element signature="e#3273#3424#0" />
+            <element signature="e#3708#4055#0" />
+            <element signature="e#3948#4033#0" />
+            <element signature="e#4160#4748#0" />
+            <element signature="e#4817#4932#0" />
+            <element signature="e#5053#5759#0" />
+            <element signature="e#5698#5741#0" />
+            <element signature="e#5867#7186#0" />
+            <element signature="e#5929#6684#0" />
+            <element signature="e#5929#5991#0" />
+            <element signature="e#6621#6665#0" />
+            <element signature="e#6694#7186#0" />
+            <element signature="e#6739#7133#0" />
+            <element signature="e#7050#7095#0" />
+            <element signature="e#7280#7334#0" />
+            <element signature="e#7704#7748#0" />
+            <element signature="e#7877#8436#0" />
+            <element signature="e#7877#7931#0" />
+            <element signature="e#8374#8418#0" />
+            <element signature="e#8516#8757#0" />
+            <element signature="e#8649#8739#0" />
+            <element signature="e#8832#8938#0" />
+            <element signature="e#8975#9085#0" />
+            <element signature="e#9163#9384#0" />
+            <element signature="e#9438#9599#0" />
+            <element signature="e#9662#9821#0" />
+            <element signature="e#9878#10114#0" />
+            <element signature="e#9925#10092#0" />
+            <element signature="e#10177#10336#0" />
+            <element signature="e#10412#10615#0" />
+            <element signature="e#10712#11470#0" />
+            <element signature="e#10980#11126#0" />
+            <element signature="e#11563#11760#0" />
+            <element signature="e#11898#12305#0" />
+            <element signature="e#12399#13641#0" />
+            <element signature="e#12399#12479#0" />
+            <element signature="e#13095#13275#0" />
+            <element signature="e#13277#13345#0" />
+            <element signature="e#13695#14046#0" />
+            <element signature="e#13824#14003#0" />
+            <element signature="e#14164#14844#0" />
+            <element signature="e#14323#14412#0" />
+            <element signature="e#14734#14826#0" />
+            <element signature="e#14953#15980#0" />
+            <element signature="e#15112#15193#0" />
+            <element signature="e#15719#15817#0" />
+            <element signature="e#15879#15962#0" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/44_gene_stats.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="274" column="16" selection-start-line="274" selection-start-column="16" selection-end-line="274" selection-end-column="16" />
-          <folding>
-            <element signature="e#5880#7063#0" />
-          </folding>
+        <state relative-caret-position="656">
+          <caret line="185" column="51" lean-forward="true" selection-start-line="185" selection-start-column="30" selection-end-line="185" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/46_two_gene_co-ocurrence_missense.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="117" lean-forward="true" selection-start-line="115" selection-end-line="117" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/47_two_gene_co-ocurrence_path_subpopulation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="296">
+          <caret line="51" column="20" selection-start-line="51" selection-start-column="20" selection-end-line="51" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/41_database_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="645">
+          <caret line="49" column="42" selection-start-line="49" selection-start-column="42" selection-end-line="49" selection-end-column="42" />
         </state>
       </provider>
     </entry>
