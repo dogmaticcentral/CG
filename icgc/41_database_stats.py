@@ -28,6 +28,7 @@ def main():
 
 	total_donors = 0
 	donors_with_multiple_specimens = 0
+	donors_with_multiple_samples = 0
 	for table in tables:
 		tumor_short = table.split("_")[0]
 		fields = [tumor_short]
@@ -40,12 +41,28 @@ def main():
 		total_donors += donors
 
 		# specimens per donor?
-		# qry  = "select  icgc_donor_id, count(distinct  icgc_sample_id) ct "
-		# qry += "from  %s  " % table
-		# qry += "group by icgc_donor_id having ct>1 order by ct desc"
-		# ret = search_db(cursor,qry)
-		# if not ret: continue
-		# donors_with_multiple_specimens += len(ret)
+		qry  = "select  icgc_donor_id, count(distinct  icgc_specimen_id) ct "
+		qry += "from  %s  " % table
+		qry += "group by icgc_donor_id having ct>1 order by ct desc"
+		ret = search_db(cursor,qry)
+		if not ret: continue
+		donors_with_multiple_specimens += len(ret)
+
+		# samples per donor?
+		qry  = "select  icgc_donor_id, count(distinct  icgc_sample_id) ct "
+		qry += "from  %s  " % table
+		qry += "group by icgc_donor_id having ct>1 order by ct desc"
+		ret = search_db(cursor,qry)
+		if not ret: continue
+		donors_with_multiple_samples += len(ret)
+
+
+
+	print "total_donors:", total_donors
+	print "donors_with_multiple_specimen labels:", donors_with_multiple_specimens
+	print "donors_with_multiple_sample labels:", donors_with_multiple_samples
+	print
+
 
 	for chrom in [str(i) for i in range(1,23)] + ['X','Y']:
 		table = "mutations_chrom_%s" % chrom
@@ -58,8 +75,6 @@ def main():
 
 
 
-	print "total_donors:", total_donors
-	print "donors_with_multiple_specimens:", donors_with_multiple_specimens
 	cursor.close()
 	db.close()
 

@@ -40,12 +40,16 @@ def fisher(donors, gene_1_mutated, other_mutated, cooc):
 # ## file:///home/ivana/Dropbox/Sinisa/ribosomal/html/the_curious_case_of_rpl22.html
 def main():
 
+	if len(sys.argv) < 2:
+		print "usage: %s <gene symbol> [<gene symbol> ...]" % sys.argv[0]
+		exit()
+	other_genes = [g.upper() for g in sys.argv[1:]]
+
 	db     = connect_to_mysql()
 	cursor = db.cursor()
 
 	gene_1 = 'TP53'
-	#gene_1 = 'BRCA1'
-	other_genes = ['RPL22']
+
 	#########################
 	# which simple somatic tables do we have
 	qry  = "select table_name from information_schema.tables "
@@ -107,7 +111,7 @@ def main():
 		print "    p_bigger: %.2f" % p_bigger
 		print
 
-		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
+		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t%.1f\n"%
 		                (tumor_short,donors, patients_with_muts_in_gene.get(gene_1, 0),
 						patients_with_muts_in_gene.get(other_genes[0], 0),
 						cooc,expected,p_smaller,p_bigger))
@@ -126,14 +130,14 @@ def main():
 	print "   p_smaller: %.1e" % p_smaller
 	print "    p_bigger: %.1e" % p_bigger
 	expected = (float(total_gene_1)/total_donors*total_other)
-	if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
+	if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t%.1f\n"%
 								("total", total_donors, total_gene_1,
 								total_other, total_cooc, expected, p_smaller, p_bigger))
 
 
 	if write_to_file: outf.close()
 
-	print myfisher(total_donors*4, total_gene_1*4, total_other*4, total_cooc*4)
+	#print myfisher(total_donors*4, total_gene_1*4, total_other*4, total_cooc*4)
 	cursor.close()
 	db.close()
 

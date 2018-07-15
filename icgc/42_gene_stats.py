@@ -104,6 +104,18 @@ def gnomad_info(cursor, mutation, chromosome):
 patient_count = 0
 
 #########################################
+def genotype_short(genotype):
+	return "/".join( ['long' if len(f)>4 else f for f in genotype.split("/")] )
+
+
+def makecell(long_entry):
+	if ";" in long_entry:
+		return "\makecell[l]{ " + long_entry.replace(";","\\\\").replace(":","\\\\") + " }"
+
+	else:
+		return long_entry
+
+#########################################
 def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations, exp_results, hide_id=True):
 
 	p53_status_per_specimen = {}
@@ -165,14 +177,17 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations, ex
 			exp = exp_results.get(aa_change,"")
 
 			if consequence=='frameshift':
-				exp = " | ".join(['x']*5)
+				exp = " $|$ ".join(['x']*5)
 
-			if exp == " | ".join(['o']*5): exp = ""
+			if exp == " $|$ ".join(['o']*5): exp = ""
+
+			cgenotype = genotype_short( mtn_info['cgenotype'])
+			tgenotype = genotype_short( mtn_info['tgenotype'])
 
 			if hide_id: donor_display_name=str(patient_count)
 			entry = "\t".join([tumor_short, donor_display_name,  ",".join(specimen_type_short), ",".join(specimen_number_of_mutations),
-			                   mtn_info['cgenotype'], mtn_info['tgenotype'], consequence,
-				               aa_change, freq_in_gen_population, p53_gist, p53_detail , exp])
+			                   cgenotype, tgenotype, consequence,
+				               aa_change, freq_in_gen_population, p53_gist, makecell(p53_detail) , exp])
 			entry = entry.replace("_"," ")
 			donor_rows.append(entry)
 
@@ -249,14 +264,14 @@ def parse_exp(exp_results_file):
 			elif field[5] == "NO":
 				field[5]="YES"
 			if exp_results_hash.has_key(field[0]):
-				if exp_results_hash[field[0]] != " | ".join([translation[val] for val in field[3:]]):
+				if exp_results_hash[field[0]] != " $|$ ".join([translation[val] for val in field[3:]]):
 					print "Note: result mismatch for", field[0], " in ", exp_results_file
 					#print exit()
 			# extra: if the mutant does not fold, it presumably has no other function
 			if field[5]=="NO":
-				exp_results_hash[field[0]] = " | ".join(['x','x','-','x','x'])
+				exp_results_hash[field[0]] = " $|$ ".join(['x','x','-','x','x'])
 			else:
-				exp_results_hash[field[0]] = " | ".join([translation[val] for val in field[3:]])
+				exp_results_hash[field[0]] = " $|$ ".join([translation[val] for val in field[3:]])
 	inf.close()
 
 	return exp_results_hash
@@ -268,7 +283,10 @@ def parse_exp(exp_results_file):
 
 def main():
 
-	gene = 'RPL11'
+	if len(sys.argv) < 2:
+		print "usage: %s <gene symbol> " % sys.argv[0]
+		exit()
+	gene = sys.argv[1].upper()
 
 	exp_results_file = "/home/ivana/Dropbox/Sinisa/ribosomal/rezultati/Ines_rezultati_Feb2018/rpl5.csv"
 	if not os.path.exists(exp_results_file):
@@ -300,7 +318,7 @@ def main():
 		if verbose: print table
 		donor_mutations = gene_mutations(cursor, table, gene)
 		if not donor_mutations: continue
-		donor_rows = donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations, exp_results, hide_id=True);
+		donor_rows = donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations, exp_results, hide_id=True)
 		if not donor_rows: continue
 		outf.write(donor_rows+"\n")
 

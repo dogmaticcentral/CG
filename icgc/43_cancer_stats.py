@@ -58,8 +58,9 @@ def main():
 	switch_to_db(cursor,"icgc")
 
 	outf = open("mutations_per_cancer_breakdown.tsv", "w")
-	outf.write("\t".join(["tumor short", "donors", "specimen",
-							"donors w pathogenic mutations", "pct",
+	outf.write("\t".join(["tumor short", "donors", #"specimen",
+							#"donors w pathogenic mutations",
+                            "pct",
 							"avg mutations per patient",
 							"RPL5 donors", "pct of all donors",
 							"genes with path muts in more donors than RPL5", "pct genome",
@@ -67,9 +68,7 @@ def main():
 							"genes wiht path muts in more donors than RPL11", "pct genome"
 							])+"\n")
 
-	#tables = ["ALL_simple_somatic"]
 	for table in tables:
-		#if table=="BRCA_simple_somatic": continue
 
 		tumor_short = table.split("_")[0]
 		fields = [tumor_short]
@@ -85,20 +84,22 @@ def main():
 		qry  = "select distinct(icgc_specimen_id) from %s " % table
 		specimens = [ret[0] for ret in search_db(cursor,qry)]
 		if verbose: print "\t specimens: ", len(specimens)
-		fields.append(len(specimens))
+		#fields.append(len(specimens))
 
 		# number of unique mutations for each patient
 		number_of_patients_w_pathogenic_mutations,avg_no_muts = avg_number_of_muts_per_patient(cursor, table, donors)
 		if verbose: print "\t number of patients with pathogenic mutations: %d" % number_of_patients_w_pathogenic_mutations,
 		pct = float(number_of_patients_w_pathogenic_mutations)/len(donors)*100
 		if verbose: print "\t (%d%%)" % (pct)
-		fields.append(number_of_patients_w_pathogenic_mutations)
+		#fields.append(number_of_patients_w_pathogenic_mutations)
 		fields.append("%.0f" % pct)
 
 		if verbose: print "\t avg number of mutations  %.1f " % avg_no_muts
 		fields.append(" %.1f " % avg_no_muts)
 
 		patients_with_muts_in_gene = patients_per_gene_breakdown(cursor, table)
+		if patients_with_muts_in_gene.get('RPL5',0)==0  and \
+				patients_with_muts_in_gene.get('RPL11',0)==0: continue
 
 		if verbose: print "\t patients with mutations in "
 		for gene in ['RPL5', 'RPL11']:
