@@ -19,7 +19,8 @@ def main():
 	#           'TBL1XR1', 'UBC', 'HSPA1L', 'SP8',
 	#           'VHL', 'BRAF', 'MUC2', 'MUC4', 'NPM1']
 
-	zoom = False
+	zoom  = True
+	label = False # a bug in matplot lib: x-axis labels cannot be turned off for zoom
 
 	if zoom:
 		extras = ['RPL5', 'RPL11', 'RPL22',
@@ -54,27 +55,41 @@ def main():
 	# s is marker size in points**2
 	plt.xscale('log')
 	plt.yscale('log')
+
 	if zoom:
 		plt.xlim(0.06,0.3)
 		plt.ylim(50,1000)
-		plt.xlabel('SILENT MUTATION FRACTION', fontsize=16)
-		plt.ylabel('TOTAL NUMBER OF MUTATIONS', fontsize=16)
 		plt.scatter(x,y,s=0.5, c='#17aad3')
-		for extra in extras:
-			plt.plot(coords[extra][0], coords[extra][1],'ro',mfc='none')
-			annotcoords = [coords[extra][0] + 0.003, coords[extra][1]+5]
-			plt.annotate(extra, annotcoords, color="r", fontsize=12) #, fontweight='bold')
+		if label:
+			plt.xlabel('SILENT MUTATION FRACTION', fontsize=16)
+			plt.ylabel('TOTAL NUMBER OF MUTATIONS', fontsize=16)
+			label_offset_x = 0.003
+			label_offset_y = 5
+			fontsize=12
 
 	else: # full pic
 		plt.xlim(0.025,1)
 		plt.ylim(10,11000)
 		plt.scatter(x,y,s=1,c='#17aad3')
-		for extra in extras:
-			plt.plot(coords[extra][0], coords[extra][1],'ro',mfc='none')
-			plt.annotate(extra, coords[extra], color="r", fontsize=15)#, fontweight='bold')
+		if label:
+			label_offset_x = 0.0
+			label_offset_y = 0
+			fontsize=15
+
+	# hiding the axis labels
+	if not label:
+		frame = plt.gca()
+		frame.tick_params(labelbottom='off')
+		frame.tick_params(labelleft='off')
+
+	for extra in extras:
+		plt.plot(coords[extra][0], coords[extra][1],'ro',mfc='none')
+		if label:
+			annotcoords = [coords[extra][0] + label_offset_x, coords[extra][1]+label_offset_y]
+			plt.annotate(extra, annotcoords, color="r", fontsize=fontsize)#, fontweight='bold')
 
 
-	plt.savefig("zoom.svg", format="svg")
+	if zoom: plt.savefig("zoom.svg", format="svg")
 	plt.show()
 
 #########################################
