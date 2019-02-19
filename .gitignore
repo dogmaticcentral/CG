@@ -35,6 +35,7 @@ wget-log*
 *.fa
 *.afa
 *.table
+
 pdbchains
 sys_tfm
 *.aln
@@ -48,6 +49,7 @@ old/
 coapp_tables/
 output/
 tsvs/
+.idea
 
 # OS generated files #
 ######################

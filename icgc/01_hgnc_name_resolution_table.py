@@ -1,12 +1,10 @@
-#! /usr/bin/python
-
+#! /usr/bin/python3
 
 # header names:
 # head -n1 /data/hgnc/hgnc_name_res.tsv \
 # | sed 's/\t/\n/g' | awk 'ct +=1 {printf "%d ", ct; print}'
 
-from icgc_utils.mysql   import  *
-
+from icgc_utils.mysql import *
 
 header_names = ["hgnc_id", "approved_symbol", "approved_name",
                 "locus_group", "synonyms", "chromosome",
@@ -17,8 +15,6 @@ def make_hgnc_table(cursor, db_name, hgnc_table):
 
 	if check_table_exists (cursor, db_name, hgnc_table): return
 	switch_to_db (cursor, db_name)
-
-
 
 	qry = ""
 	qry += "  CREATE TABLE  %s (" % hgnc_table
@@ -38,8 +34,8 @@ def make_hgnc_table(cursor, db_name, hgnc_table):
 	qry += ") ENGINE=MyISAM"
 
 	rows = search_db(cursor, qry)
-	print qry
-	print rows
+	print(qry)
+	print(rows)
 	return
 
 #########################################
@@ -49,6 +45,7 @@ def strip_arm_annotation(chrom_address):
 	if "q" in chrom_address:
 		return chrom_address.split("q")[0]
 	return chrom_address
+
 #########################################
 #########################################
 def main():
@@ -60,7 +57,7 @@ def main():
 	with open(hgncfile, "r") as inf:
 		headers = inf.readline().rstrip("\n").split("\t")
 		chromosome_column = headers.index('Chromosome')
-		print chromosome_column
+		print(chromosome_column)
 		for line in inf:
 			fields = line.rstrip("\n").split("\t")
 			fields[chromosome_column] = strip_arm_annotation(fields[chromosome_column])
@@ -77,8 +74,6 @@ def main():
 	make_hgnc_table(cursor, db_name, "hgnc")
 	qry = "load data local infile '%s' into table %s" % ("hgnctmp.tsv","hgnc")
 	search_db(cursor,qry,verbose=True)
-
-
 
 	cursor.close()
 	db.close()

@@ -1,6 +1,5 @@
 #! /usr/bin/python
 
-
 from icgc_utils.common_queries   import  *
 
 verbose =True
@@ -264,9 +263,9 @@ def main():
 
 	outf = open("%s_per_cancer_breakdown.tsv"%gene, "w")
 	outf.write("\t".join(["tumor short",  "donor", "spec type",
-							"no muts",   "control genotype", "tumor genotype",
-							"consequence", "aa change", "freq in general population",
-							"p53 status", "p53 mutation", "function"])+"\n")
+						"no muts",   "control genotype", "tumor genotype",
+						"consequence", "aa change", "freq in general population",
+						"p53 status", "p53 mutation", "function"])+"\n")
 
 	for table in tables:
 		tumor_short = table.split("_")[0]

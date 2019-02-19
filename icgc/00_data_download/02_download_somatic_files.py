@@ -1,8 +1,8 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
 
-# to further clasify tumor subtypes, the following files might be useful:
-# specimen*tsv contains tumor histologica type code, the ontology can be found here: http://codes.iarc.fr/codegroup/2
+# to further classify tumor subtypes, the following files might be useful:
+# specimen*tsv contains tumor histological type code, the ontology can be found here: http://codes.iarc.fr/codegroup/2
 # donor*tsv contains donor diagnosis icd10, the ontology can be found here: http://apps.who.int/classifications/icd10/browse/2016/en
 
 import json
@@ -41,13 +41,13 @@ def main():
 	icgc_token = os.environ['ICGC_TOKEN']
 
 	data_home_local = "/data/icgc"
-	release   = "26"
-	base_url  = "https://dcc.icgc.org/api/v1/download?fn="
+	release  = "26"
+	base_url = "https://dcc.icgc.org/api/v1/download?fn="
 	projects_of_interest = parse_json(release)
 	for project_name, fnms in projects_of_interest.iteritems():
-		print project_name
+		print(project_name)
 		target_dir = "/".join([data_home_local] + project_name.split('-'))
-		print target_dir
+		print(target_dir)
 		if not os.path.exists(target_dir): os.makedirs(target_dir)
 		for fnm_full_path in fnms:
 			if not 'somatic' in fnm_full_path: continue
@@ -56,7 +56,7 @@ def main():
 			# there is a 'controlled' version
 			fnm_full_path = fnm_full_path.replace('open','controlled')
 			fnm = fnm_full_path.split('/')[-1]
-			print "\t", fnm
+			print("\t", fnm)
 			if os.path.exists("/".join([target_dir, fnm])): continue
 			if fnm_full_path[0]=='/': fnm_full_path=fnm_full_path[1:]
 			cmd = "curl -L '{}/{}' -o {}/{} --header 'authorization: Bearer {}' ".\

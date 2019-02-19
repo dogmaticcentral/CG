@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
 
 # to further clasify tumor subtypes, the following files might be useful:
@@ -46,15 +46,15 @@ def main():
 	projects_of_interest = parse_json(release)
 	for project_name, fnms in projects_of_interest.iteritems():
 
-		print project_name
+		print(project_name)
 
 		target_dir = "/".join([data_home_local] + project_name.split('-'))
-		print target_dir
+		print(target_dir)
 		if not os.path.exists(target_dir): os.makedirs(target_dir)
 		for fnm_full_path in fnms:
 			if not 'donor' in fnm_full_path and not 'specimen' in fnm_full_path: continue
 			fnm = fnm_full_path.split('/')[-1]
-			print "\t", fnm
+			print("\t", fnm)
 			if os.path.exists("/".join([target_dir, fnm])): continue
 			if fnm_full_path[0]=='/': fnm_full_path=fnm_full_path[1:]
 			cmd = "curl -L '{}/{}' -o {}/{} --header 'authorization: Bearer {}' ".\

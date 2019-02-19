@@ -36,146 +36,101 @@ def switch_to_db (cursor, db_name):
 	qry = "use %s" % db_name
 	rows = search_db (cursor, qry, verbose=False)
 	if (rows):
-		print rows
+		print(rows)
 		return False
 	return True
 
+########
+def val2mysqlval(value):
+	if  value is None:
+		return  "null "
+	elif type(value) is str:
+		return "\'%s\'" % value
+	return "{}".format(value)
 
 ########
-def store_without_checking(cursor, table, named_fields, verbose=False, database=None):
+def store_without_checking(cursor, table, fields, verbose=False, database=None):
 	if database:
 		qry = "insert into %s.%s " % (database,table)
 	else:
 		qry = "insert into %s " % table
-	# column names
-	qry += "({}) ".format(",".join(named_fields.keys()))
 
-	stringified_values = []
-	for value in named_fields.values(): # again will have to check for the type here
-		if  value is None:
-			strval = " null "
-		elif type(value) in [int,long]:
-			strval = " %d" % value
-		elif type(value) is  float:
-			strval = " %f" % value
-		elif type(value) in [chr,str]:
-			strval = "\'%s\'" % value
-		else:
-			print "unrecognized type ", type(value), "of", value
-			for line in traceback.format_stack():
-				print line.strip()
-			exit()
-		stringified_values.append(strval)
-	# values
-	qry += "values ({}) ".format(",".join(stringified_values))
+	qry += "("
+	qry += ",".join(fields.keys())
+	qry += ")"
 
-	rows   = search_db (cursor, qry)
-	if verbose:
-		print
-		print " ** ", qry
-		print " ** ", rows
+	qry += " values "
+	qry += "("
+	qry += ",".join([val2mysqlval(v) for v in fields.values()])
+	qry += ")"
 
-	if (rows):
+	rows  = search_db (cursor, qry, verbose)
+	if verbose: print("qry:",qry,"\n", "rows:", rows)
+
+	if rows:
 		rows   = search_db (cursor, qry, verbose=True)
-		print rows
-		return False
+		print(rows)
+		return -1
 
-	return True
+	rows = search_db (cursor, "select last_insert_id()" )
+	try:
+		row_id = int(rows[0][0])
+	except:
+		row_id = -1
+	return row_id
+
+
 
 ########
-def store_or_update (cursor, table, fixed_fields, update_fields, verbose=False):
+def store_or_update (cursor, table, fixed_fields, update_fields, verbose=False, primary_key='id'):
 
-	conditions = ""
-	first = True
-	for [field, value] in fixed_fields.iteritems():
-		if (not first):
-			conditions += " and "
-		if ( type (value) is int):
-			conditions += " %s= %d "  % (field, value)
-		elif value is None:
-			conditions += " %s= null" % field
-		else:
-			conditions += " %s='%s' " % (field, value)
-		first = False
+	conditions = " and ".join(["{}={}".format(k,val2mysqlval(v)) for k,v in fixed_fields.items()])
 
 	# check if the row exists
-	qry = "select exists (select 1 from %s  where %s) "  % (table, conditions)
-	rows   = search_db (cursor, qry)
-	exists = rows and (type(rows[0][0]) is long) and (rows[0][0]==1)
+	qry = "select %s from %s  where %s "  % (primary_key, table, conditions)
+	rows   = search_db (cursor, qry, verbose)
+	exists = rows and (type(rows[0][0]) is int)
 
-	if verbose:
-		print
-		print qry
-		print rows
-		print "exists ?", exists
-
-
-	if exists and not update_fields: return True
-
+	row_id = -1
+	if exists: row_id = rows[0][0]
+	if verbose: print("\n".join(["", qry, "exists? {}".format(exists), str(row_id)]))
+	if exists and not update_fields: return row_id
 
 	if exists: # if it exists, update
-		if verbose: print "exists; update"
-		qry = "update %s set " % table
-		first = True
-		for field, value in update_fields.iteritems():
-			if (not first):
-				qry += ", "
-			qry += " %s = " % field
-			if  value is None:
-				qry += " null "
-			elif type(value) is int:
-				qry += " %d" % value
-			else:
-				qry += " \'%s\'" % value
-
-			first = False
+		if verbose: print("exists; updating")
+		qry  = "update %s set " % table
+		qry += ",".join(["{}={}".format(k,val2mysqlval(v)) for k,v in update_fields.items()])
 		qry += " where %s " % conditions
 
 	else: # if not, make a new one
-		if verbose: print "does not exist; make new one"
-
-		qry = "insert into %s " % table
-		qry += "("
-		first = True
-		for field in fixed_fields.keys()+update_fields.keys(): # again will have to check for the type here
-			if (not first):
-				qry += ", "
-			qry += field
-			first = False
-		qry += ")"
-
+		if verbose: print("does not exist; making new one")
+		qry  = "insert into %s " % table
+		keys = list(fixed_fields.keys())
+		vals = list(fixed_fields.values())
+		if update_fields:
+			keys += list(update_fields.keys())
+			vals += list(update_fields.values())
+		qry += "(" + ",".join(keys) + ")"
 		qry += " values "
-		qry += "("
-		first = True
-		for value in fixed_fields.values()+update_fields.values(): # again will have to check for the type here
-			if (not first):
-				qry += ", "
-			if  value is None:
-				qry += " null "
-			elif type(value) is int:
-				qry += " %d" % value
-			elif type(value) is float:
-				qry += " %f" % value
-			else:
-				# strip its own quotes
-				value =value.replace("'", "").replace('"', '')
-				qry += " \"%s\"" % value
-			first = False
-		qry += ")"
+		qry += "(" + ",".join([val2mysqlval(v) for v in vals]) + ")"
 
-	rows   = search_db (cursor, qry)
+	rows   = search_db (cursor, qry, verbose)
 
-	if verbose:
-		print
-		print " ** ", qry
-		print " ** ", rows
-
-	if (rows):
+	if verbose: print("qry:",qry,"\n", "rows:", rows)
+	# if there is a return, it is an error msg
+	if rows:
 		rows   = search_db (cursor, qry, verbose=True)
-		return False
+		print(rows[0])
+		return -1
 
+	if row_id==-1:
+		rows = search_db (cursor, "select last_insert_id()" )
+		try:
+			row_id = int(rows[0][0])
+		except:
+			row_id = -1
+	return row_id
 
-	return True
 
 #########################################
 def create_index (cursor, db_name, index_name, table, columns):
@@ -187,7 +142,7 @@ def create_index (cursor, db_name, index_name, table, columns):
 	qry = "show index from %s where key_name like '%s'" % ( table, index_name)
 	rows = search_db (cursor, qry, verbose=True)
 	if (rows):
-		print rows
+		print(rows)
 		return True
    
 	# columns is a list of columns that we want to have indexed
@@ -204,7 +159,7 @@ def create_index (cursor, db_name, index_name, table, columns):
 
 	rows = search_db (cursor, qry, verbose=True)
 	if (rows):
-		print rows
+		print(rows)
 		return False
    
 	return True
@@ -282,28 +237,28 @@ def table_create_time (cursor, db_name, table_name):
 		return rows[0][0]
 
 #######
-def search_db (cursor, qry, verbose=False):
-
+def search_db(cursor, qry, verbose=False):
 	try:
 		cursor.execute(qry)
-	except MySQLdb.Error, e:
+	except MySQLdb.Error as e:
 		if verbose:
-			print "Error running cursor.execute() for  qry: %s: %s " % (qry, e.args[1])
-		return  [["ERROR: "+e.args[1]]]
+			print("Error running cursor.execute() for  qry:\n%s\n%s" % (qry, e.args[1]))
+		return [["Error"], e.args]
 
 	try:
 		rows = cursor.fetchall()
-	except MySQLdb.Error, e:
+	except MySQLdb.Error as e:
 		if verbose:
-			print "Error running cursor.fetchall() for  qry: %s: %s " % (qry, e.args[1])
-		return  ["ERROR: "+e.args[1]]
+			print("Error running cursor.fetchall() for  qry:\n%s\n%s" % (qry, e.args[1]))
+		return [["Error"], e.args]
 
-	if (len(rows) == 0):
+	if len(rows) == 0:
 		if verbose:
-			print "No return for query %s"  % qry
+			print("No return for query:\n%s" % qry)
 		return False
 
 	return rows
+
 
 ########
 def connect_to_mysql (conf_file):
@@ -322,8 +277,8 @@ def connect_to_db (db_name, user=None, passwd=None):
 			db = MySQLdb.connect(user=user, passwd=passwd, db=db_name)
 		else:
 			db = MySQLdb.connect(user="root", db=db_name)
-	except  MySQLdb.Error, e:
-		print "Error connecting to %s: %d %s" % (db_name, e.args[0], e.args[1])
+	except  MySQLdb.Error as e:
+		print("Error connecting to %s: %d %s" % (db_name, e.args[0], e.args[1]))
 		exit(1)
 
 	return db
