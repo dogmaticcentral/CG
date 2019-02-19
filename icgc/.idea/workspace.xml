@@ -11,11 +11,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="52_silent_to_nonsilent_plot.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/52_silent_to_nonsilent_plot.py">
+      <file leaf-file-name="mysql.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-774">
-              <caret line="8" column="37" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
+            <state relative-caret-position="506">
+              <caret line="309" column="8" lean-forward="true" selection-start-line="309" selection-start-column="8" selection-end-line="309" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="42_gene_stats_generic.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/42_gene_stats_generic.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="902">
+              <caret line="288" column="10" lean-forward="true" selection-start-line="288" selection-start-column="10" selection-end-line="288" selection-end-column="10" />
             </state>
           </provider>
         </entry>
@@ -53,13 +62,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/25_co-ocurrence_of_RPL5_and_TP53.py" />
-        <option value="$PROJECT_DIR$/26_co-ocurrence_of_mutations_and_lack_thereof.py" />
         <option value="$PROJECT_DIR$/03_make_tables.py" />
         <option value="$PROJECT_DIR$/30_add_tcga_diff.py" />
         <option value="$PROJECT_DIR$/31_tcga_diff_2_variants_in_patients.py" />
         <option value="$PROJECT_DIR$/31_fix_pathogenicity_annotation.py" />
-        <option value="$PROJECT_DIR$/icgc_utils/mysql.py" />
         <option value="$PROJECT_DIR$/38_mutation2gene_index.py" />
         <option value="$PROJECT_DIR$/37_mutation2gene_maps.py" />
         <option value="$PROJECT_DIR$/30_tcga_diff_1_annotation.py" />
@@ -104,14 +110,16 @@
         <option value="$PROJECT_DIR$/45_two_gene_co-ocurrence.py" />
         <option value="$PROJECT_DIR$/49_co-ocurrence_postprocess.py" />
         <option value="$PROJECT_DIR$/52_silent_to_nonsilent_plot.py" />
+        <option value="$PROJECT_DIR$/43_gene_stats.py" />
+        <option value="$PROJECT_DIR$/icgc_utils/mysql.py" />
+        <option value="$PROJECT_DIR$/42_gene_stats_generic.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2174" />
-    <option name="y" value="13" />
-    <option name="width" value="1480" />
-    <option name="height" value="963" />
+    <option name="x" value="2016" />
+    <option name="width" value="1722" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -126,6 +134,11 @@
               <item name="icgc" type="b2602c69:ProjectViewProjectNode" />
               <item name="icgc" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="icgc" type="b2602c69:ProjectViewProjectNode" />
+              <item name="icgc" type="462c0819:PsiDirectoryNode" />
+              <item name="icgc_utils" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -137,13 +150,13 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Python" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/icgc_utils" />
       <recent name="$PROJECT_DIR$/00_data_download" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -172,10 +185,12 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="2174" y="13" width="1480" height="963" extended-state="0" />
+    <frame x="2016" y="0" width="1722" height="1056" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.2867731" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.31312537" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info id="DB Browser" order="2" />
+      <window_info anchor="bottom" id="DB Execution Console" order="7" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.10792193" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
@@ -185,31 +200,31 @@
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.19320594" />
     </layout>
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23247233" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.19320594" />
-      <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="10" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.19320594" />
+      <window_info anchor="bottom" id="Python Console" order="7" />
     </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -221,13 +236,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/49_co-ocurrence_postprocess.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1206">
-          <caret line="68" column="15" lean-forward="true" selection-start-line="68" selection-start-column="15" selection-end-line="68" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/20_var_sanity_checks.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="558">
@@ -321,13 +329,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="212" column="4" selection-start-line="212" selection-start-column="4" selection-end-line="212" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/icgc_utils/processes.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="324">
@@ -402,13 +403,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="522">
           <caret line="29" column="42" selection-start-line="29" selection-start-column="42" selection-end-line="29" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/30_tcga_diff_1_annotation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="431" column="42" selection-start-line="431" selection-start-column="42" selection-end-line="431" selection-end-column="42" />
         </state>
       </provider>
     </entry>
@@ -504,7 +498,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/43_cancer_stats.py">
+    <entry file="file://$PROJECT_DIR$/44_cancer_stats.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="378">
           <caret line="100" column="61" lean-forward="true" selection-start-line="100" selection-start-column="61" selection-end-line="100" selection-end-column="61" />
@@ -546,17 +540,106 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/42_gene_stats.py">
+    <entry file="file://$PROJECT_DIR$/30_tcga_diff_1_annotation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="70">
-          <caret line="289" selection-start-line="285" selection-end-line="289" />
+        <state relative-caret-position="18">
+          <caret line="1" column="17" selection-start-line="1" selection-end-line="1" selection-end-column="17" />
+          <folding>
+            <element signature="e#168#1711#0" />
+            <element signature="e#1731#1946#0" />
+            <element signature="e#2051#2198#0" />
+            <element signature="e#2275#2339#0" />
+            <element signature="e#2483#2804#0" />
+            <element signature="e#2806#2844#0" />
+            <element signature="e#2907#3163#0" />
+            <element signature="e#3200#3577#0" />
+            <element signature="e#3690#4697#0" />
+            <element signature="e#4874#5132#0" />
+            <element signature="e#5267#7165#0" />
+            <element signature="e#5362#5396#0" />
+            <element signature="e#6111#6220#0" />
+            <element signature="e#6242#6930#0" />
+            <element signature="e#6243#6374#0" />
+            <element signature="e#6566#6666#0" />
+            <element signature="e#6963#7147#0" />
+            <element signature="e#7944#7985#0" />
+            <element signature="e#8115#8428#0" />
+            <element signature="e#8493#8933#0" />
+            <element signature="e#8538#8681#0" />
+            <element signature="e#8698#8840#0" />
+            <element signature="e#9045#12581#0" />
+            <element signature="e#9045#9145#0" />
+            <element signature="e#9505#9585#0" />
+            <element signature="e#9789#9883#0" />
+            <element signature="e#9888#9956#0" />
+            <element signature="e#10245#10547#0" />
+            <element signature="e#10339#10547#0" />
+            <element signature="e#10551#10637#0" />
+            <element signature="e#10860#12235#0" />
+            <element signature="e#11014#11433#0" />
+            <element signature="e#11044#11093#0" />
+            <element signature="e#11179#11209#0" />
+            <element signature="e#11457#11594#0" />
+            <element signature="e#11477#11568#0" />
+            <element signature="e#11691#11758#0" />
+            <element signature="e#11841#12235#0" />
+            <element signature="e#12478#12581#0" />
+            <element signature="e#12698#13000#0" />
+            <element signature="e#13116#13549#0" />
+            <element signature="e#13685#14499#0" />
+            <element signature="e#13753#13826#0" />
+            <element signature="e#14114#14435#0" />
+            <element signature="e#14229#14371#0" />
+            <element signature="e#14662#16581#0" />
+            <element signature="e#14731#14799#0" />
+            <element signature="e#15316#16516#0" />
+            <element signature="e#15980#16438#0" />
+            <element signature="e#16680#18665#0" />
+            <element signature="e#16680#16714#0" />
+            <element signature="e#16921#18665#0" />
+            <element signature="e#17109#18650#0" />
+            <element signature="e#17141#17286#0" />
+            <element signature="e#17362#17566#0" />
+            <element signature="e#17596#17644#0" />
+            <element signature="e#18223#18324#0" />
+            <element signature="e#18292#18324#0" />
+            <element signature="e#18354#18490#0" />
+            <element signature="e#18520#18650#0" />
+            <element signature="e#18784#19474#0" />
+            <element signature="e#19565#21083#0" />
+            <element signature="e#19670#21045#0" />
+            <element signature="e#20691#20767#0" />
+            <element signature="e#21086#21127#0" />
+            <element signature="e#21184#21259#0" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/52_silent_to_nonsilent_plot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-774">
+        <state relative-caret-position="18">
           <caret line="8" column="37" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/43_gene_stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="409">
+          <caret line="270" selection-start-line="270" selection-end-line="270" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/icgc_utils/mysql.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="309" column="8" lean-forward="true" selection-start-line="309" selection-start-column="8" selection-end-line="309" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/42_gene_stats_generic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="902">
+          <caret line="288" column="10" lean-forward="true" selection-start-line="288" selection-start-column="10" selection-end-line="288" selection-end-column="10" />
         </state>
       </provider>
     </entry>
