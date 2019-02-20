@@ -22,6 +22,8 @@ struct
 *.rar
 *.tar
 *.zip
+*.bz2
+!ensembl_gene2trans_stable.tsv.bz2
 
 # Logs and databases #
 ######################

@@ -25,7 +25,7 @@ def parse_json(release):
 	of_interest = {}
 	for i in projects['contents']:
 		project_name = i['name'].split('/')[-1]
-		if not i.has_key('contents'): continue
+		if 'contents' not in i: continue
 		has_somatic = False
 		names = []
 		for filedescr in i['contents']:
@@ -40,11 +40,12 @@ def parse_json(release):
 def main():
 	icgc_token = os.environ['ICGC_TOKEN']
 
-	data_home_local = "/data/icgc"
-	release  = "26"
+	release  = "27"
+	data_home_local = "/storage/databases/icgc/v"+release
+
 	base_url = "https://dcc.icgc.org/api/v1/download?fn="
 	projects_of_interest = parse_json(release)
-	for project_name, fnms in projects_of_interest.iteritems():
+	for project_name, fnms in projects_of_interest.items():
 		print(project_name)
 		target_dir = "/".join([data_home_local] + project_name.split('-'))
 		print(target_dir)
@@ -56,7 +57,7 @@ def main():
 			# there is a 'controlled' version
 			fnm_full_path = fnm_full_path.replace('open','controlled')
 			fnm = fnm_full_path.split('/')[-1]
-			print("\t", fnm)
+			print(("\t", fnm))
 			if os.path.exists("/".join([target_dir, fnm])): continue
 			if fnm_full_path[0]=='/': fnm_full_path=fnm_full_path[1:]
 			cmd = "curl -L '{}/{}' -o {}/{} --header 'authorization: Bearer {}' ".\

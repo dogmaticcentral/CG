@@ -14,10 +14,10 @@ def gnomad_mutations (cursor, gene_symbol):
 	qry = "select * from gnomad.gnomad_freqs_chr_{} where consequences like '%|{}|%' ".format(chromosome, gene_symbol)
 	ret = search_db(cursor,qry)
 	if not ret:
-		print "nothing found for {}, chromosome {}".formate(gene_symbol, chromosome)
+		print("nothing found for {}, chromosome {}".format(gene_symbol, chromosome))
 		exit()
 	for line in ret:
-		named_fields = dict(zip(colnames,line))
+		named_fields = dict(list(zip(colnames,line)))
 		relevant_variants = []
 		for description in named_fields['consequences'].split(","):
 			if not 'RPL5' in description: continue
@@ -49,7 +49,7 @@ def transcript_location_cleanup(cursor, loc, gene_stable_id):
 	for enst_loc in loc.split(";"):
 		[e, c] = enst_loc.split(":")
 		location[e] = c
-	enst_canonical = get_stable_id_for_canonical_transcript(cursor, location.keys(), gene_stable_id)
+	enst_canonical = get_stable_id_for_canonical_transcript(cursor, list(location.keys()), gene_stable_id)
 	if not enst_canonical: return loc
 	return location[enst_canonical]
 
@@ -61,7 +61,7 @@ def aa_change_cleanup(cursor, aa_change):
 	for enst_change in aa_change.split(";"):
 		[e, c] = enst_change.split(":")
 		change[e] = c
-	enst_canonical = get_stable_id_for_canonical_transcript(cursor, change.keys())
+	enst_canonical = get_stable_id_for_canonical_transcript(cursor, list(change.keys()))
 	if not enst_canonical: return aa_change
 	return change[enst_canonical]
 
@@ -224,7 +224,7 @@ def find_chromosome(cursor, gene):
 	qry = "select chromosome from icgc.hgnc where approved_symbol = '%s'" % gene
 	ret = search_db(cursor,qry)
 	if not ret or ret ==[]:
-		print "chromosome not found for %s (?)"%gene
+		print("chromosome not found for %s (?)"%gene)
 		search_db(cursor,qry,verbose=True)
 		exit()
 	return ret[0][0]
@@ -278,8 +278,8 @@ def mutations_in_gene_old(cursor, approved_symbol):
 	qry += "where approved_symbol = '%s'" % approved_symbol
 	ensembl_gene_id_by_hgnc, ensembl_gene_id, chromosome = search_db(cursor,qry)[0]
 	if ensembl_gene_id_by_hgnc != ensembl_gene_id:
-		print "Ensembl id mismatch: (ensembl_gene_id_by_hgnc, ensembl_gene_id)"
-		print approved_symbol, ensembl_gene_id_by_hgnc, ensembl_gene_id
+		print("Ensembl id mismatch: (ensembl_gene_id_by_hgnc, ensembl_gene_id)")
+		print(approved_symbol, ensembl_gene_id_by_hgnc, ensembl_gene_id)
 		exit()
 
 	qry  = "select m.icgc_mutation_id from mutations_chrom_%s m, locations_chrom_%s l "  % (chromosome, chromosome)
@@ -357,7 +357,7 @@ def canonical_transcript_id_from_gene_stable_id(cursor, gene_stable_id):
 	qry = "show databases like 'homo_sapiens_core%'"
 	ret = search_db(cursor,qry)
 	if not ret or not 'homo' in ret[0][0]:
-		print "no database like homo_sapiens_core% available (to find canonical tr ids)"
+		print("no database like homo_sapiens_core% available (to find canonical tr ids)")
 		exit()
 	ensembl_homo_sapiens_db = ret[0][0]
 	qry  = "select t.stable_id from %s.gene g, %s.transcript t " % (ensembl_homo_sapiens_db, ensembl_homo_sapiens_db)
@@ -365,7 +365,7 @@ def canonical_transcript_id_from_gene_stable_id(cursor, gene_stable_id):
 	qry += "and g.stable_id='%s' " % gene_stable_id
 	ret = search_db(cursor,qry)
 	if not ret or len(ret) != 1:
-		print "Warning: no unique canonical id could be found for %s" % gene_stable_id
+		print("Warning: no unique canonical id could be found for %s" % gene_stable_id)
 		return None
 	return ret[0][0]
 
@@ -376,7 +376,7 @@ def get_stable_id_for_canonical_transcript(cursor, list_of_stable_transcript_ids
 	qry = "show databases like 'homo_sapiens_core%'"
 	ret = search_db(cursor,qry)
 	if not ret or not 'homo' in ret[0][0]:
-		print "no database like homo_sapiens_core% available (to resolve ENSTs)"
+		print("no database like homo_sapiens_core% available (to resolve ENSTs)")
 		exit()
 	ensembl_homo_sapiens_db = ret[0][0]
 	# list_od_stable_transcript_ids - refers to ensembl --> ENST00... identifier
@@ -389,7 +389,10 @@ def get_stable_id_for_canonical_transcript(cursor, list_of_stable_transcript_ids
 		qry += "and g.stable_id='%s' " % gene_stable_id
 	ret = search_db(cursor,qry)
 	if not ret or len(ret) != 1:
-		print "Warning: no unique canonical id could be found for %s" % ensts
+		print("Warning: no unique canonical transcript id could be found for %s" % ensts)
+		print(qry)
+		if ret: print(ret)
+		exit()
 		return None
 	return ret[0][0]
 

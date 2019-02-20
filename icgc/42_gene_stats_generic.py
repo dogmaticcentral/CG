@@ -68,7 +68,7 @@ def gnomad_info(cursor, mutation, chromosome):
 
 	ret = search_db(cursor,qry,verbose=True)
 	if len(ret)>1:
-		print("we should not be here: multiple returns for \n", qry)
+		print(("we should not be here: multiple returns for \n", qry))
 		exit()
 	if ret:
 		[start_position, assembly, reference_genome_allele, mutated_to_allele] = ret[0]
@@ -87,14 +87,14 @@ def gnomad_info(cursor, mutation, chromosome):
 		ret = search_db(cursor,qry)
 		if ret:
 			if len(ret)>1:
-				print("we should not be here: multiple returns for \n", qry)
+				print(("we should not be here: multiple returns for \n", qry))
 				exit()
 			if type(ret[0][0])==int and type(ret[0][1])==int:
 				[variant_count,total_count] = ret[0]
 				returnval = "%.1e"%(float(variant_count)/total_count)
 			else:
 				print("unexpected type for variant and total counts")
-				print(search_db(cursor, qry, verbose=True))
+				print((search_db(cursor, qry, verbose=True)))
 				exit()
 		else:
 			returnval = "0.0"
@@ -122,11 +122,11 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  h
 	specimen_seen = {}
 	donor_rows = []
 	donor_ct = 0
-	for donor, mutations in donor_mutations.items():
+	for donor, mutations in list(donor_mutations.items()):
 		global patient_count
 		patient_count += 1
 		donor_display_name = donor
-		for mutation, mtn_info in mutations.iteritems():
+		for mutation, mtn_info in mutations.items():
 
 			chromosome = mtn_info['chromosome']
 			freq_in_gen_population = gnomad_info(cursor, mutation, chromosome)
@@ -154,7 +154,7 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  h
 			p53_detail = ""
 			specimen_number_of_mutations = []
 			for specimen in mtn_info['specimens']:
-				if not specimen_seen.has_key(specimen): # we might have seen it related to another mutation
+				if specimen not in specimen_seen: # we might have seen it related to another mutation
 					specimen_seen[specimen] = True
 					table = "%s_simple_somatic" % tumor_short
 					mutations_per_specimen[specimen]  = get_number_of_path_mutations_per_specimen(cursor, table, specimen)
@@ -169,13 +169,12 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  h
 
 			###################
 			# output row for this mutation
-
 			consequence, aa_change = get_consequence(cursor, chromosome, mutation)
 			if not consequence: consequence = ""
 			aa_change = aa_change_cleanup(cursor, aa_change)
 
-			cgenotype = genotype_short( mtn_info['cgenotype'])
-			tgenotype = genotype_short( mtn_info['tgenotype'])
+			cgenotype = genotype_short(mtn_info['cgenotype'])
+			tgenotype = genotype_short(mtn_info['tgenotype'])
 
 			if hide_id: donor_display_name=str(patient_count)
 			entry = "\t".join([tumor_short, donor_display_name,  ",".join(specimen_type_short), ",".join(specimen_number_of_mutations),
@@ -204,9 +203,9 @@ def gene_mutations(cursor, table, gene):
 
 	for line in ret:
 		[donor, sample, chromosome,  cgenotype, tgenotype, mutation, specimen] = line
-		if not donor_mutations.has_key(donor):
+		if donor not in donor_mutations:
 			donor_mutations[donor] = {}
-		if not donor_mutations[donor].has_key(mutation):
+		if mutation not in donor_mutations[donor]:
 			donor_mutations[donor][mutation] = {
 				'chromosome' : chromosome,
 				'cgenotype' : cgenotype if cgenotype else "",
@@ -216,19 +215,19 @@ def gene_mutations(cursor, table, gene):
 			}
 		else:
 			if donor_mutations[donor][mutation]['chromosome'] != chromosome:
-				print("different chromosome for mutation %s (?!)" % mutation)
+				print(("different chromosome for mutation %s (?!)" % mutation))
 				exit(1)
 			if donor_mutations[donor][mutation]['cgenotype'] !="" and cgenotype !="" and \
 					donor_mutations[donor][mutation]['cgenotype'] != cgenotype:
-				print("different cgenotype for mutation %s " % mutation)
-				print("in ", donor_mutations[donor][mutation]['specimens'], "and", specimen)
-				print(donor_mutations[donor][mutation]['cgenotype'], "vs", cgenotype)
+				print(("different cgenotype for mutation %s " % mutation))
+				print(("in ", donor_mutations[donor][mutation]['specimens'], "and", specimen))
+				print((donor_mutations[donor][mutation]['cgenotype'], "vs", cgenotype))
 				exit(1)
 			if donor_mutations[donor][mutation]['tgenotype'] !="" and tgenotype !="" and \
 					donor_mutations[donor][mutation]['tgenotype'] != tgenotype:
-				print("different tgenotype for mutation %s " % mutation)
-				print("in ", donor_mutations[donor][mutation]['specimens'], "and", specimen)
-				print(donor_mutations[donor][mutation]['tgenotype'], "vs", tgenotype)
+				print(("different tgenotype for mutation %s " % mutation))
+				print(("in ", donor_mutations[donor][mutation]['specimens'], "and", specimen))
+				print((donor_mutations[donor][mutation]['tgenotype'], "vs", tgenotype))
 				exit(1)
 
 			donor_mutations[donor][mutation]['specimens'].append(specimen)
@@ -245,7 +244,7 @@ def gene_mutations(cursor, table, gene):
 def main():
 
 	if len(sys.argv) < 2:
-		print("usage: %s <gene symbol> " % sys.argv[0])
+		print(("usage: %s <gene symbol> " % sys.argv[0]))
 		exit()
 	gene = sys.argv[1].upper()
 
