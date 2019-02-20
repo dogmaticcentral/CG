@@ -1,5 +1,8 @@
 #! /usr/bin/python3
 
+# from HUGO gene nomenclature committee
+# https://www.genenames.org/download/custom/
+
 # header names:
 # head -n1 /data/hgnc/hgnc_name_res.tsv \
 # | sed 's/\t/\n/g' | awk 'ct +=1 {printf "%d ", ct; print}'
@@ -7,10 +10,11 @@
 from icgc_utils.mysql import *
 
 header_names = ["hgnc_id", "approved_symbol", "approved_name",
-                "locus_group", "synonyms", "chromosome",
-                "ensembl_gene_id_by_hgnc", "refseq_ids", "uniprot_ids",
-                "ensembl_gene_id"]
+				"locus_group", "synonyms", "chromosome",
+				"ensembl_gene_id_by_hgnc", "refseq_ids", "uniprot_ids",
+				"ensembl_gene_id"]
 
+#########################################
 def make_hgnc_table(cursor, db_name, hgnc_table):
 
 	if check_table_exists (cursor, db_name, hgnc_table): return
@@ -66,7 +70,7 @@ def main():
 			outf.write("\t".join(outfields)+"\n")
 	outf.close()
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql("/home/ivana/.tcga_conf")
 	cursor = db.cursor()
 
 	db_name = "icgc"

@@ -39,3 +39,19 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
  One you have the access token place it in the environmental variable called ICGC_TOKEN, to make
  the download scripts work.
+ 
+ ### 01_hgnc_name_resolution_table and 02_ensembl_id_table
+ 
+ Here we make and fill some tables we will use later for name resolution. Make sure you have 
+ the mysql conf file  and set its path in these two scripts, or arrange some other way to
+ access the local database. The last I checked, python's MySQLdb package did not work with
+ the encripted cnf files, so the only alternative is using 
+ [client field in generic mysql option file](https://dev.mysql.com/doc/refman/8.0/en/option-files.html),
+ like this:
+ 
+`[client]`   
+`user = blah`  
+`host = localhost`  
+`password = "somepasswd"`
+
+
