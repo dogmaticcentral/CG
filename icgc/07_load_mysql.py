@@ -7,7 +7,7 @@ from icgc_utils.mysql   import  *
 #########################################
 #########################################
 def main():
-	print "disabled"
+	print("disabled")
 	return
 
 	homedir = "/data/icgc"

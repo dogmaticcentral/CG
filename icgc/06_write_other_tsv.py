@@ -34,7 +34,7 @@ def appendopen(original_tsv_file, filetype):
 		last_id = int(subprocess.Popen(["bash", "-c", "tail -n1 %s"%outname], stdin=PIPE, stdout=PIPE).communicate()[0].split("\t")[0])
 	else:
 		last_id = 0
-	print "writing to", outname, "prev id:", last_id
+	print("writing to", outname, "prev id:", last_id)
 
 	return open(outname,'a'), last_id
 
@@ -51,7 +51,7 @@ def main():
 
 		outfiles = []
 		for tf in tsv_files:
-			print tf
+			print(tf)
 			infile  = open(tf,'r')
 			outfile, last_id = appendopen(tf,filetype)
 			if not outfile in outfiles: outfiles.append(outfile)
@@ -62,7 +62,7 @@ def main():
 					headers = line.rstrip('\n').split('\t')
 				else:
 					fields = line.rstrip('\n').split('\t')
-					field_named = dict(zip(headers, fields))
+					field_named = dict(list(zip(headers, fields)))
 					id += 1
 					new_fields = [str(id)]
 					for name in names:

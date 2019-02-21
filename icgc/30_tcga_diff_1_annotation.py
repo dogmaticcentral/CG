@@ -238,7 +238,7 @@ def parse_annovar_fields(cursor, avfile, annovar_named_field):
 				consequences.add('intronic')
 				for gene_stable_id, annot in gene_relative.iteritems():
 					if annot != 'intronic': continue
-					canonical_transcript_id = canonical_transcript_id_from_gene_stable_id(cursor, gene_stable_id)
+					canonical_transcript_id = gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id)
 					tr_relative.append("{}:{}".format(canonical_transcript_id, 'intronic'))
 			# transcript relative contains a bit more info than I need - perhaps if I was doing it
 			# again I would stick to annovar annotation, but not now

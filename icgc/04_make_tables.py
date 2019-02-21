@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import MySQLdb
 from icgc_utils.mysql   import  *
@@ -57,8 +57,8 @@ def make_mutations_table(cursor, db_name, mutations_table):
 	qry += ") ENGINE=MyISAM"
 
 	rows = search_db(cursor, qry)
-	print qry
-	print rows
+	print(qry)
+	print(rows)
 
 #########################################
 # icgc_donor_id,submitted_donor_id,donor_sex,donor_diagnosis_icd10
@@ -82,8 +82,8 @@ def make_donors_table(cursor, db_name, donor_table):
 	qry += ") ENGINE=MyISAM"
 
 	rows = search_db(cursor, qry)
-	print qry
-	print rows
+	print(qry)
+	print(rows)
 
 
 #########################################
@@ -107,14 +107,14 @@ def make_specimen_table(cursor, db_name, specimen_table):
 	qry += ") ENGINE=MyISAM"
 
 	rows = search_db(cursor, qry)
-	print qry
-	print rows
+	print(qry)
+	print(rows)
 
 
 #########################################
 #########################################
 def main():
-	print "disabled"
+	print("disabled")
 	return
 
 	homedir = "/data/icgc"

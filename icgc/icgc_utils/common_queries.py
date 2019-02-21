@@ -49,7 +49,7 @@ def transcript_location_cleanup(cursor, loc, gene_stable_id):
 	for enst_loc in loc.split(";"):
 		[e, c] = enst_loc.split(":")
 		location[e] = c
-	enst_canonical = get_stable_id_for_canonical_transcript(cursor, list(location.keys()), gene_stable_id)
+	enst_canonical = list_of_transcript_ids_2_canonical_transcript_id(cursor, list(location.keys()), gene_stable_id)
 	if not enst_canonical: return loc
 	return location[enst_canonical]
 
@@ -61,10 +61,9 @@ def aa_change_cleanup(cursor, aa_change):
 	for enst_change in aa_change.split(";"):
 		[e, c] = enst_change.split(":")
 		change[e] = c
-	enst_canonical = get_stable_id_for_canonical_transcript(cursor, list(change.keys()))
-	if not enst_canonical: return aa_change
+	enst_canonical = list_of_transcript_ids_2_canonical_transcript_id(cursor, list(change.keys()))
+	if not enst_canonical or not enst_canonical in change: return aa_change
 	return change[enst_canonical]
-
 
 #########################################
 def find_53_status(cursor, tumor_short, specimen):
@@ -352,17 +351,8 @@ def get_approved_symbol(cursor, ensembl_gene_id):
 	return symbol
 
 #########################################
-def canonical_transcript_id_from_gene_stable_id(cursor, gene_stable_id):
-	# do I have ensembl database locally?
-	qry = "show databases like 'homo_sapiens_core%'"
-	ret = search_db(cursor,qry)
-	if not ret or not 'homo' in ret[0][0]:
-		print("no database like homo_sapiens_core% available (to find canonical tr ids)")
-		exit()
-	ensembl_homo_sapiens_db = ret[0][0]
-	qry  = "select t.stable_id from %s.gene g, %s.transcript t " % (ensembl_homo_sapiens_db, ensembl_homo_sapiens_db)
-	qry += "where g.canonical_transcript_id=t.transcript_id "
-	qry += "and g.stable_id='%s' " % gene_stable_id
+def gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id):
+	qry  = "select  distinct(canonical_transcript) from ensembl_ids where  gene ='%s' " % gene_stable_id
 	ret = search_db(cursor,qry)
 	if not ret or len(ret) != 1:
 		print("Warning: no unique canonical id could be found for %s" % gene_stable_id)
@@ -370,29 +360,14 @@ def canonical_transcript_id_from_gene_stable_id(cursor, gene_stable_id):
 	return ret[0][0]
 
 
-def get_stable_id_for_canonical_transcript(cursor, list_of_stable_transcript_ids, gene_stable_id=None):
-
-	# do I have ensembl database locally?
-	qry = "show databases like 'homo_sapiens_core%'"
-	ret = search_db(cursor,qry)
-	if not ret or not 'homo' in ret[0][0]:
-		print("no database like homo_sapiens_core% available (to resolve ENSTs)")
-		exit()
-	ensembl_homo_sapiens_db = ret[0][0]
+def list_of_transcript_ids_2_canonical_transcript_id(cursor, list_of_stable_transcript_ids):
 	# list_od_stable_transcript_ids - refers to ensembl --> ENST00... identifier
 	ensts = ",".join(["'%s'"%enst for enst in list_of_stable_transcript_ids])
-	qry  = "select t.stable_id from %s.gene g, %s.transcript t " % (ensembl_homo_sapiens_db, ensembl_homo_sapiens_db)
-	qry += "where g.gene_id = t.gene_id and  g.canonical_transcript_id=t.transcript_id "
-	qry += "and t.stable_id in  (%s) " % ensts
-	if gene_stable_id: # if we know which gene we are looking for, use that knowledge here
-		# why all the fuss if I know the gene stable id?
-		qry += "and g.stable_id='%s' " % gene_stable_id
+	qry  = "select distinct(canonical_transcript) from ensembl_ids  where transcript in  (%s) " % ensts
 	ret = search_db(cursor,qry)
 	if not ret or len(ret) != 1:
 		print("Warning: no unique canonical transcript id could be found for %s" % ensts)
-		print(qry)
-		if ret: print(ret)
-		exit()
+		print("Qry was: ", qry)
 		return None
 	return ret[0][0]
 

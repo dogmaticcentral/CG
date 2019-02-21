@@ -1,8 +1,8 @@
 #! /usr/bin/python3
 
 
-# to further clasify tumor subtypes, the following files might be useful:
-# specimen*tsv contains tumor histologica type code, the ontology can be found here: http://codes.iarc.fr/codegroup/2
+# to further classify tumor subtypes, the following files might be useful:
+# specimen*tsv contains tumor histological type code, the ontology can be found here: http://codes.iarc.fr/codegroup/2
 # donor*tsv contains donor diagnosis icd10, the ontology can be found here: http://apps.who.int/classifications/icd10/browse/2016/en
 
 import json
@@ -25,7 +25,7 @@ def parse_json(release):
 	of_interest = {}
 	for i in projects['contents']:
 		project_name = i['name'].split('/')[-1]
-		if not i.has_key('contents'): continue
+		if 'contents' not in i: continue
 		has_somatic = False
 		names = []
 		for filedescr in i['contents']:
@@ -40,11 +40,12 @@ def parse_json(release):
 def main():
 	icgc_token = os.environ['ICGC_TOKEN']
 
-	data_home_local = "/data/icgc"
-	release   = "26"
+	release = "27"
+	data_home_local = "/storage/databases/icgc/v"+release
+
 	base_url  = "https://dcc.icgc.org/api/v1/download?fn="
 	projects_of_interest = parse_json(release)
-	for project_name, fnms in projects_of_interest.iteritems():
+	for project_name, fnms in projects_of_interest.items():
 
 		print(project_name)
 
@@ -54,7 +55,7 @@ def main():
 		for fnm_full_path in fnms:
 			if not 'donor' in fnm_full_path and not 'specimen' in fnm_full_path: continue
 			fnm = fnm_full_path.split('/')[-1]
-			print("\t", fnm)
+			print(("\t", fnm))
 			if os.path.exists("/".join([target_dir, fnm])): continue
 			if fnm_full_path[0]=='/': fnm_full_path=fnm_full_path[1:]
 			cmd = "curl -L '{}/{}' -o {}/{} --header 'authorization: Bearer {}' ".\

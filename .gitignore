@@ -37,6 +37,7 @@ wget-log*
 *.fa
 *.afa
 *.table
+*.json
 
 pdbchains
 sys_tfm
