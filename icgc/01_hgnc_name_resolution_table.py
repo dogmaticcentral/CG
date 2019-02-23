@@ -54,7 +54,7 @@ def strip_arm_annotation(chrom_address):
 #########################################
 def main():
 
-	hgncfile = "/data/hgnc/hgnc_name_res.tsv"
+	hgncfile = "/storage/databases/hgnc/hgnc_name_res.tsv"
 
 	ct = 0
 	outf = open ("hgnctmp.tsv", "w")

@@ -70,3 +70,6 @@ The canonical transcript id is not readily available from Ensembl Mart, thus for
 here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz2 in the
 [hacks](icgc/hacks) directory. Put it someplace where
 [02_ensembl_id.py](icgc/02_ensembl_id.py) can find it.
+
+### 03_find_max_field_length and 04_make_tables
+Make sure that the fields in the mysql tables are big enough for each entry and create mysql tables.

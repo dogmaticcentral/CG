@@ -2,6 +2,7 @@
 
 import MySQLdb
 from icgc_utils.mysql   import  *
+from config import Config
 
 # icgc_donor_id	 icgc_specimen_id	icgc_sample_id  submitted_sample_id
 # chromosome	 chromosome_start	chromosome_end	chromosome_strand	assembly_version
@@ -114,26 +115,27 @@ def make_specimen_table(cursor, db_name, specimen_table):
 #########################################
 #########################################
 def main():
-	print("disabled")
-	return
 
-	homedir = "/data/icgc"
+	#print("disabled")
+	#return
+
+	homedir = Config.data_home_local
 	cancer_types = []
-	for name in os.listdir(homedir):
+	for name in os.listdir(homedir): # this is not walking recursicely - it's just this dir
 		if os.path.isdir("/".join([homedir,name])): cancer_types.append(name)
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	db_name =  "icgc"
 	for ct in cancer_types:
+		# note 'temp' here - we'll reroganize when we get to TCGA
 		mutations_table = ct + "_simple_somatic_temp"
 		make_mutations_table(cursor, db_name, mutations_table)
-		#donors_table = ct + "_donor"
-		#make_donors_table(cursor, db_name, donors_table)
-		#specimen_table = ct + "_specimen"
-		#make_specimen_table(cursor, db_name, specimen_table)
-
+		donors_table = ct + "_donor"
+		make_donors_table(cursor, db_name, donors_table)
+		specimen_table = ct + "_specimen"
+		make_specimen_table(cursor, db_name, specimen_table)
 
 	cursor.close()
 	db.close()

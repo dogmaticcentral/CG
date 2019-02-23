@@ -1,15 +1,21 @@
 #! /usr/bin/python3
 
+# Note: this is really slow, but assumed to be run only once - during the installation
 
-# header names:
-#head -n1 /data/icgc/OV/AU/simple_somatic_mutation.controlled.OV-AU.tsv \
-# | sed 's/\t/\n/g' | awk 'ct +=1 {print ct, " ", $1}'
+# for the  ICGC v27 the search for the longest entry  comes up with the following
 
-#the longest genotype I see in this set (aPr 2018) is 401
+# alleles 200
+# genotypes 401
+# gene_names 15
+# aa_mutation 59
+# cds_mutation 12
+
+
+#the longest genotype I see in this set is 401
 #I assume that the allele legnth cutoff is 200
 # I'll make the allele columns varchar210 and genotype 430
 
-import os, subprocess
+import os
 from config import Config
 
 #########################################
@@ -28,11 +34,11 @@ def main():
 	tsv_files = get_simple_somatic_tsv_files(Config.data_home_local)
 
 	field_groups = {
-		'alleles':     ['reference_genome_allele', 'control_genotype', 'tumour_genotype',
-						'control_genotype', 'mutated_from_allele', 'mutated_to_allele'],
-		'gene_names':  ['gene_affected', 'transcript_affected'],
-		'aa_mutation': ['aa_mutation'],
-		'cds_mutation':['cds_mutation']
+		'alleles':      ['reference_genome_allele', 'mutated_from_allele', 'mutated_to_allele'],
+		'genotypes':    ['control_genotype', 'tumour_genotype', 'control_genotype'],
+		'gene_names':   ['gene_affected', 'transcript_affected'],
+		'aa_mutation':  ['aa_mutation'],
+		'cds_mutation': ['cds_mutation']
 	}
 
 	max_allele_length = {}
