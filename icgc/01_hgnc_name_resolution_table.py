@@ -6,7 +6,7 @@
 # header names:
 # head -n1 /data/hgnc/hgnc_name_res.tsv \
 # | sed 's/\t/\n/g' | awk 'ct +=1 {printf "%d ", ct; print}'
-
+from config import Config
 from icgc_utils.mysql import *
 
 header_names = ["hgnc_id", "approved_symbol", "approved_name",
@@ -70,7 +70,7 @@ def main():
 			outf.write("\t".join(outfields)+"\n")
 	outf.close()
 
-	db     = connect_to_mysql("/home/ivana/.tcga_conf")
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	db_name = "icgc"

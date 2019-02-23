@@ -30,6 +30,10 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
  ## ICGC
  
+ ### config file
+ You can set some recurring constants - such as data directories or mysql conf file(s) - 
+ in the [config.py](icgc/config.py) file.
+ 
  ### 00_data_download
  
  Just like the tcga branch, this branch of the pipeline starts by downloading the data from
@@ -44,8 +48,8 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  See [06_group_cancers.py](icgc/00_data_download/06_group_cancers.py). This is because different depositors may
  use different shorthands for the same cancer (e.g. LICA == 'Liver Cancer', 
  LINC == 'Liver Cancer - NCC', LIRI == 'Liver Cancer - RIKEN'), though in some cases it 
- might not be clear which cancer the depositors refer to. Feel free to change the grouping
- defined in [06_group_cancers.py](icgc/00_data_download/06_group_cancers.py), or skip it altogether.
+ might not be clear which cancer the depositors refer to. Feel free to change in you version of the code
+ the grouping defined in [06_group_cancers.py](icgc/00_data_download/06_group_cancers.py), or to skip it altogether.
  
  ### 01_hgnc_name_resolution_table and 02_ensembl_id_table
  
@@ -62,4 +66,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
 `host = localhost`  
 `password = "somepasswd"`
 
-
+The canonical transcript id is not readily available from Ensembl Mart, thus for our purposes
+here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz2 in the
+[hacks](icgc/hacks) directory. Put it someplace where
+[02_ensembl_id.py](icgc/02_ensembl_id.py) can find it.

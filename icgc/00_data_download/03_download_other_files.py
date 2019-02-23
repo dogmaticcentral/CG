@@ -7,6 +7,9 @@
 
 import json
 import os, subprocess
+
+from config import Config
+
 DEVNULL = open(os.devnull, 'wb')
 
 #########################################
@@ -39,17 +42,14 @@ def parse_json(release):
 #########################################
 def main():
 	icgc_token = os.environ['ICGC_TOKEN']
-
-	release = "27"
-	data_home_local = "/storage/databases/icgc/v"+release
-
 	base_url  = "https://dcc.icgc.org/api/v1/download?fn="
-	projects_of_interest = parse_json(release)
+
+	projects_of_interest = parse_json(Config.release)
 	for project_name, fnms in projects_of_interest.items():
 
 		print(project_name)
 
-		target_dir = "/".join([data_home_local] + project_name.split('-'))
+		target_dir = "/".join([Config.data_home_local] + project_name.split('-'))
 		print(target_dir)
 		if not os.path.exists(target_dir): os.makedirs(target_dir)
 		for fnm_full_path in fnms:

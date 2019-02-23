@@ -3,7 +3,7 @@
 # from ensembl biomart: gene stable ID, transcript stable id
 
 from icgc_utils.mysql import *
-
+from config import Config
 
 #########################################
 # make one-on-one ENST to ENSG translation table
@@ -30,7 +30,7 @@ def main():
 
 	ens_id_file = "/storage/databases/ensembl-94/ensembl_gene2trans_stable.tsv"
 
-	db     = connect_to_mysql("/home/ivana/.tcga_conf")
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	db_name = "icgc"
 
