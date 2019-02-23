@@ -41,11 +41,11 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  the download scripts work.
  
  Note in particular that we are grouping some cancers under the same head-group. 
- See [06_group_cancers.py](00_data_download/06_group_cancers.py). This is because different depositors may
+ See [06_group_cancers.py](icgc/00_data_download/06_group_cancers.py). This is because different depositors may
  use different shorthands for the same cancer (e.g. LICA == 'Liver Cancer', 
  LINC == 'Liver Cancer - NCC', LIRI == 'Liver Cancer - RIKEN'), though in some cases it 
  might not be clear which cancer the depositors refer to. Feel free to change the grouping
- defined in [06_group_cancers.py](00_data_download/06_group_cancers.py), or skip it altogether.
+ defined in [06_group_cancers.py](icgc/00_data_download/06_group_cancers.py), or skip it altogether.
  
  ### 01_hgnc_name_resolution_table and 02_ensembl_id_table
  
