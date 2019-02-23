@@ -40,9 +40,17 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  One you have the access token place it in the environmental variable called ICGC_TOKEN, to make
  the download scripts work.
  
+ Note in particular that we are grouping some cancers under the same head-group. 
+ See [06_group_cancers.py](06_group_cancers.py). This is because different depositors may
+ use different shorthands for the same cancer (e.g. LICA == 'Liver Cancer', 
+ LINC == 'Liver Cancer - NCC', LIRI == 'Liver Cancer - RIKEN'), though in some cases it 
+ might not be clear which cancer the depositors refer to. Feel free to change the grouping
+ defined in [06_group_cancers.py](06_group_cancers.py), or skip it altogether.
+ 
  ### 01_hgnc_name_resolution_table and 02_ensembl_id_table
  
- Here we make and fill some tables we will use later for name resolution. Make sure you have 
+ Here we make and fill some tables we will use later for name resolution 
+ (translating between gene and protein names used in different contexts). Make sure you have 
  the mysql conf file  and set its path in these two scripts, or arrange some other way to
  access the local database. The last I checked, python's MySQLdb package did not work with
  the encripted cnf files, so the only alternative is using 
