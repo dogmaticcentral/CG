@@ -1,16 +1,8 @@
 #!/usr/bin/python3
 
-import MySQLdb
 from icgc_utils.mysql   import  *
 from config import Config
 
-# icgc_donor_id	 icgc_specimen_id	icgc_sample_id  submitted_sample_id
-# chromosome	 chromosome_start	chromosome_end	chromosome_strand	assembly_version
-# mutation_type	 reference_genome_allele
-# control_genotype tumour_genotype
-# mutated_from_allele	 mutated_to_allele
-# consequence_type	aa_mutation	 cds_mutation
-# gene_affected	transcript_affected
 #########################################
 def make_mutations_table(cursor, db_name, mutations_table):
 
@@ -116,8 +108,8 @@ def make_specimen_table(cursor, db_name, specimen_table):
 #########################################
 def main():
 
-	#print("disabled")
-	#return
+	print("disabled bcs it drops and re-creates tables - comment out to run")
+	return
 
 	homedir = Config.data_home_local
 	cancer_types = []

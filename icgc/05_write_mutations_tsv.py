@@ -5,18 +5,21 @@
 import os, subprocess
 from subprocess import PIPE
 
-# import the prorudeced fiels using mysqlimport
+# import the produced fields using mysqlimport
 # mysqlimport db_name table_name.ext
-# by convention, mysql takes that the input file name is the table_name.ext
+# by convention, mysql takes that the input file name is the table_name
 # mysqlimport will strip the extension by itself
 # the default separator is \t, so the .ext will typically be something like tsv or csv
 # => provided there are no unrelated tsv's in the workdir, something like
 # for i in `ls *.tsv`; do mysqlimport -u name
-# should do
-# fi you get the --secire=file-priv crap try
+# should do the trick
+# if you get the --secure=file-priv crap try https://stackoverflow.com/questions/32737478/how-should-i-tackle-secure-file-priv-in-mysql
 
 
 #########################################
+from config import Config
+
+
 def get_simple_somatic_tsv_files(data_home_local):
 	tsv_files = []
 	for root, dirs, files in os.walk(data_home_local):
@@ -28,8 +31,8 @@ def get_simple_somatic_tsv_files(data_home_local):
 #########################################
 def appendopen(original_tsv_file):
 	if not os.path.exists("tsvs"): os.mkdir("tsvs")
-	fields = original_tsv_file.split("/")
-	cancer_type  = fields[3]
+	# the first thing after the storage path should be the cancer name
+	cancer_type = original_tsv_file[len(Config.data_home_local)+1:].split("/")[0]
 	outname = "tsvs/"+cancer_type+"_simple_somatic_temp.tsv"
 	if os.path.exists(outname):
 		last_id = int(subprocess.Popen(["bash", "-c", "tail -n1 %s"%outname], stdin=PIPE, stdout=PIPE).communicate()[0].split("\t")[0])
@@ -41,12 +44,23 @@ def appendopen(original_tsv_file):
 
 #########################################
 def main():
-	data_home_local = "/data/icgc"
-	tsv_files = get_simple_somatic_tsv_files(data_home_local)
-	names = "icgc_mutation_id,icgc_donor_id,icgc_specimen_id,icgc_sample_id,submitted_sample_id,chromosome,chromosome_start," \
-	"chromosome_end,chromosome_strand,assembly_version,mutation_type,reference_genome_allele,control_genotype,tumour_genotype,"\
-	"mutated_from_allele,mutated_to_allele,consequence_type,aa_mutation,cds_mutation," \
-	"gene_affected,transcript_affected,total_read_count,mutant_allele_read_count".split(",")
+
+	tsv_files = get_simple_somatic_tsv_files(Config.data_home_local)
+
+	# get this by
+	# head -n1 simple_somatic_mutation.controlled.ALL-US.tsv | sed 's/\t/,/g'
+	# (for example)
+	names = "icgc_mutation_id,icgc_donor_id,project_code,icgc_specimen_id," \
+			"icgc_sample_id,matched_icgc_sample_id,submitted_sample_id," \
+			"submitted_matched_sample_id,chromosome,chromosome_start,chromosome_end," \
+			"chromosome_strand,assembly_version,mutation_type,reference_genome_allele,control_genotype," \
+			"tumour_genotype,expressed_allele,mutated_from_allele,mutated_to_allele,quality_score,probability," \
+			"total_read_count,mutant_allele_read_count,verification_status,verification_platform," \
+			"biological_validation_status,biological_validation_platform,consequence_type,aa_mutation," \
+			"cds_mutation,gene_affected,transcript_affected,gene_build_version,platform,experimental_protocol," \
+			"sequencing_strategy,base_calling_algorithm,alignment_algorithm,variation_calling_algorithm," \
+			"other_analysis_algorithm,seq_coverage,raw_data_repository," \
+			"raw_data_accession,initial_data_release_date".split(",")
 
 	outfiles = []
 
