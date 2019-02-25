@@ -1,18 +1,20 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import MySQLdb
+
+from config import Config
 from icgc_utils.mysql   import  *
 
 #########################################
 #########################################
 def main():
 
-	homedir = "/data/icgc"
+	homedir = Config.data_home_local
 	cancer_types = []
 	for name in os.listdir(homedir):
 		if os.path.isdir("/".join([homedir,name])): cancer_types.append(name)
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	switch_to_db(cursor,"icgc")
@@ -25,7 +27,7 @@ def main():
 		cons_vocab = cons_vocab.union(csq)
 
 	for kwd in cons_vocab:
-		print kwd
+		print(kwd)
 
 	cursor.close()
 	db.close()

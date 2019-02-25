@@ -88,9 +88,8 @@ def make_specimen_table(cursor, db_name, specimen_table):
 	qry = "drop table " + specimen_table
 	search_db(cursor, qry, verbose=True)
 
-
 	qry = ""
-	qry += "  CREATE TABLE  %s (" % specimen_table
+	qry += "CREATE TABLE  %s (" % specimen_table
 	qry += "     id INT NOT NULL, "
 	qry += "  	 icgc_specimen_id VARCHAR (20) NOT NULL, "
 	qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "

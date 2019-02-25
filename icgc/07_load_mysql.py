@@ -6,8 +6,8 @@ from icgc_utils.mysql   import  *
 #########################################
 #########################################
 def main():
-	#print("disabled")
-	#return
+	print("disabled")
+	return
 
 	cancer_types = []
 	for name in os.listdir(Config.data_home_local):
@@ -18,7 +18,7 @@ def main():
 
 	db_name = "icgc"
 	switch_to_db(cursor, db_name)
-	for ct in cancer_types:
+	for ct in cancer_types: # note we are filling the temp table
 		for filetype in ["simple_somatic_temp", "donor", "specimen"]:
 			table = "{}_{}".format(ct, filetype)
 			qry = "load data local infile 'tsvs/%s.tsv' into table %s" % (table,table)

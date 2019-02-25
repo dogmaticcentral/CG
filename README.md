@@ -80,3 +80,23 @@ it turns out to be faster to create tsvs and
 then load them from mysql shell (as in [07_load_mysql.py](icgc/07_load_mysql.py); alternative: use mysqlimport manually) 
  to read them in wholesale. These scripts take care of that part , plus some index creating on the newly loaded tables.
 
+### 10_check_mut_etc through 16_copy_reliabilty_etc
+This i where we depart from ICGC original database architecture - which is pretty much
+nonexistent and consists of massive duplication of annotation for each occurrence of a mutation
+and for each of its interpretations within various transcripts.
+
+So instead we reorganize the database into something like this 
+![db schema - schematic](illustrations/schema_schematic.png)
+where *_specimen, \*\_donor, and \*\_simple_somatic tables exist for each cancer type, and mutations\_\* 
+and locations\_\* tables exist for each chromosome.
+
+
+<!-- to produce the schema visualization
+java -jar ~/Downloads/schemaSpy_5.0.0.jar  -t mysql -host localhost  -db icgc  \
+-u usrnm -p passwd -o icgc_schema  
+-dp ~/Downloads/mysql-connector-java-5.1.6/mysql-connector-java-5.1.6-bin.jar 
+where  icgc_schema is output dir
+schemaSPy: http://schemaspy.sourceforge.net/
+mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
+-->
+

@@ -1,6 +1,6 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
-from icgc_utils.common_queries   import  *
+from .icgc_utils.common_queries   import  *
 
 def main():
 
@@ -19,7 +19,7 @@ def main():
 
 		rpl5_muts_in_kirc = list(set(kirc_muts)&set(rpl5_muts))
 		for mut_id in rpl5_muts_in_kirc:
-			print old_id, mut_id, new_ids[rpl5_muts_in_kirc.index(mut_id)]
+			print(old_id, mut_id, new_ids[rpl5_muts_in_kirc.index(mut_id)])
 		'''
 			this should return
 			BP-4331-01 MU617096 DO19982

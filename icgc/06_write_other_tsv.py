@@ -1,7 +1,10 @@
 #! /usr/bin/python3
 
 # just spit out the select columns ans slurp them into database
-
+# note: in v 27 in PCSI nad in COCA CN in handful of places there  are inconsistencies
+# icd10 diagnosis annotation (use of quotes, some kind of extended annotation)
+# affected ids: COCA-CN-LPG,  COCA-CN-NYG, COCA-CN-WQ, COCA-CN-CJ, COCA-CN-JKQ, PCSI_0506
+#
 import os, subprocess
 from subprocess import PIPE
 
@@ -34,7 +37,6 @@ def appendopen(original_tsv_file, filetype):
 
 #########################################
 def main():
-	data_home_local = "/data/icgc"
 
 	names_string = {"donor":"icgc_donor_id,submitted_donor_id,donor_sex,donor_diagnosis_icd10",
 	                "specimen":"icgc_specimen_id,icgc_donor_id,specimen_type,tumour_histological_type"}

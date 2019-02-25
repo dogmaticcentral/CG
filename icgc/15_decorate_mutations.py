@@ -1,12 +1,12 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
 # add info about the reliability to mutations_chrom_* tables
 # for faster search
 
 import time
 
-from icgc_utils.common_queries  import  *
-from icgc_utils.processes   import  *
+from .icgc_utils.common_queries  import  *
+from .icgc_utils.processes   import  *
 from random import shuffle
 
 #########################################
@@ -42,11 +42,11 @@ def decorate_mutations(tables, other_args):
 	for table in tables:
 
 		time0 = time.time()
-		print "===================="
-		print "using annotations from  ", table,  "to add reliability info to  mutations; pid:", os.getpid()
+		print("====================")
+		print("using annotations from  ", table,  "to add reliability info to  mutations; pid:", os.getpid())
 		update_reliability_column_in_mutation_tables(cursor, table)
 		time1 = time.time()
-		print ("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid()
+		print(("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid())
 
 
 	cursor.close()
@@ -64,8 +64,8 @@ def main():
 	switch_to_db(cursor,"icgc")
 	for chromosome in chromosomes:
 		table = "mutations_chrom_%s"%chromosome
-		print "===================="
-		print "checking/adding reliability column to", table
+		print("====================")
+		print("checking/adding reliability column to", table)
 		add_columns(cursor, table)
 	#########################
 	# which temp somatic tables do we have

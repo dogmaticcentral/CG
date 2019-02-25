@@ -1,9 +1,9 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
-# careful: mutation ids are unieq for position and mutation type, not for donor!
-
+# careful: mutation ids are unique for position and mutation type, not for donor!
+from config import Config
 from icgc_utils.mysql   import  *
-import operator
+
 
 #########################################
 expected_chroms = set([str(i) for i in range(1,23)] + ["X", "Y", "MT"])
@@ -13,8 +13,8 @@ def sanity_checks(cursor, tables):
 		qry = "select distinct assembly from %s "%table
 		assemblies = [field[0] for field in  search_db(cursor,qry)]
 		if len(assemblies) != 1  or assemblies[0] != 'GRCh37':
-			print "unexpected assembly in ", table
-			print "\tdistinct assemblies:", assemblies
+			print("unexpected assembly in ", table)
+			print("\tdistinct assemblies:", assemblies)
 			exit()
 	# do I have only chromosomes or some undefined regions too?
 	# do I have any non-standard chromosome annotation
@@ -23,8 +23,8 @@ def sanity_checks(cursor, tables):
 		chromosomes = set([field[0] for field in  search_db(cursor,qry)])
 		unexpected_chroms = chromosomes - expected_chroms
 		if len(unexpected_chroms)>0:
-			print "unexpected chromosomes in ", table
-			print "\t", unexpected_chroms
+			print("unexpected chromosomes in ", table)
+			print("\t", unexpected_chroms)
 			exit()
 
 #########################################
@@ -58,8 +58,8 @@ def make_new_somatic_tables(cursor, tables):
 		qry += ") ENGINE=MyISAM"
 
 		rows = search_db(cursor, qry)
-		print qry
-		print rows
+		print(qry)
+		print(rows)
 
 #################
 def make_mutation_tables(cursor):
@@ -92,8 +92,8 @@ def make_mutation_tables(cursor):
 		qry += ") ENGINE=MyISAM"
 
 		rows = search_db(cursor, qry)
-		print qry
-		print rows
+		print(qry)
+		print(rows)
 
 	return
 
@@ -115,8 +115,8 @@ def make_location_tables(cursor):
 		qry += ") ENGINE=MyISAM"
 
 		rows = search_db(cursor, qry)
-		print qry
-		print rows
+		print(qry)
+		print(rows)
 	return
 
 
@@ -124,10 +124,10 @@ def make_location_tables(cursor):
 #########################################
 def main():
 
-	print "disabled"
+	print("disabled")
 	exit()
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	#########################
@@ -138,7 +138,7 @@ def main():
 
 	switch_to_db(cursor,"icgc")
 	# enable if run for the first time
-	# sanity_checks(cursor, tables)
+	# esanity_checks(cursor, tables)
 
 	# make new somatic mutation tables, per cancer
 	make_new_somatic_tables(cursor, tables)

@@ -1,18 +1,18 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
 
 import time
 
+from config import Config
 from icgc_utils.common_queries  import  *
 from icgc_utils.processes   import  *
 
 variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id',
                    'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
 
-# we'll take care of 'aa_mutation' and 'consequence_type will be handled separately
-mutation_columns = ['icgc_mutation_id', 'start_position', 'end_position', 'mutation_type',
-					'mutated_from_allele', 'mutated_to_allele', 'reference_genome_allele']
-
+#  'aa_mutation',  'consequence_type', and 'pathogenic_estimate'  will be filled separately
+mutation_columns = ['icgc_mutation_id', 'start_position', 'end_position', 'assembly',
+					'mutation_type', 'mutated_from_allele', 'mutated_to_allele', 'reference_genome_allele']
 
 location_columns = ['position', 'gene_relative', 'transcript_relative']
 
@@ -40,7 +40,6 @@ pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained
 									# more likely it is than not
              }
 
-
 #########################################
 def insert (cursor, table, columns, values):
 
@@ -53,6 +52,7 @@ def insert (cursor, table, columns, values):
 	qry = "insert into %s (%s) " %(table, ",".join(corresponding_columns))
 	qry += "values (%s) " % ",".join(nonempty_values)
 	search_db(cursor, qry)
+
 
 #########################################
 def reorganize_donor_variants(cursor, table, columns):
@@ -70,7 +70,7 @@ def reorganize_donor_variants(cursor, table, columns):
 		#	exit()
 		for fields in ret:
 			total_entries += 1
-			named_field = dict(zip(columns,fields))
+			named_field = dict(list(zip(columns,fields)))
 			variant_values = []
 			for name in variant_columns:
 				variant_values.append(quotify(named_field[name]))
@@ -78,6 +78,7 @@ def reorganize_donor_variants(cursor, table, columns):
 
 		for variant in variants:
 			insert(cursor, variants_table, variant_columns, variant.split(","))
+
 
 #########################################
 # profile decorator is for the use with kernprof (a line profiler):
@@ -92,13 +93,13 @@ def reorganize_mutations(cursor, table, columns):
 	# reorganize = divide into three tables: variants(per user), mutations, and locations
 	mutations = get_mutations(cursor, table)
 	totmut = len(mutations)
-	print "\t\t\t total mutations:", totmut
+	print("\t\t\t total mutations:", totmut)
 	ct = 0
 	time0 = time.time()
 	for mutation in mutations:
 		ct += 1
 		if ct%10000 == 0:
-			print "\t\t\t %10s  %6d  %d%%  %ds" % (table, ct, float(ct)/totmut*100, time.time()-time0)
+			print("\t\t\t %10s  %6d  %d%%  %ds" % (table, ct, float(ct)/totmut*100, time.time()-time0))
 			time0 = time.time()
 		mutation_already_seen = False
 		conseqs   = set([])
@@ -116,7 +117,7 @@ def reorganize_mutations(cursor, table, columns):
 		if not ret: continue
 		for fields in ret:
 
-			named_field = dict(zip(columns,fields))
+			named_field = dict(list(zip(columns,fields)))
 
 			if not mutation_values: # we need to set this only once
 				mutation_values = [quotify(named_field[name]) for name in mutation_columns]
@@ -143,16 +144,16 @@ def reorganize_mutations(cursor, table, columns):
 			elif csq == "":
 				pass
 			else:
-				print "unrecognized consequence field:", csq
+				print("unrecognized consequence field:", csq)
 				exit()
 
 		if mutation_already_seen: continue
 
 		if not mutation_values:
-			print "mutation values not assigned for %s (!?)" % mutation
+			print("mutation values not assigned for %s (!?)" % mutation)
 			exit()
 		if not chromosome:
-			print "chromosome not assigned for %s (!?)" % mutation
+			print("chromosome not assigned for %s (!?)" % mutation)
 			exit()
 
 		mutation_values.append(quotify(";".join(list(aa_mutations))))
@@ -189,7 +190,7 @@ def reorganize_locations(cursor, table, columns):
 			qry =  "select * from %s where chromosome='%s' and start_position=%d " % (table, chromosome, position)
 			qry += "and gene_affected is not null and gene_affected !='' "
 			for fields in search_db (cursor,qry):
-				named_field = dict(zip(columns,fields))
+				named_field = dict(list(zip(columns,fields)))
 				# this is not ready to be stored, because we need to work through the consequences
 				gene   = named_field['gene_affected']
 				tscrpt = named_field['transcript_affected']
@@ -206,7 +207,7 @@ def reorganize_locations(cursor, table, columns):
 				elif csq == "":
 					pass
 				else:
-					print "unrecognized consequence field:", csq
+					print("unrecognized consequence field:", csq)
 					exit()
 				# gene and transcript are listed, but no relative position is specified:
 				if len(gene_relative)==0 and gene and 'ENSG' in gene:
@@ -218,14 +219,11 @@ def reorganize_locations(cursor, table, columns):
 			location_values = [str(position), quotify(";".join(gene_relative)), quotify(";".join(transcript_relative))]
 			insert (cursor, location_table, location_columns, location_values)
 
+
 #########################################
 def reorganize(tables, other_args):
 
-	print "disabled"
-	exit()
-
-
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor,"icgc")
 	for table in tables:
@@ -236,26 +234,25 @@ def reorganize(tables, other_args):
 		# line by line: move id info into new table
 		# for mutation and location check if the info exists; if not make new entry
 		time0 = time.time()
-		print "===================="
-		print "reorganizing ", table, os.getpid()
+		print("====================")
+		print("reorganizing ", table, os.getpid())
 		###############
-		print "\t variants", os.getpid()
-		#reorganize_donor_variants(cursor, table, columns)
+		print("\t variants", os.getpid())
+		reorganize_donor_variants(cursor, table, columns)
 		time1 = time.time()
-		print ("\t\t done in %.3f mins" % (float(time1-time0)/60)), os.getpid()
+		print(("\t\t done in %.3f mins" % (float(time1-time0)/60)), os.getpid())
 		###############
-		print "\t mutations", os.getpid()
+		print("\t mutations", os.getpid())
 		reorganize_mutations(cursor, table, columns)
 		time2 = time.time()
-		print ("\t\t done in %.3f mins" % (float(time2-time1)/60)), os.getpid()
+		print(("\t\t done in %.3f mins" % (float(time2-time1)/60)), os.getpid())
 		###############
-		print "\t locations", os.getpid()
-		#reorganize_locations(cursor, table, columns)
+		print("\t locations", os.getpid())
+		reorganize_locations(cursor, table, columns)
 		time3 = time.time()
-		print ("\t\t done in %.3f mins" % (float(time3-time2)/60)), os.getpid()
+		print(("\t\t done in %.3f mins" % (float(time3-time2)/60)), os.getpid())
 
-		print ("\t overall time for %s: %.3f mins" % (table, float(time3-time0)/60)), os.getpid()
-
+		print(("\t overall time for %s: %.3f mins" % (table, float(time3-time0)/60)), os.getpid())
 
 	cursor.close()
 	db.close()
@@ -267,11 +264,10 @@ def reorganize(tables, other_args):
 #########################################
 def main():
 
-	print 'add the piece of code to add assembly info to mutations_chrom*'
-	print 'see assembly_hack.py'
-	exit()
+	#print("disabled")
+	#exit()
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	#########################
 	# which temp somatic tables do we have
@@ -281,8 +277,6 @@ def main():
 	cursor.close()
 	db.close()
 
-	#tables  = ["BRCA_simple_somatic_temp"]
-	#number_of_chunks = 1
 	number_of_chunks = 8  # myISAM does not deadlock
 	parallelize(number_of_chunks, reorganize, tables, [])
 

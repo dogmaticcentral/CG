@@ -1,12 +1,12 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
 # add info about the sequencing depth and pathogenicity
 # to *simple_somatic tables for faster search
 
 import time
 
-from icgc_utils.common_queries  import  *
-from icgc_utils.processes   import  *
+from .icgc_utils.common_queries  import  *
+from .icgc_utils.processes   import  *
 
 #########################################
 def add_columns(cursor, table):
@@ -64,8 +64,8 @@ def decorate(tables, other_args):
 
 		time0 = time.time()
 
-		print "===================="
-		print "decorating ", table, os.getpid()
+		print("====================")
+		print("decorating ", table, os.getpid())
 
 		add_columns(cursor, table)
 		#update_ratio_column(cursor, table)
@@ -77,12 +77,12 @@ def decorate(tables, other_args):
 		##print ("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid()
 
 		###############
-		print "\t\t updating missense column in %s " % table
+		print("\t\t updating missense column in %s " % table)
 		qry = "ALTER TABLE %s drop column is_missense " % table
 		search_db(cursor,qry,verbose=True)
 		#update_missense_column(cursor, table)
 		time1 = time.time()
-		print ("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid()
+		print(("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid())
 
 	cursor.close()
 	db.close()

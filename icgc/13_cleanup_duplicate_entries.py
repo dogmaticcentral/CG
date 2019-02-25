@@ -1,14 +1,7 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
-# add info about the sequencing depth and pathogenicity
-# to *simple_somatic tables for faster search
 
-import time
-
-from icgc_utils.common_queries  import  *
-from icgc_utils.processes   import  *
-
-# deleted by hand - not sure how that crap cam to be:
+from .icgc_utils.common_queries  import  *
 
 
 
@@ -25,8 +18,8 @@ def main():
 	tables = [field[0] for field in  search_db(cursor,qry)]
 	switch_to_db(cursor,"icgc")
 	for table in tables:
-		print "===================="
-		print "inspecting ", table
+		print("====================")
+		print("inspecting ", table)
 		# coumn names/headers
 		colnames = get_column_names (cursor, "icgc", table)
 		# base name
@@ -36,19 +29,19 @@ def main():
 		qry += "count(*) as c from %s  group by mega_id having c>1 " % table
 		ret  = search_db(cursor,qry)
 		if not ret:
-			print "no duplicates found\n"
+			print("no duplicates found\n")
 			continue
 
 		# loop over all duplicate entries
 		for line in ret:
 			[mega_id, ct] = line
-			print mega_id, ct
+			print(mega_id, ct)
 			[icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id] = mega_id.split("_")
 			# donor
 			qry  = "select * from %s_donor " % tumor_short
 			qry += "where icgc_donor_id='%s' " % icgc_donor_id
 			ret2 = search_db(cursor,qry)
-			print ret2
+			print(ret2)
 			# check the full length of the entry
 			qry  = "select * from %s " % table
 			qry += "where icgc_mutation_id = '%s' " % icgc_mutation_id
@@ -62,7 +55,7 @@ def main():
 			genotype  = []
 			path_estimate = []
 			for line2 in ret2:
-				named_field = dict(zip(colnames,line2))
+				named_field = dict(list(zip(colnames,line2)))
 				all_ids.append( named_field["id"])
 				genotype.append(named_field["tumor_genotype"])
 				path_estimate.append(named_field["pathogenic_estimate"])
@@ -73,7 +66,7 @@ def main():
 				if named_field["mutant_allele_read_count"] and max_allele_depth<named_field["mutant_allele_read_count"]:
 					max_allele_depth = named_field["mutant_allele_read_count"]
 					max_allele_id    = named_field["id"]
-				print line2
+				print(line2)
 
 			if max_id>=0 and max_allele_id>=0:
 				other_ids = set(all_ids)
@@ -85,12 +78,12 @@ def main():
 					qry = "delete from %s where id = %d" % (table, other_id)
 					search_db(cursor,qry)
 			elif ct==2 and genotype[0]==genotype[1][::-1]: # hack to reverse a string
-				print "tumor genotypes same", genotype
+				print("tumor genotypes same", genotype)
 				qry = "delete from %s where id = %d" % (table, all_ids[1])
 				search_db(cursor,qry)
 			# here I am losing patience a bit, I guess
 			elif set(path_estimate)=={0}:
-				print "all estimated irrelevant"
+				print("all estimated irrelevant")
 				for id in all_ids:
 					qry = "delete from %s where id = %d" % (table, id)
 					search_db(cursor,qry)
