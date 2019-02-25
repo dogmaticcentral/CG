@@ -75,7 +75,8 @@ here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz
 Make sure that the fields in the mysql tables are big enough for each entry and create mysql tables.
 
 ### 05_write_mutations through 08_make_indices
-For large tables, rather than doing it through python, it turns out to be faster to create tsvs and 
-then use mysqlimport to read them in wholesale. These scripts take care of that part (mysqlimport has to be
-done by hand), plus some index creating on the newly loaded tables.
+For large tables, rather than loading them through python, 
+it turns out to be faster to create tsvs and 
+then load them from mysql shell (as in [07_load_mysql.py](icgc/07_load_mysql.py); alternative: use mysqlimport manually) 
+ to read them in wholesale. These scripts take care of that part , plus some index creating on the newly loaded tables.
 
