@@ -87,7 +87,7 @@ then load them from mysql shell (as in [07_load_mysql.py](icgc/07_load_mysql.py)
  pretty much does not wokr without it at all. 
 
 ### 10_check_mut_etc through 17_copy_reliabilty_etc
-This i where we depart from ICGC original database architecture - which is pretty much
+This is where we depart from ICGC original database architecture - which is pretty much
 nonexistent and consists of massive duplication of annotation for each occurrence of a mutation
 and for each of its interpretations within various transcripts.
 
@@ -128,3 +128,11 @@ whether it is worth the optimization effort. (Do not forget to create indices
  tumor at the same stage because even the submitter sample ids might be different
  (see [14_cleanup_duplicate_donors.py](icgc/14_cleanup_duplicate_donors.py)). Not sure if this is worth pursuing
  further, except for being very cautious abut making claims  about recurrent mutations, in BRCA in particular.
+ 
+ If [12_reorganize_mutations.py](icgc/12_reorganize_mutations.py) is the weakest link in the pipeline, 
+ [13_cleanup_duplicate_entries.py](icgc/13_cleanup_duplicate_entries.py) is the most likely to cover-up for a problem, 
+ possibly originating in ICGC itself. Some data sets seem to have a huge number of duplicates - entries with identical tuple
+ of identifiers (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id). Not sure what this is about,
+ but when found, this script chooses the entry with the highest coverage if possible. See the script for the full
+ resolution strategy.
+ 

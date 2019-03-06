@@ -42,13 +42,13 @@ def remove_duplicates(table_rows, other_args):
 			if named_field["total_read_count"] and max_depth<named_field["total_read_count"]:
 				max_depth = named_field["total_read_count"]
 				max_id    = named_field["id"]
-			# as the second line tiebreaker
+			# as the second line tiebreaker -- this could only happen if the total read count is null
 			if named_field["mutant_allele_read_count"] and max_allele_depth<named_field["mutant_allele_read_count"]:
 				max_allele_depth = named_field["mutant_allele_read_count"]
 				max_allele_id    = named_field["id"]
 
 
-		if max_id>=0 and max_allele_id>=0:
+		if max_id>=0 or max_allele_id>=0:
 			other_ids = set(all_ids)
 			if max_id>=0: # ids start from 1
 				other_ids.remove(max_id)
@@ -115,7 +115,7 @@ def main():
 			print("\tno duplicates found in", table)
 			continue
 		print("\t%s has %d duplicates" % (table, len(ret)))
-		number_of_chunks = 8  # myISAM does not deadlock
+		number_of_chunks = 20  # myISAM does not deadlock
 		processes = parallelize(number_of_chunks, remove_duplicates, ret, [table, colnames])
 		wait_join(processes)
 
