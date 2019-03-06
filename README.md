@@ -13,6 +13,10 @@ merge the info from the two sources. The scripts add up to a loosely connected p
 database.  While the  back end of each pipeline is rather generic, the front line is
 geared toward answering particular questions for which they were originally written.
 
+CG is not an out-of-the box solution. Rather, it is a starter kit, in case you would like to
+do some cancer genomics data analysis on your own.
+
+
 Why bother with the local copy of the data? I do not know a general answer to that question.
 You should check the homepage  of both databases - maybe the information you
  are looking for is already  available.
@@ -79,8 +83,10 @@ For large tables, rather than loading them through python,
 it turns out to be faster to create tsvs and 
 then load them from mysql shell (as in [07_load_mysql.py](icgc/07_load_mysql.py); alternative: use mysqlimport manually) 
  to read them in wholesale. These scripts take care of that part , plus some index creating on the newly loaded tables.
+ Make sure to run [08_make_indices.py](icgc/08_make_indices.py) - [12_reorganize_mutations.py](icgc/12_reorganize_mutations.py)
+ pretty much does not wokr without it at all. 
 
-### 10_check_mut_etc through 16_copy_reliabilty_etc
+### 10_check_mut_etc through 17_copy_reliabilty_etc
 This i where we depart from ICGC original database architecture - which is pretty much
 nonexistent and consists of massive duplication of annotation for each occurrence of a mutation
 and for each of its interpretations within various transcripts.
@@ -100,3 +106,25 @@ schemaSPy: http://schemaspy.sourceforge.net/
 mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
 -->
 
+Note that in [12_reorganize_mutations.py](icgc/12_reorganize_mutations.py) you can choose to
+run in parallel (the number of 'chunks' in main()). It still takes a while - as in, 
+leave-to-run-overnight while. This is probably the weakest part of the whole pipeline, but is unclear
+whether it is worth the optimization effort. (Do not forget to create indices
+ using [08_make_indices.py](icgc/08_make_indices.py))
+ 
+ Even after we moved mutation and location ino to separate tables; 
+ some entries in ICGC appear to be duplicates - the same mutation, donor, specimen, and sample id. 
+ Not sure what this is about, because ICGC is not actually terribly well documented. 
+ We are removing duplicates in [13_cleanup_duplicate_entries.py](icgc/13_cleanup_duplicate_entries.py).
+ Even after this cleanup there might be further problems:
+ 
+ See for example, mutation MU2003689, which, so 
+ [the ICGC page claims][https://dcc.icgc.org/mutations/MU2003689] can be found in two distinct donors. 
+ The closer  inspection of the two donors shows however that their submitter ID is the same, as is the age 
+ of the 'two' women. (The tumour subtype has different description, reflecting, apparently,  the
+ curator's preference.) Indeed, donors table for BRCA, at this point in the pipeline has 
+ 1976 distinct ICGC donor ids, and 1928 distinct submitter IDs. BRCA does turn out to be the biggest offender here,
+ followed by LICA with 8 duplicated donors. It is not clear whether these duplicates refer to the same
+ tumor at the same stage because even the submitter sample ids might be different
+ (see [14_cleanup_duplicate_donors.py](icgc/14_cleanup_duplicate_donors.py)). Not sure if this is worth pursuing
+ further, except for being very cautious abut making claims  about recurrent mutations, in BRCA in particular.

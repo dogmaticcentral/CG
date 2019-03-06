@@ -37,24 +37,29 @@ def parallelize (number_of_chunks, embarassingly_pllbl_fn, list, other_args):
 
 	# run
 	total = 0
+	processes = []
 	for ps in range (number_of_chunks):
 		ps_from = total
 		ps_to   = total + load[ps]
-		total   += load[ps]
+		total  += load[ps]
 
 		if (ps_from >= len(list)):
 			break
 		if (ps == number_of_chunks-1):
 			ps_to = len(list)
 
-
-		process = multiprocessing.Process (target=embarassingly_pllbl_fn, args=(list[ps_from:ps_to], other_args))
+		process = multiprocessing.Process(target=embarassingly_pllbl_fn, args=(list[ps_from:ps_to], other_args))
 		try:
 			process.start()
+			processes.append(process)
 		except:
 			print("Error: unable to start process")
 			return False
-    
-    
-        
-        
+
+	return processes
+
+
+#########################################
+def wait_join(processes):
+	for process in processes:
+		process.join()

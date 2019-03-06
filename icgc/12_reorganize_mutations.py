@@ -109,7 +109,7 @@ def reorganize_mutations(cursor, table, columns):
 		mutation_table = None
 
 		# this hinges on index on the *simple_somatic_temp
-		# qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" % mutations_table
+		# qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" % simple_somatic_temp_table
 		qry  = "select * from %s where icgc_mutation_id='%s' " % (table, mutation)
 		qry += "and gene_affected is not null and gene_affected !='' "
 		ret  = search_db (cursor, qry)
@@ -279,8 +279,6 @@ def main():
 
 	number_of_chunks = 8  # myISAM does not deadlock
 	parallelize(number_of_chunks, reorganize, tables, [])
-
-
 
 
 
