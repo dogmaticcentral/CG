@@ -28,9 +28,24 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
 <!-- this is a comment -->
 <!-- making TOC: https://github.com/ekalinin/github-markdown-toc -->
 <!-- once installed, use with gh-md-toc README.md    -->
+ ## Table of Contents
+ * [Dependencies](#dependencies)
+ * [ICGC](#icgc)
+    * [config file](#config-file)
+    * [00_data_download](#00_data_download)
+    * [01_hgnc_name_resolution_table and 02_ensembl_id_table](#01_hgnc_name_resolution_table-and-02_ensembl_id_table)
+    * [03_find_max_field_length and 04_make_tables](#03_find_max_field_length-and-04_make_tables)
+    * [05_write_mutations through 08_make_indices](#05_write_mutations-through-08_make_indices)
+    * [10_check_mut_etc through 17_copy_reliabilty_etc](#10_check_mut_etc-through-17_copy_reliabilty_etc)
+
+ 
  
  ## Dependencies
- 
+ In addition to TCGA and ICGC themselves, CG uses
+ * MySQL
+ * MySQLdb python module, installed with _sudo apt install python3-mysqldb_
+ * gene symbols from HUGO gene nomenclature committee (see [here](https://www.genenames.org/download/custom/))
+ * Optional: [line-profiler](https://github.com/rkern/line_profiler#line-profiler) for python
  
  ## ICGC
  
@@ -110,16 +125,16 @@ Note that in [12_reorganize_mutations.py](icgc/12_reorganize_mutations.py) you c
 run in parallel (the number of 'chunks' in main()). It still takes a while - as in, 
 leave-to-run-overnight while. This is probably the weakest part of the whole pipeline, but is unclear
 whether it is worth the optimization effort. (Do not forget to create indices
- using [08_make_indices.py](icgc/08_make_indices_on_temp_tables.py))
+ using [08_make_indices_on_temp_tables.py](icgc/08_make_indices_on_temp_tables.py))
  
  Even after we moved mutation and location ino to separate tables; 
  some entries in ICGC appear to be duplicates - the same mutation, donor, specimen, and sample id. 
  Not sure what this is about, because ICGC is not actually terribly well documented. 
- We are removing duplicates in [13_cleanup_duplicate_entries.py](icgc/14_cleanup_duplicate_entries.py).
+ We are removing duplicates in [14_cleanup_duplicate_entries.py](icgc/14_cleanup_duplicate_entries.py).
  Even after this cleanup there might be further problems:
  
  See for example, mutation MU2003689, which, so 
- [the ICGC page claims][https://dcc.icgc.org/mutations/MU2003689] can be found in two distinct donors. 
+ [the ICGC page claims](https://dcc.icgc.org/mutations/MU2003689) can be found in two distinct donors. 
  The closer  inspection of the two donors shows however that their submitter ID is the same, as is the age 
  of the 'two' women. (The tumour subtype has different description, reflecting, apparently,  the
  curator's preference.) Indeed, donors table for BRCA, at this point in the pipeline has 
