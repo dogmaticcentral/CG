@@ -134,7 +134,7 @@ whether it is worth the optimization effort. (Do not forget to create indices
  possibly originating in ICGC itself. Some data sets seem to have a huge number of duplicates - entries with identical tuple
  of identifiers (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id). Note that this
  is after we have reorganized the database so that the mutation and location info sit in 
- different tables from the door info. Not sure what this is about (the same sample analyzed independently multiple
+ different tables from the donor info. Not sure what this is about (the same sample analyzed independently multiple
  times?), but when found, this script chooses the entry with the highest coverage if possible. See the script for the full
  resolution strategy and make sure to run [13_make_jumbo_index](icgc/13_make_jumbo_index_on_simple_somatic_tables.py) -
  [14_cleanup_duplicate_entries.py](icgc/14_cleanup_duplicate_entries.py) is useless without it.

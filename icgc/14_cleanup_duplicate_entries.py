@@ -54,7 +54,6 @@ def remove_duplicates(table_rows, other_args):
 				max_allele_depth = named_field["mutant_allele_read_count"]
 				max_allele_id    = named_field["id"]
 
-
 		if max_id>=0 or max_allele_id>=0:
 			other_ids = set(all_ids)
 			if max_id>=0: # ids start from 1
@@ -63,8 +62,9 @@ def remove_duplicates(table_rows, other_args):
 			elif max_allele_id>=0:
 				other_ids.remove(max_allele_id)
 			#print("max allele depth %d found at %d, removing"%(max_allele_depth, max_allele_id),other_ids )
-			qry = "delete from %s where id = (%s)" % (table, ",".join([str(other_id) for other_id in other_ids]))
+			qry = "delete from %s where id in (%s)" % (table, ",".join([str(other_id) for other_id in other_ids]))
 			search_db(cursor,qry)
+
 		# we do not have the info about the depth of the sequencing
 		elif ct==2 and genotype[0]==genotype[1][::-1]: # hack to reverse a string
 			print("tumor genotypes same", genotype)
@@ -83,6 +83,7 @@ def remove_duplicates(table_rows, other_args):
 			for other_id in all_ids[1:]:
 				qry2 = "delete from %s where id = %d" % (table, other_id)
 				search_db(cursor,qry2)
+
 	cursor.close()
 	db.close()
 
@@ -104,7 +105,6 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
-
 	switch_to_db(cursor,"icgc")
 	for table in tables:
 		print("\n====================")
