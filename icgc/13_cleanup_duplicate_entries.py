@@ -109,17 +109,17 @@ def main():
 		tumor_short  = table.split("_")[0]
 		# a hack to get all entries that have all relevant ids identical
 		qry = "select concat(icgc_mutation_id,'_', icgc_donor_id,'_',icgc_specimen_id,'_',icgc_sample_id) as mega_id, "
-		qry += "count(*) as c from %s  group by mega_id having c>1 " % table
+		qry += "count(*) as c from %s   " % table
 		ret  = search_db(cursor,qry)
 		if not ret:
 			print("\tno duplicates found in", table)
 			continue
 		print("\t%s has %d duplicates" % (table, len(ret)))
-		number_of_chunks = 20  # myISAM does not deadlock
-		processes = parallelize(number_of_chunks, remove_duplicates, ret, [table, colnames])
-		wait_join(processes)
+		#number_of_chunks = 20  # myISAM does not deadlock
+		#processes = parallelize(number_of_chunks, remove_duplicates, ret, [table, colnames])
+		#wait_join(processes)
 
-
+ 
 	cursor.close()
 	db.close()
 

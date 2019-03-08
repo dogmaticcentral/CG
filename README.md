@@ -132,7 +132,9 @@ whether it is worth the optimization effort. (Do not forget to create indices
  If [12_reorganize_mutations.py](icgc/12_reorganize_mutations.py) is the weakest link in the pipeline, 
  [13_cleanup_duplicate_entries.py](icgc/13_cleanup_duplicate_entries.py) is the most likely to cover-up for a problem, 
  possibly originating in ICGC itself. Some data sets seem to have a huge number of duplicates - entries with identical tuple
- of identifiers (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id). Not sure what this is about,
- but when found, this script chooses the entry with the highest coverage if possible. See the script for the full
+ of identifiers (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id). Note that this
+ is after we have reorganized the database so that the mutation and location info sit in 
+ different tables from the door info. Not sure what this is about (the same sample analyzed independently multiple
+ times?), but when found, this script chooses the entry with the highest coverage if possible. See the script for the full
  resolution strategy.
  

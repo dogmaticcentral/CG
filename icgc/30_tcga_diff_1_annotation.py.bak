@@ -1,10 +1,9 @@
-#! /usr/bin/python3
+#! /usr/bin/python
 import subprocess
 import time, re
 
 from icgc_utils.common_queries  import  *
 from icgc_utils.processes   import  *
-from config import Config
 
 tcga_icgc_table_correspondence = {
 "ACC_somatic_mutations" : None,
@@ -105,8 +104,8 @@ def create_icgc_table(cursor, tcga_table):
 	qry += ") ENGINE=MyISAM"
 
 	rows = search_db(cursor, qry)
-	print(qry)
-	print(rows)
+	print qry
+	print rows
 
 #########################################
 mutation_annot_pattern = re.compile('(\D+)(\-*\d+)(\D+)')
@@ -158,7 +157,7 @@ def output_annovar_input_file (cursor, db_name, tcga_table, already_deposited_sa
 		# Annovar expects both numbers to be the same in such case
 		if reference_allele=="-": end_position=start_position
 		outrow = "%s\t%d\t%d\t%s\t%s" % (chromosome, start_position, end_position, reference_allele, differing_allele)
-		print(outrow, file=outf[assembly])
+		print >> outf[assembly], outrow
 
 	for assembly in assemblies:
 		outf[assembly].close()
@@ -170,7 +169,7 @@ def output_annovar_input_file (cursor, db_name, tcga_table, already_deposited_sa
 ##################################
 def run_annovar(avinput, table_name):
 	avoutname = {}
-	for assembly, avinfile in avinput.items():
+	for assembly, avinfile in avinput.iteritems():
 		avoutname[assembly] = "%s.%s_multianno.txt" % (table_name, assembly)
 		if not os.path.exists(avoutname[assembly]) or os.path.getsize(avoutname[assembly])==0:
 			cmd  = "/home/ivana/third/annovar/table_annovar.pl %s " % avinfile
@@ -228,16 +227,16 @@ def parse_annovar_fields(cursor, avfile, annovar_named_field):
 													annovar_named_field['ref'], annovar_named_field['alt'])
 			# icgc fields in locations_chrom_*: position, gene_relative, transcript relative
 			# gene relative is in two annovar fields: func and gene
-			gene_relative = dict(list(zip(annovar_named_field['gene'].split(";"),annovar_named_field['func'].split(";") )))
+			gene_relative = dict(zip(annovar_named_field['gene'].split(";"),annovar_named_field['func'].split(";") ))
 			gene_relative_string = ";".join(["%s:%s"%(k,gene_location_annovar_to_icgc(v))
-											for k,v in gene_relative.items()])
+											for k,v in gene_relative.iteritems()])
 			# what to do with introns? can introns be  assigned to a transcript?
 			# tcga thigns they can, while annovat things they are only assignable to a gene as a whole
 			# I am disregarding intronic mutations as zero impact
 			# as an ad hoc measure, I will assign the annotation to the canonical transcript
 			if 'intronic' in annovar_named_field['func']:
 				consequences.add('intronic')
-				for gene_stable_id, annot in gene_relative.items():
+				for gene_stable_id, annot in gene_relative.iteritems():
 					if annot != 'intronic': continue
 					canonical_transcript_id = gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id)
 					tr_relative.append("{}:{}".format(canonical_transcript_id, 'intronic'))
@@ -267,9 +266,9 @@ def parse_annovar_fields(cursor, avfile, annovar_named_field):
 
 				if not enst:
 					if aa_change:
-						print("aa change without specified ENST")
-						print(avfile)
-						print(fields)
+						print "aa change without specified ENST"
+						print avfile
+						print fields
 						exit()
 					else:
 						continue
@@ -335,7 +334,7 @@ def store_location(cursor, annovar_named_field, gene_relative_string, tr_relativ
 	# now back to business: have we seen this mutation:
 	if not check_location_seen(cursor, annovar_named_field, lock_alias):
 		# MySQL  will auto-convert data types as best it can. stil let's try to convert the position here
-		named_fields = {'position': int(annovar_named_field['start']),
+		named_fields = {'position': long(annovar_named_field['start']),
 						'gene_relative': gene_relative_string,
 						'transcript_relative': tr_relative_string}
 
@@ -372,13 +371,13 @@ def store_mutation(cursor, annovar_named_field, mutation_type, consequences_stri
 		if len(ref_allele)>200: ref_allele=ref_allele[:200]+"etc"
 		to_allele  = annovar_named_field['alt']
 		if len(to_allele)>200: to_allele=to_allele[:200]+"etc"
-		print("storing")
-		print(ref_allele)
-		print(to_allele)
+		print "storing"
+		print ref_allele
+		print to_allele
 
 		named_fields = {'icgc_mutation_id':	new_id,
-						'start_position': int(annovar_named_field['start']),
-						'end_position': int(annovar_named_field['end']),
+						'start_position': long(annovar_named_field['start']),
+						'end_position': long(annovar_named_field['end']),
 						'mutation_type':mutation_type,
 						'reference_genome_allele': ref_allele,
 						'mutated_from_allele': ref_allele,
@@ -401,7 +400,7 @@ def store_annotation (cursor, tcga_table, avoutput):
 	# the do another sweep through the tcga table to associate with variants
 	# in principle, we should be working with icgc here
 	switch_to_db(cursor, 'icgc')
-	for assembly, avfile in avoutput.items():
+	for assembly, avfile in avoutput.iteritems():
 		no_lines = int(subprocess.check_output(["bash","-c", "wc -l %s"%avfile]).split()[0])
 		inf = open (avfile, "r")
 		header_fields = None
@@ -410,17 +409,17 @@ def store_annotation (cursor, tcga_table, avoutput):
 		for line in inf:
 			ct += 1
 			if (ct%1000==0):
-				print("%30s   %6d lines out of %6d  (%d%%)  %d min" % \
-				      (tcga_table, ct, no_lines, float(ct)/no_lines*100, float(time.time()-time0)/60))
+				print "%30s   %6d lines out of %6d  (%d%%)  %d min" % \
+				      (tcga_table, ct, no_lines, float(ct)/no_lines*100, float(time.time()-time0)/60)
 			fields = line.rstrip().split('\t')
 			if line[:3]=="Chr":  # header
 				header_fields = [f.split(".")[0].lower() for f in fields] # get rid of ".ensGene"
 				# the header_fields now should be chr, start, end, ref, alt, func, gene, genedetail, exonicfunc, aachange
 				continue
 			if not header_fields:
-				print(" header not found in", avfile)
+				print " header not found in", avfile
 				exit(1)
-			annovar_named_field = dict(list(zip(header_fields,fields)))
+			annovar_named_field = dict(zip(header_fields,fields))
 			# do I have this location already?
 			location_seen = check_location_seen(cursor, annovar_named_field)
 			# do I have this mutation already?
@@ -435,7 +434,7 @@ def store_annotation (cursor, tcga_table, avoutput):
 					pathogenic_estimate=1
 					break
 			if not location_seen:
-				print("storing location:", annovar_named_field)
+				print "storing location:", annovar_named_field
 				store_location(cursor, annovar_named_field, gene_relative_string, tr_relative_string)
 			if not mutation_seen:
 				store_mutation(cursor, annovar_named_field, mutation_type,
@@ -456,8 +455,8 @@ def process_table(home, cursor, tcga_table, already_deposited_samples):
 
 	# use tcga entries to create input for annovar
 	avinput  = output_annovar_input_file (cursor, 'tcga', tcga_table, already_deposited_samples)
-	for assembly, avinfile  in avinput.items():
-		print("{}/{}".format(workpath,avinfile))
+	for assembly, avinfile  in avinput.iteritems():
+		print "{}/{}".format(workpath,avinfile)
 
 	# fork annovar process
 	avoutput = run_annovar(avinput,tcga_table)
@@ -469,7 +468,7 @@ def process_table(home, cursor, tcga_table, already_deposited_samples):
 #########################################
 def add_tcga_diff(tcga_tables, other_args):
 
-	db     = connect_to_mysql(Config.mysql_conf_file)
+	db     = connect_to_mysql()
 	cursor = db.cursor()
 	home = os.getcwd()
 	for tcga_table in tcga_tables:
@@ -478,10 +477,10 @@ def add_tcga_diff(tcga_tables, other_args):
 
 		# where in the icgc classification does this symbol belong?
 		time0 = time.time()
-		print()
-		print("====================")
-		print("processing tcga table %s, process id %d " % (tcga_table, os.getpid()))
-		print("will be stored in ", icgc_table)
+		print
+		print "===================="
+		print "processing tcga table ", tcga_table, os.getpid()
+		print "will be stored in ", icgc_table
 
 		if not icgc_table: create_icgc_table(cursor,tcga_table)
 
@@ -501,10 +500,10 @@ def add_tcga_diff(tcga_tables, other_args):
 
 		# I am taking a leap of faith here, and I believe that the deposited data is
 		# really identical to what we have in tcga
-		print("not deposited:", len(samples_not_deposited))
+		print "not deposited:", len(samples_not_deposited)
 
-		#process_table(home, cursor, tcga_table, already_deposited_samples)
-		#print("\t overall time for %s: %.3f mins; pid: %d" % (tcga_table, float(time.time()-time0)/60, os.getpid()))
+		process_table(home, cursor, tcga_table, already_deposited_samples)
+		print "\t overall time for %s: %.3f mins; pid: %d" % (tcga_table, float(time.time()-time0)/60, os.getpid())
 
 	cursor.close()
 	db.close()
@@ -518,7 +517,7 @@ def main():
 
 	# divide by cancer types, because I have duplicates within each cancer type
 	# that I'll resolve as I go, but I do not want the threads competing)
-	db     = connect_to_mysql(Config.mysql_conf_file)
+	db     = connect_to_mysql()
 	cursor = db.cursor()
 
 	qry  = "select table_name from information_schema.tables "

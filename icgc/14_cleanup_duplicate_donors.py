@@ -27,20 +27,17 @@ def main():
 		if not ret:
 			print("no duplicates found")
 			continue
-		print("has duplicates")
+		print("has %d duplicates" % len(ret))
 		for line in ret:
 			print("\t", line)
 			[submitted_donor_id, count] = line
 			qry = "select icgc_donor_id from %s where submitted_donor_id = '%s' " % (table, submitted_donor_id)
 			icgc_donor_ids = [ret2[0] for ret2 in search_db(cursor,qry)]
-			qry = "select t1.icgc_mutation_id, t1.icgc_specimen_id, t2.icgc_specimen_id, t1.icgc_sample_id, t2.icgc_sample_id "
-			qry += "from %s as t1, %s as t2 " % (somatic_table, somatic_table)
-			qry += "where  t1.icgc_donor_id='%s' and t2.icgc_donor_id='%s' " % tuple(icgc_donor_ids)
-			qry += "and t1.icgc_mutation_id = t2.icgc_mutation_id"
-			print(qry)
+			qry  = "select icgc_specimen_id, icgc_donor_id, specimen_type, tumour_histological_type "
+			qry += "from %s_specimen where icgc_donor_id in (%s)" %(tumor, ",".join(["'%s'"%id for id in icgc_donor_ids]))
 			ret3 = search_db(cursor,qry)
-			print(ret3[0])
-			exit()
+			for line in ret3:
+				print("\t\t", line)
 
 
 	cursor.close()
