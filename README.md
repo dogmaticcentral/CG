@@ -133,8 +133,8 @@ whether it is worth the optimization effort. (Do not forget to create indices
  We are removing duplicates in [14_cleanup_duplicate_entries.py](icgc/14_cleanup_duplicate_entries.py).
  Even after this cleanup there might be further problems:
  
- See for example, mutation MU2003689, which, so 
- [the ICGC page claims](https://dcc.icgc.org/mutations/MU2003689) can be found in two distinct donors. 
+ See for example, mutation MU2003689, which, 
+ [so the ICGC page claims](https://dcc.icgc.org/mutations/MU2003689) can be found in two distinct donors. 
  The closer  inspection of the two donors shows however that their submitter ID is the same, as is the age 
  of the 'two' women. (The tumour subtype has different description, reflecting, apparently,  the
  curator's preference.) Indeed, donors table for BRCA, at this point in the pipeline has 
