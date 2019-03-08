@@ -127,23 +127,6 @@ leave-to-run-overnight while. This is probably the weakest part of the whole pip
 whether it is worth the optimization effort. (Do not forget to create indices
  using [08_make_indices_on_temp_tables.py](icgc/08_make_indices_on_temp_tables.py))
  
- Even after we moved mutation and location ino to separate tables; 
- some entries in ICGC appear to be duplicates - the same mutation, donor, specimen, and sample id. 
- Not sure what this is about, because ICGC is not actually terribly well documented. 
- We are removing duplicates in [14_cleanup_duplicate_entries.py](icgc/14_cleanup_duplicate_entries.py).
- Even after this cleanup there might be further problems:
- 
- See for example, mutation MU2003689, which, 
- [so the ICGC page claims](https://dcc.icgc.org/mutations/MU2003689) can be found in two distinct donors. 
- The closer  inspection of the two donors shows however that their submitter ID is the same, as is the age 
- of the 'two' women. (The tumour subtype has different description, reflecting, apparently,  the
- curator's preference.) Indeed, donors table for BRCA, at this point in the pipeline has 
- 1976 distinct ICGC donor ids, and 1928 distinct submitter IDs. BRCA does turn out to be the biggest offender here,
- followed by LICA with 8 duplicated donors. It is not clear whether these duplicates refer to the same
- tumor at the same stage because even the submitter sample ids might be different
- (see [14_cleanup_duplicate_donors.py](icgc/15_cleanup_duplicate_donors.py)). Not sure if this is worth pursuing
- further, except for being very cautious abut making claims  about recurrent mutations, in BRCA in particular.
- 
  If [12_reorganize_mutations.py](icgc/12_reorganize_mutations.py) is the weakest link in the pipeline, 
  [14_cleanup_duplicate_entries.py](icgc/14_cleanup_duplicate_entries.py) is the most likely to cover-up for a problem, 
  possibly originating in ICGC itself. Some data sets seem to have a huge number of duplicates - entries with identical tuple
@@ -153,4 +136,17 @@ whether it is worth the optimization effort. (Do not forget to create indices
  times?), but when found, this script chooses the entry with the highest coverage if possible. See the script for the full
  resolution strategy and make sure to run [13_make_jumbo_index](icgc/13_make_jumbo_index_on_simple_somatic_tables.py) -
  [14_cleanup_duplicate_entries.py](icgc/14_cleanup_duplicate_entries.py) is useless without it.
+ 
+ 
+ Even after this cleanup there might be further problems: See for example, mutation MU2003689, which, 
+ [so the ICGC page claims](https://dcc.icgc.org/mutations/MU2003689) can be found in two distinct donors. 
+ The closer  inspection of the two donors shows however that their submitter ID is the same, as is the age 
+ of the 'two' women. (The tumour subtype has different description, reflecting, apparently,  the
+ curator's preference.) Indeed, donors table for BRCA, at this point in the pipeline has 
+ 1976 distinct ICGC donor ids, and 1928 distinct submitter IDs. BRCA does turn out to be the biggest offender here,
+ followed by LICA with 8 duplicated donors. It is not clear whether these duplicates refer to the same
+ tumor at the same stage because even the submitter sample ids might be different
+ (see [15_cleanup_duplicate_donors.py](icgc/15_cleanup_duplicate_donors.py)). Not sure if this is worth pursuing
+ further, except for being very cautious abut making claims  about recurrent mutations, in BRCA in particular.
+ 
  
