@@ -21,14 +21,19 @@ except ImportError:
         from profile import Profile
 
 
+# Python 3.x compatibility utils: execfile
+# ========================================
+try:
+    execfile
+except NameError:
+	print "something"
+    # Python 3.x doesn't have 'execfile' builtin
+    #import builtins
+    #exec_ = getattr(builtins, "exec")
 
-# Python 3.x doesn't have 'execfile' builtin
-import builtins
-exec_ = getattr(builtins, "exec")
-
-def execfile(filename, globals=None, locals=None):
-    with open(filename, 'rb') as f:
-        exec_(compile(f.read(), filename, 'exec'), globals, locals)
+    #def execfile(filename, globals=None, locals=None):
+    #    with open(filename, 'rb') as f:
+    #        exec_(compile(f.read(), filename, 'exec'), globals, locals)
 
 # =====================================
 
@@ -189,7 +194,7 @@ def main(args=None):
         # kernprof.py's.
         sys.path.insert(0, os.path.dirname(setup_file))
         ns = locals()
-        exec(compile(open(setup_file).read(), setup_file, 'exec'), ns, ns)
+        execfile(setup_file, ns, ns)
 
     if options.line_by_line:
         import line_profiler
@@ -201,7 +206,7 @@ def main(args=None):
         if PY3:
             import builtins
         else:
-            import builtins as builtins
+            import __builtin__ as builtins
         builtins.__dict__['profile'] = prof
 
     script_file = find_script(sys.argv[0])
@@ -216,14 +221,14 @@ def main(args=None):
             execfile_ = execfile
             ns = locals()
             if options.builtin:
-                exec(compile(open(script_file).read(), script_file, 'exec'), ns, ns)
+                execfile(script_file, ns, ns)
             else:
                 prof.runctx('execfile_(%r, globals())' % (script_file,), ns, ns)
         except (KeyboardInterrupt, SystemExit):
             pass
     finally:
         prof.dump_stats(options.outfile)
-        print(('Wrote profile results to %s' % options.outfile))
+        print('Wrote profile results to %s' % options.outfile)
         if options.view:
             prof.print_stats()
 

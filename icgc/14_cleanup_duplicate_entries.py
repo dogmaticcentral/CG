@@ -6,6 +6,14 @@ from icgc_utils.processes   import  *
 
 #########################################
 #########################################
+# profile decorator is for the use with kernprof (a line profiler):
+#  ./icgc_utils/kernprof.py -l 14_cleanup_duplicate_entries.py
+# followed by
+# python3 -m line_profiler 14_cleanup_duplicate_entries.py.lprof
+# see here https://github.com/rkern/line_profiler#line-profiler
+# the reason I am using local kernprof.py is that I don't know where pip
+# installed its version (if anywhere)
+#@profile
 def remove_duplicates(table_rows, other_args):
 
 	table  = other_args[0]
@@ -17,7 +25,6 @@ def remove_duplicates(table_rows, other_args):
 	# loop over all duplicate entries
 	for line in table_rows:
 		[mega_id, ct] = line
-		#print(mega_id, "number of repeated entries:", ct, "\n")
 		[icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id] = mega_id.split("_")
 
 		# check the full length of the entry
@@ -99,7 +106,6 @@ def main():
 	tables = [field[0] for field in  search_db(cursor,qry)]
 
 	switch_to_db(cursor,"icgc")
-
 	for table in tables:
 		print("\n====================")
 		print("inspecting ", table)
@@ -109,15 +115,16 @@ def main():
 		tumor_short  = table.split("_")[0]
 		# a hack to get all entries that have all relevant ids identical
 		qry = "select concat(icgc_mutation_id,'_', icgc_donor_id,'_',icgc_specimen_id,'_',icgc_sample_id) as mega_id, "
-		qry += "count(*) as c from %s   " % table
+		qry += "count(*) as c from %s  group by mega_id having c>1 " % table
 		ret  = search_db(cursor,qry)
+
 		if not ret:
 			print("\tno duplicates found in", table)
 			continue
 		print("\t%s has %d duplicates" % (table, len(ret)))
-		#number_of_chunks = 20  # myISAM does not deadlock
-		#processes = parallelize(number_of_chunks, remove_duplicates, ret, [table, colnames])
-		#wait_join(processes)
+		number_of_chunks = 20  # myISAM does not deadlock
+		processes = parallelize(number_of_chunks, remove_duplicates, ret, [table, colnames])
+		wait_join(processes)
 
  
 	cursor.close()
