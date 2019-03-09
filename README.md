@@ -39,7 +39,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
     * [03_find_max_field_length and 04_make_tables](#03_find_max_field_length-and-04_make_tables)
     * [05_write_mutations through 08_make_indices](#05_write_mutations-through-08_make_indices)
     * [10_check_mut_etc through 15_cleanup_duplicate_donors](#10_check_mut_etc-through-15_cleanup_duplicate_donors)
-    * [16_decorate_simple_somatic though 18_copy_reliability](#16_decorate_simple_somatic-though--18_copy_reliability)
+    * [16_decorate_simple_somatic through 18_copy_reliability](#16_decorate_simple_somatic-though--18_copy_reliability)
  
  
  
@@ -102,7 +102,7 @@ it turns out to be faster to create tsvs and
 then load them from mysql shell (as in [07_load_mysql.py](icgc/07_load_mysql.py); alternative: use mysqlimport manually) 
  to read them in wholesale. These scripts take care of that part , plus some index creating on the newly loaded tables.
  Make sure to run [08_make_indices.py](icgc/08_make_indices_on_temp_tables.py) - [12_reorganize_mutations.py](icgc/12_reorganize_mutations.py)
- pretty much does not wokr without it at all. 
+ pretty much does not work without it at all. 
 
 ### 10_check_mut_etc through 15_cleanup_duplicate_donors
 This is where we depart from ICGC original database architecture - which is pretty much
@@ -154,13 +154,17 @@ whether it is worth the optimization effort. (Do not forget to create indices
  these, if multiple refer to the same submitter id, we keep the ones with the largest reported number of
  somatic mutations. The investigation of the source of this duplication is again outside of our zone of interest.
  
- ### 16_decorate_simple_somatic though  18_copy_reliability 
+ ### 16_decorate_simple_somatic through  18_copy_reliability 
  
- We add a couple of values to each row to later make the search for meaningful entries faster
+ We add a couple of values to each row to later make the search for meaningful entries faster.
  In particular, in [16_decorate_simple_somatic.py](icgc/16_decorate_simple_somatic.py)
  we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
- to simple_somatic tables. In the following script we combine these two columns into a reliability estimate: a 
+ to simple_somatic tables. In the following script, 
+ [17_add_realiability_annotation_to_somatic.py](icgc/7_add_realiability_annotation_to_somatic.py),  
+ we combine these two columns into a reliability estimate: a 
  somatic mutation in individual patient is considered reliable if mutant_allele_read_count>=10
- and mut_to_total_read_count_ratio>=0.2. Information about the mutation in general (mutations_chromosome tables) 
+ and mut_to_total_read_count_ratio>=0.2. 
+ Information about the mutation in general (mutations_chromosome tables; 
+ [18_copy_reliability_info_to_mutations.py](18_copy_reliability_info_to_mutations.py)) 
  is considered reliable if there is at leas one patient for which it was reliably established.
  
