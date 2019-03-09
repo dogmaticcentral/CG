@@ -1,10 +1,14 @@
 #! /usr/bin/python3
 
-from .icgc_utils.common_queries   import  *
+# not sure any more what exactly are we testing here,
+# but at any rate ...
+
+from icgc_utils.common_queries   import  *
+from config import Config
 
 def main():
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor, "icgc")
 

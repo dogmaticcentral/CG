@@ -5,9 +5,9 @@
 
 import time
 
-from .icgc_utils.common_queries  import  *
-from .icgc_utils.processes   import  *
-from random import shuffle
+from icgc_utils.common_queries  import  *
+from icgc_utils.processes   import  *
+from config import Config
 
 #########################################
 def add_columns(cursor, table):
@@ -20,34 +20,32 @@ def add_columns(cursor, table):
 
 
 #########################################
-# this will be set to 1 if we find support for this variant anywhere
 def update_reliability_column_in_mutation_tables(cursor, table):
-	qry = "select  distinct  chromosome  from %s " % table
-	chroms =[ret[0] for ret in  search_db(cursor,qry)]
-	for chrom in chroms:
-		qry = "update  %s t, mutations_chrom_%s m " % (table, chrom)
-		qry += "set m.reliability_estimate = 1 "
-		qry += "where t.icgc_mutation_id=m.icgc_mutation_id "
-		qry += "and  (t.total_read_count is null or "
-		# since the depths for the matched samples are not given, we are using these quite strict rules ...
-		qry += "(t.mutant_allele_read_count>3 and t.mut_to_total_read_count_ratio>0.2) )"
-		search_db(cursor,qry)
+	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
+	for c in chromosomes:
+		# is there _any_ reliable source for this mutation?
+		# if so, set reliability to 1
+		qry  = "update  %s s, mutations_chrom_%s m " % (table, c)
+		qry += "set m.reliability_estimate=1  "
+		qry += "where m.reliability_estimate=0 and s.reliability_estimate=1 "
+		qry += "and s.icgc_mutation_id = m.icgc_mutation_id "
+		search_db(cursor,qry, verbose=False)
+
 
 ########################################
 def decorate_mutations(tables, other_args):
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor,"icgc")
 	for table in tables:
 
 		time0 = time.time()
 		print("====================")
-		print("using annotations from  ", table,  "to add reliability info to  mutations; pid:", os.getpid())
+		print("using annotations from  ", table, "to add reliability info to  mutations; pid:", os.getpid())
 		update_reliability_column_in_mutation_tables(cursor, table)
 		time1 = time.time()
 		print(("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid())
-
 
 	cursor.close()
 	db.close()
@@ -58,7 +56,7 @@ def decorate_mutations(tables, other_args):
 #########################################
 def main():
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
 	switch_to_db(cursor,"icgc")
@@ -67,6 +65,7 @@ def main():
 		print("====================")
 		print("checking/adding reliability column to", table)
 		add_columns(cursor, table)
+
 	#########################
 	# which temp somatic tables do we have
 	qry  = "select table_name from information_schema.tables "

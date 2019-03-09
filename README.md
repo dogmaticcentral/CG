@@ -14,7 +14,9 @@ database.  While the  back end of each pipeline is rather generic, the front lin
 geared toward answering particular questions for which they were originally written.
 
 CG is not an out-of-the box solution. Rather, it is a starter kit, in case you would like to
-do some cancer genomics data analysis on your own.
+do some cancer genomics data analysis on your own. Installing CG database(s) may take a
+day or two if you are willing to go with the pipeline as-is. With tweaks, a week is 
+not an unreasonable time estimate.
 
 
 Why bother with the local copy of the data? I do not know a general answer to that question.
@@ -36,8 +38,9 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
     * [01_hgnc_name_resolution_table and 02_ensembl_id_table](#01_hgnc_name_resolution_table-and-02_ensembl_id_table)
     * [03_find_max_field_length and 04_make_tables](#03_find_max_field_length-and-04_make_tables)
     * [05_write_mutations through 08_make_indices](#05_write_mutations-through-08_make_indices)
-    * [10_check_mut_etc through 17_copy_reliabilty_etc](#10_check_mut_etc-through-17_copy_reliabilty_etc)
-
+    * [10_check_mut_etc through 15_cleanup_duplicate_donors](#10_check_mut_etc-through-15_cleanup_duplicate_donors)
+    * [16_decorate_simple_somatic though 18_copy_reliability](#16_decorate_simple_somatic-though--18_copy_reliability)
+ 
  
  
  ## Dependencies
@@ -101,7 +104,7 @@ then load them from mysql shell (as in [07_load_mysql.py](icgc/07_load_mysql.py)
  Make sure to run [08_make_indices.py](icgc/08_make_indices_on_temp_tables.py) - [12_reorganize_mutations.py](icgc/12_reorganize_mutations.py)
  pretty much does not wokr without it at all. 
 
-### 10_check_mut_etc through 17_copy_reliabilty_etc
+### 10_check_mut_etc through 15_cleanup_duplicate_donors
 This is where we depart from ICGC original database architecture - which is pretty much
 nonexistent and consists of massive duplication of annotation for each occurrence of a mutation
 and for each of its interpretations within various transcripts.
@@ -146,7 +149,18 @@ whether it is worth the optimization effort. (Do not forget to create indices
  1976 distinct ICGC donor ids, and 1928 distinct submitter IDs. BRCA does turn out to be the biggest offender here,
  followed by LICA with 8 duplicated donors. It is not clear whether these duplicates refer to the same
  tumor at the same stage because even the submitter sample ids might be different
- (see [15_cleanup_duplicate_donors.py](icgc/15_cleanup_duplicate_donors.py)). Not sure if this is worth pursuing
- further, except for being very cautious abut making claims  about recurrent mutations, in BRCA in particular.
+ (see [15_cleanup_duplicate_donors.py](icgc/15_cleanup_duplicate_donors.py)). 
+ In this version of the pipeline we keep only the sample annotated as 'Primary tumour - solid tissue.' Out of
+ these, if multiple refer to the same submitter id, we keep the ones with the largest reported number of
+ somatic mutations. The investigation of the source of this duplication is again outside of our zone of interest.
  
+ ### 16_decorate_simple_somatic though  18_copy_reliability 
+ 
+ We add a couple of values to each row to later make the search for meaningful entries faster
+ In particular, in [16_decorate_simple_somatic.py](icgc/16_decorate_simple_somatic.py)
+ we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
+ to simple_somatic tables. In the following script we combine these two columns into a reliability estimate: a 
+ somatic mutation in individual patient is considered reliable if mutant_allele_read_count>=10
+ and mut_to_total_read_count_ratio>=0.2. Information about the mutation in general (mutations_chromosome tables) 
+ is considered reliable if there is at leas one patient for which it was reliably established.
  
