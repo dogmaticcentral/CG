@@ -22,7 +22,7 @@ not an unreasonable time estimate.
 Why bother with the local copy of the data? I do not know a general answer to that question.
 You should check the homepage  of both databases - maybe the information you
  are looking for is already  available.
-Here the original motif was to study the co-occurrence of mutations in different genes. 
+Here the original motive was to study the co-occurrence of mutations in different genes. 
 These types of questions are not readily answerable using data portals - they  tend to
 agglomerate data on per-gene basis, in order to protect the privacy of sample donors. 
 
