@@ -1,8 +1,8 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
-# this was the ides:
+# this was the idea:
 # I don't know what to do with multiple specimens from the same
-# donor - is that the same donor or not?
+# donor - is that the same tumor or not?
 # keep them in the following order of preference
 # primary, metastatic, recurrent, cell line
 # if here are two samples from the same stage,
@@ -12,12 +12,10 @@
 # it turns out that in many cases the overlap is 0
 # so just keep plowing with what I have
 
-from icgc_utils.common_queries   import  *
-
-
+from icgc_utils.common_queries  import  *
 
 def cleanup (cursor, table, donor, specimen_ids):
-	print "\t", donor
+	print("\t", donor)
 	mutations = {}
 	common_muts = set([])
 	for spec_id in specimen_ids:
@@ -27,8 +25,8 @@ def cleanup (cursor, table, donor, specimen_ids):
 			common_muts = set(mutations[spec_id] )
 		else:
 			common_muts &= set(mutations[spec_id] )
-		print "\t", spec_id, spec_type, len(mutations[spec_id]), mutations[spec_id][:3]
-	print len(common_muts)
+		print("\t", spec_id, spec_type, len(mutations[spec_id]), mutations[spec_id][:3])
+	print(len(common_muts))
 
 
 def spec_from_TCGA(sample_barcode):
@@ -62,12 +60,6 @@ def spec_type_res(cursor, table, spec_id):
 	else:
 		return "unk"
 
-
-
-
-
-
-
 def main():
 
 	db     = connect_to_mysql()
@@ -83,7 +75,7 @@ def main():
 	switch_to_db(cursor,"icgc")
 
 	for table in tables:
-		print table
+		print(table)
 		donors = get_donors(cursor,table)
 
 		for donor in donors:
@@ -91,7 +83,8 @@ def main():
 			qry += "where icgc_donor_id = '%s' " % donor
 			specimen_ids = [r[0] for  r in search_db(cursor,qry)]
 			if len(specimen_ids)>1:
-				cleanup (cursor,table, donor, specimen_ids)
+				print("multiple specimen ids for", donor)
+				#cleanup (cursor,table, donor, specimen_ids)
 
 
 	cursor.close()

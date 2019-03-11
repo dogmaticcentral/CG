@@ -257,7 +257,14 @@ def search_db(cursor, qry, verbose=False):
 			print("No return for query:\n%s" % qry)
 		return False
 
-	return rows
+	# since python3 fetchall returns bytes inst of str in some  random fashion
+	# not clear what's going on
+	# here is a rather useless issue page on github
+	# https://github.com/PyMySQL/mysqlclient-python/issues/145#issuecomment-283936456
+	rows_clean = []
+	for row in rows:
+		rows_clean.append([r.decode('utf-8') if type(r)==bytes else r for r in row])
+	return rows_clean
 
 
 ########

@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 
-# not sure any more what exactly are we testing here,
-# but at any rate ...
+# not sure any more what exactly are we testing,
+# but here we go ...
 
 from icgc_utils.common_queries   import  *
 from config import Config

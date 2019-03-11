@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# I've managed to screw this one up, so go back and fix
+#! /usr/bin/python3
+# I've managed to screw this one up (missed splice?), so go back and fix
 
 import subprocess
 import time, re
@@ -7,13 +7,14 @@ import time, re
 from icgc_utils.common_queries  import  *
 from icgc_utils.processes   import  *
 from random import shuffle
+from config import Config
 
 # this is set literal
 mutation_pathogenic = {'missense','frameshift',  'stop_gained', 'inframe',
               'stop_lost', 'inframe_deletion', 'inframe_insertion',
               'start_lost', 'disruptive_inframe_deletion',
                'exon_loss', 'disruptive_inframe_insertion',
-            'splice', '5_prime_UTR_premature_start_codon_gain',
+              'splice', '5_prime_UTR_premature_start_codon_gain',
               'splice_acceptor', 'splice_region', 'splice_donor'
              }
 
@@ -23,14 +24,14 @@ location_pathogenic = { 'splice', '5_prime_UTR_premature_start_codon_gain',
 #########################################
 def fix_pathogenicity(chromosomes, other_args):
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	for chrom  in chromosomes:
 		mutations_table = "mutations_chrom_%s"%chrom
-		print
-		print "===================="
-		print "processing icgc table ", mutations_table, os.getpid()
+		print()
+		print("====================")
+		print("processing icgc table ", mutations_table, os.getpid())
 		qry = "select icgc_mutation_id, start_position, consequence, pathogenic_estimate from icgc.%s" % mutations_table
 		for  icgc_mutation_id, start_position, consequence, p_estimate in search_db(cursor,qry):
 			#print icgc_mutation_id, start_position, consequence, p_estimate

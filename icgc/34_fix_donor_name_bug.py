@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# tcga does not have specim columns
+# tcga does not have specimen id columns
 # so we will take the TCGA submitted sample id to play the role
 # we can only hope we do not have multiple samples from the same specimen
 # bcs we do not know waht happens then
@@ -16,7 +16,7 @@ def fix(tables, other_args):
 	switch_to_db(cursor,"icgc")
 
 	for table in tables:
-		print table
+		print(table)
 		if True:
 			qry  = "select distinct(SUBSTRING(submitted_sample_id,1,12)) "
 			qry += "from %s " % table
@@ -28,10 +28,10 @@ def fix(tables, other_args):
 		ret = search_db(cursor,qry)
 		if not ret: continue
 		tcga_donors = [r[0] for r in ret]
-		print 'tcga_donors:', len(tcga_donors)
+		print('tcga_donors:', len(tcga_donors))
 		count = 0
 		for td in  tcga_donors:
-			if tcga_donors.index(td)%100 == 0: print  "\t", tcga_donors.index(td), "donors"
+			if tcga_donors.index(td)%100 == 0: print("\t", tcga_donors.index(td), "donors")
 			qry  = "select distinct(icgc_donor_id) "
 			qry += "from %s " % table
 			qry += "where submitted_sample_id like '%s%%' " %  td
@@ -39,18 +39,18 @@ def fix(tables, other_args):
 			if not ret: continue
 			icgc_donor_ids = [r[0] for r in ret]
 			if len(icgc_donor_ids)<2: continue
-			print td, icgc_donor_ids
+			print(td, icgc_donor_ids)
 			count += 1
-			if count%10==0: print table, count
+			if count%10==0: print(table, count)
 			dos  = [d for d in icgc_donor_ids if d[2]!='T']
 			dots = [d for d in icgc_donor_ids if d[2]=='T']
 			if len (dos) == 0:
-				print table, td, "no original ids"
+				print(table, td, "no original ids")
 				dos = dots[:1]
 				dots = dots[1:]
 			if len(dos)>1:
-				print table, td, "too many original ids"
-				print dos
+				print(table, td, "too many original ids")
+				print(dos)
 				continue
 			do = dos[0]
 
@@ -62,8 +62,8 @@ def fix(tables, other_args):
 						change_donor_id = True
 						pass
 					else:
-						qry  =  "select id from %s where icgc_donor_id='%s' " % (table,do)
-						qry +=  "and icgc_mutation_id='%s'" % mut_id
+						qry  = "select id from %s where icgc_donor_id='%s' " % (table,do)
+						qry += "and icgc_mutation_id='%s'" % mut_id
 						ret  = search_db(cursor,qry)
 						if ret: # the old variant entry exists
 							change_donor_id = False
@@ -77,7 +77,7 @@ def fix(tables, other_args):
 
 					search_db(cursor,qry)
 
-		print count
+		print(count)
 	cursor.close()
 	db.close()
 

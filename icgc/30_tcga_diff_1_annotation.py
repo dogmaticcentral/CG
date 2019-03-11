@@ -70,7 +70,7 @@ location_vocab = ['intergenic_region', 'intragenic', 'upstream', 'downstream',
 
 # this is set literal
 pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained', '5_prime_UTR_premature_start_codon_gain',
-                     'start_lost', 'frameshift', 'disruptive_inframe_deletion',
+              'start_lost', 'frameshift', 'disruptive_inframe_deletion',
                      'exon_loss', 'disruptive_inframe_insertion', 'missense',
                      'splice_acceptor', 'splice_region', 'splice_donor', 'inframe', 'splice'
              }
@@ -149,16 +149,19 @@ def output_annovar_input_file (cursor, db_name, tcga_table, already_deposited_sa
 		outf[assembly] = open(outfname[assembly], 'w')
 
 	for row in rows:
+		# not sure here why some entries pop up as bytes rather than str
+		# (this is python3 issue; does not appear in python)
 		(tumor_sample_barcode, chromosome, start_position, end_position, reference_allele,
-			tumor_seq_allele1, tumor_seq_allele2, assembly) = row
+			tumor_seq_allele1, tumor_seq_allele2, assembly) = \
+			[str(entry, 'utf-8') if type(entry)==bytes else str(entry) for entry in row]
 		if tumor_sample_barcode in already_deposited_samples: continue
 		differing_allele = tumor_seq_allele1
 		if differing_allele==reference_allele: differing_allele = tumor_seq_allele2
 		# somebody in  the TCGA decided to innovate and mark the insert with the before- and after- position
 		# Annovar expects both numbers to be the same in such case
 		if reference_allele=="-": end_position=start_position
-		outrow = "%s\t%d\t%d\t%s\t%s" % (chromosome, start_position, end_position, reference_allele, differing_allele)
-		print(outrow, file=outf[assembly])
+		outrow = "\t".join([chromosome, start_position, end_position, reference_allele, differing_allele])
+		outf[assembly].write(outrow+"\n")
 
 	for assembly in assemblies:
 		outf[assembly].close()
@@ -166,6 +169,7 @@ def output_annovar_input_file (cursor, db_name, tcga_table, already_deposited_sa
 		os.rename(outfname[assembly]+".tmp", outfname[assembly])
 
 	return outfname
+
 
 ##################################
 def run_annovar(avinput, table_name):
@@ -312,6 +316,7 @@ def check_location_seen(cursor, annovar_named_field, lock_alias=None):
 	ret = search_db(cursor,qry)
 	return False if not ret or ret[0][0]==0 else True
 
+
 #########################################
 def check_mutation_seen(cursor, annovar_named_field, lock_alias=None):
 	mutation_table = "mutations_chrom_%s" % annovar_named_field['chr']
@@ -347,10 +352,10 @@ def store_location(cursor, annovar_named_field, gene_relative_string, tr_relativ
 
 
 #########################################
-def store_mutation(cursor, annovar_named_field, mutation_type, consequences_string, aa_change, pathogenic_estimate):
+def store_mutation(cursor, annovar_named_field, assembly, mutation_type, consequences_string, aa_change, pathogenic_estimate):
 	mutation_table = "mutations_chrom_%s" % annovar_named_field['chr']
 
-	# I've seen this get into race condition  - I will have to lock here
+	# I've seen this get into race condition  - I will have to lock here (? what about myISAM not deadlocking?)
 	# for some reason you cannot refer to a locked table multiple times in a single query using the same name.
 	#  Use aliases instead, and obtain a separate lock for the table and each alias
 	# that is you do something like "select * from t as myalias"
@@ -372,13 +377,11 @@ def store_mutation(cursor, annovar_named_field, mutation_type, consequences_stri
 		if len(ref_allele)>200: ref_allele=ref_allele[:200]+"etc"
 		to_allele  = annovar_named_field['alt']
 		if len(to_allele)>200: to_allele=to_allele[:200]+"etc"
-		print("storing")
-		print(ref_allele)
-		print(to_allele)
 
 		named_fields = {'icgc_mutation_id':	new_id,
 						'start_position': int(annovar_named_field['start']),
 						'end_position': int(annovar_named_field['end']),
+						'assembly': assembly,
 						'mutation_type':mutation_type,
 						'reference_genome_allele': ref_allele,
 						'mutated_from_allele': ref_allele,
@@ -394,7 +397,16 @@ def store_mutation(cursor, annovar_named_field, mutation_type, consequences_stri
 	search_db(cursor,qry)
 	return
 
-
+#########################################
+#########################################
+# profile decorator is for the use with kernprof (a line profiler):
+#  ./icgc_utils/kernprof.py -l 30_tcga_diff_1_annotation.py
+# followed by
+# python3 -m line_profiler 30_tcga_diff_1_annotation.py.lprof
+# see here https://github.com/rkern/line_profiler#line-profiler
+# the reason I am using local kernprof.py is that I don't know where pip
+# installed its version (if anywhere)
+#@profile
 #########################################
 def store_annotation (cursor, tcga_table, avoutput):
 	# store location and mutation info
@@ -403,6 +415,7 @@ def store_annotation (cursor, tcga_table, avoutput):
 	switch_to_db(cursor, 'icgc')
 	for assembly, avfile in avoutput.items():
 		no_lines = int(subprocess.check_output(["bash","-c", "wc -l %s"%avfile]).split()[0])
+
 		inf = open (avfile, "r")
 		header_fields = None
 		ct = 0
@@ -435,14 +448,12 @@ def store_annotation (cursor, tcga_table, avoutput):
 					pathogenic_estimate=1
 					break
 			if not location_seen:
-				print("storing location:", annovar_named_field)
+				#print("storing location:", annovar_named_field)
 				store_location(cursor, annovar_named_field, gene_relative_string, tr_relative_string)
 			if not mutation_seen:
-				store_mutation(cursor, annovar_named_field, mutation_type,
+				store_mutation(cursor, annovar_named_field, assembly, mutation_type,
 				               consequences_string, aa_change, pathogenic_estimate)
-
 		inf.close()
-
 
 #########################################
 def process_table(home, cursor, tcga_table, already_deposited_samples):
@@ -456,8 +467,6 @@ def process_table(home, cursor, tcga_table, already_deposited_samples):
 
 	# use tcga entries to create input for annovar
 	avinput  = output_annovar_input_file (cursor, 'tcga', tcga_table, already_deposited_samples)
-	for assembly, avinfile  in avinput.items():
-		print("{}/{}".format(workpath,avinfile))
 
 	# fork annovar process
 	avoutput = run_annovar(avinput,tcga_table)
@@ -502,9 +511,8 @@ def add_tcga_diff(tcga_tables, other_args):
 		# I am taking a leap of faith here, and I believe that the deposited data is
 		# really identical to what we have in tcga
 		print("not deposited:", len(samples_not_deposited))
-
-		#process_table(home, cursor, tcga_table, already_deposited_samples)
-		#print("\t overall time for %s: %.3f mins; pid: %d" % (tcga_table, float(time.time()-time0)/60, os.getpid()))
+		process_table(home, cursor, tcga_table, already_deposited_samples)
+		print("\t overall time for %s: %.3f mins; pid: %d" % (tcga_table, float(time.time()-time0)/60, os.getpid()))
 
 	cursor.close()
 	db.close()
@@ -528,8 +536,7 @@ def main():
 	cursor.close()
 	db.close()
 
-	#tcga_tables =['SKCM_somatic_mutations']
-	number_of_chunks = 1  # myISAM does not deadlock
+	number_of_chunks = 20  # myISAM does not deadlock
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
 
 #########################################

@@ -1,9 +1,9 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
 # tcga does not have specim columns
 # so we will take the TCGA submitted sample id to play the role
 # we can only hope we do not have multiple samples from the same specimen
-# bcs we do not know waht happens then
+# bcs we do not know what happens then
 
 from icgc_utils.common_queries   import  *
 def main():
@@ -20,11 +20,11 @@ def main():
 	switch_to_db(cursor,"icgc")
 
 	for table in tables:
-		print table
+		print(table)
 		qry  = "update %s " % table
 		qry += "set icgc_specimen_id=submitted_sample_id "
 		qry += "where icgc_donor_id like 'DOT_%'"
-		print qry
+		print(qry)
 		search_db(cursor,qry)
 
 	cursor.close()
