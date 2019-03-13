@@ -6,9 +6,11 @@
 # bcs we do not know what happens then
 
 from icgc_utils.common_queries   import  *
+from config import Config
+
 def main():
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	#########################

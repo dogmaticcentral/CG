@@ -13,6 +13,7 @@
 # so just keep plowing with what I have
 
 from icgc_utils.common_queries  import  *
+from config import Config
 
 def cleanup (cursor, table, donor, specimen_ids):
 	print("\t", donor)
@@ -62,7 +63,7 @@ def spec_type_res(cursor, table, spec_id):
 
 def main():
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	#########################

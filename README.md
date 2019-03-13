@@ -157,7 +157,7 @@ whether it is worth the optimization effort. (Do not forget to create indices
  ### 16_decorate_simple_somatic through  18_copy_reliability 
  
  We add a couple of values to each row to later make the search for meaningful entries faster.
- In particular, in [16_decorate_simple_somatic.py](icgc/16_decorate_simple_somatic.py)
+ In particular, in [16_decorate_simple_somatic.py](icgc/17_decorate_simple_somatic.py)
  we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
  to simple_somatic tables. In the following script, 
  [17_add_realiability_annotation_to_somatic.py](icgc/7_add_realiability_annotation_to_somatic.py),  
