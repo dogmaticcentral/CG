@@ -7,14 +7,11 @@ from config import Config
 from icgc_utils.common_queries  import  *
 from icgc_utils.processes   import  *
 
-variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id',
-                   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
 
 #  'aa_mutation',  'consequence_type', and 'pathogenic_estimate'  will be filled separately
 mutation_columns = ['icgc_mutation_id', 'start_position', 'end_position', 'assembly',
 					'mutation_type', 'mutated_from_allele', 'mutated_to_allele', 'reference_genome_allele']
 
-location_columns = ['position', 'gene_relative', 'transcript_relative']
 
 ################################################################
 # stop_retained: A sequence variant where at least one base in the terminator codon is changed, but the terminator remains
@@ -56,36 +53,10 @@ def insert (cursor, table, columns, values):
 
 
 #########################################
-def reorganize_donor_variants(cursor, table, columns):
-
-	variants_table = table.replace("_temp","")
-	donors = get_donors(cursor, table)
-	for donor in donors:
-		variants  = set([])
-		total_entries = 0
-		qry  = "select * from %s where icgc_donor_id='%s' " % (table, donor)
-		qry += "and gene_affected is not null and gene_affected !='' "
-		ret  = search_db (cursor, qry)
-		if not ret: continue # it happens, check "select * from ALL_simple_somatic_temp where icgc_donor_id='DO282'"
-		#	print search_db (cursor, qry, verbose=True)
-		#	exit()
-		for fields in ret:
-			total_entries += 1
-			named_field = dict(list(zip(columns,fields)))
-			variant_values = []
-			for name in variant_columns:
-				variant_values.append(quotify(named_field[name]))
-			variants.add(",".join(variant_values)) # set => getting rid of duplicates
-
-		for variant in variants:
-			insert(cursor, variants_table, variant_columns, variant.split(","))
-
-
-#########################################
 # profile decorator is for the use with kernprof (a line profiler):
-#  ./icgc_utils/kernprof.py -l 12_reorganize_mutations.py
+#  ./icgc_utils/kernprof.py -l 12_reorganize_variants.py
 # followed by
-# python -m line_profiler 12_reorganize_mutations.py.lprof
+# python -m line_profiler 12_reorganize_variants.py.lprof
 # see here https://github.com/rkern/line_profiler#line-profiler
 # the reason I am using local kernprof.py is that I don't know where pip
 # installed its version (if anywhere)
@@ -169,59 +140,6 @@ def reorganize_mutations(cursor, table, columns):
 
 
 #########################################
-def reorganize_locations(cursor, table, columns):
-
-	chromosomes = [str(i) for i in range(1,23)] + ["X", "Y", "MT"]
-
-	for chromosome in chromosomes:
-		location_table = "locations_chrom_{}".format(chromosome)
-		qry =  "select distinct start_position from %s  where chromosome='%s' " % (table, chromosome)
-		qry += "and gene_affected is not null and gene_affected !='' "
-		ret  = search_db (cursor, qry)
-		if not ret: continue
-		positions = [r[0] for r in ret]
-		for position in positions:
-
-			if entry_exists(cursor, "icgc", location_table, "position", position): continue
-
-			gene_relative       = set([])
-			transcript_relative = set([])
-			# this hinges on
-			# qry  = "create index chrom_pos_idx on %s (chromosome, start_position)" % mutations_table
-			qry =  "select * from %s where chromosome='%s' and start_position=%d " % (table, chromosome, position)
-			qry += "and gene_affected is not null and gene_affected !='' "
-			for fields in search_db (cursor,qry):
-				named_field = dict(list(zip(columns,fields)))
-				# this is not ready to be stored, because we need to work through the consequences
-				gene   = named_field['gene_affected']
-				tscrpt = named_field['transcript_affected']
-				csq = named_field['consequence_type']
-				if csq in consequence_vocab:
-					pass
-				elif csq == location_vocab[0]: # intergenic
-					pass
-				elif csq in location_vocab[1:4]: # gene-relative
-					gene_relative.add("{}:{}".format(gene,csq))
-				elif csq in location_vocab[4:]: # transcript-relative
-					gene_relative.add("{}:{}".format(gene,"intragenic"))
-					transcript_relative.add("{}:{}".format(tscrpt,csq))
-				elif csq == "":
-					pass
-				else:
-					print("unrecognized consequence field:", csq)
-					exit()
-				# gene and transcript are listed, but no relative position is specified:
-				if len(gene_relative)==0 and gene and 'ENSG' in gene:
-					gene_relative.add("{}:{}".format(gene,"unk"))
-				if len(transcript_relative)==0 and tscrpt and 'ENST' in tscrpt:
-					transcript_relative.add("{}:{}".format(tscrpt,"unk"))
-
-			# now we are ready to store
-			location_values = [str(position), quotify(";".join(gene_relative)), quotify(";".join(transcript_relative))]
-			insert (cursor, location_table, location_columns, location_values)
-
-
-#########################################
 def reorganize(tables, other_args):
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
@@ -236,24 +154,10 @@ def reorganize(tables, other_args):
 		# for mutation and location check if the info exists; if not make new entry
 		time0 = time.time()
 		print("====================")
-		print("reorganizing ", table, os.getpid())
-		###############
-		print("\t variants", os.getpid())
-		reorganize_donor_variants(cursor, table, columns)
+		print("reorganizing mutations from", table, os.getpid())
+		reorganize_mutations(cursor, table, columns)
 		time1 = time.time()
 		print(("\t\t done in %.3f mins" % (float(time1-time0)/60)), os.getpid())
-		###############
-		print("\t mutations", os.getpid())
-		reorganize_mutations(cursor, table, columns)
-		time2 = time.time()
-		print(("\t\t done in %.3f mins" % (float(time2-time1)/60)), os.getpid())
-		###############
-		print("\t locations", os.getpid())
-		reorganize_locations(cursor, table, columns)
-		time3 = time.time()
-		print(("\t\t done in %.3f mins" % (float(time3-time2)/60)), os.getpid())
-
-		print(("\t overall time for %s: %.3f mins" % (table, float(time3-time0)/60)), os.getpid())
 
 	cursor.close()
 	db.close()

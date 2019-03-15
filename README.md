@@ -101,7 +101,7 @@ For large tables, rather than loading them through python,
 it turns out to be faster to create tsvs and 
 then load them from mysql shell (as in [07_load_mysql.py](icgc/07_load_mysql.py); alternative: use mysqlimport manually) 
  to read them in wholesale. These scripts take care of that part , plus some index creating on the newly loaded tables.
- Make sure to run [08_make_indices.py](icgc/08_make_indices_on_temp_tables.py) - [12_reorganize_mutations.py](icgc/12_reorganize_mutations.py)
+ Make sure to run [08_make_indices.py](icgc/08_make_indices_on_temp_tables.py) - [12_reorganize_mutations.py](icgc/12_reorganize_variants.py)
  pretty much does not work without it at all. 
 
 ### 10_check_mut_etc through 15_cleanup_duplicate_donors
@@ -124,21 +124,21 @@ schemaSPy: http://schemaspy.sourceforge.net/
 mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
 -->
 
-Note that in [12_reorganize_mutations.py](icgc/12_reorganize_mutations.py) you can choose to
+Note that in [12_reorganize_mutations.py](icgc/12_reorganize_variants.py) you can choose to
 run in parallel (the number of 'chunks' in main()). It still takes a while - as in, 
 leave-to-run-overnight while. This is probably the weakest part of the whole pipeline, but is unclear
 whether it is worth the optimization effort. (Do not forget to create indices
  using [08_make_indices_on_temp_tables.py](icgc/08_make_indices_on_temp_tables.py))
  
- If [12_reorganize_mutations.py](icgc/12_reorganize_mutations.py) is the weakest link in the pipeline, 
- [14_cleanup_duplicate_entries.py](icgc/14_cleanup_duplicate_entries.py) is the most likely to cover-up for a problem, 
+ If [12_reorganize_mutations.py](icgc/12_reorganize_variants.py) is the weakest link in the pipeline, 
+ [14_cleanup_duplicate_entries.py](icgc/18_cleanup_duplicate_entries.py) is the most likely to cover-up for a problem, 
  possibly originating in ICGC itself. Some data sets seem to have a huge number of duplicates - entries with identical tuple
  of identifiers (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id). Note that this
  is after we have reorganized the database so that the mutation and location info sit in 
  different tables from the donor info. Not sure what this is about (the same sample analyzed independently multiple
  times?), but when found, this script chooses the entry with the highest coverage if possible. See the script for the full
- resolution strategy and make sure to run [13_make_jumbo_index](icgc/13_make_jumbo_index_on_simple_somatic_tables.py) -
- [14_cleanup_duplicate_entries.py](icgc/14_cleanup_duplicate_entries.py) is useless without it.
+ resolution strategy and make sure to run [13_make_jumbo_index](icgc/17_make_jumbo_index_on_simple_somatic_tables.py) -
+ [14_cleanup_duplicate_entries.py](icgc/18_cleanup_duplicate_entries.py) is useless without it.
  
  
  Even after this cleanup there might be further problems: See for example, mutation MU2003689, which, 
@@ -149,7 +149,7 @@ whether it is worth the optimization effort. (Do not forget to create indices
  1976 distinct ICGC donor ids, and 1928 distinct submitter IDs. BRCA does turn out to be the biggest offender here,
  followed by LICA with 8 duplicated donors. It is not clear whether these duplicates refer to the same
  tumor at the same stage because even the submitter sample ids might be different
- (see [15_cleanup_duplicate_donors.py](icgc/15_cleanup_duplicate_donors.py)). 
+ (see [15_cleanup_duplicate_donors.py](icgc/19_cleanup_duplicate_donors.py)). 
  In this version of the pipeline we keep only the sample annotated as 'Primary tumour - solid tissue.' Out of
  these, if multiple refer to the same submitter id, we keep the ones with the largest reported number of
  somatic mutations. The investigation of the source of this duplication is again outside of our zone of interest.
@@ -157,7 +157,7 @@ whether it is worth the optimization effort. (Do not forget to create indices
  ### 16_decorate_simple_somatic through  18_copy_reliability 
  
  We add a couple of values to each row to later make the search for meaningful entries faster.
- In particular, in [16_decorate_simple_somatic.py](icgc/16_decorate_simple_somatic.py)
+ In particular, in [16_decorate_simple_somatic.py](icgc/20_decorate_simple_somatic.py)
  we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
  to simple_somatic tables. In the following script, 
  [17_add_realiability_annotation_to_somatic.py](icgc/7_add_realiability_annotation_to_somatic.py),  

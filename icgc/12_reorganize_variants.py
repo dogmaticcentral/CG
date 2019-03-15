@@ -1,0 +1,103 @@
+#! /usr/bin/python3
+
+
+import time
+
+from config import Config
+from icgc_utils.common_queries  import  *
+from icgc_utils.processes   import  *
+
+variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id',
+                   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
+
+#########################################
+def insert (cursor, table, columns, values):
+
+	nonempty_values = []
+	corresponding_columns = []
+	for i in range(len(values)):
+		if not values[i] or  values[i] == "": continue
+		nonempty_values.append(values[i])
+		corresponding_columns.append(columns[i])
+	qry = "insert into %s (%s) " %(table, ",".join(corresponding_columns))
+	qry += "values (%s) " % ",".join(nonempty_values)
+	search_db(cursor, qry)
+
+
+#########################################
+def reorganize_donor_variants(cursor, table, columns):
+
+	variants_table = table.replace("_temp","")
+	donors = get_donors(cursor, table)
+	for donor in donors:
+		variants  = set([])
+		total_entries = 0
+		qry  = "select * from %s where icgc_donor_id='%s' " % (table, donor)
+		qry += "and gene_affected is not null and gene_affected !='' "
+		ret  = search_db (cursor, qry)
+		if not ret: continue # it happens, check "select * from ALL_simple_somatic_temp where icgc_donor_id='DO282'"
+		#	print search_db (cursor, qry, verbose=True)
+		#	exit()
+		for fields in ret:
+			total_entries += 1
+			named_field = dict(list(zip(columns,fields)))
+			variant_values = []
+			for name in variant_columns:
+				variant_values.append(quotify(named_field[name]))
+			variants.add(",".join(variant_values)) # set => getting rid of duplicates
+
+		for variant in variants:
+			insert(cursor, variants_table, variant_columns, variant.split(","))
+
+
+#########################################
+def reorganize(tables, other_args):
+
+	db     = connect_to_mysql(Config.mysql_conf_file)
+	cursor = db.cursor()
+	switch_to_db(cursor,"icgc")
+	for table in tables:
+
+		# the tables should all have the same columns
+		qry = "select column_name from information_schema.columns where table_name='%s'"%table
+		columns = [field[0] for field in  search_db(cursor,qry)]
+		# line by line: move id info into new table
+		# for mutation and location check if the info exists; if not make new entry
+		time0 = time.time()
+		print("====================")
+		print("reorganizing variants from ", table, os.getpid())
+		reorganize_donor_variants(cursor, table, columns)
+		time1 = time.time()
+		print(("\t\t done in %.3f mins" % (float(time1-time0)/60)), os.getpid())
+
+	cursor.close()
+	db.close()
+
+	return
+
+
+#########################################
+#########################################
+def main():
+
+	#print("disabled")
+	#exit()
+
+	db     = connect_to_mysql(Config.mysql_conf_file)
+	cursor = db.cursor()
+	#########################
+	# which temp somatic tables do we have
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%simple_somatic_temp'"
+	tables = [field[0] for field in  search_db(cursor,qry)]
+	cursor.close()
+	db.close()
+
+	number_of_chunks = 8  # myISAM does not deadlock
+	parallelize(number_of_chunks, reorganize, tables, [])
+
+
+
+#########################################
+if __name__ == '__main__':
+	main()

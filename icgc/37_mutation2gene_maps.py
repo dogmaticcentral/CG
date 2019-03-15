@@ -1,10 +1,12 @@
 #! /usr/bin/python
 import time
 
-from icgc_utils.mysql   import  *
+from icgc_utils.mysql import *
 from icgc_utils.processes import *
 from random import shuffle
+from config import Config
 
+#########################################
 def make_map_table(cursor, db_name, table_name):
 
 	if check_table_exists(cursor, db_name, table_name): return
@@ -20,8 +22,8 @@ def make_map_table(cursor, db_name, table_name):
 	qry += ") ENGINE=MyISAM"
 
 	rows = search_db(cursor, qry)
-	print qry
-	print rows
+	print(qry)
+	print(rows)
 
 
 #########################################
@@ -43,81 +45,88 @@ def store (cursor, mut_id, gene_symbols):
 		qry += "values ('%s','%s')" % (mut_id, symbol)
 		if search_db(cursor,qry):
 			search_db(cursor,qry,verbose=True)
-
+		print(qry)
+		exit()
 	return
 
 #########################################
 def ens2hgnc(cursor,ensids):
 	symbols = set([])
 	for ensid in ensids:
+		# note that we are filtering for protein-coding genes here:
 		qry  = "select approved_symbol from hgnc "
 		qry += "where locus_group='protein-coding gene' "
 		qry += "and (ensembl_gene_id='%s' or ensembl_gene_id_by_hgnc='%s')" % (ensid,ensid)
 		ret = search_db(cursor, qry)
 		if not ret: continue
 		if len(ret)>1:
-			print "nonunique symbol for %s (?)" % ensid,
-			print ",".join([r[0] for r in ret])
-			#continue
+			print("nonunique symbol for %s (?)" % ensid)
+			print(",".join([r[0] for r in ret]))
+			print(qry())
+			exit()
 		symbols.add(ret[0][0])
 
 	return symbols
 
+
 #########################################
 def transcr2gene(cursor, transcrids):
 
-	switch_to_db(cursor,"homo_sapiens_core_91_38")
-
-	geneids = set([])
-	for trscid in transcrids:
-
-		qry  = "select g.stable_id from gene g, transcript t "
-		qry += "where g.gene_id = t.gene_id and t.stable_id='%s'" % trscid
-		ret = search_db(cursor,qry)
-		if not ret: continue
-		geneids.add(ret[0][0])
-
-	switch_to_db(cursor,"icgc")
+	geneids = []
+	qry  = "select gene from ensembl_ids "
+	qry += "where transcript in (%s)" % (",".join(["'%s'"%tr for tr in transcrids]))
+	ret = search_db(cursor,qry)
+	if ret: geneids = [r[0] for r in ret]
+	print("** ", transcrids)
+	print("** ", geneids)
 	return geneids
+
+
+#########################################
+def report_progress(chrom, ct, no_rows, time0):
+	if (ct%10000>0): return
+	print("%30s   %6d lines out of %6d  (%d%%)  %d min" % \
+	(chrom, ct, no_rows, float(ct)/no_rows*100, float(time.time()-time0)/60))
+	return
 
 #########################################
 def store_maps(chromosomes, other_args ):
-	db     = connect_to_mysql()
+
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor, "icgc")
 	for chrom in chromosomes:
 		time0 = time.time()
-		print "===================="
-		print "maps for ", chrom, "pid:", os.getpid()
+		print("====================")
+		print("maps for ", chrom, "pid:", os.getpid())
 
-		qry  = "select m.icgc_mutation_id, l.gene_relative, l.transcript_relative "
+		qry = "select m.icgc_mutation_id, l.gene_relative, l.transcript_relative "
 		qry += "from mutations_chrom_%s m, locations_chrom_%s l " % (chrom, chrom)
 		qry += "where m.start_position=l.position and (l.gene_relative is not null or l.transcript_relative is not null)"
 		ret = search_db(cursor, qry, verbose=True)
 
 		if not ret:
-			print "(?) no ret for "
-			print  qry
+			print("(?) no ret for ")
+			print(qry)
 			exit()
 		no_rows = len(ret)
-		print "chrom ", chrom, "number of rows", no_rows
+		print("chrom ", chrom, "number of rows", no_rows)
 
 		ct = 0
 		for mut_id, gene, transcr in ret:
 			ct += 1
-			if (ct%10000==0):
-				print "%30s   %6d lines out of %6d  (%d%%)  %d min" % \
-				      (chrom, ct, no_rows, float(ct)/no_rows*100, float(time.time()-time0)/60)
+			report_progress(chrom, ct, no_rows, time0)
 			gene_found = False
 			if gene and gene != "":
 				geneids = set ([])
 				for geneloc in gene.split(";"):
 					ensid, loc = geneloc.split(":")
 					if loc == "intragenic": geneids.add(ensid)
-
+				print(geneids)
 				if len(geneids)>0:
 					gene_found = True
 					store (cursor, mut_id, ens2hgnc(cursor,geneids))
+
 			if not gene_found and transcr and transcr != "":
 				transcrids = set ([])
 				for transcrloc in transcr.split(";"):
@@ -126,7 +135,7 @@ def store_maps(chromosomes, other_args ):
 					geneids = transcr2gene(cursor, transcrids)
 					store (cursor, mut_id, ens2hgnc(cursor,geneids))
 		time1 = time.time()
-		print "chrom ", chrom, "done in %.3f mins" % (float(time1-time0)/60)
+		print("chrom ", chrom, "done in %.3f mins" % (float(time1-time0)/60))
 	cursor.close()
 	db.close()
 
@@ -137,7 +146,7 @@ def store_maps(chromosomes, other_args ):
 #########################################
 def main():
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	#########################
 	make_map_table(cursor, "icgc", "mutation2gene")
@@ -145,7 +154,9 @@ def main():
 	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
 	shuffle(chromosomes)
 
-	number_of_chunks = 8
+	chromosomes = ["Y"]
+
+	number_of_chunks = 1
 	parallelize (number_of_chunks, store_maps, chromosomes, [])
 
 	return

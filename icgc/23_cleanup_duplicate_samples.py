@@ -65,7 +65,7 @@ def main():
 				removable_ids_string = ",".join(["'%s'"%rid for rid in removable_ids])
 				qry = "delete from {} where icgc_sample_id in ({})".format(somatic_table, removable_ids_string)
 				search_db(cursor,qry)
-			
+
 
 	cursor.close()
 	db.close()

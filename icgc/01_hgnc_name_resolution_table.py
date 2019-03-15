@@ -6,6 +6,14 @@
 # header names:
 # head -n1 /data/hgnc/hgnc_name_res.tsv \
 # | sed 's/\t/\n/g' | awk 'ct +=1 {printf "%d ", ct; print}'
+
+# locus group:
+# | protein-coding gene |
+# | non-coding RNA      |
+# | pseudogene          |
+# | other               |
+# | phenotype           |
+
 from config import Config
 from icgc_utils.mysql import *
 

@@ -7,9 +7,9 @@ from icgc_utils.processes   import  *
 #########################################
 #########################################
 # profile decorator is for the use with kernprof (a line profiler):
-#  ./icgc_utils/kernprof.py -l 14_cleanup_duplicate_entries.py
+#  ./icgc_utils/kernprof.py -l 18_cleanup_duplicate_entries.py
 # followed by
-# python3 -m line_profiler 14_cleanup_duplicate_entries.py.lprof
+# python3 -m line_profiler 18_cleanup_duplicate_entries.py.lprof
 # see here https://github.com/rkern/line_profiler#line-profiler
 # the reason I am using local kernprof.py is that I don't know where pip
 # installed its version (if anywhere)
