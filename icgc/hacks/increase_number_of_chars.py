@@ -17,15 +17,12 @@ def main():
 
 	# indices on simple somatic temp
 	qry  = "select table_name from information_schema.tables "
-	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
+	qry += "where table_schema='icgc' and table_name like '%_specimen'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
 	for table in tables:
 		print(table)
-		qry   = "create index mega_idx on %s " % table
-		qry += " (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id)"
-		search_db(cursor,qry,verbose=True)
-		# while at it, let's add this one too (to be used in 18_cleanup_duplicate_specimens)
-		qry   = "create index donor_idx on %s (icgc_donor_id)" % table
+		qry   = "alter table %s " % table
+		qry += " modify column icgc_specimen_id varchar(50) "
 		search_db(cursor,qry,verbose=True)
 
 

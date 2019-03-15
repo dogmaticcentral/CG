@@ -49,7 +49,8 @@ def main():
 		if ret:
 			donors_with_multiple_specimens += len(ret)
 			if verbose: print("donors_with_multiple_specimens: ", len(ret))
-
+		else:
+			if verbose: print("donors_with_multiple_specimens: 0")
 
 
 		# samples per donor?
@@ -60,6 +61,8 @@ def main():
 		if ret:
 			donors_with_multiple_samples += len(ret)
 			if verbose: print("donors_with_multiple_samples: ", len(ret))
+		else:
+			if verbose: print("donors_with_multiple_samples: 0")
 
 		#total varinats?
 		qry  = "select count(*) from %s" % table

@@ -40,6 +40,7 @@ def switch_to_db (cursor, db_name):
 		return False
 	return True
 
+
 ########
 def val2mysqlval(value):
 	if  value is None:
@@ -47,6 +48,7 @@ def val2mysqlval(value):
 	elif type(value) is str:
 		return "\'%s\'" % value
 	return "{}".format(value)
+
 
 ########
 def store_without_checking(cursor, table, fields, verbose=False, database=None):
@@ -78,7 +80,6 @@ def store_without_checking(cursor, table, fields, verbose=False, database=None):
 	except:
 		row_id = -1
 	return row_id
-
 
 
 ########
@@ -164,6 +165,7 @@ def create_index (cursor, db_name, index_name, table, columns):
    
 	return True
 
+
 #########################################
 def get_column_names (cursor, db_name, table_name):
 
@@ -180,6 +182,7 @@ def get_column_names (cursor, db_name, table_name):
 	else:
 		return False
 
+
 #########################################
 def column_exists (cursor, db_name, table_name, column_name):
 
@@ -195,6 +198,7 @@ def column_exists (cursor, db_name, table_name, column_name):
 			return True
 	else:
 		return False
+
 
 #########################################
 def entry_exists(cursor, db_name, table_name, column_name, column_value):
@@ -222,6 +226,7 @@ def check_table_exists (cursor, db_name, table_name):
 	else:
 		return False
 
+
 #########################################
 def table_create_time (cursor, db_name, table_name):
 
@@ -235,6 +240,7 @@ def table_create_time (cursor, db_name, table_name):
 		return ""
 	else:
 		return rows[0][0]
+
 
 #######
 def search_db(cursor, qry, verbose=False):
@@ -275,6 +281,7 @@ def connect_to_mysql (conf_file):
 		print("Error connecting to mysql (%s) " % (e.args[1]))
 		sys.exit(1)
 	return mysql_conn_handle
+
 
 ########
 def connect_to_db (db_name, user=None, passwd=None):

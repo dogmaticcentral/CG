@@ -4,6 +4,7 @@ import time, re
 
 from icgc_utils.common_queries  import  *
 from icgc_utils.processes   import  *
+from icgc_utils.icgc import *
 from config import Config
 
 tcga_icgc_table_correspondence = {
@@ -44,7 +45,7 @@ tcga_icgc_table_correspondence = {
 }
 
 variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id',
-                   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
+				   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
 
 # we'll take care of 'aa_mutation' and 'consequence_type will be handled separately
 mutation_columns = ['icgc_mutation_id', 'start_position', 'end_position', 'mutation_type',
@@ -53,27 +54,26 @@ mutation_columns = ['icgc_mutation_id', 'start_position', 'end_position', 'mutat
 
 location_columns = ['position', 'gene_relative', 'transcript_relative']
 
-
 ################################################################
 # stop_retained: A sequence variant where at least one base in the terminator codon is changed, but the terminator remains
 consequence_vocab = ['stop_lost', 'synonymous', 'inframe_deletion', 'inframe_insertion', 'stop_gained',
-                     '5_prime_UTR_premature_start_codon_gain',
-                     'start_lost', 'frameshift', 'disruptive_inframe_deletion', 'stop_retained',
-                     'exon_loss', 'disruptive_inframe_insertion', 'missense']
+					 '5_prime_UTR_premature_start_codon_gain',
+					 'start_lost', 'frameshift', 'disruptive_inframe_deletion', 'stop_retained',
+					 'exon_loss', 'disruptive_inframe_insertion', 'missense']
 
 # location_vocab[1:4] is gene-relative
 # location_vocab[1:4] is transcript-relative
 location_vocab = ['intergenic_region', 'intragenic', 'upstream', 'downstream',
-                  '5_prime_UTR', 'exon',  'coding_sequence', 'initiator_codon',
-                  'splice_acceptor', 'splice_region', 'splice_donor',
-                  'intron', '3_prime_UTR', ]
+				  '5_prime_UTR', 'exon',  'coding_sequence', 'initiator_codon',
+				  'splice_acceptor', 'splice_region', 'splice_donor',
+				  'intron', '3_prime_UTR', ]
 
 # this is set literal
 pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained', '5_prime_UTR_premature_start_codon_gain',
-              'start_lost', 'frameshift', 'disruptive_inframe_deletion',
-                     'exon_loss', 'disruptive_inframe_insertion', 'missense',
-                     'splice_acceptor', 'splice_region', 'splice_donor', 'inframe', 'splice'
-             }
+			  'start_lost', 'frameshift', 'disruptive_inframe_deletion',
+					 'exon_loss', 'disruptive_inframe_insertion', 'missense',
+					 'splice_acceptor', 'splice_region', 'splice_donor', 'inframe', 'splice'
+			 }
 
 
 ################################################################
@@ -81,32 +81,8 @@ def create_icgc_table(cursor, tcga_table):
 
 	icgc_table = tcga_table.split("_")[0]+"_simple_somatic"
 	if check_table_exists(cursor, 'icgc', icgc_table): return
+	make_specimen_table(cursor, 'icgc', icgc_table)
 
-	switch_to_db(cursor,'icgc')
-
-	qry  = ""
-	qry += "  CREATE TABLE  %s (" % icgc_table
-	qry += "     id INT NOT NULL AUTO_INCREMENT, "
-	qry += "  	 icgc_mutation_id VARCHAR (20) NOT NULL, "
-	qry += "     chromosome CHAR(2) NOT NULL,"
-	qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
-	qry += "     icgc_specimen_id VARCHAR (50), "
-	qry += "     icgc_sample_id VARCHAR (20), "
-	qry += "     submitted_sample_id VARCHAR (50), "
-	qry += "	 control_genotype VARCHAR (430), "
-	qry += "	 tumor_genotype VARCHAR (430) NOT NULL, "
-	qry += "     total_read_count INT, "
-	qry += "     mutant_allele_read_count INT, "
-	qry += "     mut_to_total_read_count_ratio float default 0.0,"
-	qry += "     pathogenic_estimate boolean default 0,"
-	qry += "     reliability_estimate boolean default 0,"
-
-	qry += "	 PRIMARY KEY (id) "
-	qry += ") ENGINE=MyISAM"
-
-	rows = search_db(cursor, qry)
-	print(qry)
-	print(rows)
 
 #########################################
 mutation_annot_pattern = re.compile('(\D+)(\-*\d+)(\D+)')
@@ -223,87 +199,87 @@ def get_icgc_mutation_type(start, end, ref, alt):
 #########################################
 def parse_annovar_fields(cursor, avfile, annovar_named_field):
 
-			# I should probably get rid of mutation_type columns - it is completely derivable from other columns
-			# note though that it might complement consequence notation which only says inframe or frameshift
-			tr_relative = []
-			aa_mutation = []
-			consequences = set([])
-			mutation_type, frame_consequences = get_icgc_mutation_type(annovar_named_field['start'], annovar_named_field['end'],
-													annovar_named_field['ref'], annovar_named_field['alt'])
-			# icgc fields in locations_chrom_*: position, gene_relative, transcript relative
-			# gene relative is in two annovar fields: func and gene
-			gene_relative = dict(list(zip(annovar_named_field['gene'].split(";"),annovar_named_field['func'].split(";") )))
-			gene_relative_string = ";".join(["%s:%s"%(k,gene_location_annovar_to_icgc(v))
-											for k,v in gene_relative.items()])
-			# what to do with introns? can introns be  assigned to a transcript?
-			# tcga thigns they can, while annovat things they are only assignable to a gene as a whole
-			# I am disregarding intronic mutations as zero impact
-			# as an ad hoc measure, I will assign the annotation to the canonical transcript
-			if 'intronic' in annovar_named_field['func']:
-				consequences.add('intronic')
-				for gene_stable_id, annot in gene_relative.items():
-					if annot != 'intronic': continue
-					canonical_transcript_id = gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id)
-					tr_relative.append("{}:{}".format(canonical_transcript_id, 'intronic'))
-			# transcript relative contains a bit more info than I need - perhaps if I was doing it
-			# again I would stick to annovar annotation, but not now
-			# I would in any case change the names in the annovar header - they do not reflect the content
-			for trrel in annovar_named_field['aachange'].split(","):
-				fields = trrel.split(":") # the content of each field is not fixed
-				[enst,cdna_change, aa_change, annotation] = [None]*4
-				for field in fields:
-					if field[:4] == "ENSG":
-						# just drop, we already have that info
-						pass
-					elif field[:4] == "ENST":
-						enst = field
-					elif field[:2] == "c.":
-						cdna_change = field
-						pass
-					elif field[:2] == "p.":
-						aa_change = field
-					elif field[:4] == "exon":
-						annotation = 'exon'
-					elif field[:4] == "UTR3":
-						annotation = 'UTR3'
-					elif field[:4] == "UTR5":
-						annotation = 'UTR5'
+	# I should probably get rid of mutation_type columns - it is completely derivable from other columns
+	# note though that it might complement consequence notation which only says inframe or frameshift
+	tr_relative = []
+	aa_mutation = []
+	consequences = set([])
+	mutation_type, frame_consequences = get_icgc_mutation_type(annovar_named_field['start'], annovar_named_field['end'],
+	                                                           annovar_named_field['ref'], annovar_named_field['alt'])
+	# icgc fields in locations_chrom_*: position, gene_relative, transcript relative
+	# gene relative is in two annovar fields: func and gene
+	gene_relative = dict(list(zip(annovar_named_field['gene'].split(";"),annovar_named_field['func'].split(";") )))
+	gene_relative_string = ";".join(["%s:%s"%(k,gene_location_annovar_to_icgc(v))
+	                                 for k,v in gene_relative.items()])
+	# what to do with introns? can introns be  assigned to a transcript?
+	# tcga thigns they can, while annovat things they are only assignable to a gene as a whole
+	# I am disregarding intronic mutations as zero impact
+	# as an ad hoc measure, I will assign the annotation to the canonical transcript
+	if 'intronic' in annovar_named_field['func']:
+		consequences.add('intronic')
+		for gene_stable_id, annot in gene_relative.items():
+			if annot != 'intronic': continue
+			canonical_transcript_id = gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id)
+			tr_relative.append("{}:{}".format(canonical_transcript_id, 'intronic'))
+	# transcript relative contains a bit more info than I need - perhaps if I was doing it
+	# again I would stick to annovar annotation, but not now
+	# I would in any case change the names in the annovar header - they do not reflect the content
+	for trrel in annovar_named_field['aachange'].split(","):
+		fields = trrel.split(":") # the content of each field is not fixed
+		[enst,cdna_change, aa_change, annotation] = [None]*4
+		for field in fields:
+			if field[:4] == "ENSG":
+				# just drop, we already have that info
+				pass
+			elif field[:4] == "ENST":
+				enst = field
+			elif field[:2] == "c.":
+				cdna_change = field
+				pass
+			elif field[:2] == "p.":
+				aa_change = field
+			elif field[:4] == "exon":
+				annotation = 'exon'
+			elif field[:4] == "UTR3":
+				annotation = 'UTR3'
+			elif field[:4] == "UTR5":
+				annotation = 'UTR5'
 
-				if not enst:
-					if aa_change:
-						print("aa change without specified ENST")
-						print(avfile)
-						print(fields)
-						exit()
-					else:
-						continue
+		if not enst:
+			if aa_change:
+				print("aa change without specified ENST")
+				print(avfile)
+				print(fields)
+				exit()
+			else:
+				continue
 
-				if annotation=='exon' and cdna_change and ('-' in cdna_change or '+' in cdna_change):
-					annotation = 'splice_region'
-					consequences.add('splice_region')
+		if annotation=='exon' and cdna_change and ('-' in cdna_change or '+' in cdna_change):
+			annotation = 'splice_region'
+			consequences.add('splice_region')
 
-				tr_relative.append("{}:{}".format(enst, annotation))
+		tr_relative.append("{}:{}".format(enst, annotation))
 
-				if aa_change:
-					aa_mutation.append("{}:{}".format(enst, aa_change[2:]))
-					if aa_change[-1] in ['X','x','*']:
-						consequences.add('stop_gained')
-					elif aa_change[-2:].lower()=='fs':
-						consequences.add('frameshift')
-					elif aa_change[-2:].lower() in ['ins','del']:
-						pass
-					elif aa_change[2]==aa_change[-1]:
-						consequences.add('synonymous')
-					else:
-						consequences.add('missense')
+		if aa_change:
+			aa_mutation.append("{}:{}".format(enst, aa_change[2:]))
+			if aa_change[-1] in ['X','x','*']:
+				consequences.add('stop_gained')
+			elif aa_change[-2:].lower()=='fs':
+				consequences.add('frameshift')
+			elif aa_change[-2:].lower() in ['ins','del']:
+				pass
+			elif aa_change[2]==aa_change[-1]:
+				consequences.add('synonymous')
+			else:
+				consequences.add('missense')
 
-			tr_relative_string  = ";".join(list(tr_relative))
-			if 'exon' in tr_relative_string: consequences |= frame_consequences
-			consequences_string = ";".join(list(consequences))
-			aa_mutation_string = ";".join(list(aa_mutation))
+	tr_relative_string  = ";".join(list(tr_relative))
+	if 'exon' in tr_relative_string: consequences |= frame_consequences
+	consequences_string = ";".join(list(consequences))
+	aa_mutation_string = ";".join(list(aa_mutation))
 
-			return [mutation_type, consequences_string, aa_mutation_string,
-					gene_relative_string, tr_relative_string]
+	return [mutation_type, consequences_string, aa_mutation_string,
+	        gene_relative_string, tr_relative_string]
 
 
 #########################################
@@ -424,7 +400,7 @@ def store_annotation (cursor, tcga_table, avoutput):
 			ct += 1
 			if (ct%1000==0):
 				print("%30s   %6d lines out of %6d  (%d%%)  %d min" % \
-				      (tcga_table, ct, no_lines, float(ct)/no_lines*100, float(time.time()-time0)/60))
+					  (tcga_table, ct, no_lines, float(ct)/no_lines*100, float(time.time()-time0)/60))
 			fields = line.rstrip().split('\t')
 			if line[:3]=="Chr":  # header
 				header_fields = [f.split(".")[0].lower() for f in fields] # get rid of ".ensGene"
@@ -452,7 +428,7 @@ def store_annotation (cursor, tcga_table, avoutput):
 				store_location(cursor, annovar_named_field, gene_relative_string, tr_relative_string)
 			if not mutation_seen:
 				store_mutation(cursor, annovar_named_field, assembly, mutation_type,
-				               consequences_string, aa_change, pathogenic_estimate)
+							   consequences_string, aa_change, pathogenic_estimate)
 		inf.close()
 
 #########################################

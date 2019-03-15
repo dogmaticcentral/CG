@@ -1,6 +1,6 @@
 #! /usr/bin/python3
 
-# not sure any more what exactly are we testing,
+# not sure any more what exactly we are testing here,
 # but here we go ...
 
 from icgc_utils.common_queries   import  *

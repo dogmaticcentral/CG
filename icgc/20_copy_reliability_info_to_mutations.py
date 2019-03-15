@@ -66,6 +66,15 @@ def main():
 		print("checking/adding reliability column to", table)
 		add_columns(cursor, table)
 
+	########################
+	# set reliability info to 0 in mutation tables - in case we were mucking around with it already
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like 'mutations_chrom%'"
+	tables = [field[0] for field in  search_db(cursor,qry)]
+	for table in tables:
+		qry = "update %s set reliability_estimate=0" % table
+		search_db(cursor,qry)
+
 	#########################
 	# which temp somatic tables do we have
 	qry  = "select table_name from information_schema.tables "
@@ -73,7 +82,7 @@ def main():
 	tables = [field[0] for field in  search_db(cursor,qry)]
 	cursor.close()
 	db.close()
-
+	# prallelize on those
 	number_of_chunks = 8
 	parallelize(number_of_chunks, decorate_mutations, tables, [])
 

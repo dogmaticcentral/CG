@@ -28,7 +28,7 @@ def cleanup (cursor, table, donor, specimen_ids):
 			common_muts &= set(mutations[spec_id] )
 		print("\t", spec_id, spec_type, len(mutations[spec_id]), mutations[spec_id][:3])
 	print(len(common_muts))
-
+	exit()
 
 def spec_from_TCGA(sample_barcode):
 	# we want to translate this to something similar to what ICGC is using
@@ -85,7 +85,7 @@ def main():
 			specimen_ids = [r[0] for  r in search_db(cursor,qry)]
 			if len(specimen_ids)>1:
 				print("multiple specimen ids for", donor)
-				#cleanup (cursor,table, donor, specimen_ids)
+				cleanup (cursor,table, donor, specimen_ids)
 
 
 	cursor.close()

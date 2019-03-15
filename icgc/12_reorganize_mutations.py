@@ -40,6 +40,7 @@ pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained
 									# more likely it is than not
              }
 
+
 #########################################
 def insert (cursor, table, columns, values):
 
