@@ -187,7 +187,7 @@ def reorganize_locations(cursor, ref_assembly, variants_table):
 	print (variants_table, "assemblies:",assemblies)
 
 
-	chromosomes = [str(i) for i in range(1,23)] + ["X", "Y", "MT"]
+	chromosomes = [str(i) for i in range(1,23)] + ["X", "Y"]
 	for chromosome in chromosomes:
 		print("\t", variants_table, chromosome)
 		rootname = "%s.%s" % (variants_table,chromosome)
