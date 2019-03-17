@@ -119,7 +119,11 @@ then load them from mysql shell (as in [07_load_mysql.py](icgc/07_load_mysql.py)
  Make sure to run [08_make_indices.py](icgc/08_make_indices_on_temp_tables.py) - [12_reorganize_mutations.py](icgc/12_reorganize_variants.py)
  pretty much does not work without it at all. 
 
+<<<<<<< HEAD
+### 10_check_mut_etc through 19_cleanup_duplicate_donors
+=======
 ### Reorganizing mutation data
+>>>>>>> 82e05bdbd2ead4394832cac44f7b9f5e96038bd3
 This is where we depart from ICGC original database architecture - which is pretty much
 nonexistent and consists of massive duplication of annotation for each occurrence of a mutation
 and for each of its interpretations within various transcripts.
@@ -139,16 +143,25 @@ schemaSPy: http://schemaspy.sourceforge.net/
 mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
 -->
 
+<<<<<<< HEAD
+Note that in [12_reorganize_variantss.py](icgc/12_reorganize_variants.py) you can choose to
+=======
 New tables are created in [10_check_mut_tables_and_make_new_ones.py](icgc/10_check_mut_tables_and_make_new_ones.py),
 while in [11_consequence_vocab.py](icgc/11_consequence_vocab.py)
  we inspect the 'consequence' vocabulary employed by ICGC. There seems to
 some confusion there about the location vs. the consequence of a mutation.
 
 Note that in [12_reorganize_mutations.py](icgc/12_reorganize_variants.py) you can choose to
+>>>>>>> 82e05bdbd2ead4394832cac44f7b9f5e96038bd3
 run in parallel (the number of 'chunks' in main()). It still takes a while - as in, 
-leave-to-run-overnight while. This is probably the weakest part of the whole pipeline, but is unclear
-whether it is worth the optimization effort. (Do not forget to create indices
- using [08_make_indices_on_temp_tables.py](icgc/08_make_indices_on_temp_tables.py))
+leave-to-run-overnight while. This is probably the weakest (as in the-least-likely-to-scale) 
+part of the whole pipeline, but is unclear
+whether it is worth the optimization effort.
+ THe companion pieces 
+  [13_reorganize_mutations.py](icgc/13_reorganize_mutations.py) and
+   [14_reorganize_locations.py](icgc/14_reorganize_locations.py) are a a bit faster.
+ (Do not forget to create indices
+ using [08_make_indices_on_temp_tables.py](icgc/08_make_indices_on_temp_tables.py)) 
  
  ### Removing duplicates
  ICGC is rife with data duplication, coming from various sources. Some seem to be bookkeeping mistakes with the
@@ -158,13 +171,21 @@ whether it is worth the optimization effort. (Do not forget to create indices
  
  If [12_reorganize_mutations.py](icgc/12_reorganize_variants.py) is the weakest link in the pipeline, 
  [18_cleanup_duplicate_entries.py](icgc/18_cleanup_duplicate_entries.py) is the most likely to cover-up for a problem, 
+<<<<<<< HEAD
+ possibly originating in ICGC itself. Some data sets seem to have a huge number of duplicates - entries with identical tuple
+=======
  possibly originating in ICGC itself. Some mutations  have identical tuple
+>>>>>>> 82e05bdbd2ead4394832cac44f7b9f5e96038bd3
  of identifiers (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id). Note that this
  is after we have reorganized the database so that the mutation and location info sit in 
  different tables from the donor info. Not sure what this is about (the same sample analyzed independently multiple
  times?), but when found, this script chooses the entry with the highest coverage if possible. See the script for the full
+<<<<<<< HEAD
+ resolution strategy and make sure to run [17_make_jumbo_index](icgc/17_make_jumbo_index_on_simple_somatic_tables.py) -
+=======
  resolution strategy and make sure to run [17_make_jumbo_index](icgc/17_make_jumbo_index_on_simple_somatic_tables.py) 
  because 
+>>>>>>> 82e05bdbd2ead4394832cac44f7b9f5e96038bd3
  [18_cleanup_duplicate_entries.py](icgc/18_cleanup_duplicate_entries.py) is useless without it.
  
  
@@ -177,6 +198,8 @@ whether it is worth the optimization effort. (Do not forget to create indices
  followed by LICA with 8 duplicated donors. It is not clear whether these duplicates refer to the same
  tumor at the same stage because even the submitter sample ids might be different
  (see [19_cleanup_duplicate_donors.py](icgc/19_cleanup_duplicate_donors.py)). 
+<<<<<<< HEAD
+=======
  
  Even after this cleanup we are still not done with the duplications problem - we might have the
  same donor with differing specimen and sample ids (apparently, not sure whether ICGC refers to
@@ -186,6 +209,7 @@ whether it is worth the optimization effort. (Do not forget to create indices
  thus we remove them in [22_cleanup_duplicate_specimens.py](icgc/22_cleanup_duplicate_specimens.py) 
  and [23_cleanup_duplicate_samples.py](icgc/23_cleanup_duplicate_samples.py), but not before checking
  which of the samples produced more reliable reads (see below).
+>>>>>>> 82e05bdbd2ead4394832cac44f7b9f5e96038bd3
  In this version of the pipeline we keep only the sample annotated as 'Primary tumour - solid tissue.' Out of
  these, if multiple refer to the same submitter id, we keep the ones with the largest reported number of
  somatic mutations. The investigation of the source of this duplication is again outside of our zone of interest.
@@ -193,10 +217,10 @@ whether it is worth the optimization effort. (Do not forget to create indices
  ### Adding reliability info
  
  We add a couple of values to each row to later make the search for meaningful entries faster.
- In particular, in [16_decorate_simple_somatic.py](icgc/20_decorate_simple_somatic.py)
+ In particular, in [20_decorate_simple_somatic.py](icgc/20_decorate_simple_somatic.py)
  we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
  to simple_somatic tables. In the following script, 
- [17_add_realiability_annotation_to_somatic.py](icgc/7_add_realiability_annotation_to_somatic.py),  
+ [21_add_realiability_annotation_to_somatic.py](icgc/21_add_realiability_annotation_to_somatic.py),  
  we combine these two columns into a reliability estimate: a 
  somatic mutation in individual patient is considered reliable if mutant_allele_read_count>=10
  and mut_to_total_read_count_ratio>=0.2. 
