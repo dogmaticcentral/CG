@@ -18,8 +18,6 @@
 # Contact: ivana.mihalek@gmail.com
 #
 
-import MySQLdb
-
 from config import Config
 from icgc_utils.mysql   import  *
 from icgc_utils.icgc   import  *

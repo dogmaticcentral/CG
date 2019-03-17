@@ -23,6 +23,8 @@ import time, re
 from icgc_utils.common_queries  import  *
 from icgc_utils.processes   import  *
 from icgc_utils.icgc import *
+from icgc_utils.annovar import *
+
 from config import Config
 
 tcga_icgc_table_correspondence = {
@@ -165,34 +167,6 @@ def output_annovar_input_file (cursor, db_name, tcga_table, already_deposited_sa
 	return outfname
 
 
-##################################
-def run_annovar(avinput, table_name):
-	avoutname = {}
-	for assembly, avinfile in avinput.items():
-		avoutname[assembly] = "%s.%s_multianno.txt" % (table_name, assembly)
-		if not os.path.exists(avoutname[assembly]) or os.path.getsize(avoutname[assembly])==0:
-			cmd  = "/home/ivana/third/annovar/table_annovar.pl %s " % avinfile
-			cmd += "/home/ivana/third/annovar/humandb/ -buildver %s -out %s " % (assembly, table_name)
-			cmd += " -protocol ensGene  -operation g  -nastring ."
-			subprocess.call(cmd, shell=True)
-			# clean the junk
-			cmd = "rm %s.ensGene.variant_function " % table_name
-			cmd +="%s.ensGene.exonic_variant_function %s.ensGene.log" % (table_name, table_name)
-			subprocess.call ( cmd, shell=True)
-	return avoutname
-
-
-#########################################
-# annovar has a different idea about what  gene-relative location means
-def gene_location_annovar_to_icgc(annovar_description):
-	if annovar_description in ['upstream','downstream','intergenic']:
-		return annovar_description
-	if annovar_description in ['intronic', 'exonic','splicing', 'UTR5', 'UTR3']:
-		return 'intragenic'
-	if 'ncRNA' in annovar_description: # ncRNA_exonic, ncRNA_intronic, ncRNA_splicing
-		return 'intragenic'
-	return 'unk'
-
 
 ##########
 def get_icgc_mutation_type(start, end, ref, alt):
@@ -230,7 +204,7 @@ def parse_annovar_fields(cursor, avfile, annovar_named_field):
 	gene_relative_string = ";".join(["%s:%s"%(k,gene_location_annovar_to_icgc(v))
 	                                 for k,v in gene_relative.items()])
 	# what to do with introns? can introns be  assigned to a transcript?
-	# tcga thigns they can, while annovat things they are only assignable to a gene as a whole
+	# tcga thinks they can, while annovar things they are only assignable to a gene as a whole (I'd agree)
 	# I am disregarding intronic mutations as zero impact
 	# as an ad hoc measure, I will assign the annotation to the canonical transcript
 	if 'intronic' in annovar_named_field['func']:
@@ -419,14 +393,13 @@ def store_annotation (cursor, tcga_table, avoutput):
 			if (ct%1000==0):
 				print("%30s   %6d lines out of %6d  (%d%%)  %d min" % \
 					  (tcga_table, ct, no_lines, float(ct)/no_lines*100, float(time.time()-time0)/60))
-			fields = line.rstrip().split('\t')
-			if line[:3]=="Chr":  # header
-				header_fields = [f.split(".")[0].lower() for f in fields] # get rid of ".ensGene"
-				# the header_fields now should be chr, start, end, ref, alt, func, gene, genedetail, exonicfunc, aachange
-				continue
 			if not header_fields:
-				print(" header not found in", avfile)
-				exit(1)
+				header_fields = parse_annovar_header_fields(line)
+				if not header_fields:
+					print("Error parsing annovar: no header line found")
+					exit()
+				continue
+			fields = line.rstrip().split('\t')
 			annovar_named_field = dict(list(zip(header_fields,fields)))
 			# do I have this location already?
 			location_seen = check_location_seen(cursor, annovar_named_field)

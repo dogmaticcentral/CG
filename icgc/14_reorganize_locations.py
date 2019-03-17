@@ -17,16 +17,18 @@
 # 
 # Contact: ivana.mihalek@gmail.com
 #
-
-
+import subprocess
 import time
 
 from config import Config
-from icgc_utils.common_queries  import  *
-from icgc_utils.processes   import  *
+from icgc_utils.common_queries import  *
+from icgc_utils.processes import  *
+from icgc_utils.annovar import *
+from icgc_utils.CrossMap import *
+from subprocess import PIPE
 
 variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id',
-				   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
+					'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
 
 #  'aa_mutation',  'consequence_type', and 'pathogenic_estimate'  will be filled separately
 mutation_columns = ['icgc_mutation_id', 'start_position', 'end_position', 'assembly',
@@ -89,72 +91,117 @@ def insert (cursor, table, columns, values):
 	qry += "values (%s) " % ",".join(nonempty_values)
 	search_db(cursor, qry)
 
+#########################################
+def get_positions(cursor, variants_table, chromosome, assembly):
+	positions = set()
+	for position_significance in ['start', 'end']:
+		qry =  "select distinct %s_position from %s  " % (position_significance, variants_table)
+		qry += "where chromosome='%s' and assembly='%s' " %(chromosome, assembly)
+		qry += "and gene_affected is not null and gene_affected !='' "
+		ret  = search_db (cursor, qry)
+		if ret:  positions |= set([r[0] for r in ret])
+	return positions
 
 #########################################
-def reorganize_locations(cursor, variants_table, columns):
+def write_annovar_input(positions, variants_table,assembly,chromosome):
+	# we are duping annovar into giving us the location relative to each transcript
+	# we are not interested in annotation (not here) therefore we give
+	# the annovar some generic variant - like insert 'A' at given position
+	# annovar input file(s)
+	outfname = "%s.%s.%s.avinput" % (variants_table,assembly,chromosome)
+	outf = open(outfname, 'w')
+	for position in positions:
+		outrow = "\t".join([chromosome, str(position), str(position), '-', 'A'])
+		outf.write(outrow+"\n")
+	outf.close()
+	subprocess.call(["bash","-c", "sort %s | uniq > %s.tmp" % (outfname, outfname)])
+	os.rename(outfname+".tmp", outfname)
+	return outfname
+
+#########################################
+def translate_positions(positions, chromosome, from_assembly, to_assembly, rootname):
+
+	if from_assembly == to_assembly:
+		return positions
+
+	# otherwise we'll need  tools to translate
+	chain_file ="/storage/databases/liftover/{}To{}.over.chain".format(from_assembly, to_assembly.capitalize())
+	if not os.path.exists(chain_file):
+		print(chain_file, "not found")
+		exit()
+
+	outfile = "%s.tsv"%rootname
+	outf = open (outfile,"w")
+	for p in positions:
+		outf.write("\t".join([chromosome, str(p), str(p)]) + "\n")
+	outf.close()
+
+	# this is CrossMap now
+	outfile_translated  =  "%s.translated.tsv"%rootname
+	(map_tree, target_chrom_sizes, source_chrom_sizes) = read_chain_file(chain_file, print_table = False)
+	crossmap_bed_file(map_tree, outfile, outfile_translated)
+
+	#read binding regions back in
+	with open(outfile_translated,"r") as inf:
+		new_positions = [line.split("\t")[1] for line in inf.read().split("\n") if len(line.replace(" ",""))>0]
+	# remove aux files
+	os.remove(outfile)
+	os.remove(outfile_translated)
+	os.remove(outfile_translated+".unmap") # this file should probably checked - it should be empty
+
+	return new_positions
+
+
+#########################################
+def store_location_info(cursor, chromosome, avoutput):
+
+	location_table = "locations_chrom_%s" % chromosome
+	location_columns = ['position', 'gene_relative', 'transcript_relative']
+	inf = open (avoutput, "r")
+	header_fields = None
+	for line in inf:
+		if not header_fields:
+			header_fields = parse_annovar_header_fields(line)
+			if not header_fields:
+				print("Error parsing annovar: no header line found")
+				exit()
+			continue
+		[start, end, gene_relative, transcript_relative] = parse_annovar_line(cursor, header_fields,  line)
+		position = start
+		if start!=end:
+			print("why is start not == end here?")
+			exit()
+		location_values = [str(position), quotify(gene_relative), quotify(transcript_relative)]
+		#print(location_table, location_values)
+		insert(cursor, location_table, location_columns, location_values)
+
+#  ./icgc_utils/kernprof.py -l 14_reorganize_locations.py
+# python3 -m line_profiler 14_reorganize_locations.py.lprof
+# @profile
+#########################################
+def reorganize_locations(cursor, ref_assembly, variants_table):
+
+	# which assemblies do we have in this story
+	qry = "select distinct assembly  from %s" % variants_table
+	assemblies = [r[0] for r in search_db (cursor, qry)]
+	print (variants_table, "assemblies:",assemblies)
+
 
 	chromosomes = [str(i) for i in range(1,23)] + ["X", "Y", "MT"]
-
 	for chromosome in chromosomes:
-		location_table = "locations_chrom_{}".format(chromosome)
+		print("\t", variants_table, chromosome)
+		rootname = "%s.%s" % (variants_table,chromosome)
+		for assembly in assemblies:
+			positions = get_positions(cursor, variants_table, chromosome, assembly)
+			if len(positions)==0: continue
+			positions_translated = translate_positions(positions, chromosome, assembly, ref_assembly, rootname)
+			# write_annovar_input is going to fill outfname dictionary
+			avinput  = write_annovar_input(positions_translated, variants_table, ref_assembly, chromosome)
+			# the positions in the avinput are already hg19
+			avoutput = run_annovar(avinput, ref_assembly, rootname, chromosome=="MT")
+			store_location_info(cursor, chromosome, avoutput)
+			#print(avoutput)
 
-		positions = set()
-		for position_significance in ['start', 'end']:
-			qry =  "select distinct %s_position from %s  where chromosome='%s' " % (position_significance, variants_table, chromosome)
-			qry += "and gene_affected is not null and gene_affected !='' "
-			ret  = search_db (cursor, qry)
-			if ret:  positions |= set([r[0] for r in ret])
-		if len(positions)==0: continue
-
-
-		for position in positions:
-
-			# we trust that the first time around we got the annotation right
-			if entry_exists(cursor, "icgc", location_table, "position", position): continue
-
-			gene_relative       = set([])
-			transcript_relative = set([])
-			# this hinges on
-			# qry  = "create index chrom_pos_idx on %s (chromosome, start_position)" % mutations_table
-			qry =  "select * from %s where chromosome='%s' " % (variants_table, chromosome)
-			qry += "and (start_position=%d or end_position=%d) " % (position, position)
-			qry += "and gene_affected is not null and gene_affected !='' "
-
-			ret = search_db (cursor,qry)
-			if not ret:
-				search_db (cursor,qry, verbose=True)
-				exit()
-			for fields in ret:
-				named_field = dict(list(zip(columns,fields)))
-
-				# this is not ready to be stored, because we need to work through the consequences
-				gene   = named_field['gene_affected']
-				tscrpt = named_field['transcript_affected']
-				csq = named_field['consequence_type']
-				if csq == location_vocab[0]: # intergenic
-					pass
-				elif csq in location_vocab[1:4]: # gene-relative
-					gene_relative.add("{}:{}".format(gene,csq))
-				elif csq in location_vocab[4:]: # transcript-relative
-					gene_relative.add("{}:{}".format(gene,"intragenic"))
-					transcript_relative.add("{}:{}".format(tscrpt,csq))
-				elif csq in consequence2location:
-					gene_relative.add("{}:{}".format(gene,"intragenic"))
-					transcript_relative.add("{}:{}".format(tscrpt,consequence2location[csq]))
-
-				elif csq == "":
-					pass
-				else:
-					print("unrecognized consequence field:", csq)
-					continue
-				# gene and transcript are listed, but no relative position is specified:
-				if len(gene_relative)==0 and gene and 'ENSG' in gene:
-					gene_relative.add("{}:{}".format(gene,"unk"))
-				if len(transcript_relative)==0 and tscrpt and 'ENST' in tscrpt:
-					transcript_relative.add("{}:{}".format(tscrpt,"unk"))
-			# now we are ready to store
-			location_values = [str(position), quotify(";".join(gene_relative)), quotify(";".join(transcript_relative))]
-			insert (cursor, location_table, location_columns, location_values)
 
 
 #########################################
@@ -163,17 +210,22 @@ def reorganize(tables, other_args):
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor,"icgc")
+	ref_assembly = other_args[0]
+
+	home = os.getcwd()
+
 	for table in tables:
 
-		# the tables should all have the same columns
-		qry = "select column_name from information_schema.columns where table_name='%s'"%table
-		columns = [field[0] for field in  search_db(cursor,qry)]
-		# line by line: move id info into new table
-		# for mutation and location check if the info exists; if not make new entry
+		# make a workdir and move there
+		workdir  = table + "_annovar"
+		workpath = "{}/annovar/{}".format(home,workdir)
+		if not os.path.exists(workpath): os.makedirs(workpath)
+		os.chdir(workpath)
+
 		time0 = time.time()
 		print("====================")
 		print("reorganizing locations from", table, os.getpid())
-		reorganize_locations(cursor, table, columns)
+		reorganize_locations(cursor, ref_assembly, table)
 		time1 = time.time()
 		print(("\t\t %s  done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid())
 
@@ -186,6 +238,7 @@ def reorganize(tables, other_args):
 #########################################
 #########################################
 def main():
+	ref_assembly = 'hg19' # this is the assembly I would like to see all coords in location tables
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	#########################
@@ -196,8 +249,8 @@ def main():
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 20  # myISAM does not deadlock
-	parallelize(number_of_chunks, reorganize, tables, [])
+	number_of_chunks = 10  # myISAM does not deadlock
+	parallelize(number_of_chunks, reorganize, tables, [ref_assembly])
 
 
 

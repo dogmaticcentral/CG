@@ -22,6 +22,28 @@ import MySQLdb
 
 from config import Config
 from icgc_utils.mysql   import  *
+from icgc_utils.processes import *
+
+def make_indices(tables, other_args):
+	db     = connect_to_mysql(Config.mysql_conf_file)
+	cursor = db.cursor()
+
+	switch_to_db(cursor,"icgc")
+	for table in tables:
+		print(table)
+		#qry  = "create index somatic_mut_idx on %s (icgc_mutation_id)" % table
+		#search_db(cursor,qry,verbose=True)
+		#qry  = "create index somatic_donor_idx on %s (icgc_donor_id)" % table
+		#search_db(cursor,qry,verbose=True)
+		#qry  = "create index sample_idx on %s (submitted_sample_id)" % table
+		#search_db(cursor,qry,verbose=True)
+		#qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" %  table
+		#search_db(cursor,qry,verbose=True)
+		qry  =  "create index chrom_pos_idx on %s (chromosome, start_position, end_position)" % table
+		search_db(cursor, qry, verbose=True)
+	cursor.close()
+	db.close()
+
 
 #########################################
 #########################################
@@ -37,35 +59,11 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic_temp'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
-	for table in tables:
-		print(table)
-		qry  = "create index somatic_mut_idx on %s (icgc_mutation_id)" % table
-		search_db(cursor,qry,verbose=True)
-		qry  = "create index somatic_donor_idx on %s (icgc_donor_id)" % table
-		search_db(cursor,qry,verbose=True)
-		qry  = "create index sample_idx on %s (submitted_sample_id)" % table
-		search_db(cursor,qry,verbose=True)
-		qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" %  table
-		search_db(cursor,qry,verbose=True)
-		qry  =  "create index chrom_pos_idx on %s (chromosome, start_position, gene_affected)" %  table
-		search_db(cursor,qry,verbose=True)
-
-	# indices on mutations
-	#qry  = "select table_name from information_schema.tables "
-	#qry += "where table_schema='icgc' and table_name like 'mutations%'"
-	#tables = [field[0] for field in  search_db(cursor,qry)]
-	#for mutations_table in tables:
-	#	print(mutations_table)
-	#	qry = "create index fingerprint_idx on %s (start_position, mutated_from_allele, mutated_to_allele)" % mutations_table
-	#	search_db(cursor,qry,verbose=True)
-
-
-
-
-
-
 	cursor.close()
 	db.close()
+
+	number_of_chunks = 20  # myISAM does not deadlock
+	parallelize(number_of_chunks, make_indices, tables, [])
 
 #########################################
 if __name__ == '__main__':
