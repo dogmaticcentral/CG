@@ -262,7 +262,6 @@ def store_meta_info(cursor, cancer_type, bare_filename, overall_diagnostics):
 	return
 
 ##################################################################################
-##################################################################################
 def inspect(cancer_types, other_args):
 	db = connect_to_mysql()
 	cursor = db.cursor()
@@ -349,7 +348,6 @@ def inspect(cancer_types, other_args):
 
 	cursor.close()
 	db.close()
-
 
 ##################################################################################
 def main():
