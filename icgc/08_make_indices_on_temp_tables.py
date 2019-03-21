@@ -31,15 +31,17 @@ def make_indices(tables, other_args):
 	switch_to_db(cursor,"icgc")
 	for table in tables:
 		print(table)
-		#qry  = "create index somatic_mut_idx on %s (icgc_mutation_id)" % table
-		#search_db(cursor,qry,verbose=True)
-		#qry  = "create index somatic_donor_idx on %s (icgc_donor_id)" % table
-		#search_db(cursor,qry,verbose=True)
-		#qry  = "create index sample_idx on %s (submitted_sample_id)" % table
-		#search_db(cursor,qry,verbose=True)
-		#qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" %  table
-		#search_db(cursor,qry,verbose=True)
-		qry  =  "create index chrom_pos_idx on %s (chromosome, start_position, end_position)" % table
+		qry  = "create index somatic_mut_idx on %s (icgc_mutation_id)" % table
+		search_db(cursor,qry,verbose=True)
+		qry  = "create index somatic_donor_idx on %s (icgc_donor_id)" % table
+		search_db(cursor,qry,verbose=True)
+		qry  = "create index sample_idx on %s (submitted_sample_id)" % table
+		search_db(cursor,qry,verbose=True)
+		qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" %  table
+		search_db(cursor,qry,verbose=True)
+		qry  =  "create index chrom_start_pos_idx on %s (chromosome, start_position)" % table
+		search_db(cursor, qry, verbose=True)
+		qry  =  "create index chrom_end_pos_idx on %s (chromosome, end_position)" % table
 		search_db(cursor, qry, verbose=True)
 	cursor.close()
 	db.close()

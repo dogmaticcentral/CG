@@ -369,11 +369,11 @@ def get_approved_symbol(cursor, ensembl_gene_id):
 	return symbol
 
 #########################################
-def gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id):
-	qry  = "select  distinct(canonical_transcript) from ensembl_ids where  gene ='%s' " % gene_stable_id
+def gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id, verbose=False):
+	qry  = "select  distinct(canonical_transcript) from icgc.ensembl_ids where  gene ='%s' " % gene_stable_id
 	ret = search_db(cursor,qry)
 	if not ret or len(ret) != 1:
-		print("Warning: no unique canonical id could be found for %s" % gene_stable_id)
+		if verbose: print("Warning: no unique canonical id could be found for %s" % gene_stable_id)
 		return None
 	return ret[0][0]
 

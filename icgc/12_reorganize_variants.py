@@ -93,7 +93,6 @@ def reorganize(tables, other_args):
 
 	return
 
-
 #########################################
 #########################################
 def main():
@@ -111,7 +110,7 @@ def main():
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 8  # myISAM does not deadlock
+	number_of_chunks = 12  # myISAM does not deadlock
 	parallelize(number_of_chunks, reorganize, tables, [])
 
 

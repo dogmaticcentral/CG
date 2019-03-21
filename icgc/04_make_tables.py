@@ -31,7 +31,7 @@ def main():
 
 	homedir = Config.data_home_local
 	cancer_types = []
-	for name in os.listdir(homedir): # this is not walking recursicely - it's just this dir
+	for name in os.listdir(homedir): # this is not walking recursively - it's just this dir
 		if os.path.isdir("/".join([homedir,name])): cancer_types.append(name)
 
 	db     = connect_to_mysql(Config.mysql_conf_file)

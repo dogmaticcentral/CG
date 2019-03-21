@@ -82,8 +82,9 @@ def main():
 
 	hgncfile = "/storage/databases/hgnc/hgnc_name_res.tsv"
 
+	tmp_outfile = "hgnctmp.tsv"
 	ct = 0
-	outf = open ("hgnctmp.tsv", "w")
+	outf = open (tmp_outfile, "w")
 	with open(hgncfile, "r") as inf:
 		headers = inf.readline().rstrip("\n").split("\t")
 		chromosome_column = headers.index('Chromosome')
@@ -104,6 +105,7 @@ def main():
 	make_hgnc_table(cursor, db_name, "hgnc")
 	qry = "load data local infile '%s' into table %s" % ("hgnctmp.tsv","hgnc")
 	search_db(cursor,qry,verbose=True)
+	os.remove(tmp_outfile)
 
 	cursor.close()
 	db.close()
@@ -111,22 +113,3 @@ def main():
 #########################################
 if __name__ == '__main__':
 	main()
-
-'''	
-	with open(hgncfile, "r") as inf:
-		next(inf)
-		max_name_length = 0
-
-		for line in inf:
-			fields = line.rstrip("\n").split("\t")
-			field_named = dict(zip(header_names, fields))
-			# the longest name found is 125 char
-			namelength = len(field_named['approved_name'])
-			if namelength>max_name_length:
-				max_name_length = namelength
-				print max_name_length, field_named['approved_name']
-			# the longest uniprot list is 278 chars
-			# the longest approved symbol: 25 chars
-			# the longest synonym list: 132 chars
-
-'''

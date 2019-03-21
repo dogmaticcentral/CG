@@ -100,6 +100,15 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
 `host = localhost`  
 `password = "somepasswd"`
 
+In MySQL shell (or however you talk to your MySQL server) create the database icgc and the user _blah_, 
+and give _blah_  the permissions to write to and read from _icgc_:
+
+`create database icgc;`    
+`create user 'blah'@'localhost' identified by 'somepasswd';`  
+`grant all privileges on icgc.* to 'blah'@'localhost';`  
+`flush privileges;`  
+
+ 
 The canonical transcript id is not readily available from Ensembl Mart, thus for our purposes
 here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz2 in the
 [hacks](icgc/hacks) directory. Put it someplace where
@@ -118,7 +127,9 @@ it turns out to be faster to create tsvs and
 then load them from mysql shell (as in [07_load_mysql.py](icgc/07_load_mysql.py); alternative: use mysqlimport manually) 
  to read them in wholesale. These scripts take care of that part , plus some index creating on the newly loaded tables.
  Make sure to run [08_make_indices.py](icgc/08_make_indices_on_temp_tables.py) - [12_reorganize_mutations.py](icgc/12_reorganize_variants.py)
- pretty much does not work without it at all. 
+ pretty much does not work without it at all. All index making is slow here - run overnight. This is probably the weakest (as in the-least-likely-to-scale) 
+part of the whole pipeline, but is unclear
+whether it is worth the optimization effort.
 
 ### Reorganizing mutation data
 This is where we depart from ICGC original database architecture - which is pretty much
@@ -140,17 +151,18 @@ schemaSPy: http://schemaspy.sourceforge.net/
 mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
 -->
 
+It looks like ICGC is systematic in that ic uses GRCh37 assmebly in all entries. 
+The check can be found in [09_assembly_check.py](icgc/09_assembly_check.py)
+
+
 New tables are created in [10_check_mut_tables_and_make_new_ones.py](icgc/10_check_mut_tables_and_make_new_ones.py),
 while in [11_consequence_vocab.py](icgc/11_consequence_vocab.py)
  we inspect the 'consequence' vocabulary employed by ICGC. There seems to
 some confusion there about the location vs. the consequence of a mutation.
 
 Note that in [12_reorganize_mutations.py](icgc/12_reorganize_variants.py) you can choose to
-run in parallel (the number of 'chunks' in main()). It still takes a while - as in, 
-leave-to-run-overnight while. This is probably the weakest (as in the-least-likely-to-scale) 
-part of the whole pipeline, but is unclear
-whether it is worth the optimization effort.
- THe companion pieces 
+run in parallel (the number of 'chunks' in main()). 
+The companion pieces 
   [13_reorganize_mutations.py](icgc/13_reorganize_mutations.py) and
    [14_reorganize_locations.py](icgc/14_reorganize_locations.py) are a a bit faster.
  (Do not forget to create indices

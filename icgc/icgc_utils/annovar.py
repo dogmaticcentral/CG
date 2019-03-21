@@ -84,7 +84,7 @@ def annovar2gene_relative_string(annovar_named_field):
 	return gene_relative_string
 
 #########################################
-def parse_annovar_location_fields(annovar_named_field):
+def parse_annovar_location_fields(cursor, annovar_named_field):
 	# note: just write your own annotator - this is is  garbage
 
 	gene_relative_string = annovar2gene_relative_string(annovar_named_field)
@@ -139,6 +139,16 @@ def parse_annovar_location_fields(annovar_named_field):
 
 		tr_relative.append("{}:{}".format(enst, annotation))
 
+	if len(tr_relative)==0 and 'intron' in annovar_named_field['func']:
+		# I really need to get rid of annovar here
+		genes = annovar_named_field['gene']
+		if genes:
+			for gene in genes.split(";"):
+				if gene  and 'ENSG' in gene:
+					canonical = gene_stable_id_2_canonical_transcript_id(cursor, gene)
+					if canonical: tr_relative.append("{}:{}".format(canonical, 'intron'))
+
+
 	tr_relative_string  = ";".join(list(tr_relative))
 	start = annovar_named_field['start']
 	end = annovar_named_field['end']
@@ -149,4 +159,4 @@ def parse_annovar_location_fields(annovar_named_field):
 def parse_annovar_line(cursor, header_fields, line):
 	fields = line.rstrip().split('\t')
 	annovar_named_field = dict(list(zip(header_fields,fields)))
-	return parse_annovar_location_fields(annovar_named_field)
+	return parse_annovar_location_fields(cursor, annovar_named_field)

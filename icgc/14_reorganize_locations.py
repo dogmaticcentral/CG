@@ -175,6 +175,7 @@ def store_location_info(cursor, chromosome, avoutput):
 		#print(location_table, location_values)
 		insert(cursor, location_table, location_columns, location_values)
 
+
 #  ./icgc_utils/kernprof.py -l 14_reorganize_locations.py
 # python3 -m line_profiler 14_reorganize_locations.py.lprof
 # @profile
@@ -184,8 +185,7 @@ def reorganize_locations(cursor, ref_assembly, variants_table):
 	# which assemblies do we have in this story
 	qry = "select distinct assembly  from %s" % variants_table
 	assemblies = [r[0] for r in search_db (cursor, qry)]
-	print (variants_table, "assemblies:",assemblies)
-
+	print(variants_table, "assemblies:",assemblies)
 
 	chromosomes = [str(i) for i in range(1,23)] + ["X", "Y"]
 	for chromosome in chromosomes:
@@ -249,7 +249,7 @@ def main():
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 10  # myISAM does not deadlock
+	number_of_chunks = 12  # myISAM does not deadlock
 	parallelize(number_of_chunks, reorganize, tables, [ref_assembly])
 
 

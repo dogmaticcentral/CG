@@ -17,15 +17,16 @@
 # 
 # Contact: ivana.mihalek@gmail.com
 #
-from icgc_utils.mysql import switch_to_db, search_db
+from icgc_utils.mysql import switch_to_db, search_db, check_table_exists
 
 #########################################
 def make_mutations_table(cursor, db_name, mutations_table):
 
 	switch_to_db (cursor, db_name)
 
-	qry = "drop table " + mutations_table
-	search_db(cursor, qry, verbose=True)
+	if check_table_exists(cursor, db_name, mutations_table):
+		qry = "drop table " + mutations_table
+		search_db(cursor, qry, verbose=True)
 
 
 	qry = ""
@@ -71,12 +72,14 @@ def make_mutations_table(cursor, db_name, mutations_table):
 
 #########################################
 # icgc_donor_id,submitted_donor_id,donor_sex,donor_diagnosis_icd10
+# submitted donor ids can be very long especially for TCGA donors
 def make_donors_table(cursor, db_name, donor_table):
 
 	switch_to_db (cursor, db_name)
 
-	qry = "drop table " + donor_table
-	search_db(cursor, qry, verbose=True)
+	if check_table_exists(cursor, db_name, donor_table):
+		qry = "drop table " + donor_table
+		search_db(cursor, qry, verbose=True)
 
 
 	qry = ""
@@ -101,8 +104,9 @@ def make_specimen_table(cursor, db_name, specimen_table):
 
 	switch_to_db (cursor, db_name)
 
-	qry = "drop table " + specimen_table
-	search_db(cursor, qry, verbose=True)
+	if check_table_exists(cursor, db_name, specimen_table):
+		qry = "drop table " + specimen_table
+		search_db(cursor, qry, verbose=True)
 
 	qry = ""
 	qry += "CREATE TABLE  %s (" % specimen_table

@@ -22,6 +22,8 @@
 
 import os, subprocess
 from subprocess import PIPE
+from icgc_utils.mysql import *
+from icgc_utils.processes import *
 
 # import the produced fields using mysqlimport
 # mysqlimport db_name table_name.ext
@@ -38,17 +40,21 @@ from subprocess import PIPE
 from config import Config
 
 
-def get_simple_somatic_tsv_files(data_home_local):
+def get_simple_somatic_tsv_files(data_home_local, cancer_types):
 	tsv_files = []
-	for root, dirs, files in os.walk(data_home_local):
-		for file in files:
-			if file.endswith(".tsv") and 'simple_somatic' in file:
-				tsv_files.append(os.path.join(root, file))
+	outstr = ""
+	for ct in cancer_types:
+		outstr += ct + "\n"
+		for root, dirs, files in os.walk("{}/{}".format(data_home_local,ct)):
+			for file in files:
+				if file.endswith(".tsv") and 'simple_somatic' in file:
+					outstr += "\t" + os.path.join(root, file)  + "\n"
+					tsv_files.append(os.path.join(root, file))
+		print("{} writing:\n{}".format(os.getpid(), outstr))
 	return tsv_files
 
 #########################################
 def appendopen(original_tsv_file):
-	if not os.path.exists("tsvs"): os.mkdir("tsvs")
 	# the first thing after the storage path should be the cancer name
 	cancer_type = original_tsv_file[len(Config.data_home_local)+1:].split("/")[0]
 	outname = "tsvs/"+cancer_type+"_simple_somatic_temp.tsv"
@@ -61,9 +67,10 @@ def appendopen(original_tsv_file):
 	return open(outname,'a'), last_id
 
 #########################################
-def main():
+def write_tsvs(cancer_types, other_args):
 
-	tsv_files = get_simple_somatic_tsv_files(Config.data_home_local)
+
+	tsv_files = get_simple_somatic_tsv_files(Config.data_home_local, cancer_types)
 
 	# the full set of the header fields can be found by (for example)
 	# head -n1 simple_somatic_mutation.controlled.ALL-US.tsv | sed 's/\t/,/g'
@@ -73,13 +80,10 @@ def main():
 	"mutated_from_allele,mutated_to_allele,consequence_type,aa_mutation,cds_mutation," \
 	"gene_affected,transcript_affected,total_read_count,mutant_allele_read_count".split(",")
 
-	outfiles = []
-
 	for tf in tsv_files:
 		print(tf)
 		infile  = open(tf,'r')
 		outfile, last_id = appendopen(tf)
-		if not outfile in outfiles: outfiles.append(outfile)
 		headers = None
 		id = last_id
 
@@ -104,6 +108,27 @@ def main():
 
 		infile.close()
 		outfile.close()
+
+#########################################
+def main():
+
+	if not os.path.exists("tsvs"): os.mkdir("tsvs")
+
+	db     = connect_to_mysql(Config.mysql_conf_file)
+	cursor = db.cursor()
+
+	switch_to_db(cursor,"icgc")
+
+	# indices on simple somatic temp
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%simple_somatic_temp'"
+	cancer_types = [field[0].split("_")[0] for field in  search_db(cursor,qry)]
+	cursor.close()
+	db.close()
+
+	number_of_chunks = 20  # myISAM does not deadlock
+	parallelize(number_of_chunks, write_tsvs, cancer_types, [])
+
 
 
 #########################################
