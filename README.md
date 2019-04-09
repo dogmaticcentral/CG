@@ -10,7 +10,7 @@ and
 databases. The ICGC branch also contains tools necessary to
 merge the info from the two sources. The scripts add up to a loosely connected pipeline 
 (or, rather, two pipelines).  They re-organize the data and store it in the local MySQL 
-database.  While the  back end of each pipeline is rather generic, the front line is
+database.  While the  back end of each pipeline is rather generic, the front end is
 geared toward answering particular questions for which they were originally written.
 
 CG is not an out-of-the box solution. Rather, it is a starter kit, in case you would like to
@@ -64,7 +64,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
  ## Common tasks
  
- 'COmmon tasks' refer to tasks needed to make a functional local subset of TCGA. The only
+ 'Common tasks' refer to tasks needed to make a functional local subset of TCGA. The only
  non-obsolete piece remaining is [200_find_maf_files_in_GDC.py](tcga/00_common_tasks/200_find_maf_files_in_GDC.py) 
  that can be used to download somatic mutation tables from GDC - a repository of legacy TCGA data.
  
