@@ -78,6 +78,7 @@ consequence2location = {
 
 benign = {'synonymous', 'stop_retained'}
 
+
 #########################################
 def insert (cursor, table, columns, values):
 
@@ -91,6 +92,7 @@ def insert (cursor, table, columns, values):
 	qry += "values (%s) " % ",".join(nonempty_values)
 	search_db(cursor, qry)
 
+
 #########################################
 def get_positions(cursor, variants_table, chromosome, assembly):
 	positions = set()
@@ -101,6 +103,7 @@ def get_positions(cursor, variants_table, chromosome, assembly):
 		ret  = search_db (cursor, qry)
 		if ret:  positions |= set([r[0] for r in ret])
 	return positions
+
 
 #########################################
 def write_annovar_input(positions, variants_table,assembly,chromosome):
@@ -117,6 +120,7 @@ def write_annovar_input(positions, variants_table,assembly,chromosome):
 	subprocess.call(["bash","-c", "sort %s | uniq > %s.tmp" % (outfname, outfname)])
 	os.rename(outfname+".tmp", outfname)
 	return outfname
+
 
 #########################################
 def translate_positions(positions, chromosome, from_assembly, to_assembly, rootname):
@@ -195,13 +199,12 @@ def reorganize_locations(cursor, ref_assembly, variants_table):
 			positions = get_positions(cursor, variants_table, chromosome, assembly)
 			if len(positions)==0: continue
 			positions_translated = translate_positions(positions, chromosome, assembly, ref_assembly, rootname)
-			# write_annovar_input is going to fill outfname dictionary
+			# write_annovar_input will fill avinput dictionary
 			avinput  = write_annovar_input(positions_translated, variants_table, ref_assembly, chromosome)
 			# the positions in the avinput are already hg19
 			avoutput = run_annovar(avinput, ref_assembly, rootname, chromosome=="MT")
 			store_location_info(cursor, chromosome, avoutput)
 			#print(avoutput)
-
 
 
 #########################################
@@ -234,7 +237,7 @@ def reorganize(tables, other_args):
 
 	return
 
-
+#########################################
 #########################################
 #########################################
 def main():
@@ -251,7 +254,6 @@ def main():
 
 	number_of_chunks = 12  # myISAM does not deadlock
 	parallelize(number_of_chunks, reorganize, tables, [ref_assembly])
-
 
 
 #########################################

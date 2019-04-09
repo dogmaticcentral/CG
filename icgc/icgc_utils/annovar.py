@@ -33,6 +33,10 @@ def run_annovar(avinput, assembly, table_name, mitochondrial=False):
 
 	print ("running annovar ...")
 	avoutname = "%s.%s_multianno.txt" % (table_name, assembly)
+	# danger zone: this file batter does not exist if it is outdated
+	if os.path.exists(avoutname) and os.path.getsize(avoutname)!=0:
+		print("\t %s found"%avoutname)
+		return avoutname
 
 	translated_assembly_name = assembly_name_translate(assembly, mitochondrial)
 	cmd  = "/home/ivana/third/annovar/table_annovar.pl %s " % avinput
