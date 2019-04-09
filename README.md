@@ -23,7 +23,7 @@ Why bother with the local copy of the data? I do not know a general answer to th
 You should check the homepage  of both databases - maybe the information you
  are looking for is already  available.
 Here the original motive was to study the co-occurrence of mutations in different genes. 
-These types of questions are not readily answerable using data portals - they  tend to
+These types of questions are not readily answerable using data portals - portals  tend to
 agglomerate data on per-gene basis, in order to protect the privacy of sample donors. 
 
 
