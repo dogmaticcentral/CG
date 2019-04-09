@@ -53,12 +53,46 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  * MySQL
  * MySQLdb python module, installed with _sudo apt install python3-mysqldb_
  * gene symbols from HUGO gene nomenclature committee (see [here](https://www.genenames.org/download/custom/))
+ * Annovar for location and functional annotation
  * Optional: [line-profiler](https://github.com/rkern/line_profiler#line-profiler) for python
  
  ## TCGA
  The ecga branch of the pipeline got obsoleted before coming to production stage. 
  It contains various blind a alleys and wrong turns. Its current use is as a prep
- step for merging with ICGC.
+ step for merging with ICGC. The only two subdirs there that ever reached a production stage are 
+ [00_common_tasks](tcga/00_common_tasks) and [01_somatic_mutations](tcga/01_somatic_mutations).
+ 
+ ## Common tasks
+ 
+ 'COmmon tasks' refer to tasks needed to make a functional local subset of TCGA. The only
+ non-obsolete piece remaining is [200_find_maf_files_in_GDC.py](tcga/00_common_tasks/200_find_maf_files_in_GDC.py) 
+ that can be used to download somatic mutation tables from GDC - a repository of legacy TCGA data.
+ 
+ ## Compiling somatic mutations
+ 
+ 
+ ### Creating MySQL tables
+ [001_drop_maf_tables]() though [002_create_maf_tables](cga/01_somatic_mutations/002_create_maf_tables.py) 
+ 
+ ### Reading in and cleaning up the data
+ [003_maf_meta](cga/01_somatic_mutations/003_maf_meta.py) through [012_drop_annotation](tcga/01_somatic_mutations/012_drop_annotation_in_remaining_conflicted.py) 
+ 
+ 
+ ### 'Stuttering' samples
+ 
+ SOme samples in TCGA have more
+ [014_drop_stuttering_samples.py](tcga/01_somatic_mutations/014_drop_stuttering_samples.py) 
+ 
+ After this point  we can move to ICGC - TCGA data will be fused into the combined dataset over there.
+ 
+ ### Some basic stats
+ ... provided by [020_db_stats.py](tcga/01_somatic_mutations/020_db_stats.py) 
+ through [027_patient_freqs.py](tcga/01_somatic_mutations/027_patient_freqs.py).
+ 
+ 
+ 
+
+ 
  
  
  ## ICGC
@@ -165,8 +199,13 @@ run in parallel (the number of 'chunks' in main()).
 The companion pieces 
   [13_reorganize_mutations.py](icgc/13_reorganize_mutations.py) and
    [14_reorganize_locations.py](icgc/14_reorganize_locations.py) are a a bit faster.
+   This script uses ANnovar to check chromosome addresses / translate them to hg 19
+   which in retrospective turned out to be a bit of paranoia - all the addresses
+   seem to systematically refer to GRCh37 (which differs from hg19 only in MT contigs 
+   which we do not follow anyway).
  (Do not forget to create indices
  using [08_make_indices_on_temp_tables.py](icgc/08_make_indices_on_temp_tables.py)) 
+ 
  
  ### Removing duplicates
  ICGC is rife with data duplication, coming from various sources. Some seem to be bookkeeping mistakes with the

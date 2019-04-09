@@ -1,8 +1,8 @@
-#!/usr/bin/python -u
+#!/usr/bin/python3
 #
 #
 # This source code is part of tcga, a TCGA processing pipeline, written by Ivana Mihalek.
-# Copyright (C) 2014-2016 Ivana Mihalek.
+# Copyright (C) 2014-2019 Ivana Mihalek.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
