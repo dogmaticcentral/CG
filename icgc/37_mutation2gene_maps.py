@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 #
 # This source code is part of icgc, an ICGC processing pipeline.
 # 
@@ -30,7 +30,7 @@ def make_map_table(cursor, db_name, table_name):
 	if check_table_exists(cursor, db_name, table_name): return
 
 	switch_to_db (cursor, db_name)
-
+	# we cannot use icgc_mutation_id bcs the same location can correspond to multiple genes
 	qry = ""
 	qry += "  CREATE TABLE  %s (" % table_name
 	qry += "     id INT not null AUTO_INCREMENT, "
@@ -39,11 +39,22 @@ def make_map_table(cursor, db_name, table_name):
 	qry += "	 PRIMARY KEY (id) "
 	qry += ") ENGINE=MyISAM"
 
-	rows = search_db(cursor, qry)
-	print(qry)
-	print(rows)
+	search_db(cursor, qry)
+
+	# searching for priors will take the longest time though
+	qry = "create index mut_idx on mutation2gene (icgc_mutation_id)"
+	search_db(cursor, qry, verbose=True)
 
 
+#########################################
+# profile decorator is for the use with kernprof (a line profiler):
+#  ./icgc_utils/kernprof.py -l 37_....py
+# followed by
+# python3 -m line_profiler 37_....py.lprof
+# see here https://github.com/rkern/line_profiler#line-profiler
+# the reason I am using local kernprof.py is that I don't know where pip
+# installed its version (if anywhere)
+# @profile
 #########################################
 def store (cursor, mut_id, gene_symbols):
 
@@ -63,8 +74,7 @@ def store (cursor, mut_id, gene_symbols):
 		qry += "values ('%s','%s')" % (mut_id, symbol)
 		if search_db(cursor,qry):
 			search_db(cursor,qry,verbose=True)
-		print(qry)
-		exit()
+			exit()
 	return
 
 #########################################
@@ -95,8 +105,6 @@ def transcr2gene(cursor, transcrids):
 	qry += "where transcript in (%s)" % (",".join(["'%s'"%tr for tr in transcrids]))
 	ret = search_db(cursor,qry)
 	if ret: geneids = [r[0] for r in ret]
-	print("** ", transcrids)
-	print("** ", geneids)
 	return geneids
 
 
@@ -140,7 +148,6 @@ def store_maps(chromosomes, other_args ):
 				for geneloc in gene.split(";"):
 					ensid, loc = geneloc.split(":")
 					if loc == "intragenic": geneids.add(ensid)
-				print(geneids)
 				if len(geneids)>0:
 					gene_found = True
 					store (cursor, mut_id, ens2hgnc(cursor,geneids))
@@ -152,6 +159,7 @@ def store_maps(chromosomes, other_args ):
 					transcrids.add(transcrid)
 					geneids = transcr2gene(cursor, transcrids)
 					store (cursor, mut_id, ens2hgnc(cursor,geneids))
+
 		time1 = time.time()
 		print("chrom ", chrom, "done in %.3f mins" % (float(time1-time0)/60))
 	cursor.close()
@@ -172,9 +180,7 @@ def main():
 	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
 	shuffle(chromosomes)
 
-	chromosomes = ["Y"]
-
-	number_of_chunks = 1
+	number_of_chunks = 10
 	parallelize (number_of_chunks, store_maps, chromosomes, [])
 
 	return

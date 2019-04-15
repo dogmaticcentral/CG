@@ -21,7 +21,7 @@
 # careful: mutation ids are unique for position and mutation type, not for donor!
 from config import Config
 from icgc_utils.mysql   import  *
-
+from icgc_utils.icgc   import  *
 
 #########################################
 expected_chroms = set([str(i) for i in range(1,23)] + ["X", "Y", "MT"])
@@ -52,32 +52,8 @@ def make_new_somatic_tables(cursor, tables):
 	# also, in the same table: total_read_count, mutant_allele_read_count
 
 	for table in tables:
-		new_table = table.replace("_temp","")
-		qry = "drop table " + new_table
-		search_db(cursor, qry, verbose=True)
-
-		qry = ""
-		qry += "  CREATE TABLE  %s (" % new_table
-		qry += "     id INT NOT NULL AUTO_INCREMENT, "
-		qry += "  	 icgc_mutation_id VARCHAR (20) NOT NULL, "
-		qry += "     chromosome CHAR(2) NOT NULL,"
-		qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
-		qry += "     icgc_specimen_id VARCHAR (50), "  # we want to be able to stick the TCGA sample id later
-		qry += "     icgc_sample_id VARCHAR (20), "
-		qry += "     submitted_sample_id VARCHAR (50), "
-		qry += "	 control_genotype VARCHAR (430), "
-		qry += "	 tumor_genotype VARCHAR (430) NOT NULL, "
-		qry += "     total_read_count INT, "
-		qry += "     mutant_allele_read_count INT, "
-		qry += "     mut_to_total_read_count_ratio float default 0.0,"
-		qry += "     pathogenic_estimate boolean default 0,"
-
-		qry += "	 PRIMARY KEY (id) "
-		qry += ") ENGINE=MyISAM"
-
-		rows = search_db(cursor, qry)
-		print(qry)
-		print(rows)
+		new_table_name = table.replace("_temp","")
+		make_somatic_muts_table(cursor, db_name, new_table_name)
 
 #################
 def make_mutation_tables(cursor):
@@ -114,6 +90,7 @@ def make_mutation_tables(cursor):
 		print(rows)
 
 	return
+
 
 #################
 def make_location_tables(cursor):
@@ -159,7 +136,7 @@ def main():
 	# esanity_checks(cursor, tables)
 
 	# make new somatic mutation tables, per cancer
-	make_new_somatic_tables(cursor, tables)
+	make_new_somatic_tables(cursor,"icgc", tables)
 	# make new mutation table, divided into chromosomes
 	make_mutation_tables(cursor)
 	# make new location table, divided into chromosomes

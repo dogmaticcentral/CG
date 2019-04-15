@@ -43,6 +43,7 @@ def remove_duplicates(table_rows, other_args):
 	# loop over all duplicate entries
 	for line in table_rows:
 		[mega_id, ct] = line
+		if not mega_id: continue # we do not have one of the IDs (happens with TCGA)
 		[icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id] = mega_id.split("_")
 
 		# check the full length of the entry
@@ -140,7 +141,7 @@ def main():
 			print("\tno duplicates found in", table)
 			continue
 		print("\t%s has %d duplicates" % (table, len(ret)))
-		number_of_chunks = 20  # myISAM does not deadlock
+		number_of_chunks = 10  # myISAM does not deadlock
 		processes = parallelize(number_of_chunks, remove_duplicates, ret, [table, colnames])
 		wait_join(processes)
 

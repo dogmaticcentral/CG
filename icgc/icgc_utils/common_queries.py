@@ -67,7 +67,7 @@ def transcript_location_cleanup(cursor, loc, gene_stable_id):
 	for enst_loc in loc.split(";"):
 		[e, c] = enst_loc.split(":")
 		location[e] = c
-	enst_canonical = list_of_transcript_ids_2_canonical_transcript_id(cursor, list(location.keys()), gene_stable_id)
+	enst_canonical = list_of_transcript_ids_2_canonical_transcript_id(cursor, list(location.keys()))
 	if not enst_canonical: return loc
 	return location[enst_canonical]
 

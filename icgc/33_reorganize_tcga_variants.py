@@ -13,56 +13,59 @@
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with this program. If not, see<http://www.gnu.org/licenses/>.
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 # 
 # Contact: ivana.mihalek@gmail.com
 #
-import subprocess
-import time, re
+
+import time
 
 from icgc_utils.common_queries import *
 from icgc_utils.processes import *
+from icgc_utils.icgc import *
 from config import Config
 
 tcga_icgc_table_correspondence = {
-"ACC_somatic_mutations" :  "ACC_simple_somatic",
-"ALL_somatic_mutations" :  "ALL_simple_somatic",
-"BLCA_somatic_mutations": "BLCA_simple_somatic",
-"BRCA_somatic_mutations": "BRCA_simple_somatic",
-"CESC_somatic_mutations": "CESC_simple_somatic",
-"CHOL_somatic_mutations": "CHOL_simple_somatic",
-"COAD_somatic_mutations": "COCA_simple_somatic",
-"DLBC_somatic_mutations": "DLBC_simple_somatic",
-"ESCA_somatic_mutations": "ESAD_simple_somatic",
-"GBM_somatic_mutations" :  "GBM_simple_somatic",
-"HNSC_somatic_mutations": "HNSC_simple_somatic",
-"KICH_somatic_mutations": "KICH_simple_somatic",
-"KIRC_somatic_mutations": "KIRC_simple_somatic",
-"KIRP_somatic_mutations": "KIRP_simple_somatic",
-"LAML_somatic_mutations":  "AML_simple_somatic",
-"LGG_somatic_mutations" :  "LGG_simple_somatic",
-"LIHC_somatic_mutations": "LICA_simple_somatic",
-"LUAD_somatic_mutations": "LUAD_simple_somatic",
-"LUSC_somatic_mutations": "LUSC_simple_somatic",
-"MESO_somatic_mutations": "MESO_simple_somatic",
-"OV_somatic_mutations"  :   "OV_simple_somatic",
-"PAAD_somatic_mutations": "PACA_simple_somatic",
-"PCPG_somatic_mutations": "PCPG_simple_somatic",
-"PRAD_somatic_mutations": "PRAD_simple_somatic",
-"READ_somatic_mutations": "COCA_simple_somatic",
-"SARC_somatic_mutations": "SARC_simple_somatic",
-"SKCM_somatic_mutations": "MELA_simple_somatic",
-"STAD_somatic_mutations": "GACA_simple_somatic",
-"TGCT_somatic_mutations": "TGCT_simple_somatic",
-"THCA_somatic_mutations": "THCA_simple_somatic",
-"THYM_somatic_mutations": "THYM_simple_somatic",
-"UCEC_somatic_mutations": "UCEC_simple_somatic",
-"UCS_somatic_mutations" : "UTCA_simple_somatic",
-"UVM_somatic_mutations" :  "UVM_simple_somatic"
+	"ACC_somatic_mutations" :  "ACC_simple_somatic",
+	"ALL_somatic_mutations" :  "ALL_simple_somatic",
+	"BLCA_somatic_mutations": "BLCA_simple_somatic",
+	"BRCA_somatic_mutations": "BRCA_simple_somatic",
+	"CESC_somatic_mutations": "CESC_simple_somatic",
+	"CHOL_somatic_mutations": "CHOL_simple_somatic",
+	"COAD_somatic_mutations": "COCA_simple_somatic",
+	"DLBC_somatic_mutations": "DLBC_simple_somatic",
+	"ESCA_somatic_mutations": "ESAD_simple_somatic",
+	"GBM_somatic_mutations" :  "GBM_simple_somatic",
+	"HNSC_somatic_mutations": "HNSC_simple_somatic",
+	"KICH_somatic_mutations": "KICH_simple_somatic",
+	"KIRC_somatic_mutations": "KIRC_simple_somatic",
+	"KIRP_somatic_mutations": "KIRP_simple_somatic",
+	"LAML_somatic_mutations":  "AML_simple_somatic",
+	"LGG_somatic_mutations" :  "LGG_simple_somatic",
+	"LIHC_somatic_mutations": "LICA_simple_somatic",
+	"LUAD_somatic_mutations": "LUAD_simple_somatic",
+	"LUSC_somatic_mutations": "LUSC_simple_somatic",
+	"MESO_somatic_mutations": "MESO_simple_somatic",
+	"OV_somatic_mutations"  :   "OV_simple_somatic",
+	"PAAD_somatic_mutations": "PACA_simple_somatic",
+	"PCPG_somatic_mutations": "PCPG_simple_somatic",
+	"PRAD_somatic_mutations": "PRAD_simple_somatic",
+	"READ_somatic_mutations": "COCA_simple_somatic",
+	"SARC_somatic_mutations": "SARC_simple_somatic",
+	"SKCM_somatic_mutations": "MELA_simple_somatic",
+	"STAD_somatic_mutations": "GACA_simple_somatic",
+	"TGCT_somatic_mutations": "TGCT_simple_somatic",
+	"THCA_somatic_mutations": "THCA_simple_somatic",
+	"THYM_somatic_mutations": "THYM_simple_somatic",
+	"UCEC_somatic_mutations": "UCEC_simple_somatic",
+	"UCS_somatic_mutations" : "UTCA_simple_somatic",
+	"UVM_somatic_mutations" :  "UVM_simple_somatic"
 }
+
 
 variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id',
                    'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
+
 
 # we'll take care of 'aa_mutation' and 'consequence_type will be handled separately
 mutation_columns = ['icgc_mutation_id', 'start_position', 'end_position', 'mutation_type',
@@ -138,6 +141,7 @@ def find_mutation_id(cursor, tcga_named_field):
 		exit()
 	return False if not ret else ret[0]
 
+
 #########################################
 def construct_id(cursor, icgc_table, lock_alias, lock_alias_2,  tcga_donor_id):
 
@@ -146,6 +150,9 @@ def construct_id(cursor, icgc_table, lock_alias, lock_alias_2,  tcga_donor_id):
 	qry  = "select icgc_donor_id from icgc.%s as %s "  % (icgc_table, lock_alias)
 	qry += "where icgc_donor_id like 'DOT_%' order by icgc_donor_id desc limit 1"
 	ret = search_db(cursor,qry)
+	if ret and ret[0] and type(ret[0][0])==str and 'error' in ret[0][0].lower():
+		search_db(cursor,qry, verbose=True)
+		exit(1)
 	ordinal = 1
 	if ret:
 		ordinal = int( ret[0][0].split("_")[-1].lstrip("0") ) + 1
@@ -165,9 +172,6 @@ def construct_id(cursor, icgc_table, lock_alias, lock_alias_2,  tcga_donor_id):
 	store_without_checking(cursor, "%s_donor"%tumor_short, store_fields, verbose=False, database='icgc')
 
 	return new_donor_id
-
-
-#########################################
 
 
 #########################################
@@ -234,6 +238,7 @@ def store_variant(cursor,  tcga_named_field, mutation_id, pathogenic_estimate, i
 
 	return
 
+
 #########################################
 def process_tcga_table(cursor, tcga_table, icgc_table, donors_already_deposited):
 
@@ -243,7 +248,7 @@ def process_tcga_table(cursor, tcga_table, icgc_table, donors_already_deposited)
 	no_rows = search_db(cursor,"select count(*) from tcga.%s"% tcga_table)[0][0]
 
 	column_names = get_column_names(cursor,'tcga',tcga_table)
-	qry  = "select * from tcga.%s " % tcga_table
+	qry = "select * from tcga.%s " % tcga_table
 	ct = 0
 	time0 = time.time()
 	id_resolution = {}
@@ -311,8 +316,10 @@ def main():
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
 
+
 	number_of_chunks = 1 # myISAM does not deadlock
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
+
 
 #########################################
 if __name__ == '__main__':

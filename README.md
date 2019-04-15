@@ -263,7 +263,9 @@ possibly originating in ICGC itself. Some mutations  have identical tuple
  through [34_tcga_specimen_hack.py](icgc/34_tcga_specimen_hack.py)
  concern themselves with merging TCGA info created in TCGA branch with the ICGC.
  This sub-pipe runs from preparatory indexing to data input.  
- [Duplicate data removal](#removing-duplicates) should be probably be re-applied.
+ [Duplicate data removal](#removing-duplicates) should be probably be re-applied 
+ (steps [19_cleanup_duplicate_donors.py](19_cleanup_duplicate_donors.py) 
+ and [22_cleanup_duplicate_specimens.py](22_cleanup_duplicate_specimens.py)).
  If everything is ok, [35_database_stats.py](icgc/35_database_stats.py) should report
  no duplicates in any of the tables.
  

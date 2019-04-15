@@ -41,7 +41,7 @@ def main():
 	for ct in cancer_types:
 		# note 'temp' here - we'll reroganize when we get to TCGA
 		mutations_table = ct + "_simple_somatic_temp"
-		make_mutations_table(cursor, db_name, mutations_table)
+		make_temp_somatic_muts_table(cursor, db_name, mutations_table)
 		donors_table = ct + "_donor"
 		make_donors_table(cursor, db_name, donors_table)
 		specimen_table = ct + "_specimen"

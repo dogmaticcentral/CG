@@ -30,8 +30,8 @@ def count_entries(cursor, somatic_table, icgc_specimen_id):
 #########################################
 def main():
 
-	print("disabled - this script deletes certain rows ") # comment out to run
-	exit(1)
+	#print("disabled - this script deletes certain rows ") # comment out to run
+	#exit(1)
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()

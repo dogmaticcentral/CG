@@ -20,17 +20,48 @@
 from icgc_utils.mysql import switch_to_db, search_db, check_table_exists
 
 #########################################
-def make_mutations_table(cursor, db_name, mutations_table):
+def make_somatic_muts_table(cursor, db_name, table_name):
+	if check_table_exists(cursor, db_name, table_name):
+		qry = "drop table " + table_name
+		search_db(cursor, qry, verbose=True)
+
+	qry = ""
+	qry += "  CREATE TABLE  %s (" % table_name
+	qry += "     id INT NOT NULL AUTO_INCREMENT, "
+	qry += "  	 icgc_mutation_id VARCHAR (20) NOT NULL, "
+	qry += "     chromosome CHAR(2) NOT NULL,"
+	qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
+	qry += "     icgc_specimen_id VARCHAR (50), "  # we want to be able to stick the TCGA sample id later
+	qry += "     icgc_sample_id VARCHAR (20), "
+	qry += "     submitted_sample_id VARCHAR (50), "
+	qry += "	 control_genotype VARCHAR (430), "
+	qry += "	 tumor_genotype VARCHAR (430) NOT NULL, "
+	qry += "     total_read_count INT, "
+	qry += "     mutant_allele_read_count INT, "
+	qry += "     mut_to_total_read_count_ratio float default 0.0,"
+	qry += "     pathogenic_estimate boolean default 0,"
+	qry += "     reliability_estimate boolean default 0,"
+
+	qry += "	 PRIMARY KEY (id) "
+	qry += ") ENGINE=MyISAM"
+
+	rows = search_db(cursor, qry)
+	print(qry)
+	print(rows)
+
+
+#########################################
+def make_temp_somatic_muts_table(cursor, db_name, table_name):
 
 	switch_to_db (cursor, db_name)
 
-	if check_table_exists(cursor, db_name, mutations_table):
-		qry = "drop table " + mutations_table
+	if check_table_exists(cursor, db_name, table_name):
+		qry = "drop table " + table_name
 		search_db(cursor, qry, verbose=True)
 
 
 	qry = ""
-	qry += "  CREATE TABLE  %s (" % mutations_table
+	qry += "  CREATE TABLE  %s (" % table_name
 	qry += "     id INT NOT NULL, "
 	qry += "  	 icgc_mutation_id VARCHAR (20) NOT NULL, "
 	qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
