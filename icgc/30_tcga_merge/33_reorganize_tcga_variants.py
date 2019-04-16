@@ -20,10 +20,8 @@
 
 import time
 
-from icgc_utils.common_queries import *
-from icgc_utils.processes import *
-from icgc_utils.icgc import *
-from config import Config
+from local_config_30 import *
+
 
 tcga_icgc_table_correspondence = {
 	"ACC_somatic_mutations" :  "ACC_simple_somatic",
@@ -175,41 +173,43 @@ def construct_id(cursor, icgc_table, lock_alias, lock_alias_2,  tcga_donor_id):
 
 
 #########################################
-def tcga_sample2donor(s):
+def tcga_sample2tcga_donor(s):
 	return "-".join(s.split("-")[:3])
 
 
 #########################################
-def store_variant(cursor,  tcga_named_field, mutation_id, pathogenic_estimate, icgc_table, id_resolution):
+def store_variant(cursor, tcga_named_field, mutation_id, pathogenic_estimate, icgc_variant_table, id_resolution):
 
 
 	# thread parallelization goes over tcga tables - no guarantee there won't be race condition
 	# for icgc tables if two tcga's map to the same icgc
 	# lock table
-	tumor_short = icgc_table.split("_")[0]
+	tumor_short = icgc_variant_table.split("_")[0]
 	lock_alias = "{}varslock".format(tumor_short)
 	lock_alias_2 = "{}donorslock".format(tumor_short)
 	# You cannot refer to a locked table multiple times in a single query using the same name. Use aliases instead.
 	# But then not that once  you lock a table using an alias, you must refer to it in your statements using that alias.
 	# So her for example wrtie take no alias, but read does
-	qry = "lock tables icgc.%s write, icgc.%s as %s read. " % (icgc_table, icgc_table, lock_alias)
+	qry = "lock tables icgc.%s write, icgc.%s as %s read. " % (icgc_variant_table, icgc_variant_table, lock_alias)
 	qry +="icgc.%s_donor write,  icgc.%s_donor as %s read" % (tumor_short, tumor_short, lock_alias_2)
 	search_db(cursor,qry)
 
 	#have we stored this by any chance?
-	qry  = "select submitted_donor_id from icgc.%s " % icgc_table
+	qry  = "select submitted_donor_id from icgc.%s " % icgc_variant_table
 	qry += "where icgc_mutation_id='%s' " % mutation_id
 	ret = search_db(cursor,qry)
 	if ret and (tcga_named_field['tumor_sample_barcode'] in [r[0] for r in ret]):
 		#print "variant found"
 		pass
 	else:
-		tcga_participant_id = tcga_sample2donor(tcga_named_field['tumor_sample_barcode'])
+		tcga_participant_id = tcga_sample2tcga_donor(tcga_named_field['tumor_sample_barcode'])
 		if tcga_participant_id in id_resolution:
 			new_donor_id = id_resolution[tcga_participant_id]
+			#print("###############  using id", new_donor_id)
 		else:
-			new_donor_id = construct_id(cursor, icgc_table, lock_alias, lock_alias_2, tcga_participant_id)
+			new_donor_id = construct_id(cursor, icgc_variant_table, lock_alias, lock_alias_2, tcga_participant_id)
 			id_resolution[tcga_participant_id] = new_donor_id
+			#print(">>>>>>>>>>>>>>> created new id", new_donor_id)
 
 		# tcga could not agree with itself in which column to place the cancer allele
 		reference_allele = tcga_named_field['reference_allele']
@@ -228,9 +228,8 @@ def store_variant(cursor,  tcga_named_field, mutation_id, pathogenic_estimate, i
 			'pathogenic_estimate': pathogenic_estimate,
 			'reliability_estimate': 1,
 		}
-
 		# store
-		store_without_checking(cursor, icgc_table, store_fields, verbose=False, database='icgc')
+		store_without_checking(cursor, icgc_variant_table, store_fields, verbose=False, database='icgc')
 
 	# unlock
 	qry = "unlock tables"
@@ -240,7 +239,7 @@ def store_variant(cursor,  tcga_named_field, mutation_id, pathogenic_estimate, i
 
 
 #########################################
-def process_tcga_table(cursor, tcga_table, icgc_table, donors_already_deposited):
+def process_tcga_table(cursor, tcga_table, icgc_table, donors_already_deposited, submitted2icgc_donor_id):
 
 	standard_chromosomes = [str(i) for i in range(23)] +['X','Y']
 
@@ -251,7 +250,8 @@ def process_tcga_table(cursor, tcga_table, icgc_table, donors_already_deposited)
 	qry = "select * from tcga.%s " % tcga_table
 	ct = 0
 	time0 = time.time()
-	id_resolution = {}
+	# ICGC alreaduy comes with some unused ids
+	id_resolution = submitted2icgc_donor_id.copy()
 
 	for row in search_db(cursor,qry):
 		ct += 1
@@ -259,10 +259,12 @@ def process_tcga_table(cursor, tcga_table, icgc_table, donors_already_deposited)
 			print("%30s   %6d lines out of %6d  (%d%%)  %d min" % \
 				(tcga_table, ct, no_rows, float(ct)/no_rows*100, float(time.time()-time0)/60))
 		named_field = dict(list(zip(column_names,row)))
-
-		if tcga_sample2donor(named_field['tumor_sample_barcode']) in donors_already_deposited: continue
 		if not named_field['chromosome'] in standard_chromosomes: continue
+
+		donor_id = tcga_sample2tcga_donor(named_field['tumor_sample_barcode'])
+		if donor_id in donors_already_deposited: continue
 		mutation_id, pathogenic_estimate = find_mutation_id(cursor, named_field)
+
 		location_stored = check_location_stored(cursor, named_field)
 		if not mutation_id or not location_stored:
 			print("mutation id:", mutation_id, "location stored:", location_stored)
@@ -288,13 +290,33 @@ def add_tcga_diff(tcga_tables, other_args):
 		#tcga donors already deposited in icgc
 		tumor = icgc_table.split("_")[0]
 		deposited_tcga_donor_ids = []
+		submitted2icgc_donor_id = {}
 		if check_table_exists(cursor, "icgc", "{}_donor".format(tumor)):
-			qry = "select submitted_donor_id from icgc.{}_donor ".format(tumor)
+			qry  = "select submitted_donor_id, icgc_donor_id from icgc.{}_donor ".format(tumor)
 			qry += "where submitted_donor_id like '{}' or  submitted_donor_id like '{}' ".format("TCGA_%", "TARGET_%")
-			ret = search_db(cursor,qry, verbose=True)
-			if ret: deposited_tcga_donor_ids = [r[0] for r in  ret]
+			ret = search_db(cursor,qry)
+			# the problem with this is that some donor ids do not have any variants deposited,
+			# see 10_local_db_loading/10_donor_check.py
+			print(len(ret))
+
+			if ret:
+				submitted2icgc_donor_id = dict(ret)
+				qry  = "select distinct submitted_sample_id from %s " % icgc_table
+				qry += "where submitted_sample_id "
+				qry += "like '{}' or  submitted_sample_id like '{}'".format("TCGA_%", "TARGET_%")
+				ret = search_db(cursor,qry)
+
+				if ret:
+					sample_ids = [line[0] for line in ret]
+					ct = 0
+					for submitted_donor_id, icgc_donor_id in submitted2icgc_donor_id.items():
+						ct +=1
+						matching_sample_ids = list(filter(lambda x: submitted_donor_id in x, sample_ids))
+						if len(matching_sample_ids)>0:
+							deposited_tcga_donor_ids.append(submitted_donor_id)
+
 			print("\t already deposited: ", len(deposited_tcga_donor_ids))
-		process_tcga_table(cursor, tcga_table, icgc_table, deposited_tcga_donor_ids)
+		process_tcga_table(cursor, tcga_table, icgc_table, deposited_tcga_donor_ids, submitted2icgc_donor_id)
 		print("\t overall time for %s: %.3f mins; pid: %d" % (tcga_table, float(time.time()-time0)/60, os.getpid()))
 
 	cursor.close()
@@ -315,8 +337,7 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
-
-
+	tcga_tables = ['BRCA_somatic_mutations']
 	number_of_chunks = 1 # myISAM does not deadlock
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
 

@@ -76,8 +76,8 @@ def make_somatic_table(cursor, table):
 #########################################
 def main():
 
-	print("disabled")
-	exit()
+	#print("disabled")
+	#exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
