@@ -35,7 +35,7 @@ mutation_columns = ['icgc_mutation_id', 'start_position', 'end_position', 'assem
 # stop_retained: A sequence variant where at least one base in the terminator codon is changed, but the terminator remains
 consequence_vocab = ['stop_lost', 'synonymous', 'inframe_deletion', 'inframe_insertion', 'stop_gained',
                      '5_prime_UTR_premature_start_codon_gain',
-                     'start_lost', 'frameshift', 'disruptive_inframe_deletion', 'stop_retained',
+                     'start_lost', 'start_gained', 'frameshift', 'disruptive_inframe_deletion', 'stop_retained',
                      'exon_loss', 'disruptive_inframe_insertion', 'missense']
 
 # location_vocab[1:4] is gene-relative
@@ -48,7 +48,7 @@ location_vocab = ['intergenic_region', 'intragenic', 'upstream', 'downstream',
 # this is set literal
 pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained',
                     '5_prime_UTR_premature_start_codon_gain',
-                     'start_lost', 'frameshift', 'disruptive_inframe_deletion',
+                     'start_lost', 'start_gained', 'frameshift', 'disruptive_inframe_deletion',
                      'exon_loss', 'disruptive_inframe_insertion', 'missense',
                      'splice_acceptor', 'splice_region', 'splice_donor',
                       'inframe'   # there is no way we can know at this level whether an inframe change is nondsisruptive

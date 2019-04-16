@@ -20,7 +20,11 @@
 
 import time
 
-from local_config_30 import *
+
+from icgc_utils.common_queries  import  *
+from icgc_utils.icgc import *
+from icgc_utils.processes import *
+from config import Config
 
 
 tcga_icgc_table_correspondence = {
@@ -239,7 +243,7 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenic_estimate, ic
 
 
 #########################################
-def process_tcga_table(cursor, tcga_table, icgc_table, donors_already_deposited, submitted2icgc_donor_id):
+def process_tcga_table(cursor, tcga_table, icgc_table, submitted2icgc_donor_id):
 
 	standard_chromosomes = [str(i) for i in range(23)] +['X','Y']
 
@@ -255,14 +259,12 @@ def process_tcga_table(cursor, tcga_table, icgc_table, donors_already_deposited,
 
 	for row in search_db(cursor,qry):
 		ct += 1
-		if (ct%10000==0):
+		if (ct%50000==0):
 			print("%30s   %6d lines out of %6d  (%d%%)  %d min" % \
 				(tcga_table, ct, no_rows, float(ct)/no_rows*100, float(time.time()-time0)/60))
 		named_field = dict(list(zip(column_names,row)))
 		if not named_field['chromosome'] in standard_chromosomes: continue
 
-		donor_id = tcga_sample2tcga_donor(named_field['tumor_sample_barcode'])
-		if donor_id in donors_already_deposited: continue
 		mutation_id, pathogenic_estimate = find_mutation_id(cursor, named_field)
 
 		location_stored = check_location_stored(cursor, named_field)
@@ -289,34 +291,17 @@ def add_tcga_diff(tcga_tables, other_args):
 
 		#tcga donors already deposited in icgc
 		tumor = icgc_table.split("_")[0]
-		deposited_tcga_donor_ids = []
 		submitted2icgc_donor_id = {}
 		if check_table_exists(cursor, "icgc", "{}_donor".format(tumor)):
 			qry  = "select submitted_donor_id, icgc_donor_id from icgc.{}_donor ".format(tumor)
 			qry += "where submitted_donor_id like '{}' or  submitted_donor_id like '{}' ".format("TCGA_%", "TARGET_%")
 			ret = search_db(cursor,qry)
-			# the problem with this is that some donor ids do not have any variants deposited,
+			# some donor ids do not have any variants deposited,
 			# see 10_local_db_loading/10_donor_check.py
-			print(len(ret))
-
 			if ret:
 				submitted2icgc_donor_id = dict(ret)
-				qry  = "select distinct submitted_sample_id from %s " % icgc_table
-				qry += "where submitted_sample_id "
-				qry += "like '{}' or  submitted_sample_id like '{}'".format("TCGA_%", "TARGET_%")
-				ret = search_db(cursor,qry)
 
-				if ret:
-					sample_ids = [line[0] for line in ret]
-					ct = 0
-					for submitted_donor_id, icgc_donor_id in submitted2icgc_donor_id.items():
-						ct +=1
-						matching_sample_ids = list(filter(lambda x: submitted_donor_id in x, sample_ids))
-						if len(matching_sample_ids)>0:
-							deposited_tcga_donor_ids.append(submitted_donor_id)
-
-			print("\t already deposited: ", len(deposited_tcga_donor_ids))
-		process_tcga_table(cursor, tcga_table, icgc_table, deposited_tcga_donor_ids, submitted2icgc_donor_id)
+		process_tcga_table(cursor, tcga_table, icgc_table,  submitted2icgc_donor_id)
 		print("\t overall time for %s: %.3f mins; pid: %d" % (tcga_table, float(time.time()-time0)/60, os.getpid()))
 
 	cursor.close()
@@ -337,8 +322,8 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
-	tcga_tables = ['BRCA_somatic_mutations']
-	number_of_chunks = 1 # myISAM does not deadlock
+	#tcga_tables = ['CESC_somatic_mutations']
+	number_of_chunks = 10 # myISAM does not deadlock
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
 
 

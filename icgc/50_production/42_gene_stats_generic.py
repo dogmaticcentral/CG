@@ -211,7 +211,7 @@ def gene_mutations(cursor, table, gene):
 	qry += "from mutation2gene g,  %s m " % table
 	qry += "where g.gene_symbol='%s' " % gene
 	qry += "and g.icgc_mutation_id = m.icgc_mutation_id "
-	#qry += "and m.pathogenic_estimate=1 and m.reliability_estimate=1"
+	qry += "and m.pathogenic_estimate=1 and m.reliability_estimate=1"
 	#print(qry)
 	ret = search_db(cursor,qry)
 	if not ret: return
@@ -280,13 +280,13 @@ def main():
 	#########################
 	switch_to_db(cursor,"icgc")
 
-	outf = open("%s_per_cancer_breakdown.tmp.tsv"%gene, "w")
+	outf = open("%s_per_cancer_breakdown.tsv"%gene, "w")
 	print("Writing to", outf.name)
 	outf.write("\t".join(["tumor short",  "donor", "spec type",
 						"no muts",   "control genotype", "tumor genotype",
 						"consequence", "aa change", "freq in general population",
 						"p53 status", "p53 mutation", "function"])+"\n")
-	tables = ['BRCA_simple_somatic']
+	#tables = ['CESC_simple_somatic']
 	for table in tables:
 		tumor_short = table.split("_")[0]
 		if verbose: print("=================================")
@@ -297,7 +297,7 @@ def main():
 			continue
 		print("\t found", len(donor_mutations),"mutations in", gene)
 		for dm in donor_mutations.items(): print("\t\t",dm)
-		continue
+		#continue
 		donor_rows = donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  hide_id=True)
 		if not donor_rows: continue
 		outf.write(donor_rows+"\n")
