@@ -76,6 +76,7 @@ def make_temp_somatic_muts_table(cursor, db_name, table_name):
 	qry += "	 assembly VARCHAR (10) NOT NULL, "
 	# for mut type use ins, del, indel and sbs (=single base substitution)
 	qry += "	 mutation_type VARCHAR (10), "
+	
 	qry += "	 reference_genome_allele VARCHAR (210) NOT NULL, "
 	qry += "	 control_genotype VARCHAR (430) NOT NULL, "
 	qry += "	 tumor_genotype VARCHAR (430) NOT NULL, "

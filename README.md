@@ -15,7 +15,8 @@ geared toward answering particular questions for which they were originally writ
 
 CG is not an out-of-the box solution. Rather, it is a starter kit, in case you would like to
 do some cancer genomics data analysis on your own. Installing CG database(s) may take a
-day or two if you are willing to go with the pipeline as-is. With tweaks, a week is 
+day or two if you are willing to go with the pipeline as-is. The (approximate) timings
+for a default installation of the ICGC branch can be found in [timing.txt](timing.txt). With tweaks, a week is 
 not an unreasonable time estimate.
 
 
@@ -34,18 +35,19 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
 * [Dependencies](#dependencies)
 * [TCGA](#tcga)
 * [ICGC](#icgc)
-     * [Config file](#config-file)
-     * [ICGC data download](#icgc-data-download)
-     * [Getting and storing some auxilliary data](#getting-and-storing-some-auxilliary-data)
-     * [Measuring the field lengths and making MySQL tables](#measuring-the-field-lengths-and-making-mysql-tables)
-     * [Filling and  indexing database tables](#filling-and--indexing-database-tables)
-     * [Reorganizing mutation data](#reorganizing-mutation-data)
-     * [Removing duplicates](#removing-duplicates)
-     * [Adding reliability info](#adding-reliability-info)
-     * [Merging with TCGA](#merging-with-tcga)
-     * [Some generic stats](#some-generic-stats)
-     * [Project-specific stats](#project-specific-stats)
- 
+    * [config file](#config-file)
+    * [ICGC data download (<a href="icgc/00_data_download">00_data_download</a>)](#icgc-data-download-00_data_download)
+    * [Loading data into local version of the database (<a href="icgc/10_local_db_loading">10_local_db_loading</a>)](#loading-data-into-local-version-of-the-database-10_local_db_loading)
+         * [Getting and storing some auxilliary data](#getting-and-storing-some-auxilliary-data)
+         * [Measuring the field lengths and making MySQL tables](#measuring-the-field-lengths-and-making-mysql-tables)
+         * [Filling and  indexing database tables](#filling-and--indexing-database-tables)
+    * [Reorganizing mutation data (<a href="icgc/20_local_db_reorganization">20_local_db_reorganization</a>)](#reorganizing-mutation-data-20_local_db_reorganization)
+         * [Removing duplicates](#removing-duplicates)
+         * [Adding reliability info](#adding-reliability-info)
+    * [Merging with TCGA](#merging-with-tcga)
+    * [Some generic stats](#some-generic-stats)
+    * [Project-specific stats](#project-specific-stats)
+  
  
  
  ## Dependencies
@@ -101,7 +103,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  You can set some recurring constants - such as data directories or mysql conf file(s) - 
  in the [config.py](icgc/config.py) file.
  
- ### ICGC data download
+ ### ICGC data download ([00_data_download](icgc/00_data_download))
  
  Just like the tcga branch, this branch of the pipeline starts by downloading the data from
  the source, ICGC in this case. Note however that here you will need the access token. 
@@ -118,7 +120,9 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  might not be clear which cancer the depositors refer to. Feel free to change in you version of the code
  the grouping defined in [06_group_cancers.py](icgc/00_data_download/06_group_cancers.py), or to skip it altogether.
  
- ### Getting and storing some auxilliary data
+ 
+ ### Loading data into local version of the database ([10_local_db_loading](icgc/10_local_db_loading))
+ #### Getting and storing some auxilliary data
  
  In [01_hgnc_name_resolution_table.py](icgc/10_local_db_loading/01_hgnc_name_resolution_table.py) and 
  [02_ensembl_id_table.py](icgc/10_local_db_loading/02_ensembl_id_table.py) we make and fill some tables we will use later for name resolution 
@@ -146,15 +150,18 @@ and give _blah_  the permissions to write to and read from _icgc_:
 The canonical transcript id is not readily available from Ensembl Mart, thus for our purposes
 here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz2 in the
 [hacks](icgc/hacks) directory. Put it someplace where
-[02_ensembl_id.py](icgc/02_ensembl_id.py) can find it.
+[02_ensembl_id.py](icgc/10_local_db_loading//02_ensembl_id.py) can find it.
 
-### Measuring the field lengths and making MySQL tables
+#### Measuring the field lengths and making MySQL tables
 
 [03_find_max_field_length.py](icgc/10_local_db_loading/03_find_max_field_length.py) and 
 [04_make_tables.py](icgc/10_local_db_loading/04_make_tables.py): 
-Make sure that the fields in the mysql tables are big enough for each entry and create mysql tables.
+Make sure that the fields in the mysql tables are big enough 
+for each entry and create mysql tables. 
+[03_find_max_field_length.py](icgc/10_local_db_loading/03_find_max_field_length.py) should 
+give you an idea about the longest entries found.
 
-### Filling and  indexing database tables
+#### Filling and  indexing database tables
 [05_write_mutations_tsv.py](icgc05_write_mutations_tsv.py) through [08_make_indices.py](icgc/10_local_db_loading/08_make_indices_on_temp_tables.py).
 For large tables, rather than loading them through python, 
 it turns out to be faster to create tsvs and 
@@ -165,7 +172,7 @@ then load them from mysql shell (as in [07_load_mysql.py](icgc/10_local_db_loadi
 part of the whole pipeline, but is unclear
 whether it is worth the optimization effort.
 
-### Reorganizing mutation data
+### Reorganizing mutation data ([20_local_db_reorganization](icgc/20_local_db_reorganization))
 This is where we depart from ICGC original database architecture - which is pretty much
 nonexistent and consists of massive duplication of annotation for each occurrence of a mutation
 and for each of its interpretations within various transcripts.
