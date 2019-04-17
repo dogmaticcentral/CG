@@ -50,45 +50,19 @@ def make_new_somatic_tables(cursor, tables):
 	# variant: icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id, submitted_sample_id
 	# there should be only one entry with these 4 identifiers
 	# also, in the same table: total_read_count, mutant_allele_read_count
-
 	for table in tables:
 		new_table_name = table.replace("_temp","")
-		make_somatic_muts_table(cursor, db_name, new_table_name)
+		make_variants_table(cursor, 'icgc', new_table_name)
+	return
+
 
 #################
 def make_mutation_tables(cursor):
-
-	# mutation:  icgc_ mutation_id, chromosome, chrom_location, length aa_mutation cds_mutation consequence impact_estimate
-
+	# mutation:
+	# icgc_ mutation_id, chromosome, chrom_location, length aa_mutation cds_mutation consequence pathogenic_estimate
 	for chrom in expected_chroms:
-		new_table = "mutations_chrom_{}".format(chrom)
-		qry = "drop table " + new_table
-		search_db(cursor, qry, verbose=True)
-		qry = ""
-		qry += "  CREATE TABLE  %s (" % new_table
-		qry += "  	 icgc_mutation_id VARCHAR (20) NOT NULL, "
-		qry += "	 start_position INT  NOT NULL, "
-		qry += "	 end_position INT NOT NULL, "
-		qry += "	 assembly VARCHAR (10) NOT NULL, "
-		# for mut type use deletion, insertion, single and multiple
-		qry += "	 mutation_type VARCHAR (10), "
-		qry += "	 mutated_from_allele VARCHAR (210) NOT NULL, "
-		qry += "	 mutated_to_allele VARCHAR (210) NOT NULL, "
-		qry += "	 reference_genome_allele VARCHAR (210) NOT NULL, "
-		# the longest entry for aa_mutation I could find was 59
-		# --> yes, but I will be merging several, including ENST identifiers
-		qry += "     aa_mutation  TEXT, "
-		#
-		qry += "     consequence TEXT, "
-		qry += "     pathogenic_estimate BOOLEAN, "
-
-		qry += "	 PRIMARY KEY (icgc_mutation_id) " # automatically indexed
-		qry += ") ENGINE=MyISAM"
-
-		rows = search_db(cursor, qry)
-		print(qry)
-		print(rows)
-
+		table_name = "mutations_chrom_{}".format(chrom)
+		make_mutations_table(cursor, 'icgc', table_name)
 	return
 
 
@@ -97,21 +71,8 @@ def make_location_tables(cursor):
 	# location:  chromosome_position  gene_relative[semicolon separated list of the format ENSG:relative_location]
 	# transcript_relative[semicolon separated list of the format ENST:relative_location]
 	for chrom in expected_chroms:
-		new_table = "locations_chrom_{}".format(chrom)
-		qry = "drop table " + new_table
-		search_db(cursor, qry, verbose=True)
-		qry = ""
-		qry += "  CREATE TABLE  %s (" % new_table
-		qry += "	 position INT  NOT NULL, "
-		qry += "     gene_relative TEXT, "
-		qry += "     transcript_relative TEXT, "
-
-		qry += "	 PRIMARY KEY (position) " # automatically indexed
-		qry += ") ENGINE=MyISAM"
-
-		rows = search_db(cursor, qry)
-		print(qry)
-		print(rows)
+		table_name = "locations_chrom_{}".format(chrom)
+		make_locations_table(cursor, 'icgc', table_name)
 	return
 
 
@@ -133,10 +94,10 @@ def main():
 
 	switch_to_db(cursor,"icgc")
 	# enable if run for the first time
-	# esanity_checks(cursor, tables)
+	#sanity_checks(cursor, tables)
 
 	# make new somatic mutation tables, per cancer
-	make_new_somatic_tables(cursor,"icgc", tables)
+	make_new_somatic_tables(cursor, tables)
 	# make new mutation table, divided into chromosomes
 	make_mutation_tables(cursor)
 	# make new location table, divided into chromosomes

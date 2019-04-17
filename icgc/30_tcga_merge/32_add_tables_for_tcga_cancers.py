@@ -80,7 +80,7 @@ def main():
 
 		qry = "drop table " + somatic_table_name
 		search_db(cursor,qry)
-		make_somatic_muts_table(cursor, db_name, somatic_table_name)
+		make_variants_table(cursor, db_name, somatic_table_name)
 	cursor.close()
 	db.close()
 

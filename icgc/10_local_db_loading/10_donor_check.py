@@ -17,7 +17,8 @@
 #
 # Contact: ivana.mihalek@gmail.com
 
-from local_config_10 import *
+from icgc_utils.mysql import *
+from config import Config
 
 #########################################
 #########################################

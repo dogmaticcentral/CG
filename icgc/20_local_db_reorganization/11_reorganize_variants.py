@@ -26,7 +26,8 @@ from icgc_utils.common_queries  import  *
 from icgc_utils.processes   import  *
 
 variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id',
-                   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
+				   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
+
 
 #########################################
 def insert (cursor, table, columns, values):
@@ -54,8 +55,6 @@ def reorganize_donor_variants(cursor, table, columns):
 		qry += "and gene_affected is not null and gene_affected !='' "
 		ret  = search_db (cursor, qry)
 		if not ret: continue # it happens, check "select * from ALL_simple_somatic_temp where icgc_donor_id='DO282'"
-		#	print search_db (cursor, qry, verbose=True)
-		#	exit()
 		for fields in ret:
 			total_entries += 1
 			named_field = dict(list(zip(columns,fields)))
@@ -86,7 +85,7 @@ def reorganize(tables, other_args):
 		print("reorganizing variants from ", table, os.getpid())
 		reorganize_donor_variants(cursor, table, columns)
 		time1 = time.time()
-		print(("\t\t done in %.3f mins" % (float(time1-time0)/60)), os.getpid())
+		print(("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid())
 
 	cursor.close()
 	db.close()

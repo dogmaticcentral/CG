@@ -36,12 +36,12 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
 * [TCGA](#tcga)
 * [ICGC](#icgc)
     * [config file](#config-file)
-    * [ICGC data download (<a href="icgc/00_data_download">00_data_download</a>)](#icgc-data-download-00_data_download)
-    * [Loading data into local version of the database (<a href="icgc/10_local_db_loading">10_local_db_loading</a>)](#loading-data-into-local-version-of-the-database-10_local_db_loading)
+    * [ICGC data download](#icgc-data-download-00_data_download)
+    * [Loading data into local version of the database](#loading-data-into-local-version-of-the-database-10_local_db_loading)
          * [Getting and storing some auxilliary data](#getting-and-storing-some-auxilliary-data)
          * [Measuring the field lengths and making MySQL tables](#measuring-the-field-lengths-and-making-mysql-tables)
          * [Filling and  indexing database tables](#filling-and--indexing-database-tables)
-    * [Reorganizing mutation data (<a href="icgc/20_local_db_reorganization">20_local_db_reorganization</a>)](#reorganizing-mutation-data-20_local_db_reorganization)
+    * [Reorganizing mutation data](#reorganizing-mutation-data-20_local_db_reorganization)
          * [Removing duplicates](#removing-duplicates)
          * [Adding reliability info](#adding-reliability-info)
     * [Merging with TCGA](#merging-with-tcga)
@@ -59,19 +59,18 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  * Optional: [line-profiler](https://github.com/rkern/line_profiler#line-profiler) for python
  
  ## TCGA
- The ecga branch of the pipeline got obsoleted before coming to production stage. 
+ The TCGA branch of the pipeline got obsoleted before coming to production stage. 
  It contains various blind a alleys and wrong turns. Its current use is as a prep
- step for merging with ICGC. The only two subdirs there that ever reached a production stage are 
+ step for merging with ICGC. The only two subdirs remaining in use are 
  [00_common_tasks](tcga/00_common_tasks) and [01_somatic_mutations](tcga/01_somatic_mutations).
  
  ## Common tasks
- 
  'Common tasks' refer to tasks needed to make a functional local subset of TCGA. The only
  non-obsolete piece remaining is [200_find_maf_files_in_GDC.py](tcga/00_common_tasks/200_find_maf_files_in_GDC.py) 
  that can be used to download somatic mutation tables from GDC - a repository of legacy TCGA data.
  
- ## Compiling somatic mutations
  
+ ## Compiling somatic mutations
  
  ### Creating MySQL tables
  [001_drop_maf_tables]() though [002_create_maf_tables](cga/01_somatic_mutations/002_create_maf_tables.py) 
@@ -81,8 +80,19 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
  
  ### 'Stuttering' samples
- 
- SOme samples in TCGA have more
+ Some samples in TCGA have serious problems with assembly or data interpretation. Example:
+```
+  broad.mit.edu_LIHC.IlluminaGA_DNASeq_automated.Level_2.1.0.0/
+  An_TCGA_LIHC_External_capture_All_Pairs.aggregated.capture.tcga.uuid.curated.somatic.maf 
+           273933        RPL5       Frame_Shift_Del         p.K270fs 
+           273933        RPL5       Frame_Shift_Del         p.K277fs 
+           273933        RPL5       Frame_Shift_Del         p.R279fs 
+           273933        RPL5       Frame_Shift_Del         p.Q282fs 
+```
+ Such samples stand out pretty sharply and here we detect them as having two frameshift mutations within
+ 5 nucleotides from each other reported more than a 100 times. 
+ Such samples are marked in [003_maf_meta.py](tcga/01_somatic_mutations/003_maf_meta.py).
+ Later we decided to drop them in 
  [014_drop_stuttering_samples.py](tcga/01_somatic_mutations/014_drop_stuttering_samples.py) 
  
  After this point  we can move to ICGC - TCGA data will be fused into the combined dataset over there.
@@ -93,11 +103,11 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
  
  
-
- 
- 
- 
  ## ICGC
+ 
+ A general note: throughout the pipeline, you will find scripts disabled by having exit() right on the top if the file.
+ These are the scripts that drop tables and/or store without checking. Enable them by commenting the exit line.
+ (The advice is to put the comment back in once the script is done.)
  
  ### config file
  You can set some recurring constants - such as data directories or mysql conf file(s) - 
@@ -122,8 +132,8 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
  
  ### Loading data into local version of the database ([10_local_db_loading](icgc/10_local_db_loading))
- #### Getting and storing some auxilliary data
  
+ #### Getting and storing some auxilliary data
  In [01_hgnc_name_resolution_table.py](icgc/10_local_db_loading/01_hgnc_name_resolution_table.py) and 
  [02_ensembl_id_table.py](icgc/10_local_db_loading/02_ensembl_id_table.py) we make and fill some tables we will use later for name resolution 
  (translating between gene and protein names used in different contexts). Make sure you have 
@@ -153,7 +163,6 @@ here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz
 [02_ensembl_id.py](icgc/10_local_db_loading//02_ensembl_id.py) can find it.
 
 #### Measuring the field lengths and making MySQL tables
-
 [03_find_max_field_length.py](icgc/10_local_db_loading/03_find_max_field_length.py) and 
 [04_make_tables.py](icgc/10_local_db_loading/04_make_tables.py): 
 Make sure that the fields in the mysql tables are big enough 
@@ -162,15 +171,22 @@ for each entry and create mysql tables.
 give you an idea about the longest entries found.
 
 #### Filling and  indexing database tables
-[05_write_mutations_tsv.py](icgc05_write_mutations_tsv.py) through [08_make_indices.py](icgc/10_local_db_loading/08_make_indices_on_temp_tables.py).
+[05_write_mutations_tsv.py](icgc/0_local_db_loading/05_write_mutations_tsv.py) through 
+[08_make_indices.py](icgc/10_local_db_loading/08_make_indices_on_temp_tables.py).
 For large tables, rather than loading them through python, 
-it turns out to be faster to create tsvs and 
-then load them from mysql shell (as in [07_load_mysql.py](icgc/10_local_db_loading/07_load_mysql.py); alternative: use mysqlimport manually) 
- to read them in wholesale. These scripts take care of that part , plus some index creating on the newly loaded tables.
- Make sure to run [08_make_indices.py](icgc/10_local_db_loading/08_make_indices_on_temp_tables.py) - [12_reorganize_mutations.py](icgc/20_local_db_reorganization/12_reorganize_variants.py)
- pretty much does not work without it at all. All index making is slow here - run overnight. This is probably the weakest (as in the-least-likely-to-scale) 
-part of the whole pipeline, but is unclear
-whether it is worth the optimization effort.
+it turns out to be faster to create tsvs and  then load them from mysql shell 
+(as in [07_load_mysql.py](icgc/10_local_db_loading/07_load_mysql.py); alternative: use mysqlimport manually) 
+ to read them in wholesale. These scripts take care of that part, plus some index creating on the newly loaded tables.
+ Make sure to run [08_make_indices.py](icgc/10_local_db_loading/08_make_indices_on_temp_tables.py) 
+ - [12_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py)
+ pretty much does not work without it at all. 
+ All index making is slow here (see [timing.txt](icgc/timing.txt)) - run overnight. 
+
+Some checks are thrown in here that  may inform the rest of the pipeline.
+ [09_assembly_check.py](icgc/10_local_db_loading/09_assembly_check.py) confirms tha as of v27 all ICGC entried
+ refer to GRCh37, and [10_donor_check.py](icgc/10_local_db_loading/10_donor_check.py) highlights the fact that
+ some donor ids have no somatic mutations in ICGC. This is somewhat mysterious, because some refer to
+ TCGA donors with somatic mutation data available from TCGA archive.
 
 ### Reorganizing mutation data ([20_local_db_reorganization](icgc/20_local_db_reorganization))
 This is where we depart from ICGC original database architecture - which is pretty much
@@ -192,24 +208,23 @@ schemaSPy: http://schemaspy.sourceforge.net/
 mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
 -->
 
-It looks like ICGC is systematic in that ic uses GRCh37 assmebly in all entries. 
-The check can be found in [09_assembly_check.py](icgc/10_local_db_loading/09_assembly_check.py)
+New tables are created in [10_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/10_check_mut_tables_and_make_new_ones.py).
 
 
-New tables are created in [10_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/10_check_mut_tables_and_make_new_ones.py),
-while in [11_consequence_vocab.py](icgc/20_local_db_reorganization/11_consequence_vocab.py)
- we inspect the 'consequence' vocabulary employed by ICGC. There seems to
-some confusion there about the location vs. the consequence of a mutation.
-
-Note that in [12_reorganize_mutations.py](icgc/20_local_db_reorganization/12_reorganize_variants.py) you can choose to
+Note that in [11_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py) you can choose to
 run in parallel (the number of 'chunks' in main()). 
 The companion pieces 
-  [13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mutations.py) and
-   [14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) are a a bit faster.
+  [12_reorganize_mutations.py](icgc/20_local_db_reorganization/12_reorganize_mutations.py) and
+   [13_reorganize_locations.py](icgc/20_local_db_reorganization/13_reorganize_locations.py) are a a bit faster.
    This script uses ANnovar to check chromosome addresses / translate them to hg 19
    which in retrospective turned out to be a bit of paranoia - all the addresses
    seem to systematically refer to GRCh37 (which differs from hg19 only in MT contigs 
    which we do not follow anyway).
+   
+   In [14_consequence_vocab.py](icgc/20_local_db_reorganization/14_consequence_vocab.py)
+ we inspect the 'consequence' vocabulary employed by ICGC. There seems to
+some confusion there about the location vs. the consequence of a mutation.
+   
  (Do not forget to create indices
  using [08_make_indices_on_temp_tables.py](icgc/10_local_db_loading/08_make_indices_on_temp_tables.py)) 
  
@@ -220,7 +235,7 @@ The companion pieces
  of the same  tumor, while some are completely obscure, with all identifiers being identical everywhere 
  (see [18_cleanup_duplicate_entries.py](icgc/20_local_db_reorganization/18_cleanup_duplicate_entries.py)).
  
- If [12_reorganize_mutations.py](icgc/20_local_db_reorganization/12_reorganize_variants.py) is the weakest link in the pipeline, 
+ If [12_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py) is the weakest link in the pipeline, 
  [18_cleanup_duplicate_entries.py](icgc/20_local_db_reorganization/18_cleanup_duplicate_entries.py) is the most likely to cover-up for a problem, 
 possibly originating in ICGC itself. Some mutations  have identical tuple
  of identifiers (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id). Note that this
@@ -257,8 +272,7 @@ possibly originating in ICGC itself. Some mutations  have identical tuple
  ### Adding reliability info
  
  We add a couple of values to each row to later make the search for meaningful entries faster.
- In particular, in [20_decorate_simple_somatic.py](icgc/20_local_db_reorganization/20_decorate_simple_somatic.py)
- we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
+  we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
  to simple_somatic tables. In the following script,  [21_add_realiability_annotation_to_somatic.py](icgc/20_local_db_reorganization/21_add_realiability_annotation_to_somatic.py),  
  we combine these two columns into a reliability estimate: a  somatic mutation in individual patient is considered reliable if mutant_allele_read_count>=10
  and mut_to_total_read_count_ratio>=0.2. Information about the mutation in general (mutations_chromosome tables;  [18_copy_reliability_info_to_mutations.py](18_copy_reliability_info_to_mutations.py)) 

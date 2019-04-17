@@ -17,14 +17,9 @@
 #
 # Contact: ivana.mihalek@gmail.com
 #
-import subprocess
-import time
 
 from config import Config
-from icgc_utils.common_queries import  *
-from icgc_utils.processes import  *
-from icgc_utils.annovar import *
-from icgc_utils.CrossMap import *
+from icgc_utils.mysql import *
 
 
 #########################################
@@ -34,9 +29,9 @@ def main():
 	# https://www.biostars.org/p/123767/
 	# The genomic content for the two is identical, except for the mitochondrial contig
 	# we do not have  MT, so wither one should be fine
-	ref_assemblies = ['hg19', 'GRCh37'] # this is the assembly I would like to see all coords in location tables
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
+	switch_to_db(cursor,'icgc')
 	#########################
 	# which temp somatic tables do we have
 	qry  = "select table_name from information_schema.tables "

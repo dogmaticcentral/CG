@@ -72,9 +72,9 @@ def insert (cursor, table, columns, values):
 
 #########################################
 # profile decorator is for the use with kernprof (a line profiler):
-#  ./icgc_utils/kernprof.py -l 12_reorganize_variants.py
+#  ./icgc_utils/kernprof.py -l 11_reorganize_variants.py
 # followed by
-# python -m line_profiler 12_reorganize_variants.py.lprof
+# python -m line_profiler 11_reorganize_variants.py.lprof
 # see here https://github.com/rkern/line_profiler#line-profiler
 # the reason I am using local kernprof.py is that I don't know where pip
 # installed its version (if anywhere)
