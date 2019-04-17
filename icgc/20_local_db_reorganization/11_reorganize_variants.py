@@ -96,8 +96,8 @@ def reorganize(tables, other_args):
 #########################################
 def main():
 
-	#print("disabled")
-	#exit()
+	print("disabled")
+	exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -106,11 +106,13 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic_temp'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
+	table_size = get_table_size(cursor, 'icgc', tables)
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 12  # myISAM does not deadlock
-	parallelize(number_of_chunks, reorganize, tables, [])
+	number_of_chunks = 14  # myISAM does not deadlock
+	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=True)
+	parallelize(number_of_chunks, reorganize, tables_sorted, [], round_robin=True)
 
 
 

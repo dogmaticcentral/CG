@@ -48,7 +48,6 @@ def check_null (variable):
 		return None
 	return variable
 
-
 ########
 def switch_to_db (cursor, db_name):
 	qry = "use %s" % db_name
@@ -57,6 +56,20 @@ def switch_to_db (cursor, db_name):
 		print(rows)
 		return False
 	return True
+
+
+########
+def get_table_size(cursor, db_name, tables):
+	table_size = {}
+	for table in tables:
+		qry = "select count(1) from %s.%s" % (db_name,table)
+		ret = search_db (cursor, qry, verbose=True)
+		if ret and ret[0] and type(ret[0][0])==int:
+			table_size[table] = ret[0][0]
+		else:
+			table_size[table] = 0
+
+	return table_size
 
 
 ########

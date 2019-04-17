@@ -180,8 +180,8 @@ def store_location_info(cursor, chromosome, avoutput):
 		insert(cursor, location_table, location_columns, location_values)
 
 
-#  ./icgc_utils/kernprof.py -l 13_reorganize_locations.py
-# python3 -m line_profiler 13_reorganize_locations.py.lprof
+#  ./icgc_utils/kernprof.py -l 14_reorganize_locations.py
+# python3 -m line_profiler 14_reorganize_locations.py.lprof
 # @profile
 #########################################
 def reorganize_locations(cursor, ref_assembly, variants_table):

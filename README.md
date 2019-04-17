@@ -55,7 +55,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  * MySQL
  * MySQLdb python module, installed with _sudo apt install python3-mysqldb_
  * gene symbols from HUGO gene nomenclature committee (see [here](https://www.genenames.org/download/custom/))
- * Annovar for location and functional annotation
+ * [Annovar](http://annovar.openbioinformatics.org/en/latest/) for location and functional annotation
  * Optional: [line-profiler](https://github.com/rkern/line_profiler#line-profiler) for python
  
  ## TCGA
@@ -103,13 +103,13 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
  
  
- ## ICGC
+## ICGC
  
  A general note: throughout the pipeline, you will find scripts disabled by having exit() right on the top if the file.
  These are the scripts that drop tables and/or store without checking. Enable them by commenting the exit line.
  (The advice is to put the comment back in once the script is done.)
  
- ### config file
+### config file
  You can set some recurring constants - such as data directories or mysql conf file(s) - 
  in the [config.py](icgc/config.py) file.
  
@@ -210,20 +210,25 @@ mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
 
 New tables are created in [10_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/10_check_mut_tables_and_make_new_ones.py).
 
+Note that in [11_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py),
+   [13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mutations.py),   and
+   [14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) 
+ you can choose to run in parallel (the number of 'chunks' in main()). 
 
-Note that in [11_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py) you can choose to
-run in parallel (the number of 'chunks' in main()). 
-The companion pieces 
-  [12_reorganize_mutations.py](icgc/20_local_db_reorganization/12_reorganize_mutations.py) and
-   [13_reorganize_locations.py](icgc/20_local_db_reorganization/13_reorganize_locations.py) are a a bit faster.
-   This script uses ANnovar to check chromosome addresses / translate them to hg 19
+In [12_consequence_vocab.py](icgc/20_local_db_reorganization/12_consequence_vocab.py)
+ we inspect the 'consequence' vocabulary employed by ICGC. There seems to
+some confusion there about the location vs. the consequence of a mutation.  This info is used
+in [13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mutations.py)  to 
+come up with the pathogenicity estimate, to be stored in the eponymous field in the
+mutations\* tables.
+
+   [14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) script uses 
+   Annovar to check chromosome addresses / translate them to hg 19
    which in retrospective turned out to be a bit of paranoia - all the addresses
    seem to systematically refer to GRCh37 (which differs from hg19 only in MT contigs 
    which we do not follow anyway).
    
-   In [14_consequence_vocab.py](icgc/20_local_db_reorganization/14_consequence_vocab.py)
- we inspect the 'consequence' vocabulary employed by ICGC. There seems to
-some confusion there about the location vs. the consequence of a mutation.
+ 
    
  (Do not forget to create indices
  using [08_make_indices_on_temp_tables.py](icgc/10_local_db_loading/08_make_indices_on_temp_tables.py)) 
