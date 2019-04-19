@@ -29,10 +29,9 @@ def assembly_name_translate(assembly, mitochondrial):
 
 
 ##################################
-def run_annovar(avinput, assembly, table_name, mitochondrial=False):
+def run_annovar(avinput, assembly, out_name_root, mitochondrial=False):
 
-	print ("running annovar ...")
-	avoutname = "%s.%s_multianno.txt" % (table_name, assembly)
+	avoutname = "%s.%s_multianno.txt" % (out_name_root, assembly)
 	# danger zone: this file better does not exist if it is outdated
 	if os.path.exists(avoutname) and os.path.getsize(avoutname)!=0:
 		print("\t %s found"%avoutname)
@@ -40,12 +39,12 @@ def run_annovar(avinput, assembly, table_name, mitochondrial=False):
 
 	translated_assembly_name = assembly_name_translate(assembly, mitochondrial)
 	cmd  = "/home/ivana/third/annovar/table_annovar.pl %s " % avinput
-	cmd += "/home/ivana/third/annovar/humandb/ -buildver %s -out %s " % (translated_assembly_name, table_name)
+	cmd += "/home/ivana/third/annovar/humandb/ -buildver %s -out %s " % (translated_assembly_name, out_name_root)
 	cmd += " -protocol ensGene  -operation g  -nastring ."
 	subprocess.call(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 	# clean the junk
-	cmd = "rm %s.ensGene.variant_function " % table_name
-	cmd +="%s.ensGene.exonic_variant_function %s.ensGene.log" % (table_name, table_name)
+	cmd = "rm %s.ensGene.variant_function " % out_name_root
+	cmd +="%s.ensGene.exonic_variant_function %s.ensGene.log" % (out_name_root, out_name_root)
 	subprocess.call(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
 	return avoutname

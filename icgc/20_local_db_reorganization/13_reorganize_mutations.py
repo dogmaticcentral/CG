@@ -72,9 +72,9 @@ def insert (cursor, table, columns, values):
 
 #########################################
 # profile decorator is for the use with kernprof (a line profiler):
-#  ./icgc_utils/kernprof.py -l 11_reorganize_variants.py
+#  ./icgc_utils/kernprof.py -l 13_reorganize_variants.py
 # followed by
-# python -m line_profiler 11_reorganize_variants.py.lprof
+# python -m line_profiler 13_reorganize_variants.py.lprof
 # see here https://github.com/rkern/line_profiler#line-profiler
 # the reason I am using local kernprof.py is that I don't know where pip
 # installed its version (if anywhere)
@@ -175,7 +175,7 @@ def reorganize(tables, other_args):
 		print("reorganizing mutations from", table, os.getpid())
 		reorganize_mutations(cursor, table, columns)
 		time1 = time.time()
-		print(("\t\t %s done in %.3f mins" % (float(time1-time0)/60)), os.getpid())
+		print(("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid())
 
 	cursor.close()
 	db.close()
@@ -187,8 +187,8 @@ def reorganize(tables, other_args):
 #########################################
 def main():
 
-	#print("disabled")
-	#exit()
+	print("disabled")
+	exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()

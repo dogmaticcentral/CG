@@ -57,6 +57,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  * gene symbols from HUGO gene nomenclature committee (see [here](https://www.genenames.org/download/custom/))
  * [Annovar](http://annovar.openbioinformatics.org/en/latest/) for location and functional annotation
  * Optional: [line-profiler](https://github.com/rkern/line_profiler#line-profiler) for python
+ * CrossMap, maybe in future (in TCGA?) - (sudo pip3 install CrossMap, pyBigWig, pysam)
  
  ## TCGA
  The TCGA branch of the pipeline got obsoleted before coming to production stage. 
@@ -105,7 +106,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
 ## ICGC
  
- A general note: throughout the pipeline, you will find scripts disabled by having exit() right on the top if the file.
+ A general note: throughout the pipeline, you will find scripts disabled by having exit() right on the top of the file.
  These are the scripts that drop tables and/or store without checking. Enable them by commenting the exit line.
  (The advice is to put the comment back in once the script is done.)
  
@@ -189,6 +190,7 @@ Some checks are thrown in here that  may inform the rest of the pipeline.
  TCGA donors with somatic mutation data available from TCGA archive.
 
 ### Reorganizing mutation data ([20_local_db_reorganization](icgc/20_local_db_reorganization))
+
 This is where we depart from ICGC original database architecture - which is pretty much
 nonexistent and consists of massive duplication of annotation for each occurrence of a mutation
 and for each of its interpretations within various transcripts.
@@ -208,6 +210,7 @@ schemaSPy: http://schemaspy.sourceforge.net/
 mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
 -->
 
+#### Creating new tables
 New tables are created in [10_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/10_check_mut_tables_and_make_new_ones.py).
 
 Note that in [11_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py),
@@ -234,7 +237,7 @@ mutations\* tables.
  using [08_make_indices_on_temp_tables.py](icgc/10_local_db_loading/08_make_indices_on_temp_tables.py)) 
  
  
- ### Removing duplicates
+#### Removing duplicates
  ICGC is rife with data duplication, coming from various sources. Some seem to be bookkeeping mistakes with the
  same patient data finding its way into the dataset through various depositors; some are the results  of the re-sampling 
  of the same  tumor, while some are completely obscure, with all identifiers being identical everywhere 
@@ -274,16 +277,16 @@ possibly originating in ICGC itself. Some mutations  have identical tuple
  these, if multiple refer to the same submitter id, we keep the ones with the largest reported number of
  somatic mutations. The investigation of the source of this duplication is again outside of our zone of interest.
  
- ### Adding reliability info
+ #### Adding reliability info
  
  We add a couple of values to each row to later make the search for meaningful entries faster.
   we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
- to simple_somatic tables. In the following script,  [21_add_realiability_annotation_to_somatic.py](icgc/20_local_db_reorganization/21_add_realiability_annotation_to_somatic.py),  
+ to simple_somatic tables. In the following script,  [21_add_realiability_annotation_to_somatic.py](icgc/20_local_db_reorganization/21_add_reliability_annotation_to_somatic.py),  
  we combine these two columns into a reliability estimate: a  somatic mutation in individual patient is considered reliable if mutant_allele_read_count>=10
  and mut_to_total_read_count_ratio>=0.2. Information about the mutation in general (mutations_chromosome tables;  [18_copy_reliability_info_to_mutations.py](18_copy_reliability_info_to_mutations.py)) 
  is considered reliable if there is at leas one patient for which it was reliably established.
  
- ### Merging with TCGA
+ ### Merging with TCGA ([30_tcga_merge](icgc/30_tcga_merge))
  
  The scripts [29_index_on_mutation_tables.py](icgc/20_local_db_reorganization/29_index_on_mutation_tables.py)
  through [34_tcga_specimen_hack.py](icgc/30_tcga_merge/37_tcga_specimen_hack.py)
@@ -295,8 +298,8 @@ possibly originating in ICGC itself. Some mutations  have identical tuple
  If everything is ok, [35_database_stats.py](icgc/40_housekeeping/35_database_stats.py) should report
  no duplicates in any of the tables.
  
- ### Some generic stats
+ ### Housekeeping ([]())
  
- ### Project-specific stats
+ ### Production ([]())
  
  

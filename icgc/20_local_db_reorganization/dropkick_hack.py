@@ -37,15 +37,15 @@ def main():
 
 	# indices on simple somatic temp
 	qry  = "select table_name from information_schema.tables "
-	qry += "where table_schema='icgc' and table_name like 'mutations_%'"
+	qry += "where table_schema='icgc' and table_name like 'locations_%'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
 	for table in tables:
 		print(table)
 		qry = "drop table " + table
 		search_db(cursor, qry, verbose=True)
 		#make_somatic_table(cursor, table)
-		make_mutations_table(cursor, 'icgc', table)
-
+		#make_mutations_table(cursor, 'icgc', table)
+		make_locations_table(cursor, 'icgc', table)
 	cursor.close()
 	db.close()
 
