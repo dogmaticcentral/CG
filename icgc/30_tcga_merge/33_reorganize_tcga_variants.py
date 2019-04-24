@@ -297,7 +297,7 @@ def add_tcga_diff(tcga_tables, other_args):
 			qry += "where submitted_donor_id like '{}' or  submitted_donor_id like '{}' ".format("TCGA_%", "TARGET_%")
 			ret = search_db(cursor,qry)
 			# some donor ids do not have any variants deposited,
-			# see 10_local_db_loading/10_donor_check.py
+			# see 10_local_db_loading/16_donor_check.py
 			if ret:
 				submitted2icgc_donor_id = dict(ret)
 

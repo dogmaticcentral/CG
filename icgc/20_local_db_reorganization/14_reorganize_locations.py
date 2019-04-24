@@ -39,16 +39,14 @@ def get_positions(cursor, variants_table, chromosome, assembly):
 
 
 #########################################
-def write_annovar_input(positions, variants_table,assembly,chromosome):
+def write_positions(positions, variants_table,assembly,chromosome):
 	# we are duping annovar into giving us the location relative to each transcript
 	# we are not interested in annotation (not here) therefore we give
 	# the annovar some generic variant - like insert 'A' at given position
 	# annovar input file(s)
-	outfname = "%s.%s.avinput" % (variants_table,assembly)
+	outfname = "%s.txt" % (variants_table)
 	outf = open(outfname, 'w')
-	for position in positions:
-		outrow = "\t".join([chromosome, str(position), str(position), '-', 'A'])
-		outf.write(outrow+"\n")
+	outf.write("\n".join([str(p) for p in positions])+"\n")
 	outf.close()
 	return outfname
 
@@ -92,23 +90,13 @@ def translate_positions(positions, chromosome, from_assembly, to_assembly, rootn
 
 
 #########################################
-def make_location_tsv(cursor, avoutput):
+def make_location_tsv(cursor, chrom, pos_file):
 
-	inf  = open (avoutput, "r")
-	header_fields = None
+	inf  = open (pos_file, "r")
 	tsv_list = []
 	for line in inf:
-		if not header_fields:
-			header_fields = parse_annovar_header_fields(line)
-			if not header_fields:
-				print("Error parsing annovar: no header line found")
-				exit()
-			continue
-		[start, end, gene_relative, transcript_relative] = parse_annovar_line(cursor, header_fields,  line)
-		position = start
-		if start!=end:
-			print("why is start not == end here?")
-			exit()
+		position = line.rstrip()
+		gene_relative, transcript_relative = describe_position(cursor, chrom, position)
 		tsv_list.append("\t".join([str(position), gene_relative, transcript_relative]))
 	inf.close()
 	return tsv_list
@@ -120,7 +108,7 @@ def make_location_tsv(cursor, avoutput):
 def reorganize_locations(cursor, ref_assembly, chromosome, tables):
 
 	time0 = time.time()
-	avinputs = []
+	pos_files = []
 	for variants_table  in tables:
 		# which assemblies do we have in this story (as of Apr 2019 it was only GRCh37 - takes 6 mins to find this out)
 		assemblies = ['GRCh37']
@@ -128,39 +116,43 @@ def reorganize_locations(cursor, ref_assembly, chromosome, tables):
 		# assemblies = [r[0] for r in search_db (cursor, qry)]
 		for assembly in assemblies:
 			positions = get_positions(cursor, variants_table, chromosome, assembly)
-			if len(positions)==0: continue
+			if len(positions)==0:continue
 			positions_translated = translate_positions(positions, chromosome, assembly, ref_assembly)
-			# write_annovar_input will fill avinput dictionary
-			avinput  = write_annovar_input(positions_translated, variants_table, ref_assembly, chromosome)
-			avinputs.append(avinput)
-			#print("\t\t\t", variants_table, chromosome, assembly, "annovar input written")
-	if len(avinputs)==0:
-		print("pid %d: no annovar input written (?)" % os.getpid())
-		return
-	# concatenate all input, remove duplicates
-	subprocess.call(["bash","-c", " cat %s | sort -gk2 | uniq > all.avinput" % (" ".join(avinputs)) ])
-	# the positions in the avinput are already hg19
-	avoutput = run_annovar("all.avinput", ref_assembly, "all", chromosome=="MT")
-	time1 = time.time()
-	print("\t\t\t chromosome %s avoutput written to %s in %.3f mins "%(chromosome, avoutput, float(time1-time0)/60))
+			pos_file  = write_positions(positions_translated, variants_table, ref_assembly, chromosome)
+			pos_files.append(pos_file)
 
-	tsv_list = make_location_tsv(cursor, avoutput)
+			print("\t\t\t", variants_table, chromosome, assembly, "positions written")
+
+	if len(pos_files)==0:
+		print("pid %d: no positions found (?)" % os.getpid())
+		return
+
+	time1 = time.time()
+	print("\t\t\t chromosome %s positions found in %.3f mins "%(chromosome,float(time1-time0)/60))
+
+	# concatenate all input, remove duplicates
+	concat_pos = "all_pos.txt"
+	subprocess.call(["bash","-c", " cat %s | sort -g | uniq > %s" % (" ".join(pos_files), concat_pos) ])
+	time2 = time.time()
+	print("\t\t\t chromosome %s positions concatenated to %s in %.3f mins "%(chromosome, concat_pos, float(time2-time1)/60))
+
+	tsv_list = make_location_tsv(cursor, chromosome, concat_pos)
 	time2 = time.time()
 	print("\t\t\t chromosome %s tsv list created in %.3f mins" % (chromosome, float(time2-time1)/60))
-
-	tsv_name = "locations_chrom_%s.tsv" % chromosome
-	outf = open (tsv_name,"w")
-	for entry in tsv_list:
-		outf.write(entry + "\n")
-	outf.close()
-	time3 = time.time()
-	print("\t\t\t chromosome %s tsv written to %s in %.3f mins" % (chromosome, tsv_name, float(time3-time2)/60))
-
-	# eat this
-	qry = "load data local infile '%s' into table locations_chrom_%s" % (tsv_name, chromosome)
-	search_db(cursor,qry,verbose=True)
-	time4 = time.time()
-	print("\t\t\t chromosome %s loaded in %.3f mins"%(chromosome, float(time4-time3)/60))
+	#
+	# tsv_name = "locations_chrom_%s.tsv" % chromosome
+	# outf = open (tsv_name,"w")
+	# for entry in tsv_list:
+	# outf.write(entry + "\n")
+	# outf.close()
+	# time3 = time.time()
+	# print("\t\t\t chromosome %s tsv written to %s in %.3f mins" % (chromosome, tsv_name, float(time3-time2)/60))
+	#
+	# # eat this
+	# qry = "load data local infile '%s' into table locations_chrom_%s" % (tsv_name, chromosome)
+	# search_db(cursor,qry,verbose=True)
+	# time4 = time.time()
+	# print("\t\t\t chromosome %s loaded in %.3f mins"%(chromosome, float(time4-time3)/60))
 
 	return
 
@@ -179,7 +171,7 @@ def reorganize(chromosomes, other_args):
 
 		# make a workdir and move there
 		workdir  = "chrom_%s" % chrom
-		workpath = "{}/annovar/{}".format(home,workdir)
+		workpath = "{}/locations/{}".format(home,workdir)
 		if not os.path.exists(workpath): os.makedirs(workpath)
 		os.chdir(workpath)
 
@@ -200,8 +192,8 @@ def reorganize(chromosomes, other_args):
 #########################################
 def main():
 
-	#print("Disabled.")
-	#exit()
+	print("Disabled.")
+	exit()
 
 	ref_assembly = 'hg19' # this is the assembly I would like to see for all coords in location tables
 	db     = connect_to_mysql(Config.mysql_conf_file)
@@ -217,8 +209,10 @@ def main():
 	chromosomes = [str(i) for i in range(1,23)] + ["X", "Y"]
 	number_of_chunks = 12  # myISAM does not deadlock
 
-	#chromosomes = ["Y"]
-	#number_of_chunks = 1
+	chromosomes = ["Y"]
+
+
+	number_of_chunks = 1
 	parallelize(number_of_chunks, reorganize, chromosomes, [ref_assembly, tables], round_robin=True)
 
 

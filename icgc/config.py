@@ -22,3 +22,4 @@ class Config:
 	data_home_local = "/storage/databases/icgc/v"+release
 
 	mysql_conf_file = "/home/ivana/.tcga_conf"
+	ucsc_mysql_conf_file  = "/home/ivana/.ucsc_mysql_conf"

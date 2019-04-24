@@ -164,28 +164,28 @@ here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz
 [02_ensembl_id.py](icgc/10_local_db_loading//02_ensembl_id.py) can find it.
 
 #### Measuring the field lengths and making MySQL tables
-[03_find_max_field_length.py](icgc/10_local_db_loading/03_find_max_field_length.py) and 
-[04_make_tables.py](icgc/10_local_db_loading/04_make_tables.py): 
+[03_find_max_field_length.py](icgc/10_local_db_loading/05_find_max_field_length.py) and 
+[04_make_tables.py](icgc/10_local_db_loading/06_make_tables.py): 
 Make sure that the fields in the mysql tables are big enough 
 for each entry and create mysql tables. 
-[03_find_max_field_length.py](icgc/10_local_db_loading/03_find_max_field_length.py) should 
+[03_find_max_field_length.py](icgc/10_local_db_loading/05_find_max_field_length.py) should 
 give you an idea about the longest entries found.
 
 #### Filling and  indexing database tables
 [05_write_mutations_tsv.py](icgc/0_local_db_loading/05_write_mutations_tsv.py) through 
-[08_make_indices.py](icgc/10_local_db_loading/08_make_indices_on_temp_tables.py).
+[08_make_indices.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py).
 For large tables, rather than loading them through python, 
 it turns out to be faster to create tsvs and  then load them from mysql shell 
-(as in [07_load_mysql.py](icgc/10_local_db_loading/07_load_mysql.py); alternative: use mysqlimport manually) 
+(as in [07_load_mysql.py](icgc/10_local_db_loading/09_load_mysql.py); alternative: use mysqlimport manually) 
  to read them in wholesale. These scripts take care of that part, plus some index creating on the newly loaded tables.
- Make sure to run [08_make_indices.py](icgc/10_local_db_loading/08_make_indices_on_temp_tables.py) 
+ Make sure to run [08_make_indices.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py) 
  - [12_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py)
  pretty much does not work without it at all. 
  All index making is slow here (see [timing.txt](icgc/timing.txt)) - run overnight. 
 
 Some checks are thrown in here that  may inform the rest of the pipeline.
- [09_assembly_check.py](icgc/10_local_db_loading/09_assembly_check.py) confirms tha as of v27 all ICGC entried
- refer to GRCh37, and [10_donor_check.py](icgc/10_local_db_loading/10_donor_check.py) highlights the fact that
+ [09_assembly_check.py](icgc/10_local_db_loading/15_assembly_check.py) confirms tha as of v27 all ICGC entried
+ refer to GRCh37, and [10_donor_check.py](icgc/10_local_db_loading/16_donor_check.py) highlights the fact that
  some donor ids have no somatic mutations in ICGC. This is somewhat mysterious, because some refer to
  TCGA donors with somatic mutation data available from TCGA archive.
 
@@ -234,7 +234,7 @@ mutations\* tables.
  
    
  (Do not forget to create indices
- using [08_make_indices_on_temp_tables.py](icgc/10_local_db_loading/08_make_indices_on_temp_tables.py)) 
+ using [08_make_indices_on_temp_tables.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py)) 
  
  
 #### Removing duplicates
