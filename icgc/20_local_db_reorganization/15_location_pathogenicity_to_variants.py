@@ -65,9 +65,7 @@ def fix_pathogenicity(chromosomes, other_args):
 				qry2 += "where position = %d" % start_position
 				# position is the principal key, so there should not be two of those
 				ret = search_db(cursor,qry2)
-				if not ret:
-					search_db(cursor,qry2,verbose=True)
-					exit()
+				if not ret: continue
 				tr_relative = ret[0][0]
 				#print "tr_relative", tr_relative
 				if tr_relative:
@@ -92,8 +90,7 @@ def main():
 	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
 	shuffle(chromosomes)
 
-	chromosomes = ["Y"]
-	number_of_chunks = 1  # myISAM does not deadlock
+	number_of_chunks = 8  # myISAM does not deadlock
 	parallelize(number_of_chunks, fix_pathogenicity, chromosomes, [])
 
 #########################################

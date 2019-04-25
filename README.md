@@ -7,7 +7,7 @@ mutations from
 [TCGA](https://portal.gdc.cancer.gov/)
 and 
 [ICGC](https://dcc.icgc.org/)
-databases. The ICGC branch also contains tools necessary to
+databases. The icgc branch also contains tools necessary to
 merge the info from the two sources. The scripts add up to a loosely connected pipeline 
 (or, rather, two pipelines).  They re-organize the data and store it in the local MySQL 
 database.  While the  back end of each pipeline is rather generic, the front end is
@@ -51,7 +51,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
  
  ## Dependencies
- In addition to TCGA and ICGC themselves, CG relies on
+ In addition to TCGA and ICGC databases themselves, CG relies on
  * MySQL
  * MySQLdb python module, installed with _sudo apt install python3-mysqldb_
  * gene symbols from HUGO gene nomenclature committee (see [here](https://www.genenames.org/download/custom/))
@@ -62,7 +62,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
 ## TCGA
  The tcga branch of the icgc pipeline got obsoleted before coming to production stage. 
  It contains various blind a alleys and wrong turns. Its current use is as a prep
- step for merging with ICGC. It has [its own README page](tcga).
+ step for merging with the icgc branch. It has [its own README page](tcga).
  
 ## ICGC
  

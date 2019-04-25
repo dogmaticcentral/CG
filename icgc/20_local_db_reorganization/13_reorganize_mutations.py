@@ -69,7 +69,6 @@ def insert (cursor, table, columns, values):
 	qry += "values (%s) " % ",".join(nonempty_values)
 	search_db(cursor, qry)
 
-
 #########################################
 # profile decorator is for the use with kernprof (a line profiler):
 #  ./icgc_utils/kernprof.py -l 13_reorganize_variants.py
@@ -79,24 +78,24 @@ def insert (cursor, table, columns, values):
 # the reason I am using local kernprof.py is that I don't know where pip
 # installed its version (if anywhere)
 # @profile
-def reorganize_mutations(cursor, table, columns):
-	# reorganize = divide into three tables: variants(per user), mutations, and locations
-	mutations = get_mutations(cursor, table)
+def reorganize_mutations(cursor, chromosome, table, columns):
+
+	mutation_table = "mutations_chrom_{}".format(chromosome)
+
+	mutations = get_mutations(cursor, table, chromosome=chromosome)
 	totmut = len(mutations)
-	print("\t\t\t total mutations:", totmut)
+	print("\t\t\t total mutations on chrom {} in {}: {}".format(chromosome, table, totmut))
 	ct = 0
 	time0 = time.time()
 	for mutation in mutations:
 		ct += 1
 		if ct%10000 == 0:
-			print("\t\t\t %10s  %6d  %d%%  %ds" % (table, ct, float(ct)/totmut*100, time.time()-time0))
+			print("\t\t\t chrom %s  %10s  %6d  %d%%  %ds" % (chromosome, table, ct, float(ct)/totmut*100, time.time()-time0))
 			time0 = time.time()
-		mutation_already_seen = False
+		skip = False
 		conseqs   = set([])
 		aa_mutations = set([])
 		mutation_values = None
-		chromosome = None
-		mutation_table = None
 
 		# this hinges on index on the *simple_somatic_temp
 		# qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" % simple_somatic_temp_table
@@ -111,19 +110,15 @@ def reorganize_mutations(cursor, table, columns):
 
 			if not mutation_values: # we need to set this only once
 				mutation_values = [quotify(named_field[name]) for name in mutation_columns]
-				chromosome = named_field['chromosome']
-				mutation_table = "mutations_chrom_{}".format(chromosome)
 				if entry_exists(cursor, "icgc", mutation_table, "icgc_mutation_id", quotify(mutation)):
-					mutation_already_seen = True
+					skip = True
 					continue
-
 			# aa_mutation
 			aa = named_field['aa_mutation']
 			if aa and  aa!="":
 				transcript =  named_field['transcript_affected']
 				if not transcript: transcript="unk"
 				aa_mutations.add("{}:{}".format(transcript,aa))
-
 			# consequences
 			csq = named_field['consequence_type']
 			if csq in consequence_vocab:
@@ -137,7 +132,7 @@ def reorganize_mutations(cursor, table, columns):
 				print("unrecognized consequence field:", csq)
 				exit()
 
-		if mutation_already_seen: continue
+		if skip: continue
 
 		if not mutation_values:
 			print("mutation values not assigned for %s (!?)" % mutation)
@@ -153,30 +148,27 @@ def reorganize_mutations(cursor, table, columns):
 		else:
 			mutation_values.append("0")
 
-
 		# now we are ready to store
 		insert(cursor, mutation_table, mutation_columns + ['aa_mutation','consequence', 'pathogenicity_estimate'], mutation_values)
 
-
 #########################################
-def reorganize(tables, other_args):
+def reorganize(chromosomes, other_args):
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor,"icgc")
-	for table in tables:
+	tables  = other_args[0]
+	columns = other_args[1]
 
-		# the tables should all have the same columns
-		qry = "select column_name from information_schema.columns where table_name='%s'"%table
-		columns = [field[0] for field in  search_db(cursor,qry)]
-		# line by line: move id info into new table
-		# for mutation and location check if the info exists; if not make new entry
+	for chrom in chromosomes:
 		time0 = time.time()
 		print("====================")
-		print("reorganizing mutations from", table, os.getpid())
-		reorganize_mutations(cursor, table, columns)
+		print("reorganizing mutations on chromosome ", chrom, os.getpid())
+		for table in tables:
+			reorganize_mutations(cursor, chrom, table, columns)
 		time1 = time.time()
-		print(("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid())
+		print(("\t\t chromosome %s done in %.3f mins" % (chrom, float(time1-time0)/60)), os.getpid())
+
 
 	cursor.close()
 	db.close()
@@ -188,8 +180,8 @@ def reorganize(tables, other_args):
 #########################################
 def main():
 
-	#print("disabled")
-	#exit()
+	print("disabled")
+	exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -198,14 +190,17 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic_temp'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
-	table_size = get_table_size(cursor, 'icgc', tables)
+	# the tables should all have the same columns
+	qry = "select column_name from information_schema.columns where table_name='%s'"%tables[0]
+	columns = [field[0] for field in  search_db(cursor,qry)]
+
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 14  # myISAM does not deadlock
-	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=True)
+	chromosomes = [str(i) for i in range(1,13)] + ["Y"] + [str(i) for i in range(22,12,-1)] + ["X"]
+	number_of_chunks = 12  # myISAM does not deadlock
 
-	parallelize(number_of_chunks, reorganize, tables_sorted, [], round_robin=True)
+	parallelize(number_of_chunks, reorganize, chromosomes, [tables,columns], round_robin=True)
 
 
 

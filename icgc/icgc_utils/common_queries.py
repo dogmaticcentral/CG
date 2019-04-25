@@ -251,9 +251,12 @@ def get_donors(cursor, table):
 	qry  = "select distinct(icgc_donor_id) from %s " % table
 	return [ret[0] for ret in search_db(cursor,qry)]
 
-def get_mutations(cursor, table):
+def get_mutations(cursor, table, chromosome=None):
 	qry = "select  distinct(icgc_mutation_id)  from %s " % table
-	return [ret[0] for ret in search_db(cursor,qry)]
+	if chromosome: qry += "where chromosome='%s' " % chromosome
+	ret = search_db(cursor,qry)
+	if not ret: return []
+	return [r[0] for r in ret]
 
 def get_number_of_path_mutations_per_specimen(cursor, table, specimen_id):
 	qry  = "select count( distinct icgc_mutation_id)  from %s " % table
