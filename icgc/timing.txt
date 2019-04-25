@@ -1,0 +1,82 @@
+The purpose of timing is to highlight the bottlenecks. The actual values will depend on the hardware setup.
+
+icgc
+├── 00_data_download
+│   ├── 01_download_icgc_dir_structure.py
+│   ├── 02_download_somatic_files.py       ~2hrs (~10Mbps download; after-the-fact estimate)
+│   ├── 03_download_other_files.py
+│   ├── 05_unzip.py
+│   ├── 06_group_cancers.py
+│
+---------------------------------------------------------
+├── 10_local_db_loading
+│   ├── 01_hgnc_name_resolution_table.py    <1 s
+│   ├── 02_ensembl_id_table.py               3 s
+│   ├── 03_ucsc_gene_coords_table.py        <1min
+
+│   ├── 05_find_max_field_length.py         40min (can be skipped if you are working with ICGC v<=27
+                                                   and/or trust the dimensions in icgc_utils/icgc.py)
+│   ├── 06_make_tables.py                   <1 s
+│   ├── 07_write_mutations_tsv.py           ~1.5 hrs parallelization does not do much (bottleneck: writing on disk)
+│   ├── 08_write_other_tsv.py                2 s
+│   ├── 09_load_mysql.py                    20 min
+│   ├── 10_make_indices_on_temp_tables.py   ~4 hrs  when run in parallel - parallelization not balanced, probably
+                                                                           some room for improvement
+│   ├── 15_assembly_check.py                 2 min
+│   ├── 16_donor_check.py                    1 min
+--------------------------------------------------------
+├── 20_local_db_reorganization
+│   ├── 10_check_mut_tables_and_make_new_ones.py             ~3 mins with sanity checking (which can be skipped if re-run)
+│   ├── 11_reorganize_variants.py                             with current pll ~65min in total
+                                                              from<1s to 61 mins (for MELA) per tumor type
+
+│   ├── 12_consequence_vocab.py                              ~3 mins
+
+│   ├── 13_reorganize_mutations.py                            1hr 45 mins with 12 fold parallelization
+                                                              chrom 2 takes ~90 min
+
+│   ├── 14_reorganize_locations.py                            ~35 mins with 12 fold parallelization
+                                                              chrom 1 takes ~25 min,the other chroms less
+
+│   ├── 15_location_pathogenicity_to_variants.py              18 min, 8 fold pll
+│   ├── 17_make_jumbo_index_on_simple_somatic_tables.py
+│   ├── 18_cleanup_duplicate_entries.py
+│   ├── 19_cleanup_duplicate_donors.py
+│   ├── 20_decorate_simple_somatic.py
+│   ├── 21_add_reliability_annotation_to_somatic.py
+│   ├── 22_cleanup_duplicate_specimens.py
+│   ├── 23_cleanup_duplicate_samples.py
+│   ├── 24_copy_reliability_info_to_mutations.py
+│   └── 29_index_on_mutation_tables.py
+├── 30_tcga_merge
+│   ├── 30_reorganize_tcga_mutations_and_locations.py
+│   ├── 32_add_tables_for_tcga_cancers.py
+│   ├── 33_reorganize_tcga_variants.py
+│   ├── 35_pathg_annotation_from_mutations_to_variants.py
+│   ├── 37_tcga_specimen_hack.py
+│   ├── config.py -> ../config.py
+│   ├── icgc_utils -> ../icgc_utils/
+├── 40_housekeeping
+│   ├── 35_database_stats.py
+│   ├── 37_mutation2gene_maps.py
+│   ├── 39_var_sanity_checks.py
+│   └── 40_cancer_types_table.py
+├── 50_production
+│   ├── 42_gene_stats_generic.py
+│   ├── 43_gene_stats.py
+│   ├── 44_cancer_stats.py
+│   ├── 45_two_gene_co-ocurrence.py
+│   ├── 46_two_gene_co-ocurrence_missense.py
+│   ├── 47_two_gene_co-ocurrence_path_subpopulation.py
+│   ├── 48_co-ocurrence_of_mutations_and_lack_thereof.py
+│   ├── 49_co-ocurrence_postprocess.py
+│   ├── 50_silent_to_nonsilent_ratio.py
+│   ├── 52_silent_to_nonsilent_plot.py
+│   ├── 55_silent_to_nonsilent_ratio_per_cancer.py
+│   ├── 60_clustering_on_the_structure.py
+│   ├── 62_gnomad-clustering_on_the_structure.py
+│   ├── 64_conservatiion-clustering_on_the_structure.py
+│   ├── icgc_utils -> ../icgc_utils/
+│   ├── RPL5_per_cancer_breakdown.tmp.tsv
+│   └── RPL5_per_cancer_breakdown.tsv
+
