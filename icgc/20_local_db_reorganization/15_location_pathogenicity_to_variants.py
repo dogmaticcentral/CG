@@ -36,7 +36,7 @@ mutation_pathogenic = {'missense','frameshift',  'stop_gained', 'inframe',
               'splice', '5_prime_UTR_premature_start_codon_gain',
               'splice_acceptor', 'splice_region', 'splice_donor'
              }
-
+# right now we only have 'splice'
 location_pathogenic = { 'splice', '5_prime_UTR_premature_start_codon_gain',
               'splice_acceptor', 'splice_region', 'splice_donor',
 }
@@ -51,8 +51,8 @@ def fix_pathogenicity(chromosomes, other_args):
 		print()
 		print("====================")
 		print("processing icgc table ", mutations_table, os.getpid())
-		qry = "select icgc_mutation_id, start_position, consequence, pathogenic_estimate from icgc.%s" % mutations_table
-		for  icgc_mutation_id, start_position, consequence, p_estimate in search_db(cursor,qry):
+		qry = "select icgc_mutation_id, start_position, consequence, pathogenicity_estimate from icgc.%s" % mutations_table
+		for  icgc_mutation_id, start_position, consequence, p_estimate in search_db(cursor,qry, verbose=True):
 			#print icgc_mutation_id, start_position, consequence, p_estimate
 			p_estimate_revised = 0
 			if consequence:
@@ -92,8 +92,8 @@ def main():
 	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
 	shuffle(chromosomes)
 
-
-	number_of_chunks = 8  # myISAM does not deadlock
+	chromosomes = ["Y"]
+	number_of_chunks = 1  # myISAM does not deadlock
 	parallelize(number_of_chunks, fix_pathogenicity, chromosomes, [])
 
 #########################################

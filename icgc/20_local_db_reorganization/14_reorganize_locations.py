@@ -115,10 +115,16 @@ def describe_position(cursor, chrom, position, target_range):
 			eend = [int(p) for p in exon_ends.split(",") if len(p)>0]
 			for i in range(exon_count):
 				if position<estart[i]:
-					transcript_relative_list.append("{}:{}".format(ens_transcript_id, "intronic"))
+					if position>estart[i]-4:
+						transcript_relative_list.append("{}:{}".format(ens_transcript_id, "splice"))
+					else:
+						transcript_relative_list.append("{}:{}".format(ens_transcript_id, "intronic"))
 					break
-				if position<=eend[i]:
-					transcript_relative_list.append("{}:{}".format(ens_transcript_id, "exonic"))
+				if position<=eend[i]+3:
+					if position>eend[i]:
+						transcript_relative_list.append("{}:{}".format(ens_transcript_id, "splice"))
+					else:
+						transcript_relative_list.append("{}:{}".format(ens_transcript_id, "exonic"))
 					break
 	return [";".join(list(gene_relative_set)), ";".join(transcript_relative_list)]
 
@@ -234,8 +240,8 @@ def reorganize(chromosomes, other_args):
 #########################################
 def main():
 
-	print("Disabled. Loads location tables without checking.")
-	exit()
+	#print("Disabled. Loads location tables without checking.")
+	#exit()
 
 	ref_assembly = 'hg19' # this is the assembly I would like to see for all coords in location tables
 	db     = connect_to_mysql(Config.mysql_conf_file)

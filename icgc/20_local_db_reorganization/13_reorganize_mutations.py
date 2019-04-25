@@ -153,8 +153,9 @@ def reorganize_mutations(cursor, table, columns):
 		else:
 			mutation_values.append("0")
 
+
 		# now we are ready to store
-		insert(cursor, mutation_table, mutation_columns + ['aa_mutation','consequence', 'pathogenic_estimate'], mutation_values)
+		insert(cursor, mutation_table, mutation_columns + ['aa_mutation','consequence', 'pathogenicity_estimate'], mutation_values)
 
 
 #########################################
@@ -187,8 +188,8 @@ def reorganize(tables, other_args):
 #########################################
 def main():
 
-	print("disabled")
-	exit()
+	#print("disabled")
+	#exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -203,6 +204,7 @@ def main():
 
 	number_of_chunks = 14  # myISAM does not deadlock
 	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=True)
+
 	parallelize(number_of_chunks, reorganize, tables_sorted, [], round_robin=True)
 
 
