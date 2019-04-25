@@ -129,11 +129,11 @@ keeps it in a format that is more readily usable.) The script is
 [03_ucsc_gene_coords_table.py](icgc/10_local_db_loading/03_ucsc_gene_coords_table.py). To download coordinates
 from their MySQl server you will need an internet connection, mysql client, and another conf file, like this:
 
-`[client]`
-`skip-auto-rehash`
-`user = genome`
-`host = genome-mysql.soe.ucsc.edu`
-`port = 3306`
+`[client]` 
+`skip-auto-rehash` 
+`user = genome` 
+`host = genome-mysql.soe.ucsc.edu` 
+`port = 3306` 
 
 Again, the path to that file is expected to be defined in the [config.py](icgc/config.py) file.
 
