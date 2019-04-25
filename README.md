@@ -152,8 +152,8 @@ For large tables, rather than loading them through python,
 it turns out to be faster to create tsvs and  then load them from mysql shell 
 (as in [09_load_mysql.py](icgc/10_local_db_loading/09_load_mysql.py); alternative: use mysqlimport manually) 
  to read them in wholesale. These scripts take care of that part, plus some index creating on the newly loaded tables.
- Make sure to run [10_make_indices.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py) 
- - [12_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py)
+ Make sure to run [10_make_indices.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py), 
+ [12_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py)
  pretty much does not work without it at all. 
  All index making is slow here (see [timing.txt](icgc/timing.txt)) - run overnight. 
 
