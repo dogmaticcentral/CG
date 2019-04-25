@@ -90,14 +90,56 @@ def translate_positions(positions, chromosome, from_assembly, to_assembly, rootn
 
 
 #########################################
+def describe_position(cursor, chrom, position, target_range):
+
+	position -= 1 # UCSC labels positions from 0
+	qry = "select ens_gene_id, ens_transcript_id, cds_start, cds_end, exon_count, exon_starts, exon_ends "
+	qry += "from coords_chrom_%s " % chrom
+	qry += "where tx_start between %d and %d " %(position-target_range, position+target_range)
+	qry += "and %d between tx_start and tx_end " % position # 2 min
+
+	ret = search_db (cursor, qry)
+	if not ret:
+		return [None, None]
+	gene_relative_set = set()
+	transcript_relative_list = []
+	# the following expects that exon positions are sorted in the increasing order
+	for line in ret:
+		[ens_gene_id, ens_transcript_id, cds_start, cds_end, exon_count, exon_starts, exon_ends] = line
+		gene_relative_set.add(ens_gene_id)
+		if position<cds_start or position>cds_end:
+			transcript_relative_list.append("{}:{}".format(ens_transcript_id, "UTR"))
+		else:
+			# ucscs exon list may end in ",' but not sure if it is quaranteed
+			estart = [int(p) for p in exon_starts.split(",") if len(p)>0]
+			eend = [int(p) for p in exon_ends.split(",") if len(p)>0]
+			for i in range(exon_count):
+				if position<estart[i]:
+					transcript_relative_list.append("{}:{}".format(ens_transcript_id, "intronic"))
+					break
+				if position<=eend[i]:
+					transcript_relative_list.append("{}:{}".format(ens_transcript_id, "exonic"))
+					break
+	return [";".join(list(gene_relative_set)), ";".join(transcript_relative_list)]
+
+
+#########################################
+def  longest_gene_range(cursor, chrom):
+	qry = "select tx_end-tx_start as length from coords_chrom_%s order by length desc limit 1" % chrom
+	return search_db(cursor, qry)[0][0]+1
+
+#########################################
 def make_location_tsv(cursor, chrom, pos_file):
+
+	target_range = longest_gene_range(cursor, chrom)
 
 	inf  = open (pos_file, "r")
 	tsv_list = []
 	for line in inf:
-		position = line.rstrip()
-		gene_relative, transcript_relative = describe_position(cursor, chrom, position)
-		tsv_list.append("\t".join([str(position), gene_relative, transcript_relative]))
+		position = int(line.rstrip())
+		gene_relative, transcript_relative = describe_position(cursor, chrom, position, target_range)
+		if gene_relative:
+			tsv_list.append("\t".join([str(position), gene_relative, transcript_relative]))
 	inf.close()
 	return tsv_list
 
@@ -139,20 +181,20 @@ def reorganize_locations(cursor, ref_assembly, chromosome, tables):
 	tsv_list = make_location_tsv(cursor, chromosome, concat_pos)
 	time2 = time.time()
 	print("\t\t\t chromosome %s tsv list created in %.3f mins" % (chromosome, float(time2-time1)/60))
-	#
-	# tsv_name = "locations_chrom_%s.tsv" % chromosome
-	# outf = open (tsv_name,"w")
-	# for entry in tsv_list:
-	# outf.write(entry + "\n")
-	# outf.close()
-	# time3 = time.time()
-	# print("\t\t\t chromosome %s tsv written to %s in %.3f mins" % (chromosome, tsv_name, float(time3-time2)/60))
-	#
-	# # eat this
-	# qry = "load data local infile '%s' into table locations_chrom_%s" % (tsv_name, chromosome)
-	# search_db(cursor,qry,verbose=True)
-	# time4 = time.time()
-	# print("\t\t\t chromosome %s loaded in %.3f mins"%(chromosome, float(time4-time3)/60))
+
+	tsv_name = "locations_chrom_%s.tsv" % chromosome
+	outf = open (tsv_name,"w")
+	for entry in tsv_list:
+		outf.write(entry + "\n")
+	outf.close()
+	time3 = time.time()
+	print("\t\t\t chromosome %s tsv written to %s in %.3f mins" % (chromosome, tsv_name, float(time3-time2)/60))
+
+	# eat this
+	qry = "load data local infile '%s' into table locations_chrom_%s" % (tsv_name, chromosome)
+	search_db(cursor,qry,verbose=True)
+	time4 = time.time()
+	print("\t\t\t chromosome %s loaded in %.3f mins"%(chromosome, float(time4-time3)/60))
 
 	return
 
@@ -192,7 +234,7 @@ def reorganize(chromosomes, other_args):
 #########################################
 def main():
 
-	print("Disabled.")
+	print("Disabled. Loads location tables without checking.")
 	exit()
 
 	ref_assembly = 'hg19' # this is the assembly I would like to see for all coords in location tables
@@ -209,10 +251,8 @@ def main():
 	chromosomes = [str(i) for i in range(1,23)] + ["X", "Y"]
 	number_of_chunks = 12  # myISAM does not deadlock
 
-	chromosomes = ["Y"]
-
-
-	number_of_chunks = 1
+	#chromosomes = ["Y"]
+	#number_of_chunks = 1
 	parallelize(number_of_chunks, reorganize, chromosomes, [ref_assembly, tables], round_robin=True)
 
 
