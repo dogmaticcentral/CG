@@ -59,50 +59,10 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  * Optional: [line-profiler](https://github.com/rkern/line_profiler#line-profiler) for python
  * CrossMap, maybe in future (in TCGA?) - (sudo pip3 install CrossMap, pyBigWig, pysam)
  
- ## TCGA
- The TCGA branch of the pipeline got obsoleted before coming to production stage. 
+## TCGA
+ The tcga branch of the icgc pipeline got obsoleted before coming to production stage. 
  It contains various blind a alleys and wrong turns. Its current use is as a prep
- step for merging with ICGC. The only two subdirs remaining in use are 
- [00_common_tasks](tcga/00_common_tasks) and [01_somatic_mutations](tcga/01_somatic_mutations).
- 
- ## Common tasks
- 'Common tasks' refer to tasks needed to make a functional local subset of TCGA. The only
- non-obsolete piece remaining is [200_find_maf_files_in_GDC.py](tcga/00_common_tasks/200_find_maf_files_in_GDC.py) 
- that can be used to download somatic mutation tables from GDC - a repository of legacy TCGA data.
- 
- 
- ## Compiling somatic mutations
- 
- ### Creating MySQL tables
- [001_drop_maf_tables]() though [002_create_maf_tables](cga/01_somatic_mutations/002_create_maf_tables.py) 
- 
- ### Reading in and cleaning up the data
- [003_maf_meta](cga/01_somatic_mutations/003_maf_meta.py) through [012_drop_annotation](tcga/01_somatic_mutations/012_drop_annotation_in_remaining_conflicted.py) 
- 
- 
- ### 'Stuttering' samples
- Some samples in TCGA have serious problems with assembly or data interpretation. Example:
-```
-  broad.mit.edu_LIHC.IlluminaGA_DNASeq_automated.Level_2.1.0.0/
-  An_TCGA_LIHC_External_capture_All_Pairs.aggregated.capture.tcga.uuid.curated.somatic.maf 
-           273933        RPL5       Frame_Shift_Del         p.K270fs 
-           273933        RPL5       Frame_Shift_Del         p.K277fs 
-           273933        RPL5       Frame_Shift_Del         p.R279fs 
-           273933        RPL5       Frame_Shift_Del         p.Q282fs 
-```
- Such samples stand out pretty sharply and here we detect them as having two frameshift mutations within
- 5 nucleotides from each other reported more than a 100 times. 
- Such samples are marked in [003_maf_meta.py](tcga/01_somatic_mutations/003_maf_meta.py).
- Later we decided to drop them in 
- [014_drop_stuttering_samples.py](tcga/01_somatic_mutations/014_drop_stuttering_samples.py) 
- 
- After this point  we can move to ICGC - TCGA data will be fused into the combined dataset over there.
- 
- ### Some basic stats
- ... provided by [020_db_stats.py](tcga/01_somatic_mutations/020_db_stats.py) 
- through [027_patient_freqs.py](tcga/01_somatic_mutations/027_patient_freqs.py).
- 
- 
+ step for merging with ICGC. It has [its own README page](tcga).
  
 ## ICGC
  
@@ -163,29 +123,43 @@ here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz
 [hacks](icgc/hacks) directory. Put it someplace where
 [02_ensembl_id.py](icgc/10_local_db_loading//02_ensembl_id.py) can find it.
 
+ICGC database does not have a complete  consensus on location annotation,  so we will be doing it ourselves.
+As a prep, we download gene coordiantes from UCSC. (The coordinates are actually from Ensembl, but UCSC 
+keeps it in a format that is more readily usable.) The script is
+[03_ucsc_gene_coords_table.py](icgc/10_local_db_loading/03_ucsc_gene_coords_table.py). To download coordinates
+from their MySQl server you will need an internet connection, mysql client, and another conf file, like this:
+
+`[client]`
+`skip-auto-rehash`
+`user = genome`
+`host = genome-mysql.soe.ucsc.edu`
+`port = 3306`
+
+Again, the path to that file is expected to be defined in the [config.py](icgc/config.py) file.
+
 #### Measuring the field lengths and making MySQL tables
-[03_find_max_field_length.py](icgc/10_local_db_loading/05_find_max_field_length.py) and 
-[04_make_tables.py](icgc/10_local_db_loading/06_make_tables.py): 
+[05_find_max_field_length.py](icgc/10_local_db_loading/05_find_max_field_length.py) and 
+[06_make_tables.py](icgc/10_local_db_loading/06_make_tables.py): 
 Make sure that the fields in the mysql tables are big enough 
 for each entry and create mysql tables. 
-[03_find_max_field_length.py](icgc/10_local_db_loading/05_find_max_field_length.py) should 
+[06_find_max_field_length.py](icgc/10_local_db_loading/05_find_max_field_length.py) should 
 give you an idea about the longest entries found.
 
 #### Filling and  indexing database tables
-[05_write_mutations_tsv.py](icgc/0_local_db_loading/05_write_mutations_tsv.py) through 
-[08_make_indices.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py).
+[07_write_mutations_tsv.py](icgc/10_local_db_loading/07_write_mutations_tsv.py) through 
+[10_make_indices.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py).
 For large tables, rather than loading them through python, 
 it turns out to be faster to create tsvs and  then load them from mysql shell 
-(as in [07_load_mysql.py](icgc/10_local_db_loading/09_load_mysql.py); alternative: use mysqlimport manually) 
+(as in [09_load_mysql.py](icgc/10_local_db_loading/09_load_mysql.py); alternative: use mysqlimport manually) 
  to read them in wholesale. These scripts take care of that part, plus some index creating on the newly loaded tables.
- Make sure to run [08_make_indices.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py) 
+ Make sure to run [10_make_indices.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py) 
  - [12_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py)
  pretty much does not work without it at all. 
  All index making is slow here (see [timing.txt](icgc/timing.txt)) - run overnight. 
 
 Some checks are thrown in here that  may inform the rest of the pipeline.
- [09_assembly_check.py](icgc/10_local_db_loading/15_assembly_check.py) confirms tha as of v27 all ICGC entried
- refer to GRCh37, and [10_donor_check.py](icgc/10_local_db_loading/16_donor_check.py) highlights the fact that
+ [15_assembly_check.py](icgc/10_local_db_loading/15_assembly_check.py) confirms tha as of v27 all ICGC entried
+ refer to GRCh37, and [16_donor_check.py](icgc/10_local_db_loading/16_donor_check.py) highlights the fact that
  some donor ids have no somatic mutations in ICGC. This is somewhat mysterious, because some refer to
  TCGA donors with somatic mutation data available from TCGA archive.
 
