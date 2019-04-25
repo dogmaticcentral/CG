@@ -187,7 +187,7 @@ mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
 #### Creating new tables
 New tables are created in [10_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/10_check_mut_tables_and_make_new_ones.py).
 
-Note that in [11_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py),
+Note that in [11_reorganize_variants.py](icgc/20_local_db_reorganization/11_reorganize_variants.py),
    [13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mutations.py),   and
    [14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) 
  you can choose to run in parallel (the number of 'chunks' in main()). 
