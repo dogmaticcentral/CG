@@ -123,7 +123,7 @@ def check_location_stored(cursor, tcga_named_field):
 #########################################
 def find_mutation_id(cursor, tcga_named_field):
 	mutation_table = "mutations_chrom_%s" % tcga_named_field['chromosome']
-	qry = "select icgc_mutation_id, pathogenic_estimate from icgc.%s where start_position=%s "%(mutation_table, tcga_named_field['start_position'])
+	qry = "select icgc_mutation_id, pathogenicity_estimate from icgc.%s where start_position=%s "%(mutation_table, tcga_named_field['start_position'])
 	reference_allele = tcga_named_field['reference_allele']
 	differing_allele = tcga_named_field['tumor_seq_allele1']
 	if differing_allele == reference_allele: differing_allele = tcga_named_field['tumor_seq_allele2']
@@ -182,7 +182,7 @@ def tcga_sample2tcga_donor(s):
 
 
 #########################################
-def store_variant(cursor, tcga_named_field, mutation_id, pathogenic_estimate, icgc_variant_table, id_resolution):
+def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate, icgc_variant_table, id_resolution):
 
 
 	# thread parallelization goes over tcga tables - no guarantee there won't be race condition
@@ -229,7 +229,7 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenic_estimate, ic
 			'icgc_donor_id': new_donor_id,
 			'submitted_sample_id':tcga_named_field['tumor_sample_barcode'],
 			'tumor_genotype': "{}/{}".format(reference_allele,differing_allele),
-			'pathogenic_estimate': pathogenic_estimate,
+			'pathogenicity_estimate': pathogenicity_estimate,
 			'reliability_estimate': 1,
 		}
 		# store
@@ -265,14 +265,14 @@ def process_tcga_table(cursor, tcga_table, icgc_table, submitted2icgc_donor_id):
 		named_field = dict(list(zip(column_names,row)))
 		if not named_field['chromosome'] in standard_chromosomes: continue
 
-		mutation_id, pathogenic_estimate = find_mutation_id(cursor, named_field)
+		mutation_id, pathogenicity_estimate = find_mutation_id(cursor, named_field)
 
 		location_stored = check_location_stored(cursor, named_field)
 		if not mutation_id or not location_stored:
 			print("mutation id:", mutation_id, "location stored:", location_stored)
 			#exit()
 		# all clear - store
-		store_variant(cursor, named_field, mutation_id, pathogenic_estimate, icgc_table, id_resolution)
+		store_variant(cursor, named_field, mutation_id, pathogenicity_estimate, icgc_table, id_resolution)
 
 
 #########################################

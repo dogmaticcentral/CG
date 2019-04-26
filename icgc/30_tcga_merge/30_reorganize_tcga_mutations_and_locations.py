@@ -319,7 +319,7 @@ def store_location(cursor, annovar_named_field, gene_relative_string, tr_relativ
 
 
 #########################################
-def store_mutation(cursor, annovar_named_field, assembly, mutation_type, consequences_string, aa_change, pathogenic_estimate):
+def store_mutation(cursor, annovar_named_field, assembly, mutation_type, consequences_string, aa_change, pathogenicity_estimate):
 	mutation_table = "mutations_chrom_%s" % annovar_named_field['chr']
 
 	# I've seen this get into race condition  - I will have to lock here (? what about myISAM not deadlocking?)
@@ -355,7 +355,7 @@ def store_mutation(cursor, annovar_named_field, assembly, mutation_type, consequ
 						'mutated_to_allele': to_allele,
 						'aa_mutation':aa_change,
 						'consequence':consequences_string,
-						'pathogenic_estimate':pathogenic_estimate,
+						'pathogenicity_estimate':pathogenicity_estimate,
 						'reliability_estimate':1}
 		store_without_checking(cursor, mutation_table, named_fields, verbose=False)
 
@@ -408,17 +408,17 @@ def store_annotation (cursor, tcga_table, avoutput):
 			if location_seen and mutation_seen: continue
 			ret  = parse_annovar_fields(cursor, avfile, annovar_named_field)
 			[mutation_type, consequences_string, aa_change, gene_relative_string, tr_relative_string] = ret
-			pathogenic_estimate = 0
+			pathogenicity_estimate = 0
 			for description in pathogenic:
 				if description in consequences_string +";"+ tr_relative_string:
-					pathogenic_estimate=1
+					pathogenicity_estimate=1
 					break
 			if not location_seen:
 				#print("storing location:", annovar_named_field)
 				store_location(cursor, annovar_named_field, gene_relative_string, tr_relative_string)
 			if not mutation_seen:
 				store_mutation(cursor, annovar_named_field, assembly, mutation_type,
-							   consequences_string, aa_change, pathogenic_estimate)
+							   consequences_string, aa_change, pathogenicity_estimate)
 
 		inf.close()
 
