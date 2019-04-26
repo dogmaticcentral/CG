@@ -38,7 +38,8 @@ icgc
 │   ├── 14_reorganize_locations.py                            ~35 mins with 12 fold parallelization
                                                               chrom 1 takes ~25 min, the other chroms less
 
-│   ├── 15_location_pathogenicity_to_variants.py              18 min, 8 fold pll
+│   ├── 15_set_pathogenicity_in_mutation_tables.py            18 min, 8 fold pll
+│   ├── 16_pathg_annotation_from_mutations_to_variants.py     ~30min, 8 folf pll
 │   ├── 17_make_jumbo_index_on_simple_somatic_tables.py       11 min on a single CPU
 │   ├── 18_cleanup_duplicate_entries.py                       ~1hr, 10 fold pll
 │   ├── 19_cleanup_duplicate_donors.py                        6 min single cpu
@@ -47,6 +48,7 @@ icgc
 │   ├── 23_cleanup_duplicate_samples.py                       ~5min
 │   ├── 24_copy_reliability_info_to_mutations.py              33min
 │   └── 29_index_on_mutation_tables.py                        ~6min
+
 ├── 30_tcga_merge
 │   ├── 30_reorganize_tcga_mutations_and_locations.py
 │   ├── 32_add_tables_for_tcga_cancers.py
@@ -55,12 +57,14 @@ icgc
 │   ├── 37_tcga_specimen_hack.py
 │   ├── config.py -> ../config.py
 │   ├── icgc_utils -> ../icgc_utils/
+
 ├── 40_housekeeping
 │   ├── 35_database_stats.py                                  ~1min
 │   ├── 37_mutation2gene_maps.py                              ~1.5hr, 10 fold pll
 │   ├── 38_gene_idx_on_mutation2gene.py                       ~4min
 │   ├── 39_var_sanity_checks.py                               <1s
 │   └── 40_cancer_types_table.py                              <1s
+
 ├── 50_production
 │   ├── 42_gene_stats_generic.py
 │   ├── 43_gene_stats.py

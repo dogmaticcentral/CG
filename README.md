@@ -203,7 +203,7 @@ mutations\* tables.
 UCSC gene annotation to check chromosome addresses. The only information we are looking for here is the
 possibility that the location falls within the splice region just outside of an exon. Mutations at these positions
 are annotated as (possibly) pathogenic 
-in [15_location_pathogenicity_to_variants.py](icgc/20_local_db_reorganization/15_location_pathogenicity_to_variants.py)
+in [15_location_pathogenicity_to_variants.py](icgc/20_local_db_reorganization/15_set_pathogenicity_in_mutation_tables.py)
 
     
 (Do not forget to create indices

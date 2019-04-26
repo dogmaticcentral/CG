@@ -88,7 +88,7 @@ def find_53_status(cursor, tumor_short, specimen):
 	# g = gene
 	# m = mutation
 	# v = variant
-	qry  = "select g.icgc_mutation_id, v.pathogenic_estimate, m.consequence, m.aa_mutation, l.transcript_relative "
+	qry  = "select g.icgc_mutation_id, v.pathogenicity_estimate, m.consequence, m.aa_mutation, l.transcript_relative "
 	qry += "from mutation2gene g, %s_simple_somatic v, mutations_chrom_17 m , locations_chrom_17 l " % (tumor_short)
 	qry += "where g.gene_symbol='TP53' "
 	qry += "and v.icgc_specimen_id = '%s' "  % specimen
@@ -102,15 +102,15 @@ def find_53_status(cursor, tumor_short, specimen):
 	cons = []
 	for line in ret:
 		if line[1]==1:  impact_estimate = "pathogenic"
-		if line[2]==None:
-			# canonical transcript is ENST00000269305
-			if line[-1]!=None: cons.append(transcript_location_cleanup(cursor,line[-1],'ENSG00000141510'))
+		if line[-1]!=None and 'splice' in line[-1]:
+			cons.append(line[-1])
 			continue
-		aa_change = aa_change_cleanup(cursor, line[3])
-		if aa_change and aa_change != "":
-			cons.append("%s:%s"%(line[2], aa_change))
-		else:
-			cons.append(line[2])
+		if line[2] and line[3]:
+			aa_change = aa_change_cleanup(cursor, line[3])
+			if aa_change and aa_change != "":
+				cons.append("%s:%s"%(line[2], aa_change))
+			else:
+				cons.append(line[2])
 	return [impact_estimate, ";".join(cons)]
 
 
@@ -259,9 +259,9 @@ def get_mutations(cursor, table, chromosome=None):
 	return [r[0] for r in ret]
 
 def get_number_of_path_mutations_per_specimen(cursor, table, specimen_id):
-	qry  = "select count( distinct icgc_mutation_id)  from %s " % table
-	qry += "where icgc_specimen_id = '%s' " % specimen_id
-	qry += "and pathogenic_estimate=1 and reliability_estimate=1"
+	qry  = "select count(distinct icgc_mutation_id)  from %s " % table
+	qry += "where  icgc_specimen_id = '%s' " % specimen_id
+	qry += "and pathogenicity_estimate=1 and reliability_estimate=1 "
 	return search_db(cursor,qry)[0][0]
 
 def get_consequence(cursor, chromosome, mutation):
@@ -303,7 +303,7 @@ def mutations_in_gene_old(cursor, approved_symbol):
 		exit()
 
 	qry  = "select m.icgc_mutation_id from mutations_chrom_%s m, locations_chrom_%s l "  % (chromosome, chromosome)
-	qry += "where m.pathogenic_estimate=1 and m.start_position=l.position "
+	qry += "where m.pathogenicity_estimate=1 and m.start_position=l.position "
 	qry += "and l.gene_relative like '%%%s%%' " % ensembl_gene_id
 	ret = search_db(cursor,qry, verbose=True)
 	if not ret: return []
@@ -322,7 +322,7 @@ def pathogenic_mutations_in_gene(cursor, approved_symbol, chromosome, use_reliab
 	qry  = "select map.icgc_mutation_id from mutation2gene map, mutations_chrom_%s mut " % chromosome
 	qry += "where map.gene_symbol='%s' " % approved_symbol
 	qry += "and map.icgc_mutation_id=mut.icgc_mutation_id "
-	qry += "and mut.pathogenic_estimate=1 "
+	qry += "and mut.pathogenicity_estimate=1 "
 	if use_reliability: qry += "and mut.reliability_estimate=1 "
 	ret = search_db(cursor,qry, verbose=True)
 	if not ret: return []

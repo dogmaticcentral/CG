@@ -211,11 +211,11 @@ def gene_mutations(cursor, table, gene):
 	qry += "from mutation2gene g,  %s m " % table
 	qry += "where g.gene_symbol='%s' " % gene
 	qry += "and g.icgc_mutation_id = m.icgc_mutation_id "
-	qry += "and m.pathogenic_estimate=1 and m.reliability_estimate=1"
-	#print(qry)
+	qry += "and m.pathogenicity_estimate=1 and m.reliability_estimate=1"
+
 	ret = search_db(cursor,qry)
 	if not ret: return
-	if ret[0] and ret[0][0] and 'error' in ret[0][0]:
+	if ret[0] and ret[0][0] and 'error' in ret[0][0].lower():
 		ret = search_db(cursor,qry,verbose=True)
 		exit()
 
