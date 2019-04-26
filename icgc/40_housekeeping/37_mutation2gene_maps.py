@@ -27,9 +27,12 @@ from config import Config
 #########################################
 def make_map_table(cursor, db_name, table_name):
 
-	if check_table_exists(cursor, db_name, table_name): return
 
 	switch_to_db (cursor, db_name)
+
+	qry = "drop table %s" % table_name
+	search_db(cursor, qry)
+
 	# we cannot use icgc_mutation_id bcs the same location can correspond to multiple genes
 	qry = ""
 	qry += "  CREATE TABLE  %s (" % table_name
@@ -38,26 +41,16 @@ def make_map_table(cursor, db_name, table_name):
 	qry += "	 gene_symbol VARCHAR (30) NOT NULL, "
 	qry += "	 PRIMARY KEY (id) "
 	qry += ") ENGINE=MyISAM"
-
 	search_db(cursor, qry)
 
 	# searching for priors will take the longest time though
 	qry = "create index mut_idx on mutation2gene (icgc_mutation_id)"
 	search_db(cursor, qry, verbose=True)
 
-
-#########################################
-# profile decorator is for the use with kernprof (a line profiler):
-#  ./icgc_utils/kernprof.py -l 37_....py
-# followed by
-# python3 -m line_profiler 37_....py.lprof
-# see here https://github.com/rkern/line_profiler#line-profiler
-# the reason I am using local kernprof.py is that I don't know where pip
-# installed its version (if anywhere)
-# @profile
 #########################################
 def store (cursor, mut_id, gene_symbols):
 
+	if len(gene_symbols)==0: return
 	# check existing
 	qry = "select gene_symbol from mutation2gene "
 	qry += "where icgc_mutation_id='%s'" % mut_id
@@ -77,10 +70,19 @@ def store (cursor, mut_id, gene_symbols):
 			exit()
 	return
 
+
 #########################################
-def ens2hgnc(cursor,ensids):
+def ens2hgnc(cursor,ensids,e2h):
 	symbols = set([])
+	unseen_ids = []
 	for ensid in ensids:
+		if ensid in e2h:
+			symbols.add(e2h[ensid])
+		else:
+			unseen_ids.append(ensid)
+
+	# note that we are filtering for protein-coding genes here:
+	for ensid in unseen_ids:
 		# note that we are filtering for protein-coding genes here:
 		qry  = "select approved_symbol from hgnc "
 		qry += "where locus_group='protein-coding gene' "
@@ -90,10 +92,10 @@ def ens2hgnc(cursor,ensids):
 		if len(ret)>1:
 			print("nonunique symbol for %s (?)" % ensid)
 			print(",".join([r[0] for r in ret]))
-			print(qry())
+			print(qry)
 			exit()
 		symbols.add(ret[0][0])
-
+		e2h[ensid] = ret[0][0]
 	return symbols
 
 
@@ -110,11 +112,21 @@ def transcr2gene(cursor, transcrids):
 
 #########################################
 def report_progress(chrom, ct, no_rows, time0):
-	if (ct%10000>0): return
+	if (ct%50000>0): return
 	print("%30s   %6d lines out of %6d  (%d%%)  %d min" % \
 	(chrom, ct, no_rows, float(ct)/no_rows*100, float(time.time()-time0)/60))
 	return
 
+#
+#########################################
+# profile decorator is for the use with kernprof (a line profiler):
+#  ./icgc_utils/kernprof.py -l 37_....py
+# followed by
+# python3 -m line_profiler 37_....py.lprof
+# see here https://github.com/rkern/line_profiler#line-profiler
+# the reason I am using local kernprof.py is that I don't know where pip
+# installed its version (if anywhere)
+# @profile
 #########################################
 def store_maps(chromosomes, other_args ):
 
@@ -122,6 +134,7 @@ def store_maps(chromosomes, other_args ):
 	cursor = db.cursor()
 	switch_to_db(cursor, "icgc")
 	for chrom in chromosomes:
+		e2h = {}
 		time0 = time.time()
 		print("====================")
 		print("maps for ", chrom, "pid:", os.getpid())
@@ -145,12 +158,11 @@ def store_maps(chromosomes, other_args ):
 			gene_found = False
 			if gene and gene != "":
 				geneids = set ([])
-				for geneloc in gene.split(";"):
-					ensid, loc = geneloc.split(":")
-					if loc == "intragenic": geneids.add(ensid)
+				for ensid in gene.split(";"):
+					geneids.add(ensid)
 				if len(geneids)>0:
 					gene_found = True
-					store (cursor, mut_id, ens2hgnc(cursor,geneids))
+					store (cursor, mut_id, ens2hgnc(cursor,geneids, e2h))
 
 			if not gene_found and transcr and transcr != "":
 				transcrids = set ([])
@@ -158,7 +170,7 @@ def store_maps(chromosomes, other_args ):
 					transcrid, loc = transcrloc.split(":")
 					transcrids.add(transcrid)
 					geneids = transcr2gene(cursor, transcrids)
-					store (cursor, mut_id, ens2hgnc(cursor,geneids))
+					store (cursor, mut_id, ens2hgnc(cursor,geneids, e2h))
 
 		time1 = time.time()
 		print("chrom ", chrom, "done in %.3f mins" % (float(time1-time0)/60))
@@ -172,16 +184,22 @@ def store_maps(chromosomes, other_args ):
 #########################################
 def main():
 
+	print ("Disabled.")
+	exit()
+
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	#########################
 	make_map_table(cursor, "icgc", "mutation2gene")
+	cursor.close()
+	db.close()
 
 	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
 	shuffle(chromosomes)
 
 	number_of_chunks = 10
 	parallelize (number_of_chunks, store_maps, chromosomes, [])
+
 
 	return
 

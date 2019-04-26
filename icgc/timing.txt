@@ -26,11 +26,11 @@ icgc
 │   ├── 16_donor_check.py                    1 min
 --------------------------------------------------------
 ├── 20_local_db_reorganization
-│   ├── 10_check_mut_tables_and_make_new_ones.py             ~3 mins with sanity checking (which can be skipped if re-run)
+│   ├── 10_check_mut_tables_and_make_new_ones.py              ~3 mins with sanity checking (which can be skipped if re-run)
 │   ├── 11_reorganize_variants.py                             with current pll ~65min in total
                                                               from<1s to 61 mins (for MELA) per tumor type
 
-│   ├── 12_consequence_vocab.py                              ~3 mins
+│   ├── 12_consequence_vocab.py                               ~3 mins
 
 │   ├── 13_reorganize_mutations.py                            1hr 45 mins with 12 fold parallelization
                                                               chrom 2 takes ~90 min
@@ -45,8 +45,8 @@ icgc
 │   ├── 21_add_reliability_annotation_to_somatic.py           3min, 20 fold pll
 │   ├── 22_cleanup_duplicate_specimens.py                     (?) 10 min (forgot to time)
 │   ├── 23_cleanup_duplicate_samples.py                       ~5min
-│   ├── 24_copy_reliability_info_to_mutations.py
-│   └── 29_index_on_mutation_tables.py
+│   ├── 24_copy_reliability_info_to_mutations.py              33min
+│   └── 29_index_on_mutation_tables.py                        ~6min
 ├── 30_tcga_merge
 │   ├── 30_reorganize_tcga_mutations_and_locations.py
 │   ├── 32_add_tables_for_tcga_cancers.py
@@ -56,10 +56,11 @@ icgc
 │   ├── config.py -> ../config.py
 │   ├── icgc_utils -> ../icgc_utils/
 ├── 40_housekeeping
-│   ├── 35_database_stats.py
-│   ├── 37_mutation2gene_maps.py
-│   ├── 39_var_sanity_checks.py
-│   └── 40_cancer_types_table.py
+│   ├── 35_database_stats.py                                  ~1min
+│   ├── 37_mutation2gene_maps.py                              ~1.5hr, 10 fold pll
+│   ├── 38_gene_idx_on_mutation2gene.py                       ~4min
+│   ├── 39_var_sanity_checks.py                               <1s
+│   └── 40_cancer_types_table.py                              <1s
 ├── 50_production
 │   ├── 42_gene_stats_generic.py
 │   ├── 43_gene_stats.py
