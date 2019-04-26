@@ -36,16 +36,15 @@ icgc
                                                               chrom 2 takes ~90 min
 
 │   ├── 14_reorganize_locations.py                            ~35 mins with 12 fold parallelization
-                                                              chrom 1 takes ~25 min,the other chroms less
+                                                              chrom 1 takes ~25 min, the other chroms less
 
 │   ├── 15_location_pathogenicity_to_variants.py              18 min, 8 fold pll
-│   ├── 17_make_jumbo_index_on_simple_somatic_tables.py
-│   ├── 18_cleanup_duplicate_entries.py
-│   ├── 19_cleanup_duplicate_donors.py
-│   ├── 20_decorate_simple_somatic.py
-│   ├── 21_add_reliability_annotation_to_somatic.py
-│   ├── 22_cleanup_duplicate_specimens.py
-│   ├── 23_cleanup_duplicate_samples.py
+│   ├── 17_make_jumbo_index_on_simple_somatic_tables.py       11 min on a single CPU
+│   ├── 18_cleanup_duplicate_entries.py                       ~1hr, 10 fold pll
+│   ├── 19_cleanup_duplicate_donors.py                        6 min single cpu
+│   ├── 21_add_reliability_annotation_to_somatic.py           3min, 20 fold pll
+│   ├── 22_cleanup_duplicate_specimens.py                     (?) 10 min (forgot to time)
+│   ├── 23_cleanup_duplicate_samples.py                       ~5min
 │   ├── 24_copy_reliability_info_to_mutations.py
 │   └── 29_index_on_mutation_tables.py
 ├── 30_tcga_merge

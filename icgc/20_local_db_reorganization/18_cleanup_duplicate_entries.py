@@ -63,7 +63,7 @@ def remove_duplicates(table_rows, other_args):
 			named_field = dict(list(zip(colnames,line2)))
 			all_ids.append( named_field["id"])
 			genotype.append(named_field["tumor_genotype"])
-			path_estimate.append(named_field["pathogenic_estimate"])
+			path_estimate.append(named_field["pathogenicity_estimate"])
 			# first see what is the best total read count that we have
 			if named_field["total_read_count"] and max_depth<named_field["total_read_count"]:
 				max_depth = named_field["total_read_count"]
@@ -86,13 +86,13 @@ def remove_duplicates(table_rows, other_args):
 
 		# we do not have the info about the depth of the sequencing
 		elif ct==2 and genotype[0]==genotype[1][::-1]: # hack to reverse a string
-			print("tumor genotypes same", genotype)
+			#print("tumor genotypes same", genotype)
 			qry = "delete from %s where id = %d" % (table, all_ids[1])
 			search_db(cursor,qry)
 
 		# here I am losing patience a bit, I guess
 		elif set(path_estimate)=={0}:
-			print("all entries estimated irrelevant (in terms of pathogenicity)")
+			#print("all entries for %s estimated irrelevant (in terms of pathogenicity)" % mega_id)
 			for id in all_ids:
 				qry = "delete from %s where id = %d" % (table, id)
 				search_db(cursor,qry)

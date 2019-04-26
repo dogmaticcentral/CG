@@ -40,11 +40,17 @@ def add_reliability_annotation(tables, other_args):
 	switch_to_db(cursor,"icgc")
 	for table in tables:
 		print(table, "running")
+		qry  = "update %s set mut_to_total_read_count_ratio=mutant_allele_read_count/total_read_count " % table
+		# for some data sets we do not have the read count info
+		qry += "where total_read_count is not null and total_read_count>0 "
+		qry += "and mutant_allele_read_count is not null"
+		search_db(cursor,qry, verbose=False)
 		qry  = "update %s set reliability_estimate = 1 " % table
 		# for some data sets we do not have the read count info
 		qry += "where total_read_count is null or "
 		qry += "(mutant_allele_read_count>=10 and mut_to_total_read_count_ratio>=0.2)"
-		search_db(cursor,qry)
+		search_db(cursor,qry, verbose=False)
+
 	cursor.close()
 	db.close()
 

@@ -79,6 +79,9 @@ def main():
 			qry += "where icgc_donor_id = '%s' and reliability_estimate=1 " % icgc_donor_id
 			qry += "group by  icgc_specimen_id"
 			ret2 = search_db(cursor,qry)
+			if not ret2:
+				search_db(cursor,qry, verbose=True)
+				exit(1)
 			entries_per_specimen = dict(ret2)
 			print(entries_per_specimen)
 			qry  = "select icgc_specimen_id, icgc_donor_id, specimen_type, tumour_histological_type "

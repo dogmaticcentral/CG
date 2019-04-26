@@ -188,8 +188,8 @@ mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
 New tables are created in [10_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/10_check_mut_tables_and_make_new_ones.py).
 
 Note that in [11_reorganize_variants.py](icgc/20_local_db_reorganization/11_reorganize_variants.py),
-   [13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mutations.py),   and
-   [14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) 
+[13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mutations.py),   and
+[14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) 
  you can choose to run in parallel (the number of 'chunks' in main()). 
 
 In [12_consequence_vocab.py](icgc/20_local_db_reorganization/12_consequence_vocab.py)
@@ -199,16 +199,15 @@ in [13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mu
 come up with the pathogenicity estimate, to be stored in the eponymous field in the
 mutations\* tables.
 
-   [14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) script uses 
-   Annovar to check chromosome addresses / translate them to hg 19
-   which in retrospective turned out to be a bit of paranoia - all the addresses
-   seem to systematically refer to GRCh37 (which differs from hg19 only in MT contigs 
-   which we do not follow anyway).
-   
- 
-   
- (Do not forget to create indices
- using [08_make_indices_on_temp_tables.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py)) 
+[14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) script uses 
+UCSC gene annotation to check chromosome addresses. The only information we are looking for here is the
+possibility that the location falls within the splice region just outside of an exon. Mutations at these positions
+are annotated as (possibly) pathogenic 
+in [15_location_pathogenicity_to_variants.py](icgc/20_local_db_reorganization/15_location_pathogenicity_to_variants.py)
+
+    
+(Do not forget to create indices
+using [10_make_indices_on_temp_tables.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py)) 
  
  
 #### Removing duplicates
@@ -224,7 +223,7 @@ possibly originating in ICGC itself. Some mutations  have identical tuple
  is after we have reorganized the database so that the mutation and location info sit in 
  different tables from the donor info. Not sure what this is about (the same sample analyzed independently multiple
  times?), but when found, this script chooses the entry with the highest coverage if possible. See the script for the full
- resolution strategy and make sure to run [17_make_jumbo_index](icgc/20_local_db_reorganization/17_make_jumbo_index_on_simple_somatic_tables.py) 
+ resolution strategy and make sure to run [17_make_jumbo_index](icgc/20_local_db_reorganization/17_make_jumbo_index_on_new_tables.py) 
  because 
  [18_cleanup_duplicate_entries.py](icgc/20_local_db_reorganization/18_cleanup_duplicate_entries.py) is useless without it.
  

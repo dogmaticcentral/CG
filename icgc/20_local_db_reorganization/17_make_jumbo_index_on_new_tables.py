@@ -24,25 +24,17 @@ from config import Config
 from icgc_utils.mysql   import  *
 
 
-
-#########################################
 #########################################
 def main():
-
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	switch_to_db(cursor,"icgc")
 
-	#tcga_tables = None
-	tcga_tables = ["ACC_donor" , "CHOL_donor", "MESO_donor", "PCPG_donor", "TGCT_donor", "THYM_donor", "UVM_donor"]
-	if tcga_tables:
-		tables = tcga_tables
-	else:
-		qry  = "select table_name from information_schema.tables "
-		qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
-		tables = [field[0] for field in  search_db(cursor,qry)]
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
+	tables = [field[0] for field in  search_db(cursor,qry)]
 
 	for table in tables:
 		print(table)
