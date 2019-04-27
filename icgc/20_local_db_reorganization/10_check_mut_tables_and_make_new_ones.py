@@ -97,6 +97,8 @@ def main():
 	#sanity_checks(cursor, tables)
 
 	# make new somatic mutation tables, per cancer
+	# later will also refer to those as 'variants'
+	# because we are storing
 	make_new_somatic_tables(cursor, tables)
 	# make new mutation table, divided into chromosomes
 	make_mutation_tables(cursor)

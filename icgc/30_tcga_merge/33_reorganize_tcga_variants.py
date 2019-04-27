@@ -117,7 +117,7 @@ def check_location_stored(cursor, tcga_named_field):
 		print(qry)
 		print(ret)
 		exit()
-	return False if not ret else ret[0][0]
+	return False if not ret else True
 
 
 #########################################
@@ -203,7 +203,7 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate,
 	qry += "where icgc_mutation_id='%s' " % mutation_id
 	ret = search_db(cursor,qry)
 	if ret and (tcga_named_field['tumor_sample_barcode'] in [r[0] for r in ret]):
-		#print "variant found"
+		print ("variant found")
 		pass
 	else:
 		tcga_participant_id = tcga_sample2tcga_donor(tcga_named_field['tumor_sample_barcode'])
@@ -246,8 +246,8 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate,
 def process_tcga_table(cursor, tcga_table, icgc_table, submitted2icgc_donor_id):
 
 	standard_chromosomes = [str(i) for i in range(23)] +['X','Y']
+	standard_chromosomes = ['1']
 
-	# make a workdir and move there
 	no_rows = search_db(cursor,"select count(*) from tcga.%s"% tcga_table)[0][0]
 
 	column_names = get_column_names(cursor,'tcga',tcga_table)
@@ -264,13 +264,13 @@ def process_tcga_table(cursor, tcga_table, icgc_table, submitted2icgc_donor_id):
 				(tcga_table, ct, no_rows, float(ct)/no_rows*100, float(time.time()-time0)/60))
 		named_field = dict(list(zip(column_names,row)))
 		if not named_field['chromosome'] in standard_chromosomes: continue
-
+		# we should have stored the mutation in one of the previous steps (scripts)
 		mutation_id, pathogenicity_estimate = find_mutation_id(cursor, named_field)
 
-		location_stored = check_location_stored(cursor, named_field)
-		if not mutation_id or not location_stored:
-			print("mutation id:", mutation_id, "location stored:", location_stored)
-			#exit()
+		location_is_stored = check_location_stored(cursor, named_field)
+		if not mutation_id or not location_is_stored:
+			print("mutation id:", mutation_id, "location stored:", location_is_stored)
+			continue
 		# all clear - store
 		store_variant(cursor, named_field, mutation_id, pathogenicity_estimate, icgc_table, id_resolution)
 
@@ -322,8 +322,8 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
-	#tcga_tables = ['CESC_somatic_mutations']
-	number_of_chunks = 10 # myISAM does not deadlock
+	tcga_tables = ['BLCA_somatic_mutations']
+	number_of_chunks = 1 # myISAM does not deadlock
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
 
 

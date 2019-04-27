@@ -234,21 +234,23 @@ def gene_mutations(cursor, table, gene):
 				'samples'   : [sample]
 			}
 		else:
-			if donor_mutations[donor][mutation]['chromosome'] != chromosome:
-				print(("different chromosome for mutation %s (?!)" % mutation))
-				exit(1)
-			if donor_mutations[donor][mutation]['cgenotype'] !="" and cgenotype !="" and \
-					donor_mutations[donor][mutation]['cgenotype'] != cgenotype:
-				print(("different cgenotype for mutation %s " % mutation))
-				print(("in ", donor_mutations[donor][mutation]['specimens'], "and", specimen))
-				print((donor_mutations[donor][mutation]['cgenotype'], "vs", cgenotype))
-				exit(1)
-			if donor_mutations[donor][mutation]['tgenotype'] !="" and tgenotype !="" and \
-					donor_mutations[donor][mutation]['tgenotype'] != tgenotype:
-				print(("different tgenotype for mutation %s " % mutation))
-				print(("in ", donor_mutations[donor][mutation]['specimens'], "and", specimen))
-				print((donor_mutations[donor][mutation]['tgenotype'], "vs", tgenotype))
-				exit(1)
+			dmut = donor_mutations[donor][mutation]
+			if dmut['chromosome'] != chromosome:
+				print("different chromosome for mutation %s (?!)" % mutation)
+				continue
+				#exit(1)
+			if dmut['cgenotype'] !="" and cgenotype !="" and  dmut['cgenotype'] != cgenotype:
+				print("different cgenotype for mutation %s " % mutation)
+				print("in ", dmut['specimens'], "and", specimen)
+				print(dmut['cgenotype'], "vs", cgenotype)
+				continue
+				#exit(1)
+			if dmut['tgenotype'] !="" and tgenotype !="" and  dmut['tgenotype'] != tgenotype:
+				print("different tgenotype for mutation %s " % mutation)
+				print("in ", dmut['specimens'], "and", specimen)
+				print(dmut['tgenotype'], "vs", tgenotype)
+				continue
+				#exit(1)
 
 			donor_mutations[donor][mutation]['specimens'].append(specimen)
 			donor_mutations[donor][mutation]['samples'].append(sample)

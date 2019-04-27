@@ -94,10 +94,11 @@ def reorganize(tables, other_args):
 
 #########################################
 #########################################
+
 def main():
 
-	print("disabled")
-	exit()
+	#print("disabled")
+	#exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -110,9 +111,12 @@ def main():
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 14  # myISAM does not deadlock
+	number_of_chunks = 12  # myISAM does not deadlock
 	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=True)
-	parallelize(number_of_chunks, reorganize, tables_sorted, [], round_robin=True)
+	half = int(len(tables_sorted)/2)
+	tables_mirrored = tables_sorted[0:half] +  list(reversed(tables_sorted[half:]))
+
+	parallelize(number_of_chunks, reorganize, tables_mirrored, [], round_robin=True)
 
 
 

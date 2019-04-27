@@ -1,4 +1,4 @@
-The purpose of timing is to highlight the bottlenecks. The actual values will depend on the hardware setup.
+The purpose of this timing exercise is to highlight the bottlenecks. The actual values will depend on the hardware setup.
 
 icgc
 ├── 00_data_download
@@ -27,7 +27,7 @@ icgc
 --------------------------------------------------------
 ├── 20_local_db_reorganization
 │   ├── 10_check_mut_tables_and_make_new_ones.py              ~3 mins with sanity checking (which can be skipped if re-run)
-│   ├── 11_reorganize_variants.py                             with current pll ~65min in total
+│   ├── 11_reorganize_variants.py                             ~65min in total
                                                               from<1s to 61 mins (for MELA) per tumor type
 
 │   ├── 12_consequence_vocab.py                               ~3 mins
@@ -39,7 +39,7 @@ icgc
                                                               chrom 1 takes ~25 min, the other chroms less
 
 │   ├── 15_set_pathogenicity_in_mutation_tables.py            18 min, 8 fold pll
-│   ├── 16_pathg_annotation_from_mutations_to_variants.py     ~30min, 8 folf pll
+│   ├── 16_pathg_annotation_from_mutations_to_variants.py     ~30min, 8 fold pll
 │   ├── 17_make_jumbo_index_on_simple_somatic_tables.py       11 min on a single CPU
 │   ├── 18_cleanup_duplicate_entries.py                       ~1hr, 10 fold pll
 │   ├── 19_cleanup_duplicate_donors.py                        6 min single cpu
@@ -47,20 +47,20 @@ icgc
 │   ├── 22_cleanup_duplicate_specimens.py                     (?) 10 min (forgot to time)
 │   ├── 23_cleanup_duplicate_samples.py                       ~5min
 │   ├── 24_copy_reliability_info_to_mutations.py              33min
-│   └── 29_index_on_mutation_tables.py                        ~6min
+│   ├── 29_index_on_mutation_tables.py                        ~6min
+│   └── 30_mutation2gene_maps.py                              ~1.5hr, 10 fold pll
 
 ├── 30_tcga_merge
 │   ├── 30_reorganize_tcga_mutations_and_locations.py         23min, 20 fold pll
 │   ├── 32_add_tables_for_tcga_cancers.py                     <1s
 │   ├── 33_reorganize_tcga_variants.py                        13 min, 10 fold pll
-│   ├── 35_pathg_annotation_from_mutations_to_variants.py
-│   ├── 37_tcga_specimen_hack.py
+│   ├── 35_pathg_annotation_from_mutations_to_variants.py     23 min, 12 fold pll
+│   ├── 37_tcga_specimen_hack.py                              ~15min
 │   ├── config.py -> ../config.py
 │   ├── icgc_utils -> ../icgc_utils/
 
 ├── 40_housekeeping
 │   ├── 35_database_stats.py                                  ~1min
-│   ├── 37_mutation2gene_maps.py                              ~1.5hr, 10 fold pll
 │   ├── 38_gene_idx_on_mutation2gene.py                       ~4min
 │   ├── 39_var_sanity_checks.py                               <1s
 │   └── 40_cancer_types_table.py                              <1s

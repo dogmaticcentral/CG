@@ -141,7 +141,8 @@ def store_maps(chromosomes, other_args ):
 
 		qry = "select m.icgc_mutation_id, l.gene_relative, l.transcript_relative "
 		qry += "from mutations_chrom_%s m, locations_chrom_%s l " % (chrom, chrom)
-		qry += "where m.start_position=l.position and (l.gene_relative is not null or l.transcript_relative is not null)"
+		qry += "where m.icgc_mutation_id like 'MUT_%' "
+		qry += "and m.start_position=l.position and (l.gene_relative is not null or l.transcript_relative is not null)"
 		ret = search_db(cursor, qry, verbose=True)
 
 		if not ret:
@@ -184,15 +185,9 @@ def store_maps(chromosomes, other_args ):
 #########################################
 def main():
 
-	print ("Disabled.")
-	exit()
+	#print ("Disabled.")
+	#exit()
 
-	db     = connect_to_mysql(Config.mysql_conf_file)
-	cursor = db.cursor()
-	#########################
-	make_map_table(cursor, "icgc", "mutation2gene")
-	cursor.close()
-	db.close()
 
 	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
 	shuffle(chromosomes)
