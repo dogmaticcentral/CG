@@ -466,7 +466,7 @@ def add_tcga_diff(tcga_tables, other_args):
 
 		#tcga samples already deposited in icgc
 		qry  = "select distinct(submitted_sample_id) from icgc.%s " % icgc_table
-		qry += "where submitted_sample_id like 'tcga%'"
+		qry += "where submitted_sample_id like 'tcga%' or submitted_sample_id like 'target%'"
 		ret = search_db(cursor,qry)
 		icgc_tumor_sample_ids = [r[0] for r in ret] if ret else []
 

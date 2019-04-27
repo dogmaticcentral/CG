@@ -18,6 +18,8 @@
 # Contact: ivana.mihalek@gmail.com
 #
 
+# problem: this does not include tcga tables
+
 import os
 
 def main():

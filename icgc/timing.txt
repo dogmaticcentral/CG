@@ -50,9 +50,9 @@ icgc
 │   └── 29_index_on_mutation_tables.py                        ~6min
 
 ├── 30_tcga_merge
-│   ├── 30_reorganize_tcga_mutations_and_locations.py
-│   ├── 32_add_tables_for_tcga_cancers.py
-│   ├── 33_reorganize_tcga_variants.py
+│   ├── 30_reorganize_tcga_mutations_and_locations.py         23min, 20 fold pll
+│   ├── 32_add_tables_for_tcga_cancers.py                     <1s
+│   ├── 33_reorganize_tcga_variants.py                        13 min, 10 fold pll
 │   ├── 35_pathg_annotation_from_mutations_to_variants.py
 │   ├── 37_tcga_specimen_hack.py
 │   ├── config.py -> ../config.py
