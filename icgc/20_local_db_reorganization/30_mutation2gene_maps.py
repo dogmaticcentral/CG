@@ -184,21 +184,20 @@ def store_maps(chromosomes, other_args ):
 #########################################
 def main():
 
-	#print ("Disabled.")
-	#exit()
+	print ("Disabled.")
+	exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	#########################
+	# note this drops the original table if it exists
 	make_map_table(cursor, "icgc", "mutation2gene")
 	cursor.close()
 	db.close()
 
-	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
-	#shuffle(chromosomes)
-
-	number_of_chunks = 20
-	parallelize (number_of_chunks, store_maps, chromosomes, [])
+	chromosomes = [str(i) for i in range(1,13)] + ["Y"] + [str(i) for i in range(22,12,-1)] + ["X"]
+	number_of_chunks = 12
+	parallelize (number_of_chunks, store_maps, chromosomes, [], round_robin=True)
 
 
 	return

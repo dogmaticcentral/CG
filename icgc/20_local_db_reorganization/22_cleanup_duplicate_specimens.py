@@ -24,8 +24,8 @@ from icgc_utils.common_queries  import  *
 #########################################
 def main():
 
-	#print("disabled - this script deletes certain rows ") # comment out to run
-	#exit(1)
+	print("disabled - this script deletes certain rows ") # comment out to run
+	exit(1)
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -54,7 +54,7 @@ def main():
 
 		# most of these are innocuous, with normal sample not appearing in the variants table
 		# this, however is not always the case
-		resolve_duplicates(cursor, somatic_table, icgc_donor_ids, specimen_ids)
+		resolve_duplicate_specimens(cursor, somatic_table, specimen_ids)
 
 	cursor.close()
 	db.close()

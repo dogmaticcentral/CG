@@ -72,17 +72,12 @@ def decorate_mutations(tables, other_args):
 
 #########################################
 #########################################
+import math
 def main():
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
-	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
 	switch_to_db(cursor,"icgc")
-	for chromosome in chromosomes:
-		table = "mutations_chrom_%s"%chromosome
-		print("====================")
-		print("checking/adding reliability column to", table)
-		add_columns(cursor, table)
 
 	########################
 	# set reliability info to 0 in mutation tables - in case we were mucking around with it already
@@ -98,11 +93,16 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
+	table_size = get_table_size(cursor, 'icgc', tables)
 	cursor.close()
 	db.close()
-	# prallelize on those
-	number_of_chunks = 8
-	parallelize(number_of_chunks, decorate_mutations, tables, [])
+	# parallelize on those
+	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=True)
+	half = int(len(tables_sorted)/2)
+	tables_mirrored = tables_sorted[0:half] +  list(reversed(tables_sorted[half:]))
+	number_of_chunks = math.ceil(half/2)
+	print("number of pll chunks", number_of_chunks)
+	parallelize(number_of_chunks, decorate_mutations, tables_mirrored, [], round_robin=True)
 
 
 	return

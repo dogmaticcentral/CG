@@ -114,8 +114,8 @@ def remove_duplicates(table_rows, other_args):
 #########################################
 def main():
 
-	#print("disabled")
-	#exit()
+	print("disabled")
+	exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -130,8 +130,7 @@ def main():
 		print("inspecting ", table)
 		# coumn names/headers
 		colnames = get_column_names (cursor, "icgc", table)
-		# base name
-		tumor_short  = table.split("_")[0]
+
 		# a hack to get all entries that have all relevant ids identical
 		qry = "select concat(icgc_mutation_id,'_', icgc_donor_id,'_',icgc_specimen_id,'_',icgc_sample_id) as mega_id, "
 		qry += "count(*) as c from %s  group by mega_id having c>1 " % table
@@ -141,6 +140,8 @@ def main():
 			print("\tno duplicates found in", table)
 			continue
 		print("\t%s has %d duplicates" % (table, len(ret)))
+		print(ret)
+		exit()
 		number_of_chunks = 10  # myISAM does not deadlock
 		processes = parallelize(number_of_chunks, remove_duplicates, ret, [table, colnames])
 		wait_join(processes)

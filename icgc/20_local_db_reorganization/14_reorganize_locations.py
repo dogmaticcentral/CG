@@ -240,8 +240,8 @@ def reorganize(chromosomes, other_args):
 #########################################
 def main():
 
-	#print("Disabled. Loads location tables without checking.")
-	#exit()
+	print("Disabled. Loads location tables without checking.")
+	exit()
 
 	ref_assembly = 'hg19' # this is the assembly I would like to see for all coords in location tables
 	db     = connect_to_mysql(Config.mysql_conf_file)
@@ -254,7 +254,7 @@ def main():
 	cursor.close()
 	db.close()
 
-	chromosomes = [str(i) for i in range(1,23)] + ["X", "Y"]
+	chromosomes = [str(i) for i in range(1,13)] + ["Y"] + [str(i) for i in range(22,12,-1)] + ["X"]
 	number_of_chunks = 12  # myISAM does not deadlock
 
 	#chromosomes = ["Y"]

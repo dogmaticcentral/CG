@@ -55,9 +55,9 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  * MySQL
  * MySQLdb python module, installed with _sudo apt install python3-mysqldb_
  * gene symbols from HUGO gene nomenclature committee (see [here](https://www.genenames.org/download/custom/))
- * [Annovar](http://annovar.openbioinformatics.org/en/latest/) for location and functional annotation
+ * [Annovar](http://annovar.openbioinformatics.org/en/latest/) for location and functional annotation - int TCGA merge
+ * CrossMap  (in TCGA merge) - (sudo pip3 install CrossMap, pyBigWig, pysam)
  * Optional: [line-profiler](https://github.com/rkern/line_profiler#line-profiler) for python
- * CrossMap, maybe in future (in TCGA?) - (sudo pip3 install CrossMap, pyBigWig, pysam)
  
 ## TCGA
  The tcga branch of the icgc pipeline got obsoleted before coming to production stage. 
@@ -276,3 +276,5 @@ possibly originating in ICGC itself. Some mutations  have identical tuple
  ### Production ([]())
  
  
+## TODO 
+* disentangle from Annovar - we have all the info we need to do own annotation here

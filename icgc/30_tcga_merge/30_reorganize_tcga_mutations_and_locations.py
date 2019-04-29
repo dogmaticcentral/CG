@@ -96,13 +96,6 @@ pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained
 			 }
 
 
-################################################################
-def create_icgc_table(cursor, tcga_table):
-
-	icgc_table = tcga_table.split("_")[0]+"_simple_somatic"
-	if check_table_exists(cursor, 'icgc', icgc_table): return
-	make_specimen_table(cursor, 'icgc', icgc_table)
-
 
 #########################################
 mutation_annot_pattern = re.compile('(\D+)(\-*\d+)(\D+)')
@@ -116,9 +109,30 @@ def parse_mutation (mutation):
 	mut_position = int (match_return.group(2))
 	return [mut_position, mut_from, mut_to]
 
+#########################################
+def get_position_translation(rows, ref_assembly):
+	position_translation = {}
+	positions = {}
+	for row in rows:
+		(tumor_sample_barcode, chromosome, start_position, end_position, reference_allele,
+			tumor_seq_allele1, tumor_seq_allele2, assembly) = \
+			[str(entry, 'utf-8') if type(entry)==bytes else str(entry) for entry in row]
+		if not assembly in positions: positions[assembly] = {}
+		if not chromosome in positions[assembly]: positions[assembly][chromosome] = set()
+		positions[assembly][chromosome] |= {start_position, end_position} # set literal
+
+	for assembly, pos_per_assembly in positions.items():
+		if not assembly in position_translation: position_translation[assembly] = {}
+		for chromosome, pos in pos_per_assembly.items():
+			# failure is not an option: I am assuming translation always succeeds here
+			pos_translated =  translate_positions(pos, chromosome, assembly, ref_assembly)
+			position_translation[assembly][chromosome] = dict(zip(pos, pos_translated))
+
+	return position_translation
+
 
 #########################################
-def output_annovar_input_file (cursor, db_name, tcga_table, already_deposited_samples):
+def output_annovar_input_file (cursor, db_name, tcga_table, ref_assembly, already_deposited_samples):
 
 	switch_to_db(cursor,db_name)
 	meta_table_name = tcga_table.split("_")[0] + "_mutations_meta"
@@ -138,11 +152,11 @@ def output_annovar_input_file (cursor, db_name, tcga_table, already_deposited_sa
 	qry += "where s.meta_info_id=m.id"
 
 	rows = search_db(cursor, qry)
-	outf = {}
-	outfname = {}
-	for assembly in assemblies:
-		outfname[assembly] = "%s.%s.avinput" % (tcga_table,assembly)
-		outf[assembly] = open(outfname[assembly], 'w')
+
+	position_translation = get_position_translation(rows, ref_assembly)
+
+	outfname = "%s.avinput" % (tcga_table)
+	outf = open(outfname, 'w')
 
 	for row in rows:
 		# not sure here why some entries pop up as bytes rather than str
@@ -156,18 +170,18 @@ def output_annovar_input_file (cursor, db_name, tcga_table, already_deposited_sa
 		# somebody in  the TCGA decided to innovate and mark the insert with the before- and after- position
 		# Annovar expects both numbers to be the same in such case
 		if reference_allele=="-": end_position=start_position
-		outrow = "\t".join([chromosome, start_position, end_position, reference_allele, differing_allele])
-		outf[assembly].write(outrow+"\n")
+		start_position_translated = position_translation[assembly][chromosome][start_position]
+		end_position_translated   = position_translation[assembly][chromosome][end_position]
+		outrow = "\t".join([chromosome, start_position_translated, end_position_translated, reference_allele, differing_allele])
+		outf.write(outrow+"\n")
 
-	for assembly in assemblies:
-		outf[assembly].close()
-		subprocess.call(["bash","-c", "sort %s | uniq > %s.tmp" % (outfname[assembly], outfname[assembly])])
-		os.rename(outfname[assembly]+".tmp", outfname[assembly])
+	outf.close()
+	subprocess.call(["bash","-c", "sort %s | uniq > %s.tmp" % (outfname, outfname)])
+	os.rename(outfname+".tmp", outfname)
 
 	return outfname
 
-
-##########
+########################################
 def get_icgc_mutation_type(start, end, ref, alt):
 	frame_consequences = set([])
 	if ref=='-':
@@ -185,7 +199,6 @@ def get_icgc_mutation_type(start, end, ref, alt):
 	if start==end:
 		return 'single', frame_consequences
 	return 'multiple', frame_consequences
-
 
 #########################################
 def parse_annovar_fields(cursor, avfile, annovar_named_field):
@@ -272,7 +285,6 @@ def parse_annovar_fields(cursor, avfile, annovar_named_field):
 	return [mutation_type, consequences_string, aa_mutation_string,
 	        gene_relative_string, tr_relative_string]
 
-
 #########################################
 def check_location_seen(cursor, annovar_named_field, lock_alias=None):
 	location_table = "locations_chrom_%s" % annovar_named_field['chr']
@@ -282,7 +294,6 @@ def check_location_seen(cursor, annovar_named_field, lock_alias=None):
 	qry += "where position=%s" % annovar_named_field['start']
 	ret = search_db(cursor,qry)
 	return False if not ret or ret[0][0]==0 else True
-
 
 #########################################
 def check_mutation_seen(cursor, annovar_named_field, lock_alias=None):
@@ -297,6 +308,19 @@ def check_mutation_seen(cursor, annovar_named_field, lock_alias=None):
 
 #########################################
 def store_location(cursor, annovar_named_field, gene_relative_string, tr_relative_string):
+
+	# decision Apr 2019: store only intragenic
+	intra_gene_relative = set([])
+	for ensid in gene_relative_string.split(";"):
+		if ":" in ensid:
+			ensid,loc = ensid.split(":")
+			if loc=='intragenic':intra_gene_relative.add(ensid)
+		else:
+			intra_gene_relative.add(ensid)
+	if len(intra_gene_relative)==0: return
+
+	gene_relative_string = ";".join(list(intra_gene_relative))
+
 	location_table = "locations_chrom_%s" % annovar_named_field['chr']
 	# not sure if this one can go into race cond too,  but now that I am here
 	# I will lock anyway
@@ -316,7 +340,6 @@ def store_location(cursor, annovar_named_field, gene_relative_string, tr_relativ
 	qry = "unlock tables"
 	search_db(cursor,qry)
 	return
-
 
 #########################################
 def store_mutation(cursor, annovar_named_field, assembly, mutation_type, consequences_string, aa_change, pathogenicity_estimate):
@@ -364,7 +387,6 @@ def store_mutation(cursor, annovar_named_field, assembly, mutation_type, consequ
 	search_db(cursor,qry)
 	return
 
-
 #########################################
 #########################################
 # profile decorator is for the use with kernprof (a line profiler):
@@ -376,54 +398,54 @@ def store_mutation(cursor, annovar_named_field, assembly, mutation_type, consequ
 # installed its version (if anywhere)
 #@profile
 #########################################
-def store_annotation (cursor, tcga_table, avoutput):
+def store_annovar_annotation (cursor, tcga_table, ref_assembly, avoutput):
 	# store location and mutation info
 	# the do another sweep through the tcga table to associate with variants
 	# in principle, we should be working with icgc here
 	switch_to_db(cursor, 'icgc')
-	for assembly, avfile in avoutput.items():
-		no_lines = int(subprocess.check_output(["bash","-c", "wc -l %s"%avfile]).split()[0])
-		inf = open (avfile, "r")
-		header_fields = None
-		ct = 0
-		time0 = time.time()
-		for line in inf:
-			ct += 1
-			if (ct%1000==0):
-				print("%30s   %6d lines out of %6d  (%d%%)  %d min" % \
-					  (tcga_table, ct, no_lines, float(ct)/no_lines*100, float(time.time()-time0)/60))
-			if not header_fields:
-				header_fields = parse_annovar_header_fields(line)
-				if not header_fields:
-					print("Error parsing annovar: no header line found")
-					exit()
-				continue
-			fields = line.rstrip().split('\t')
-			annovar_named_field = dict(list(zip(header_fields,fields)))
-			# do I have this location already?
-			location_seen = check_location_seen(cursor, annovar_named_field)
-			# do I have this mutation already?
-			mutation_seen = check_mutation_seen(cursor, annovar_named_field)
-			# if yes to both, move on
-			if location_seen and mutation_seen: continue
-			ret  = parse_annovar_fields(cursor, avfile, annovar_named_field)
-			[mutation_type, consequences_string, aa_change, gene_relative_string, tr_relative_string] = ret
-			pathogenicity_estimate = 0
-			for description in pathogenic:
-				if description in consequences_string +";"+ tr_relative_string:
-					pathogenicity_estimate=1
-					break
-			if not location_seen:
-				#print("storing location:", annovar_named_field)
-				store_location(cursor, annovar_named_field, gene_relative_string, tr_relative_string)
-			if not mutation_seen:
-				store_mutation(cursor, annovar_named_field, assembly, mutation_type,
-							   consequences_string, aa_change, pathogenicity_estimate)
 
-		inf.close()
+	no_lines = int(subprocess.check_output(["bash","-c", "wc -l %s"%avoutput]).split()[0])
+	inf = open (avoutput, "r")
+	header_fields = None
+	ct = 0
+	time0 = time.time()
+	for line in inf:
+		ct += 1
+		if (ct%1000==0):
+			print("%30s   %6d lines out of %6d  (%d%%)  %d min" % \
+			      (tcga_table, ct, no_lines, float(ct)/no_lines*100, float(time.time()-time0)/60))
+		if not header_fields:
+			header_fields = parse_annovar_header_fields(line)
+			if not header_fields:
+				print("Error parsing annovar: no header line found")
+				exit()
+			continue
+		fields = line.rstrip().split('\t')
+		annovar_named_field = dict(list(zip(header_fields,fields)))
+		# do I have this location already?
+		location_seen = check_location_seen(cursor, annovar_named_field)
+		# do I have this mutation already?
+		mutation_seen = check_mutation_seen(cursor, annovar_named_field)
+		# if yes to both, move on
+		if location_seen and mutation_seen: continue
+		ret  = parse_annovar_fields(cursor, avoutput, annovar_named_field)
+		[mutation_type, consequences_string, aa_change, gene_relative_string, tr_relative_string] = ret
+		pathogenicity_estimate = 0
+		for description in pathogenic:
+			if description in consequences_string +";"+ tr_relative_string:
+				pathogenicity_estimate=1
+				break
+		if not location_seen:
+			#print("storing location:", annovar_named_field)
+			store_location(cursor, annovar_named_field, gene_relative_string, tr_relative_string)
+		if not mutation_seen:
+			store_mutation(cursor, annovar_named_field, ref_assembly, mutation_type,
+			               consequences_string, aa_change, pathogenicity_estimate)
+
+	inf.close()
 
 #########################################
-def process_table(home, cursor, tcga_table, already_deposited_samples):
+def process_table(home, cursor, tcga_table, ref_assembly, already_deposited_samples):
 
 	# make a workdir and move there
 	tumor_short = tcga_table.split("_")[0]
@@ -433,18 +455,16 @@ def process_table(home, cursor, tcga_table, already_deposited_samples):
 	os.chdir(workpath)
 
 	# use tcga entries to create input for annovar
-	avinput  = output_annovar_input_file (cursor, 'tcga', tcga_table, already_deposited_samples)
-	avoutput = {}
-	for assembly, input_file in avinput.items():
-		# fork annovar process
-		avoutput[assembly] = run_annovar(input_file, assembly, tcga_table)
+	avinput  = output_annovar_input_file (cursor, 'tcga', tcga_table, ref_assembly, already_deposited_samples)
+	avoutput = run_annovar(avinput, ref_assembly, tcga_table)
+
 	# store the annotated input to icgc tables - *_simple_somatic, mutations_chrom*, and locations_chrom_*
-	store_annotation (cursor, tcga_table, avoutput)
+	store_annovar_annotation (cursor, tcga_table, ref_assembly, avoutput)
 
 
 #########################################
 def add_tcga_diff(tcga_tables, other_args):
-
+	ref_assembly = other_args[0]
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	home = os.getcwd()
@@ -458,7 +478,7 @@ def add_tcga_diff(tcga_tables, other_args):
 		print("====================")
 		print("processing tcga table %s, process id %d " % (tcga_table, os.getpid()))
 
-		if not icgc_table: create_icgc_table(cursor,tcga_table)
+		#if not icgc_table: create_icgc_table(cursor,tcga_table)
 
 		#tcga samples in tcga_table
 		qry = "select distinct(tumor_sample_barcode) from tcga.%s" % tcga_table
@@ -477,7 +497,7 @@ def add_tcga_diff(tcga_tables, other_args):
 		# I am taking a leap of faith here, and I believe that the deposited data is
 		# really identical to what we have in tcga
 		print("not deposited:", len(samples_not_deposited))
-		process_table(home, cursor, tcga_table, already_deposited_samples)
+		process_table(home, cursor, tcga_table, ref_assembly, already_deposited_samples)
 		print("\t overall time for %s: %.3f mins; pid: %d" % (tcga_table, float(time.time()-time0)/60, os.getpid()))
 
 	cursor.close()
@@ -487,11 +507,10 @@ def add_tcga_diff(tcga_tables, other_args):
 
 
 #########################################
-#########################################
 def main():
 
-	# divide by cancer types, because I have duplicates within each cancer type
-	# that I'll resolve as I go, but I do not want the threads competing)
+	ref_assembly = 'hg19'
+
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
@@ -502,8 +521,8 @@ def main():
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 20  # myISAM does not deadlock
-	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
+	number_of_chunks = 12
+	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [ref_assembly])
 
 #########################################
 if __name__ == '__main__':

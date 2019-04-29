@@ -44,7 +44,7 @@ def run_annovar(avinput, assembly, out_name_root, mitochondrial=False):
 	subprocess.call(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 	# clean the junk
 	cmd = "rm %s.ensGene.variant_function " % out_name_root
-	cmd +="%s.ensGene.exonic_variant_function %s.ensGene.log" % (out_name_root, out_name_root)
+	cmd += "%s.ensGene.exonic_variant_function %s.ensGene.log" % (out_name_root, out_name_root)
 	subprocess.call(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
 	return avoutname

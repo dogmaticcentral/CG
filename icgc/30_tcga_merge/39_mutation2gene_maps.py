@@ -160,6 +160,7 @@ def store_maps(chromosomes, other_args ):
 			if gene and gene != "":
 				geneids = set ([])
 				for ensid in gene.split(";"):
+					if ":" in ensid: ensid = ensid.split(":")[0]
 					geneids.add(ensid)
 				if len(geneids)>0:
 					gene_found = True
@@ -187,12 +188,18 @@ def main():
 
 	#print ("Disabled.")
 	#exit()
+	db     = connect_to_mysql(Config.mysql_conf_file)
+	cursor = db.cursor()
+	switch_to_db(cursor, "icgc")
+	search_db(cursor,"delete from mutation2gene where icgc_mutation_id like 'MUT_%'")
+	cursor.close()
+	db.close()
 
 
 	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
 	shuffle(chromosomes)
 
-	number_of_chunks = 10
+	number_of_chunks = 12
 	parallelize (number_of_chunks, store_maps, chromosomes, [])
 
 

@@ -66,7 +66,7 @@ tcga_icgc_table_correspondence = {
 
 
 variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id',
-                   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
+				   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
 
 
 # we'll take care of 'aa_mutation' and 'consequence_type will be handled separately
@@ -78,24 +78,60 @@ location_columns = ['position', 'gene_relative', 'transcript_relative']
 ################################################################
 # stop_retained: A sequence variant where at least one base in the terminator codon is changed, but the terminator remains
 consequence_vocab = ['stop_lost', 'synonymous', 'inframe_deletion', 'inframe_insertion', 'stop_gained',
-                     '5_prime_UTR_premature_start_codon_gain',
-                     'start_lost', 'frameshift', 'disruptive_inframe_deletion', 'stop_retained',
-                     'exon_loss', 'disruptive_inframe_insertion', 'missense']
+					 '5_prime_UTR_premature_start_codon_gain',
+					 'start_lost', 'frameshift', 'disruptive_inframe_deletion', 'stop_retained',
+					 'exon_loss', 'disruptive_inframe_insertion', 'missense']
 
 # location_vocab[1:4] is gene-relative
 # location_vocab[1:4] is transcript-relative
 location_vocab = ['intergenic_region', 'intragenic', 'upstream', 'downstream',
-                  '5_prime_UTR', 'exon',  'coding_sequence', 'initiator_codon',
-                  'splice_acceptor', 'splice_region', 'splice_donor',
-                  'intron', '3_prime_UTR', ]
+				  '5_prime_UTR', 'exon',  'coding_sequence', 'initiator_codon',
+				  'splice_acceptor', 'splice_region', 'splice_donor',
+				  'intron', '3_prime_UTR', ]
 
 # this is set literal
 pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained', '5_prime_UTR_premature_start_codon_gain',
-                     'start_lost', 'frameshift', 'disruptive_inframe_deletion',
-                     'exon_loss', 'disruptive_inframe_insertion', 'missense',
-                     'splice_acceptor', 'splice_region', 'splice_donor', 'inframe'
-             }
+					 'start_lost', 'frameshift', 'disruptive_inframe_deletion',
+					 'exon_loss', 'disruptive_inframe_insertion', 'missense',
+					 'splice_acceptor', 'splice_region', 'splice_donor', 'inframe'
+			 }
 
+
+#########################################
+# to make things easier for us it looks like there is some
+# disagreement between TCGA and ICGC what is specimen and what is sample
+# TCGA sample codes seem to correspond to ICGC specimen types
+# https://wiki.nci.nih.gov/display/TCGA/TCGA+Data+Archives#TCGADataArchives-NamingConventions
+#########################################
+def sample_id_from_TCGA_barcode(sample_barcode):
+	pieces = sample_barcode.split("-")
+	sample_id = "-".join(pieces[:4])
+	# the last character here is a "vial"
+	# so we'll just use this as both 'specimen' and 'sample' id
+	return sample_id
+
+
+#########################################
+def specimen_type_from_TCGA_barcode(sample_barcode):
+	# we want to translate this to something similar to what ICGC is using
+	# roughly: Normal, Primary, Metastatic, Recurrent, Cell_line
+	tcga_sample_code = sample_barcode.split("-")[3][:2]
+	if tcga_sample_code in ['01','03','05', '09']:
+		return 'Primary'
+
+	elif tcga_sample_code in ['02','04','40']:
+		return 'Recurrent'
+
+	elif tcga_sample_code in ['06','07']:
+		return 'Metastatic'
+
+	elif tcga_sample_code in ['10','11','12','13','14']:
+		return 'Normal'
+
+	elif tcga_sample_code in ['08','50']:
+		return 'Cell_line'
+
+	return "Other"
 
 #########################################
 def quotify(something):
@@ -132,10 +168,8 @@ def find_mutation_id(cursor, tcga_named_field):
 	qry += "and mutated_from_allele='%s' and mutated_to_allele='%s' "%(reference_allele,differing_allele)
 	ret = search_db(cursor,qry)
 
-	if not ret:
-		print("problem: no return for")
-		print(qry)
-		exit() # brilliant idea in case of multithreading
+	if not ret: return # we skipped intergenic mutations
+
 	if len(ret)>1:
 		print("problem: non-unique mutation id")
 		print(qry)
@@ -182,8 +216,16 @@ def tcga_sample2tcga_donor(s):
 
 
 #########################################
-def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate, icgc_variant_table, id_resolution):
+def store_specimen_info(cursor, tumor_short, donor_id, tcga_barcode):
+	fixed_fields = {'icgc_donor_id':donor_id}
+	update_fields = {'icgc_specimen_id': sample_id_from_TCGA_barcode(tcga_barcode),
+					'specimen_type':specimen_type_from_TCGA_barcode(tcga_barcode)}
+	store_or_update(cursor, "%s_specimen"%tumor_short, fixed_fields, update_fields)
+	return
 
+
+#########################################
+def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate, icgc_variant_table, id_resolution):
 
 	# thread parallelization goes over tcga tables - no guarantee there won't be race condition
 	# for icgc tables if two tcga's map to the same icgc
@@ -193,20 +235,20 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate,
 	lock_alias_2 = "{}donorslock".format(tumor_short)
 	# You cannot refer to a locked table multiple times in a single query using the same name. Use aliases instead.
 	# But then not that once  you lock a table using an alias, you must refer to it in your statements using that alias.
-	# So her for example wrtie take no alias, but read does
+	# So here for example write take no alias, but read does
 	qry = "lock tables icgc.%s write, icgc.%s as %s read. " % (icgc_variant_table, icgc_variant_table, lock_alias)
 	qry +="icgc.%s_donor write,  icgc.%s_donor as %s read" % (tumor_short, tumor_short, lock_alias_2)
 	search_db(cursor,qry)
 
 	#have we stored this by any chance?
-	qry  = "select submitted_donor_id from icgc.%s " % icgc_variant_table
+	qry  = "select submitted_sample_id from icgc.%s " % icgc_variant_table
 	qry += "where icgc_mutation_id='%s' " % mutation_id
 	ret = search_db(cursor,qry)
-	if ret and (tcga_named_field['tumor_sample_barcode'] in [r[0] for r in ret]):
-		print ("variant found")
+	tcga_participant_id = tcga_sample2tcga_donor(tcga_named_field['tumor_sample_barcode'])
+	if ret and (tcga_participant_id in [tcga_sample2tcga_donor(r[0]) for r in ret]):
+		#print ("variant found")
 		pass
 	else:
-		tcga_participant_id = tcga_sample2tcga_donor(tcga_named_field['tumor_sample_barcode'])
 		if tcga_participant_id in id_resolution:
 			new_donor_id = id_resolution[tcga_participant_id]
 			#print("###############  using id", new_donor_id)
@@ -215,6 +257,8 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate,
 			id_resolution[tcga_participant_id] = new_donor_id
 			#print(">>>>>>>>>>>>>>> created new id", new_donor_id)
 
+		# this is redundant, but then the specimen table is small ...
+		store_specimen_info(cursor, tumor_short, new_donor_id, tcga_named_field['tumor_sample_barcode'])
 		# tcga could not agree with itself in which column to place the cancer allele
 		reference_allele = tcga_named_field['reference_allele']
 		differing_allele = tcga_named_field['tumor_seq_allele1']
@@ -222,15 +266,19 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate,
 		if len(reference_allele)>200: reference_allele=reference_allele[:200]+"etc"
 		if len(differing_allele)>200: differing_allele=differing_allele[:200]+"etc"
 
+		icgc_specimen_id = icgc_sample_id = sample_id_from_TCGA_barcode(tcga_named_field['tumor_sample_barcode'])
+
 		# fill store hash
 		store_fields = {
 			'icgc_mutation_id': mutation_id,
 			'chromosome': tcga_named_field['chromosome'],
 			'icgc_donor_id': new_donor_id,
+			'icgc_specimen_id': icgc_specimen_id,
+			'icgc_sample_id': icgc_sample_id,
 			'submitted_sample_id':tcga_named_field['tumor_sample_barcode'],
 			'tumor_genotype': "{}/{}".format(reference_allele,differing_allele),
 			'pathogenicity_estimate': pathogenicity_estimate,
-			'reliability_estimate': 1,
+			'reliability_estimate': 1
 		}
 		# store
 		store_without_checking(cursor, icgc_variant_table, store_fields, verbose=False, database='icgc')
@@ -238,7 +286,6 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate,
 	# unlock
 	qry = "unlock tables"
 	search_db(cursor,qry)
-
 	return
 
 
@@ -246,15 +293,13 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate,
 def process_tcga_table(cursor, tcga_table, icgc_table, submitted2icgc_donor_id):
 
 	standard_chromosomes = [str(i) for i in range(23)] +['X','Y']
-	standard_chromosomes = ['1']
-
 	no_rows = search_db(cursor,"select count(*) from tcga.%s"% tcga_table)[0][0]
 
 	column_names = get_column_names(cursor,'tcga',tcga_table)
 	qry = "select * from tcga.%s " % tcga_table
 	ct = 0
 	time0 = time.time()
-	# ICGC alreaduy comes with some unused ids
+	# ICGC already comes with some unused ids
 	id_resolution = submitted2icgc_donor_id.copy()
 
 	for row in search_db(cursor,qry):
@@ -264,12 +309,16 @@ def process_tcga_table(cursor, tcga_table, icgc_table, submitted2icgc_donor_id):
 				(tcga_table, ct, no_rows, float(ct)/no_rows*100, float(time.time()-time0)/60))
 		named_field = dict(list(zip(column_names,row)))
 		if not named_field['chromosome'] in standard_chromosomes: continue
-		# we should have stored the mutation in one of the previous steps (scripts)
-		mutation_id, pathogenicity_estimate = find_mutation_id(cursor, named_field)
 
+		# we should have stored the mutation in one of the previous steps (scripts)
+		ret = find_mutation_id(cursor, named_field)
+		if not ret: continue # intergenic mutations not stored
+		mutation_id, pathogenicity_estimate = ret
 		location_is_stored = check_location_stored(cursor, named_field)
-		if not mutation_id or not location_is_stored:
-			print("mutation id:", mutation_id, "location stored:", location_is_stored)
+		# if location not stored, this is intergenic
+		if not location_is_stored: continue
+		if not mutation_id:
+			print("mutation id not found for:  ", named_field)
 			continue
 		# all clear - store
 		store_variant(cursor, named_field, mutation_id, pathogenicity_estimate, icgc_table, id_resolution)
@@ -322,8 +371,8 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
-	tcga_tables = ['BLCA_somatic_mutations']
-	number_of_chunks = 1 # myISAM does not deadlock
+
+	number_of_chunks = 12 # myISAM does not deadlock
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
 
 

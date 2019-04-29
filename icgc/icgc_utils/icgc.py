@@ -183,8 +183,8 @@ def make_mutations_table(cursor, db_name, table_name):
 	# --> yes, but I will be merging several, including ENST identifiers
 	qry += "     aa_mutation  TEXT, "
 	qry += "     consequence TEXT, "
-	qry += "     pathogenicity_estimate BOOLEAN, "
-
+	qry += "     reliability_estimate BOOLEAN default 0, "
+	qry += "     pathogenicity_estimate BOOLEAN default 0, "
 	qry += "	 PRIMARY KEY (icgc_mutation_id) " # automatically indexed
 	qry += ") ENGINE=MyISAM"
 
