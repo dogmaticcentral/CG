@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/python3
 #
 # This source code is part of icgc, an ICGC processing pipeline.
 # 
@@ -18,39 +18,40 @@
 # Contact: ivana.mihalek@gmail.com
 #
 
+
+from icgc_utils.common_queries   import  *
 from config import Config
-from icgc_utils.mysql   import  *
-from icgc_utils.icgc   import  *
+verbose = True
 
 
 #########################################
 #########################################
+# produce table of the format
+# tumor short | tumor long | number of patients | avg number of mutations per patient |
+#  number of patients with mutated rpl5 (%of patients; number of genes which are seen mutated in the same or bigger number of patients)
+#  | ditto for rp111
+
 def main():
-
-	#print("disabled")
-	#exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
-	switch_to_db(cursor,"icgc")
-
-	# indices on simple somatic temp
+	#########################
+	# which simple somatic tables do we have
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%_donor'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
+	#########################
+	switch_to_db(cursor,"icgc")
 	for table in tables:
-		print(table)
-		qry = "drop table " + table
-		search_db(cursor, qry, verbose=True)
-		#make_somatic_table(cursor, table)
-		#make_mutations_table(cursor, 'icgc', table)
-		make_donors_table(cursor, 'icgc', table)
-
+		if verbose: print("\n=================================\n%s"%table)
+		qry = "select count(1) from %s where icgc_donor_id like 'DOT_%%'" % table
+		ret = search_db(cursor, qry)
+		print ('TCGA donors:', ret[0][0])
 	cursor.close()
 	db.close()
+
 
 #########################################
 if __name__ == '__main__':
 	main()
-

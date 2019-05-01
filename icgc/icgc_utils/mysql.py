@@ -38,6 +38,23 @@ import traceback
 # Contact: ivana.mihalek@gmail.com
 #
 
+########
+def set_autoincrement(cursor, db_name, table_name, column):
+	# what should be the next value for column
+	qry = "select max({}) from {}.{}".format(column, db_name, table_name)
+	new_column_value = 1
+	ret =  search_db (cursor, qry, verbose=False)
+	if ret and ret[0][0]: new_column_value += ret[0][0]
+
+	qry = "alter table {}.{} set auto_increment={}".format(db_name, table_name, new_column_value)
+	search_db (cursor, qry, verbose=False)
+
+	qry = "alter table {}.{} modify column {} int not null auto_increment".format(db_name, table_name, column)
+	rows = search_db (cursor, qry, verbose=False)
+	if (rows):
+		print(rows)
+		exit()
+
 
 ########
 def check_null (variable):

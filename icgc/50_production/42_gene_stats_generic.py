@@ -293,7 +293,7 @@ def main():
 						"no muts",   "control genotype", "tumor genotype",
 						"consequence", "aa change", "freq in general population",
 						"p53 status", "p53 mutation", "function"])+"\n")
-	tables = ['BLCA_simple_somatic']
+	#tables = ['BLCA_simple_somatic']
 	for table in tables:
 		tumor_short = table.split("_")[0]
 		if verbose: print("=================================")

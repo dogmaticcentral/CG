@@ -101,7 +101,12 @@ pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained
 # to make things easier for us it looks like there is some
 # disagreement between TCGA and ICGC what is specimen and what is sample
 # TCGA sample codes seem to correspond to ICGC specimen types
-# https://wiki.nci.nih.gov/display/TCGA/TCGA+Data+Archives#TCGADataArchives-NamingConventions
+# https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_Barcode/
+
+#########################################
+def tcga_sample2tcga_donor(s):
+	return "-".join(s.split("-")[:3])
+
 #########################################
 def sample_id_from_TCGA_barcode(sample_barcode):
 	pieces = sample_barcode.split("-")
@@ -109,7 +114,6 @@ def sample_id_from_TCGA_barcode(sample_barcode):
 	# the last character here is a "vial"
 	# so we'll just use this as both 'specimen' and 'sample' id
 	return sample_id
-
 
 #########################################
 def specimen_type_from_TCGA_barcode(sample_barcode):
@@ -217,10 +221,17 @@ def tcga_sample2tcga_donor(s):
 
 #########################################
 def store_specimen_info(cursor, tumor_short, donor_id, tcga_barcode):
-	fixed_fields = {'icgc_donor_id':donor_id}
-	update_fields = {'icgc_specimen_id': sample_id_from_TCGA_barcode(tcga_barcode),
-					'specimen_type':specimen_type_from_TCGA_barcode(tcga_barcode)}
+	fixed_fields  = {'icgc_donor_id':donor_id, 'icgc_specimen_id': sample_id_from_TCGA_barcode(tcga_barcode)}
+	update_fields = {'specimen_type':specimen_type_from_TCGA_barcode(tcga_barcode)}
 	store_or_update(cursor, "%s_specimen"%tumor_short, fixed_fields, update_fields)
+	return
+
+
+#########################################
+def store_donor_info(cursor, tumor_short, donor_id, tcga_barcode):
+	fixed_fields  = {'icgc_donor_id':donor_id, 'submitted_donor_id': tcga_sample2tcga_donor(tcga_barcode)}
+	update_fields = None
+	store_or_update(cursor, "%s_donor"%tumor_short, fixed_fields, update_fields)
 	return
 
 
@@ -259,6 +270,7 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate,
 
 		# this is redundant, but then the specimen table is small ...
 		store_specimen_info(cursor, tumor_short, new_donor_id, tcga_named_field['tumor_sample_barcode'])
+		store_donor_info(cursor, tumor_short, new_donor_id, tcga_named_field['tumor_sample_barcode'])
 		# tcga could not agree with itself in which column to place the cancer allele
 		reference_allele = tcga_named_field['reference_allele']
 		differing_allele = tcga_named_field['tumor_seq_allele1']
@@ -266,6 +278,8 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate,
 		if len(reference_allele)>200: reference_allele=reference_allele[:200]+"etc"
 		if len(differing_allele)>200: differing_allele=differing_allele[:200]+"etc"
 
+		# if variants from this same donor exist under different sample/specimen heading we will have to
+		# reove duplicates downstream
 		icgc_specimen_id = icgc_sample_id = sample_id_from_TCGA_barcode(tcga_named_field['tumor_sample_barcode'])
 
 		# fill store hash
@@ -275,14 +289,13 @@ def store_variant(cursor, tcga_named_field, mutation_id, pathogenicity_estimate,
 			'icgc_donor_id': new_donor_id,
 			'icgc_specimen_id': icgc_specimen_id,
 			'icgc_sample_id': icgc_sample_id,
-			'submitted_sample_id':tcga_named_field['tumor_sample_barcode'],
+			'submitted_sample_id': tcga_named_field['tumor_sample_barcode'],
 			'tumor_genotype': "{}/{}".format(reference_allele,differing_allele),
 			'pathogenicity_estimate': pathogenicity_estimate,
 			'reliability_estimate': 1
 		}
 		# store
 		store_without_checking(cursor, icgc_variant_table, store_fields, verbose=False, database='icgc')
-
 	# unlock
 	qry = "unlock tables"
 	search_db(cursor,qry)
@@ -332,14 +345,12 @@ def add_tcga_diff(tcga_tables, other_args):
 	for tcga_table in tcga_tables:
 
 		icgc_table =  tcga_icgc_table_correspondence[tcga_table]
-
+		tumor = icgc_table.split("_")[0]
 		# where in the icgc classification does this symbol belong?
 		time0 = time.time()
 		print("\n"+"-"*50+"\npid {} processing tcga table {} - will be stored in {}".\
 				format(os.getpid(), tcga_table,  icgc_table))
-
 		#tcga donors already deposited in icgc
-		tumor = icgc_table.split("_")[0]
 		submitted2icgc_donor_id = {}
 		if check_table_exists(cursor, "icgc", "{}_donor".format(tumor)):
 			qry  = "select submitted_donor_id, icgc_donor_id from icgc.{}_donor ".format(tumor)
@@ -371,8 +382,19 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
+	for tcga_table in tcga_tables:
+		icgc_table =  tcga_icgc_table_correspondence[tcga_table]
+		tumor = icgc_table.split("_")[0]
+		# change id fields to autoincrement if ther are not
+		# (we needed them not to be autoincrement to read in from tsv)
+		set_autoincrement(cursor, 'icgc',  "{}_donor".format(tumor), 'id')
+		set_autoincrement(cursor, 'icgc',  "{}_specimen".format(tumor), 'id')
+
 
 	number_of_chunks = 12 # myISAM does not deadlock
+
+	#tcga_tables = ['BLCA_somatic_mutations']
+	#number_of_chunks = 1
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [])
 
 

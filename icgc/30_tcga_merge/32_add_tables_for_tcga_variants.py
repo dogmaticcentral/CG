@@ -75,16 +75,21 @@ def main():
 	switch_to_db(cursor, db_name)
 	for tcga_donor_table, icgc_donor_table in tcga_icgc_table_correspondence.items():
 		if icgc_donor_table: continue
-		somatic_table_name = tcga_donor_table.replace("donor","simple_somatic")
-		print(tcga_donor_table, somatic_table_name)
-		#continue
+
 		qry = "drop table " + tcga_donor_table
 		search_db(cursor,qry, verbose=True)
 		make_donors_table(cursor, db_name, tcga_donor_table)
 
+		specimen_table_name =  tcga_donor_table.replace("donor", "specimen")
+		qry = "drop table " + specimen_table_name
+		search_db(cursor,qry, verbose=True)
+		make_specimen_table(cursor, db_name, specimen_table_name)
+
+		somatic_table_name = tcga_donor_table.replace("donor","simple_somatic")
 		qry = "drop table " + somatic_table_name
 		search_db(cursor,qry, verbose=True)
 		make_variants_table(cursor, db_name, somatic_table_name)
+
 	cursor.close()
 	db.close()
 
