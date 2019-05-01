@@ -29,42 +29,38 @@ variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_speci
 				   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
 
 
-#########################################
-def insert (cursor, table, columns, values):
-
-	nonempty_values = []
-	corresponding_columns = []
-	for i in range(len(values)):
-		if not values[i] or  values[i] == "": continue
-		nonempty_values.append(values[i])
-		corresponding_columns.append(columns[i])
-	qry = "insert into %s (%s) " %(table, ",".join(corresponding_columns))
-	qry += "values (%s) " % ",".join(nonempty_values)
-	search_db(cursor, qry)
-
+def check_and_drop(cursor, table):
+	if check_table_exists(cursor, 'icgc', table):
+		search_db(cursor, "drop table %s"% table)
+	return
 
 #########################################
-def reorganize_donor_variants(cursor, table, columns):
+def reorganize_variants(cursor, orig_icgc_table, columns):
+	# drop columns will include id that we'll add back in the end
+	drop_coumns = [c for c in columns if not c in variant_columns]
+	drop_string = ", ".join(["drop %s"%c for c in drop_coumns])
 
-	variants_table = table.replace("_temp","")
-	donors = get_donors(cursor, table)
-	for donor in donors:
-		variants  = set([])
-		total_entries = 0
-		qry  = "select * from %s where icgc_donor_id='%s' " % (table, donor)
-		qry += "and gene_affected is not null and gene_affected !='' "
-		ret  = search_db (cursor, qry)
-		if not ret: continue # it happens, check "select * from ALL_simple_somatic_temp where icgc_donor_id='DO282'"
-		for fields in ret:
-			total_entries += 1
-			named_field = dict(list(zip(columns,fields)))
-			variant_values = []
-			for name in variant_columns:
-				variant_values.append(quotify(named_field[name]))
-			variants.add(",".join(variant_values)) # set => getting rid of duplicates
+	tmp_table = "tmp_table_%d" % os.getpid()
+	check_and_drop(cursor, tmp_table)
+	qry = "create temporary table %s  as select * from %s" % (tmp_table, orig_icgc_table)
+	search_db(cursor,qry)
 
-		for variant in variants:
-			insert(cursor, variants_table, variant_columns, variant.split(","))
+	qry = "alter table %s "%tmp_table + drop_string
+	search_db(cursor,qry)
+
+	new_icgc_table = orig_icgc_table.replace("_temp","")
+	check_and_drop(cursor,new_icgc_table)
+	qry = "create table %s like %s" % (new_icgc_table, tmp_table)
+	search_db(cursor,qry)
+
+	qry = "insert into %s select distinct * from %s" % (new_icgc_table, tmp_table)
+	search_db(cursor,qry)
+
+	# add back the primary key
+	qry = "alter table %s  add column id  int not null primary key auto_increment first" % new_icgc_table
+	search_db(cursor,qry)
+
+	check_and_drop(cursor,tmp_table)
 
 
 #########################################
@@ -83,9 +79,9 @@ def reorganize(tables, other_args):
 		time0 = time.time()
 		print("====================")
 		print("reorganizing variants from ", table, os.getpid())
-		reorganize_donor_variants(cursor, table, columns)
+		reorganize_variants(cursor, table, columns)
 		time1 = time.time()
-		print(("\t\t %s done in %.3f mins" % (table, float(time1-time0)/60)), os.getpid())
+		print(("\t\t %s (%d) done in %.3f mins" % (table, tables.index(table),  float(time1-time0)/60)), os.getpid())
 
 	cursor.close()
 	db.close()
@@ -97,8 +93,8 @@ def reorganize(tables, other_args):
 
 def main():
 
-	print("disabled")
-	exit()
+	#print("disabled")
+	#exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()

@@ -21,6 +21,7 @@ from icgc_utils.mysql import switch_to_db, search_db, check_table_exists
 
 
 #########################################
+# these are original ICGC tables
 def make_temp_somatic_muts_table(cursor, db_name, table_name):
 
 	switch_to_db (cursor, db_name)
@@ -126,6 +127,7 @@ def make_specimen_table(cursor, db_name, specimen_table):
 
 
 #########################################
+# this is re-wrok of ICGC
 def make_variants_table(cursor, db_name, table_name):
 
 	switch_to_db (cursor, db_name)

@@ -87,6 +87,19 @@ def main():
 	cursor = db.cursor()
 
 	#########################
+	# drop any %simple_somatic table we might have
+	# this might include tumor types that came from TCGA
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
+	ret = search_db(cursor,qry)
+	if ret:
+		for table in  ret:
+			if check_table_exists(cursor, 'icgc', table):
+				qry = "drop table " + table
+				search_db(cursor, qry, verbose=False)
+
+
+	#########################
 	# which temp somatic tables do we have
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic_temp'"
@@ -94,12 +107,12 @@ def main():
 
 	switch_to_db(cursor,"icgc")
 	# enable if run for the first time
-	#sanity_checks(cursor, tables)
+	# sanity_checks(cursor, tables)
 
-	# make new somatic mutation tables, per cancer
-	# later will also refer to those as 'variants'
-	# because we are storing
-	make_new_somatic_tables(cursor, tables)
+
+	# abandoned: we will make the new tables by copying from the
+	# make_new_somatic_tables(cursor, tables)
+
 	# make new mutation table, divided into chromosomes
 	make_mutation_tables(cursor)
 	# make new location table, divided into chromosomes

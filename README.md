@@ -147,12 +147,12 @@ give you an idea about the longest entries found.
 
 #### Filling and  indexing database tables
 [07_write_mutations_tsv.py](icgc/10_local_db_loading/07_write_mutations_tsv.py) through 
-[10_make_indices.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py).
+[10_make_indices.py](icgc/old/10_make_indices_on_temp_tables.py).
 For large tables, rather than loading them through python, 
 it turns out to be faster to create tsvs and  then load them from mysql shell 
 (as in [09_load_mysql.py](icgc/10_local_db_loading/09_load_mysql.py); alternative: use mysqlimport manually) 
  to read them in wholesale. These scripts take care of that part, plus some index creating on the newly loaded tables.
- Make sure to run [10_make_indices.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py), 
+ Make sure to run [10_make_indices.py](icgc/old/10_make_indices_on_temp_tables.py), 
  [12_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py)
  pretty much does not work without it at all. 
  All index making is slow here (see [timing.txt](icgc/timing.txt)) - run overnight. 
@@ -185,7 +185,7 @@ mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
 -->
 
 #### Creating new tables
-New tables are created in [10_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/10_check_mut_tables_and_make_new_ones.py).
+New tables are created in [10_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/08_check_icgc_tables_and_make_new_ones.py).
 
 Note that in [11_reorganize_variants.py](icgc/20_local_db_reorganization/11_reorganize_variants.py),
 [13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mutations.py),   and
@@ -207,7 +207,7 @@ in [15_location_pathogenicity_to_variants.py](icgc/20_local_db_reorganization/15
 
     
 (Do not forget to create indices
-using [10_make_indices_on_temp_tables.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py)) 
+using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_tables.py)) 
  
  
 #### Removing duplicates
