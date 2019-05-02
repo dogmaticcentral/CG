@@ -103,10 +103,6 @@ def translate_positions(positions, chromosome, from_assembly, to_assembly, rootn
 
 	return new_positions
 
-
-
-
-
 #########################################
 def count_entries(cursor, somatic_table, icgc_specimen_id):
 	qry = "select count(*) from {} where icgc_specimen_id='{}' ".format(somatic_table, icgc_specimen_id)
@@ -115,6 +111,7 @@ def count_entries(cursor, somatic_table, icgc_specimen_id):
 	return ret[0][0]
 
 
+#########################################
 def find_spec_id_with_max_entries(spec_ids_w_description, entries_per_specimen):
 	max_count = 0
 	max_spec_id = None
@@ -127,6 +124,7 @@ def find_spec_id_with_max_entries(spec_ids_w_description, entries_per_specimen):
 	return max_spec_id
 
 
+#########################################
 def resolve_duplicate_specimens(cursor, somatic_table, specimen_ids):
 	tumor = somatic_table.split("_")[0]
 

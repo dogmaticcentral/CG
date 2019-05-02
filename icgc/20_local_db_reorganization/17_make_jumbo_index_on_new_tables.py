@@ -38,14 +38,14 @@ def main():
 
 	for table in tables:
 		print(table)
-		#qry   = "create index mega_idx on %s " % table
-		#qry += " (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id)"
-		qry = "drop index mega_idx  on %s " % table
+		qry   = "create index mega_idx on %s " % table
+		qry += " (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id)"
+		#qry = "drop index mega_idx  on %s " % table
 		search_db(cursor,qry,verbose=True)
 
 		# while at it, let's add this one too (to be used in 18_cleanup_duplicate_specimens)
-		#qry   = "create index donor_idx on %s (icgc_donor_id)" % table
-		qry   = "drop index donor_idx on %s" % table
+		qry   = "create index donor_idx on %s (icgc_donor_id)" % table
+		#qry   = "drop index donor_idx on %s" % table
 		search_db(cursor,qry,verbose=True)
 
 

@@ -65,6 +65,7 @@ def check_null (variable):
 		return None
 	return variable
 
+
 ########
 def switch_to_db (cursor, db_name):
 	qry = "use %s" % db_name
@@ -246,6 +247,21 @@ def column_exists (cursor, db_name, table_name, column_name):
 			return True
 	else:
 		return False
+
+#########################################
+def add_boolean_column(cursor, db_name, table_name, column_name):
+	if not column_exists (cursor, db_name, table_name, column_name):
+		qry = "alter table  %s.%s add  %s boolean  default 0" % (db_name, table_name, column_name)
+		search_db(cursor,qry, verbose=True)
+	return
+
+#########################################
+def add_float_column(cursor, db_name, table_name, column_name):
+	if not column_exists (cursor, db_name, table_name, column_name):
+		qry = "alter table  %s.%s add  %s float  default 0.0" % (db_name, table_name, column_name)
+		search_db(cursor,qry, verbose=True)
+	return
+
 
 
 #########################################

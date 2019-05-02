@@ -213,19 +213,18 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
 #### Removing duplicates
  ICGC is rife with data duplication, coming from various sources. Some seem to be bookkeeping mistakes with the
  same patient data finding its way into the dataset through various depositors; some are the results  of the re-sampling 
- of the same  tumor, while some are completely obscure, with all identifiers being identical everywhere 
- (see [18_cleanup_duplicate_entries.py](icgc/20_local_db_reorganization/18_cleanup_duplicate_entries.py)).
+ of the same  tumor, while some are completely obscure, with all identifiers being identical everywhere.
  
- If [12_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py) is the weakest link in the pipeline, 
- [18_cleanup_duplicate_entries.py](icgc/20_local_db_reorganization/18_cleanup_duplicate_entries.py) is the most likely to cover-up for a problem, 
-possibly originating in ICGC itself. Some mutations  have identical tuple
+ 
+  [18_cleanup_duplicate_entries.py](icgc/20_local_db_reorganization/18_cleanup_duplicate_entries.py):
+  Some mutations  have identical tuple
  of identifiers (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id). Note that this
  is after we have reorganized the database so that the mutation and location info sit in 
  different tables from the donor info. Not sure what this is about (the same sample analyzed independently multiple
- times?), but when found, this script chooses the entry with the highest coverage if possible. See the script for the full
- resolution strategy and make sure to run [17_make_jumbo_index](icgc/20_local_db_reorganization/17_make_jumbo_index_on_new_tables.py) 
- because 
- [18_cleanup_duplicate_entries.py](icgc/20_local_db_reorganization/18_cleanup_duplicate_entries.py) is useless without it.
+ times?), but when a duplicate is found, this script chooses the entry with the greatest depth reported. 
+ See the script for the full resolution strategy and make sure to run 
+ [17_make_jumbo_index](icgc/20_local_db_reorganization/17_make_jumbo_index_on_new_tables.py) 
+  beforehand.
  
  
  There might be further problems: See for example, mutation MU2003689, which, 
@@ -236,7 +235,7 @@ possibly originating in ICGC itself. Some mutations  have identical tuple
  1976 distinct ICGC donor ids, and 1928 distinct submitter IDs. BRCA does turn out to be the biggest offender here,
  followed by LICA with 8 duplicated donors. It is not clear whether these duplicates refer to the same
  tumor at the same stage because even the submitter sample ids might be different
- (see [19_cleanup_duplicate_donors.py](icgc/20_local_db_reorganization/19_cleanup_duplicate_donors.py)). 
+ (see [19_cleanup_multiple_donor_for_the_same_submitted_id.py](icgc/20_local_db_reorganization/19_cleanup_multiple_donor_for_the_same_submitted_id.py)). 
 
  Even after this cleanup we are still not done with the duplications problem - we might have the
  same donor with differing specimen and sample ids (apparently, not sure whether ICGC refers to
@@ -254,7 +253,7 @@ possibly originating in ICGC itself. Some mutations  have identical tuple
  
  We add a couple of values to each row to later make the search for meaningful entries faster.
   we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
- to simple_somatic tables. In the following script,  [21_add_realiability_annotation_to_somatic.py](icgc/20_local_db_reorganization/21_add_reliability_annotation_to_somatic.py),  
+ to simple_somatic tables. In the following script,  [21_add_realiability_annotation_to_somatic.py](icgc/20_local_db_reorganization/21_add_reliability_annotation_to_variants.py),  
  we combine these two columns into a reliability estimate: a  somatic mutation in individual patient is considered reliable if mutant_allele_read_count>=10
  and mut_to_total_read_count_ratio>=0.2. Information about the mutation in general (mutations_chromosome tables;  [18_copy_reliability_info_to_mutations.py](18_copy_reliability_info_to_mutations.py)) 
  is considered reliable if there is at leas one patient for which it was reliably established.

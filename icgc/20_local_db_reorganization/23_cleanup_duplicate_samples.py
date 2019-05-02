@@ -40,8 +40,8 @@ def find_sample_id_with_max_entries(sample_ids, entries_per_sample):
 #########################################
 def main():
 
-	#print("disabled - this script deletes certain rows ") # comment out to run
-	#exit(1)
+	print("disabled - change to merge rather than delete - the greatest depth or some such") # comment out to run
+	exit(1)
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()

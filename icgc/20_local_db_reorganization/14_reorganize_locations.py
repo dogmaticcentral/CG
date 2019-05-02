@@ -240,8 +240,8 @@ def reorganize(chromosomes, other_args):
 #########################################
 def main():
 
-	print("Disabled. Loads location tables without checking.")
-	exit()
+	#print("Disabled. Loads location tables without checking.")
+	#exit()
 
 	ref_assembly = 'hg19' # this is the assembly I would like to see for all coords in location tables
 	db     = connect_to_mysql(Config.mysql_conf_file)

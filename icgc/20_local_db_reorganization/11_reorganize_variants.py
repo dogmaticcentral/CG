@@ -34,31 +34,34 @@ def check_and_drop(cursor, table):
 		search_db(cursor, "drop table %s"% table)
 	return
 
+def time_qry(cursor, qry):
+	time0 = time.time()
+	search_db(cursor,qry, verbose=False)
+	time1 = time.time()
+	print("\n%s\ndone in %.3f mins" % (qry, float(time1-time0)/60))
+
 #########################################
-def reorganize_variants(cursor, orig_icgc_table, columns):
-	# drop columns will include id that we'll add back in the end
-	drop_coumns = [c for c in columns if not c in variant_columns]
-	drop_string = ", ".join(["drop %s"%c for c in drop_coumns])
+def reorganize_variants(cursor, orig_icgc_table):
 
-	tmp_table = "tmp_table_%d" % os.getpid()
+	keep_string = ", ".join([c for c in variant_columns])
+
+	switch_to_db(cursor, "icgc")
+	tmp_table = "scratch_%d_%s" % (os.getpid(), orig_icgc_table)
 	check_and_drop(cursor, tmp_table)
-	qry = "create temporary table %s  as select * from %s" % (tmp_table, orig_icgc_table)
-	search_db(cursor,qry)
+	qry = "create temporary table  %s  engine=MYISAM  as select %s from %s " % (tmp_table, keep_string, orig_icgc_table)
+	time_qry(cursor,qry)
 
-	qry = "alter table %s "%tmp_table + drop_string
-	search_db(cursor,qry)
-
-	new_icgc_table = orig_icgc_table.replace("_temp","")
+	new_icgc_table = orig_icgc_table.replace("_temp", "")
 	check_and_drop(cursor,new_icgc_table)
 	qry = "create table %s like %s" % (new_icgc_table, tmp_table)
-	search_db(cursor,qry)
+	time_qry(cursor,qry)
 
 	qry = "insert into %s select distinct * from %s" % (new_icgc_table, tmp_table)
-	search_db(cursor,qry)
+	time_qry(cursor,qry)
 
 	# add back the primary key
 	qry = "alter table %s  add column id  int not null primary key auto_increment first" % new_icgc_table
-	search_db(cursor,qry)
+	time_qry(cursor,qry)
 
 	check_and_drop(cursor,tmp_table)
 
@@ -71,15 +74,11 @@ def reorganize(tables, other_args):
 	switch_to_db(cursor,"icgc")
 	for table in tables:
 
-		# the tables should all have the same columns
-		qry = "select column_name from information_schema.columns where table_name='%s'"%table
-		columns = [field[0] for field in  search_db(cursor,qry)]
-		# line by line: move id info into new table
-		# for mutation and location check if the info exists; if not make new entry
 		time0 = time.time()
 		print("====================")
 		print("reorganizing variants from ", table, os.getpid())
-		reorganize_variants(cursor, table, columns)
+		reorganize_variants(cursor, table)
+		# TODO: add mut_to_total_read_count_ratiom pathogenicity and reliability columns to the new variants table
 		time1 = time.time()
 		print(("\t\t %s (%d) done in %.3f mins" % (table, tables.index(table),  float(time1-time0)/60)), os.getpid())
 
@@ -93,8 +92,8 @@ def reorganize(tables, other_args):
 
 def main():
 
-	#print("disabled")
-	#exit()
+	print("disabled")
+	exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -109,7 +108,7 @@ def main():
 
 	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=True)
 	half = int(len(tables_sorted)/2)
-	tables_mirrored = tables_sorted[0:half] +  list(reversed(tables_sorted[half:]))
+	tables_mirrored  = tables_sorted[0:half] + list(reversed(tables_sorted[half:]))
 	number_of_chunks = half
 
 	parallelize(number_of_chunks, reorganize, tables_mirrored, [], round_robin=True)
