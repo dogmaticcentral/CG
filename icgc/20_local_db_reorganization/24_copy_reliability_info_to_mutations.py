@@ -100,7 +100,7 @@ def main():
 	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=True)
 	half = int(len(tables_sorted)/2)
 	tables_mirrored = tables_sorted[0:half] +  list(reversed(tables_sorted[half:]))
-	number_of_chunks = math.ceil(half/2)
+	number_of_chunks = half
 	print("number of pll chunks", number_of_chunks)
 	parallelize(number_of_chunks, decorate_mutations, tables_mirrored, [], round_robin=True)
 

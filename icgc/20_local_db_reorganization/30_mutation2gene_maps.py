@@ -184,8 +184,8 @@ def store_maps(chromosomes, other_args ):
 #########################################
 def main():
 
-	print ("Disabled.")
-	exit()
+	#print ("Disabled.")
+	#exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()

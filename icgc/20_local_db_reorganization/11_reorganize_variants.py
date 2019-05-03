@@ -56,7 +56,12 @@ def reorganize_variants(cursor, orig_icgc_table):
 	qry = "create table %s like %s" % (new_icgc_table, tmp_table)
 	time_qry(cursor,qry)
 
-	qry = "insert into %s select distinct * from %s" % (new_icgc_table, tmp_table)
+	# add mut_to_total_read_count_ratio, pathogenicity and reliability columns to the new variants table
+	qry = "alter table %s add column mut_to_total_read_count_ratio float default 0.0, " % new_icgc_table
+	qry += "add column pathogenicity_estimate boolean default 0, add column reliability_estimate  boolean default 0"
+	time_qry(cursor,qry)
+
+	qry = "insert into %s (%s) select distinct * from %s" % (new_icgc_table, keep_string, tmp_table)
 	time_qry(cursor,qry)
 
 	# add back the primary key
@@ -78,7 +83,6 @@ def reorganize(tables, other_args):
 		print("====================")
 		print("reorganizing variants from ", table, os.getpid())
 		reorganize_variants(cursor, table)
-		# TODO: add mut_to_total_read_count_ratiom pathogenicity and reliability columns to the new variants table
 		time1 = time.time()
 		print(("\t\t %s (%d) done in %.3f mins" % (table, tables.index(table),  float(time1-time0)/60)), os.getpid())
 

@@ -223,7 +223,6 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  h
 				specimen_type_short.append(spec_type[0])
 
 				if sample[:4]=='TCGA': donor_display_name = sample[0:15] # for comparison with previous results
-			print("\t",specimen_type_short)
 
 			###################
 			# specimen related info
@@ -256,7 +255,7 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  h
 			if hide_id: donor_display_name=str(patient_count)
 			entry = "\t".join([tumor_short, donor_display_name,  ",".join(specimen_type_short), ",".join(specimen_number_of_mutations),
 			                   cgenotype, tgenotype, consequence,
-				               aa_change, freq_in_gen_population, p53_gist, makecell(p53_detail) ])
+				               aa_change, freq_in_gen_population, p53_gist, p53_detail ])
 			entry = entry.replace("_"," ")
 			donor_rows.append(entry)
 

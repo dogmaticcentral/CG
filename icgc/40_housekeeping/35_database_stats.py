@@ -70,7 +70,6 @@ def main():
 		else:
 			if verbose: print("donors_with_multiple_specimens: 0")
 
-
 		# samples per donor?
 		qry  = "select  icgc_donor_id, count(distinct  icgc_sample_id) ct "
 		qry += "from  %s  " % table

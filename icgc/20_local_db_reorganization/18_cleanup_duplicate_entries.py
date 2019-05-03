@@ -35,7 +35,6 @@ from icgc_utils.processes   import  *
 def remove_duplicates(table_rows, other_args, verbose=False):
 
 	table  = other_args[0]
-	colnames = other_args[1]
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor,"icgc")
@@ -54,57 +53,7 @@ def remove_duplicates(table_rows, other_args, verbose=False):
 		qry += "and icgc_sample_id = '%s' " % icgc_sample_id
 		ret2 = search_db(cursor,qry)
 
-		[max_depth, max_allele_depth] = [-1,-1]
-		[max_id, max_allele_id]  = [-1,-1]
-		all_ids = []
-		genotype  = []
-		path_estimate = []
-		for line2 in ret2:
-			if verbose: print(line2)
-			named_field = dict(list(zip(colnames,line2)))
-			all_ids.append( named_field["id"])
-			genotype.append(named_field["tumor_genotype"])
-			path_estimate.append(named_field["pathogenicity_estimate"])
-			# first see what is the best total read count that we have
-			if named_field["total_read_count"] and max_depth<named_field["total_read_count"]:
-				max_depth = named_field["total_read_count"]
-				max_id    = named_field["id"]
-			# as the second line tiebreaker -- this could only happen if the total read count is null
-			if named_field["mutant_allele_read_count"] and max_allele_depth<named_field["mutant_allele_read_count"]:
-				max_allele_depth = named_field["mutant_allele_read_count"]
-				max_allele_id    = named_field["id"]
-
-		# the first choice: the entry with the greatest sequencing depth
-		if max_id>=0 or max_allele_id>=0:
-			other_ids = set(all_ids)
-			if max_id>=0: # ids start from 1
-				other_ids.remove(max_id)
-				if verbose: print("max depth %d found at %d, removing"%( max_depth, max_id), other_ids )
-			elif max_allele_id>=0:
-				other_ids.remove(max_allele_id)
-				if verbose: print("max allele depth %d found at %d, removing"%(max_allele_depth, max_allele_id),other_ids )
-			qry = "delete from %s where id in (%s)" % (table, ",".join([str(other_id) for other_id in other_ids]))
-
-		# we do not have the info about the depth of the sequencing,
-		# but genotypes are actually the same, so it does not matter
-		elif ct==2 and genotype[0]==genotype[1][::-1]: # hack to reverse a string
-			#print("tumor genotypes same", genotype)
-			qry = "delete from %s where id = %d" % (table, all_ids[1])
-
-		# I am losing patience a bit here, I guess
-		# if none of the entries is pathogenic (and we are takina a rather generous
-		# definition of pathogenicity: frameshift, any missense, splice)
-		# then just delete them all
-		elif set(path_estimate)=={0}:
-			#print("all entries for %s estimated irrelevant (in terms of pathogenicity)" % mega_id)
-			qry = "delete from %s where id in (%s) " % (table, ",".join([str(s) for s in all_ids]))
-
-		else: # I really cannot decide; therefore merge the annotations into the first entry and delete the rest
-			qry1 = "update %s set tumor_genotype='%s' where id=%d" % (table, ";".join(genotype), all_ids[0])
-			search_db(cursor,qry1)
-			qry = "delete from %s where id in (%s) " % (table, ",".join([str(s) for s in all_ids[1:]]))
-
-		search_db(cursor,qry, verbose=verbose)
+		resolve_duplicate_mutations(cursor, table, ret2, verbose)
 
 	cursor.close()
 	db.close()
@@ -117,8 +66,8 @@ def remove_duplicates(table_rows, other_args, verbose=False):
 #########################################
 def main():
 
-	#print("disabled")
-	#exit()
+	print("disabled")
+	exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -132,7 +81,6 @@ def main():
 		print("\n====================")
 		print("inspecting ", table)
 		# coumn names/headers
-		colnames = get_column_names(cursor, "icgc", table)
 
 		# a hack to get all entries that have all relevant ids identical
 		qry = "select concat(icgc_mutation_id,'_', icgc_donor_id,'_',icgc_specimen_id,'_',icgc_sample_id) as mega_id, "
@@ -146,13 +94,11 @@ def main():
 		#print(ret)
 
 		number_of_chunks = 10 # myISAM does not deadlock
-		processes = parallelize(number_of_chunks, remove_duplicates, ret, [table, colnames])
+		processes = parallelize(number_of_chunks, remove_duplicates, ret, [table])
 		if processes: wait_join(processes)
 
 	cursor.close()
 	db.close()
-
-
 
 
 #########################################

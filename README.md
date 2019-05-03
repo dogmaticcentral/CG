@@ -95,8 +95,8 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  ### Loading data into local version of the database ([10_local_db_loading](icgc/10_local_db_loading))
  
  #### Getting and storing some auxilliary data
- In [01_hgnc_name_resolution_table.py](icgc/10_local_db_loading/01_hgnc_name_resolution_table.py) and 
- [02_ensembl_id_table.py](icgc/10_local_db_loading/02_ensembl_id_table.py) we make and fill some tables we will use later for name resolution 
+ In [01_hgnc_name_resolution_table.py](icgc/10_local_db_loading/20_hgnc_name_resolution_table.py) and 
+ [02_ensembl_id_table.py](icgc/10_local_db_loading/22_ensembl_id_table.py) we make and fill some tables we will use later for name resolution 
  (translating between gene and protein names used in different contexts). Make sure you have 
  the mysql conf file  and set its path in these two scripts, or arrange some other way to
  access the local database. The last I checked, python's MySQLdb package did not work with
@@ -126,7 +126,7 @@ here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz
 ICGC database does not have a complete  consensus on location annotation,  so we will be doing it ourselves.
 As a prep, we download gene coordiantes from UCSC. (The coordinates are actually from Ensembl, but UCSC 
 keeps it in a format that is more readily usable.) The script is
-[03_ucsc_gene_coords_table.py](icgc/10_local_db_loading/03_ucsc_gene_coords_table.py). To download coordinates
+[03_ucsc_gene_coords_table.py](icgc/10_local_db_loading/24_ucsc_gene_coords_table.py). To download coordinates
 from their MySQl server you will need an internet connection, mysql client, and another conf file, like this:
 
 `[client]`  
@@ -277,3 +277,7 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  
 ## TODO 
 * disentangle from Annovar - we have all the info we need to do own annotation here
+
+## P.S.
+
+Do not use locks in MySQL. Locks are evil. 

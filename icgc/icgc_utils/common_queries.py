@@ -123,7 +123,6 @@ def find_spec_id_with_max_entries(spec_ids_w_description, entries_per_specimen):
 			max_spec_id = spec_id
 	return max_spec_id
 
-
 #########################################
 def resolve_duplicate_specimens(cursor, somatic_table, specimen_ids):
 	tumor = somatic_table.split("_")[0]
@@ -201,6 +200,64 @@ def resolve_duplicate_specimens(cursor, somatic_table, specimen_ids):
 			qry = "delete from {} where icgc_specimen_id in ({})".format(somatic_table, removable_ids_string)
 			print(qry)
 			search_db(cursor, qry)
+
+
+#########################################
+def resolve_duplicate_mutations(cursor, table,  duplicate_lines, verbose=True):
+
+	colnames = get_column_names(cursor, "icgc", table)
+
+	[max_depth, max_allele_depth] = [-1,-1]
+	[max_id, max_allele_id] = [-1,-1]
+	all_ids = []
+	genotype = []
+	path_estimate = []
+	for line2 in duplicate_lines:
+		if verbose: print(line2)
+		named_field = dict(list(zip(colnames,line2)))
+		all_ids.append( named_field["id"])
+		genotype.append(named_field["tumor_genotype"])
+		path_estimate.append(named_field["pathogenicity_estimate"])
+		# first see what is the best total read count that we have
+		if named_field["total_read_count"] and max_depth<named_field["total_read_count"]:
+			max_depth = named_field["total_read_count"]
+			max_id    = named_field["id"]
+		# as the second line tiebreaker -- this could only happen if the total read count is null
+		if named_field["mutant_allele_read_count"] and max_allele_depth<named_field["mutant_allele_read_count"]:
+			max_allele_depth = named_field["mutant_allele_read_count"]
+			max_allele_id    = named_field["id"]
+
+	# the first choice: the entry with the greatest sequencing depth
+	if max_id>=0 or max_allele_id>=0:
+		other_ids = set(all_ids)
+		if max_id>=0: # ids start from 1
+			other_ids.remove(max_id)
+			if verbose: print("max depth %d found at %d, removing"%( max_depth, max_id), other_ids )
+		elif max_allele_id>=0:
+			other_ids.remove(max_allele_id)
+			if verbose: print("max allele depth %d found at %d, removing"%(max_allele_depth, max_allele_id),other_ids )
+		qry = "delete from %s where id in (%s)" % (table, ",".join([str(other_id) for other_id in other_ids]))
+
+	# we do not have the info about the depth of the sequencing,
+	# but genotypes are actually the same, so it does not matter
+	elif len(duplicate_lines)==2 and genotype[0]==genotype[1][::-1]: # hack to reverse a string
+		#print("tumor genotypes same", genotype)
+		qry = "delete from %s where id = %d" % (table, all_ids[1])
+
+	# I am losing patience a bit here, I guess
+	# if none of the entries is pathogenic (and we are takina a rather generous
+	# definition of pathogenicity: frameshift, any missense, splice)
+	# then just delete them all
+	elif set(path_estimate)=={0}:
+		#print("all entries for %s estimated irrelevant (in terms of pathogenicity)" % mega_id)
+		qry = "delete from %s where id in (%s) " % (table, ",".join([str(s) for s in all_ids]))
+
+	else: # I really cannot decide; therefore merge the annotations into the first entry and delete the rest
+		qry1 = "update %s set tumor_genotype='%s' where id=%d" % (table, ";".join(genotype), all_ids[0])
+		search_db(cursor,qry1)
+		qry = "delete from %s where id in (%s) " % (table, ",".join([str(s) for s in all_ids[1:]]))
+
+	search_db(cursor,qry, verbose=verbose)
 
 
 #########################################

@@ -20,27 +20,12 @@
 from config import Config
 from icgc_utils.common_queries  import  *
 
-def count_entries(cursor, somatic_table, icgc_sample_id):
-	qry = "select count(*) from {} where icgc_sample_id='{}' ".format(somatic_table, icgc_sample_id)
-	ret = search_db(cursor,qry)
-	if not ret or ret[0][0]==0: return 0
-	return ret[0][0]
-
-def find_sample_id_with_max_entries(sample_ids, entries_per_sample):
-	max_count = 0
-	max_sample_id = None
-	for sample_id in sample_ids:
-		if not sample_id in entries_per_sample: continue
-		if max_count<entries_per_sample[sample_id]:
-			max_count=entries_per_sample[sample_id]
-			max_sample_id = sample_id
-	return max_sample_id
 
 #########################################
 #########################################
 def main():
 
-	print("disabled - change to merge rather than delete - the greatest depth or some such") # comment out to run
+	print("disabled ") # comment out to run
 	exit(1)
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
@@ -52,37 +37,51 @@ def main():
 	tables = [field[0] for field in  search_db(cursor,qry)]
 	switch_to_db(cursor,"icgc")
 	for somatic_table in tables:
-		icgc_donor_ids = [r[0] for r in search_db(cursor, "select distinct icgc_donor_id from %s"%somatic_table)]
+		print("\n========================================")
+
+		# creating indices at this point makes sense only if we expect to run this repeatedly
+		create_index (cursor, 'icgc', 'spec_sample_idx', somatic_table, ['icgc_specimen_id', 'icgc_sample_id'])
+		icgc_specimen_ids = [r[0] for r in search_db(cursor, "select distinct icgc_specimen_id from %s"%somatic_table)]
 		problematic = []
 		sample_ids = {}
-		for icgc_donor_id in icgc_donor_ids:
+		for icgc_specimen_id in icgc_specimen_ids:
 			qry  = "select distinct(icgc_sample_id) "
-			qry += "from %s where icgc_donor_id='%s' " % (somatic_table,icgc_donor_id)
+			qry += "from %s where icgc_specimen_id='%s' " % (somatic_table,icgc_specimen_id)
 			ret  = search_db(cursor,qry)
 			if ret and len(ret)>1:
-				problematic.append(icgc_donor_id)
-				sample_ids[icgc_donor_id] = [r[0] for r in ret]
+				problematic.append(icgc_specimen_id)
+				sample_ids[icgc_specimen_id] = [r[0] for r in ret]
 		if len(problematic)==0:
 			print("%s has no duplicate samples in the variant table"% somatic_table)
 			continue
 
-		print("%s has %d donor ids with duplicate samples ids in the variant table" % (somatic_table,len(problematic)))
-
+		print("%s has %d specimen ids with duplicate sample ids in the variant table" % (somatic_table,len(problematic)))
 		# most of these are innocuous, with normal sample not appearing in the variants table
 		# this, however is not always the case
-		for icgc_donor_id in problematic:
+		for icgc_specimen_id in problematic:
 			qry  = "select icgc_sample_id, count(*) as c  from %s " % somatic_table
-			qry += "where icgc_donor_id = '%s' and reliability_estimate=1 " % icgc_donor_id
+			qry += "where icgc_specimen_id = '%s' " % icgc_specimen_id
 			qry += "group by  icgc_sample_id"
+			ret = search_db(cursor,qry)
+			entries_per_sample = dict(ret)
+			print(icgc_specimen_id, 'entries_per_sample:', entries_per_sample)
+
+			# however, the mutations are not necessarily  duplicated ...
+			qry  = "select icgc_mutation_id, count(*) as c "
+			qry += "from %s where  icgc_specimen_id='%s' " % (somatic_table,icgc_specimen_id)
+			qry += "group by icgc_mutation_id having c>1 "
 			ret2 = search_db(cursor,qry)
-			entries_per_sample = dict(ret2)
-			removable_ids = sample_ids[icgc_donor_id]
-			keep_id = find_sample_id_with_max_entries(removable_ids, entries_per_sample)
-			if keep_id:
-				removable_ids.remove(keep_id)
-				removable_ids_string = ",".join(["'%s'"%rid for rid in removable_ids])
-				qry = "delete from {} where icgc_sample_id in ({})".format(somatic_table, removable_ids_string)
-				search_db(cursor,qry)
+			if not ret2 or len(ret2)==0:
+				print("\t no duplicate mutation ids")
+			else:
+				duplicates = dict(ret2)
+				for icgc_mutation_id, ct in duplicates.items():
+					print(icgc_mutation_id, ct)
+					qry  = "select * from %s " % somatic_table
+					qry += "where icgc_specimen_id='%s' and  icgc_mutation_id='%s'" % (icgc_specimen_id, icgc_mutation_id)
+					ret3 = search_db(cursor,qry)
+					resolve_duplicate_mutations(cursor, somatic_table, ret3, verbose=False)
+
 
 
 	cursor.close()

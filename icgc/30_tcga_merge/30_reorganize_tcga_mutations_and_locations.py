@@ -516,8 +516,6 @@ def main():
 
 	####
 	# cleanup the mutations table, in case this is a re-run
-
-
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]

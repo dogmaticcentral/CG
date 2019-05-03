@@ -49,7 +49,7 @@ def make_temp_somatic_muts_table(cursor, db_name, table_name):
 	qry += "	 mutation_type VARCHAR (10), "
 	
 	qry += "	 reference_genome_allele VARCHAR (210) NOT NULL, "
-	qry += "	 control_genotype VARCHAR (430) NOT NULL, "
+	qry += "	 control_genotype VARCHAR (430), "
 	qry += "	 tumor_genotype VARCHAR (430) NOT NULL, "
 	qry += "	 mutated_from_allele VARCHAR (210) NOT NULL, "
 	qry += "	 mutated_to_allele VARCHAR (210) NOT NULL, "
@@ -91,7 +91,7 @@ def make_donors_table(cursor, db_name, donor_table):
 	qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
 	qry += "     submitted_donor_id VARCHAR (50) NOT NULL, "
 	qry += "	 donor_sex VARCHAR (10), "
-	qry += "	 donor_diagnosis_icd10  VARCHAR (20), "
+	qry += "	 donor_diagnosis_icd10  VARCHAR (100), "
 
 	qry += "	 PRIMARY KEY (id) "
 	qry += ") ENGINE=MyISAM"
@@ -127,7 +127,7 @@ def make_specimen_table(cursor, db_name, specimen_table):
 
 
 #########################################
-# this is re-wrok of ICGC
+# this is re-work of ICGC
 def make_variants_table(cursor, db_name, table_name):
 
 	switch_to_db (cursor, db_name)

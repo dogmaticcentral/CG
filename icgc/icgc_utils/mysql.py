@@ -190,28 +190,13 @@ def create_index (cursor, db_name, index_name, table, columns):
 
 	# check whether this index exists already
 	qry = "show index from %s where key_name like '%s'" % ( table, index_name)
-	rows = search_db (cursor, qry, verbose=True)
-	if (rows):
-		print(rows)
-		return True
-   
+	rows = search_db (cursor, qry, verbose=False)
+	if (rows):return True
+
 	# columns is a list of columns that we want to have indexed
-	qry = "create index %s  on %s " % (index_name, table)
-	qry += " ("
-	first = True
-	for column in columns:
-		if (not first):
-			qry += ", "
-		qry += column
-		first = False
-	qry += ")"
-
-
-	rows = search_db (cursor, qry, verbose=True)
-	if (rows):
-		print(rows)
-		return False
-   
+	qry = "create index %s on %s '(%s)'" % (index_name, table, ",".join(columns))
+	rows = search_db (cursor, qry, verbose=False)
+	if (rows): return False
 	return True
 
 
@@ -261,7 +246,6 @@ def add_float_column(cursor, db_name, table_name, column_name):
 		qry = "alter table  %s.%s add  %s float  default 0.0" % (db_name, table_name, column_name)
 		search_db(cursor,qry, verbose=True)
 	return
-
 
 
 #########################################

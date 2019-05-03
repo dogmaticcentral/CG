@@ -62,7 +62,7 @@ def appendopen(original_tsv_file):
 		last_id = int(subprocess.Popen(["bash", "-c", "tail -n1 %s"%outname], stdin=PIPE, stdout=PIPE).communicate()[0].decode('utf_8').split("\t")[0])
 	else:
 		last_id = 0
-	print(("writing to", outname, "prev id:", last_id))
+	print("writing to", outname, "prev id:", last_id)
 
 	return open(outname,'a'), last_id
 
@@ -126,7 +126,7 @@ def main():
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 20  # myISAM does not deadlock
+	number_of_chunks = 10  # myISAM does not deadlock
 	parallelize(number_of_chunks, write_tsvs, cancer_types, [])
 
 

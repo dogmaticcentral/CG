@@ -110,7 +110,7 @@ def main():
 	# sanity_checks(cursor, tables)
 
 
-	# abandoned: we will make the new tables by copying from the
+	# abandoned: we will make the new tables by copying select fields from *temp
 	# make_new_somatic_tables(cursor, tables)
 
 	# make new mutation table, divided into chromosomes
