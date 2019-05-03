@@ -94,10 +94,8 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
  ### Loading data into local version of the database ([10_local_db_loading](icgc/10_local_db_loading))
  
- #### Getting and storing some auxilliary data
- In [01_hgnc_name_resolution_table.py](icgc/10_local_db_loading/20_hgnc_name_resolution_table.py) and 
- [02_ensembl_id_table.py](icgc/10_local_db_loading/22_ensembl_id_table.py) we make and fill some tables we will use later for name resolution 
- (translating between gene and protein names used in different contexts). Make sure you have 
+ 
+  Make sure you have 
  the mysql conf file  and set its path in these two scripts, or arrange some other way to
  access the local database. The last I checked, python's MySQLdb package did not work with
  the encripted cnf files, so the only alternative is using 
@@ -117,25 +115,6 @@ and give _blah_  the permissions to write to and read from _icgc_:
 `grant all privileges on icgc.* to 'blah'@'localhost';`  
 `flush privileges;`  
 
- 
-The canonical transcript id is not readily available from Ensembl Mart, thus for our purposes
-here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz2 in the
-[hacks](icgc/hacks) directory. Put it someplace where
-[02_ensembl_id.py](icgc/10_local_db_loading//02_ensembl_id.py) can find it.
-
-ICGC database does not have a complete  consensus on location annotation,  so we will be doing it ourselves.
-As a prep, we download gene coordiantes from UCSC. (The coordinates are actually from Ensembl, but UCSC 
-keeps it in a format that is more readily usable.) The script is
-[03_ucsc_gene_coords_table.py](icgc/10_local_db_loading/24_ucsc_gene_coords_table.py). To download coordinates
-from their MySQl server you will need an internet connection, mysql client, and another conf file, like this:
-
-`[client]`  
-`skip-auto-rehash`   
-`user = genome`   
-`host = genome-mysql.soe.ucsc.edu`   
-`port = 3306`   
-
-Again, the path to that file is expected to be defined in the [config.py](icgc/config.py) file.
 
 #### Measuring the field lengths and making MySQL tables
 [05_find_max_field_length.py](icgc/10_local_db_loading/05_find_max_field_length.py) and 
@@ -145,7 +124,7 @@ for each entry and create mysql tables.
 [06_find_max_field_length.py](icgc/10_local_db_loading/05_find_max_field_length.py) should 
 give you an idea about the longest entries found.
 
-#### Filling and  indexing database tables
+#### Filling the icgc database tables
 [07_write_mutations_tsv.py](icgc/10_local_db_loading/07_write_mutations_tsv.py) through 
 [10_make_indices.py](icgc/old/10_make_indices_on_temp_tables.py).
 For large tables, rather than loading them through python, 
@@ -162,6 +141,47 @@ Some checks are thrown in here that  may inform the rest of the pipeline.
  refer to GRCh37, and [16_donor_check.py](icgc/10_local_db_loading/16_donor_check.py) highlights the fact that
  some donor ids have no somatic mutations in ICGC. This is somewhat mysterious, because some refer to
  TCGA donors with somatic mutation data available from TCGA archive.
+
+
+#### Getting and storing some auxilliary data
+ 
+In [20_hgnc_name_resolution_table.py](icgc/10_local_db_loading/20_hgnc_name_resolution_table.py) and 
+ [22_ensembl_id_table.py](icgc/10_local_db_loading/22_ensembl_id_table.py) we make and fill some tables we will use later for name resolution 
+ (translating between gene and protein names used in different contexts).
+
+The annotation across different submitters to TCGA/ICGC is not uniform In particular, for the missense mutations
+sometimes it is not clear which splice they refer to. Alternatively, when the reference splice(s) is listed, it
+si not clear which splice is the canonical splice. To remedy that, here we do some basic annotation of our own. For that
+we will need the coding sequence of canonical transcripts.
+ 
+The canonical transcript id is not readily available from Ensembl Mart, thus for our purposes
+here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz2 in the
+[hacks](icgc/hacks) directory. Decompress it (bzip2 -d) and ut it someplace where
+[20_hgnc_name_resolution_table.py](icgc/10_local_db_loading/20_hgnc_name_resolution_table.py) can find it.
+
+From the same place (Ensembl Mart) all human coding sequences can be downloaded in fasta format.
+You can reduce that file to sequences of canonical transcript only. This is left as na exercise for the reader
+ (hint: use  ensembl_gene2trans_stable.tsv and
+   [blastdbcmd](https://www.ncbi.nlm.nih.gov/books/NBK279689/)
+  tool; blastdbcmd has batch mode (blastdbcmd -h)). When you are happy with your fasta file, put is somewhere 
+  where [23_ensembl_coding_seqs.py](icgc/10_local_db_loading/23_ensembl_coding_seqs.py) can find it.
+  Note that this is optional: if you are happy wihtout knowing the position of the missense mutant on
+  the canonical translation, you can move on without this step.
+
+
+ICGC database does not have a complete  consensus on location annotation,  so we will be doing it ourselves.
+As a prep, we download gene coordiantes from UCSC. (The coordinates are actually from Ensembl, but UCSC 
+keeps it in a format that is more readily usable.) The script is
+[24_ucsc_gene_coords_table.py](icgc/10_local_db_loading/24_ucsc_gene_coords_table.py). To download coordinates
+from their MySQl server you will need an internet connection, mysql client, and another conf file, like this:
+
+`[client]`  
+`skip-auto-rehash`   
+`user = genome`   
+`host = genome-mysql.soe.ucsc.edu`   
+`port = 3306`   
+
+Again, the path to that file is expected to be defined in the [config.py](icgc/config.py) file.
 
 ### Reorganizing mutation data ([20_local_db_reorganization](icgc/20_local_db_reorganization))
 
@@ -280,4 +300,4 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
 
 ## P.S.
 
-Do not use locks in MySQL. Locks are evil. 
+Do not use locks in MySQL. Locks are evil. Good luck with the rest.
