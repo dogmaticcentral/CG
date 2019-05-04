@@ -48,8 +48,8 @@ icgc
 │   ├── 21_add_reliability_annotation_to_somatic.py            7 min, 8 fold pll
 │   ├── 22_cleanup_duplicate_specimens.py                    ~22 min, no pll
 │   ├── 23_cleanup_duplicate_samples.py                       ~8 min, no pll
-│   ├── 24_copy_reliability_info_to_mutations.py              ~50min, 12 fold pll
-│   ├── 29_index_on_mutation_tables.py                        ~6min
+│   ├── 24_copy_reliability_info_to_mutations.py             ~50 min, 21 fold pll
+│   ├── 29_index_on_mutation_tables.py                        ~6 min
 │   └── 30_mutation2gene_maps.py                              ~1.5hr, 12 fold pll
 --------------------------------------------------------
 ├── 30_tcga_merge

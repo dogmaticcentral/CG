@@ -64,35 +64,43 @@ def genome2cds_pos(coord, mutation_position):
 		if mutation_position>end: break
 		cds_position = sum(length[:i])+mutation_position-start
 		break
-	print(cds_start, cds_end, exon_starts, exon_ends)
-	f = "{}  tot_length {}    modulo 3 {}    mut_pos-cds_start {}   cds pos {}"
-	print(f.format(coord['ens_transcript_id'], sum(length), sum(length)%3, mutation_position-cds_start, cds_position))
+	#print(cds_start, cds_end, exon_starts, exon_ends)
+	#f = "{}  tot_length {}    modulo 3 {}    mut_pos-cds_start {}   cds pos {}"
+	#print(f.format(coord['ens_transcript_id'], sum(length), sum(length)%3, mutation_position-cds_start, cds_position))
 	return cds_position
 
 #########################################
-def find_aa_change(coding_seq, strand, cds_position, nt_from, nt_to):
+def find_aa_change(coding_seq, strand, cds_position, nt):
 	pep_pos   = int(cds_position/3)
+	within_codon_position = cds_position%3
 	codon_seq = [coding_seq[i:i+3] for i in range(0, len(coding_seq),3)]
-	codon = codon_seq[pep_pos]
-	dnaseq = Seq(codon, generic_dna) if strand=='+' else Seq(codon, generic_dna).reverse_complement()
+	codon= {'from':codon_seq[pep_pos]}
 
 	# sanity: check that nt_from is what we think it is
-	aa_from  = str(dnaseq.translate())
+	if nt['from'] != codon['from'][within_codon_position]:
+		print("codon mismatch", cds_position, nt['from'])
+		return None
 
 	# mutate nt_from to nt_to, anc see what the aa is now
-	aa_to = ""
+	codon['to'] = "".join([nt['to'] if  i==within_codon_position else codon['from'][i] for i in range(3)])
+
+	aa = {}
+	for label in ['from', 'to']:
+		dna = Seq(codon[label], generic_dna) if strand=='+' else Seq(codon[label], generic_dna).reverse_complement()
+		aa[label] = str(dna.translate())
 
 	pep_pos += 1 # back to counting positions from 1
-	change_string= "{}{}{}".format(aa_from, pep_pos, aa_to)
-	print (change_string )
-
-	exit()
+	change_string= "{}{}{}".format(aa['from'], pep_pos, aa['to'])
 	return change_string
 
 #########################################
 def process_aa_change_line(cursor, chrom, line):
+
+	print('++++++++++++++++++++++++')
+	print(line)
+
 	new_annotation = None
-	column_names = get_column_names(cursor, 'icgc', "locations_chrom_%s"%chrom)
+	column_names = get_column_names(cursor, 'icgc', "mutations_chrom_%s"%chrom)
 	named_field = dict(zip(column_names, line))
 
 	icgc_mutation_id = named_field['icgc_mutation_id']
@@ -104,19 +112,18 @@ def process_aa_change_line(cursor, chrom, line):
 	change = annotation_to_dict(aa_mutation)
 	enst_canonical = list_of_transcript_ids_2_canonical_transcript_id(cursor, change.keys())
 	if len(enst_canonical)>0 and set(enst_canonical).issubset(set(change.keys())):
-		#print ("canonical already listed")
+		print("canonical already listed:", enst_canonical)
+		print('++++++++++++++++++++++++\n')
 		return None
 
 	# canonical ensts not (completely) included
 	# we will replace the annotation with the annotation for the canonical transcript only
-	print(line)
-	print(change)
-	print(enst_canonical)
+	print("enst canonical:", enst_canonical)
 	print("finding canonical")
 
 	# some basic sanity checking
 	if start_position != end_position:
-		print("start and end position non identical for missene (?) in %s " * icgc_mutation_id)
+		print("start and end position not identical for missene (?) in %s " * icgc_mutation_id)
 	mutation_position = start_position
 
 	# get (gene) location for this position
@@ -126,31 +133,33 @@ def process_aa_change_line(cursor, chrom, line):
 		print("no gene location found for %s (? it should be a missense)" * icgc_mutation_id)
 		return None
 	[position, gene_relative, transcript_relative] = ret[0]
+	print("location:", position, gene_relative, transcript_relative)
 
 	# which transcript is canonical
-	qry  = "select gene, canonical_transcript from ensembl_ids "
+	qry  = "select canonical_transcript, gene  from ensembl_ids "
 	qry += "where gene in (%s) " % ",".join([quotify(e) for e in gene_relative.split(";")])
-	qry += "group by gene, canonical_transcript"
-	ret = search_db(cursor, qry, verbose=False)
+	qry += "group by canonical_transcript, gene "
+	ret = search_db(cursor, qry, verbose=True)
 	if not ret:
 		print("no gene ids found for %s (?)" * icgc_mutation_id)
 		return None
-	canonical_transcripts = dict(ret)
-	for gene_id, canonical_transcript in canonical_transcripts.items():
+	gene_ids = dict(ret)
+	for canonical_transcript, gene_id,  in gene_ids.items():
 		print (gene_id, canonical_transcript, get_approved_symbol(cursor, gene_id))
+	print()
 
 	# get transcript coordinates
 	coords_table = "coords_chrom_%s" % chrom
 	column_names = get_column_names(cursor, 'icgc', coords_table)
 	coords = {}
-	for gene_id, canonical_transcript in canonical_transcripts.items():
+	for canonical_transcript in gene_ids.keys():
 		qry  = "select * from %s " % coords_table
 		qry += "where ens_transcript_id='%s' " % canonical_transcript
 		ret = search_db(cursor, qry, verbose=False)
 		if not ret:
 			print("no transcript coords found for %s (?)" * icgc_mutation_id)
 			continue
-		coords[ret[0][0]] = dict(zip(column_names, ret[0]))
+		coords[canonical_transcript] = dict(zip(column_names, ret[0]))
 	if len(coords)==0:
 		return None
 
@@ -175,12 +184,12 @@ def process_aa_change_line(cursor, chrom, line):
 			continue
 		coding_seq = ret[0][0]
 		# note we have evaluated cds position from the left - on the "+" strand
-		nt_from = named_field['']
-		nt_to   = named_field['']
-		change_string = find_aa_change(coding_seq, coord['strand'], cds_position, nt_from, nt_to)
-		print(enst,change_string )
+		nt = {'from':named_field['reference_genome_allele'], 'to':named_field['mutated_to_allele']}
+		change_string = find_aa_change(coding_seq, coords[enst]['strand'], cds_position, nt)
+		print(enst, gene_ids[enst], change_string)
+	# new annotation
 	# compare with deposited value
-	exit()
+	print('++++++++++++++++++++++++\n')
 	return new_annotation
 
 #########################################
@@ -191,11 +200,10 @@ def re_annotate(chromosomes, other_args):
 	for chrom in chromosomes:
 		time0 = time.time()
 		print("====================")
-		print("rannotating  aa change for  ", chrom, "pid:", os.getpid())
+		print("re-annotating  aa change for  ", chrom, "pid:", os.getpid())
 		mutations_table = "mutations_chrom_%s" % chrom
-		locations_table = "locations_chrom_%s" % chrom
 		qry  = "select  * from %s " % mutations_table
-		# note that here we trust whomeever annotated this to have gotten at least this part right
+		# note that here we trust [whoever annotated this] to have gotten at least this part right
 		# (that the mutation results in aa change)
 		# TODO: change this into our own independent annotation
 		qry += "where aa_mutation is not null"
@@ -212,10 +220,10 @@ def re_annotate(chromosomes, other_args):
 			new_annotation = process_aa_change_line(cursor, chrom, line)
 			if not new_annotation: continue
 			# update table set aa_mutation to new_annotation
-			exit()
 
 		time1 = time.time()
 		print("chrom ", chrom, "done in %.3f mins" % (float(time1-time0)/60))
+
 	cursor.close()
 	db.close()
 

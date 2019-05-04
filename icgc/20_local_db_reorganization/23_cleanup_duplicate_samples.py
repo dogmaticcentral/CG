@@ -95,7 +95,6 @@ def main():
 	tables_mirrored  = tables_sorted[0:half] + list(reversed(tables_sorted[half:]))
 	number_of_chunks = half
 
-	#number_of_chunks = 1
 	parallelize(number_of_chunks, cleanup, tables_mirrored, [], round_robin=True)
 
 

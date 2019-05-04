@@ -23,18 +23,43 @@
 from icgc_utils.mysql import *
 from config import Config
 
+
 #########################################
 # make one-on-one ENST to ENSG translation table
 def make_ensembl_ids_table(cursor, db_name, ens_ids_table):
-	if check_table_exists (cursor, db_name, ens_ids_table): return
+
 	switch_to_db (cursor, db_name)
+	if check_table_exists (cursor, db_name, ens_ids_table):
+		qry = "drop table %s" % ens_ids_table
+		search_db(cursor, qry)
 	qry = ""
 	qry += "  CREATE TABLE  %s (" % ens_ids_table
 	charlen = 20
 	for name in ['transcript', 'gene', 'canonical_transcript']:
 		qry += " %s VARCHAR(%d) NOT NULL ," % (name, charlen)
-
 	qry += "	 PRIMARY KEY (transcript) "
+	qry += ") ENGINE=MyISAM"
+
+	rows = search_db(cursor, qry)
+	print(qry)
+	print(rows)
+	return
+
+#########################################
+# make  table for deprecated ids mapping
+def make_ensembl_deprecated_ids_table(cursor, db_name, ens_ids_table):
+
+	switch_to_db (cursor, db_name)
+	if check_table_exists (cursor, db_name, ens_ids_table):
+		qry = "drop table %s" % ens_ids_table
+		search_db(cursor, qry)
+
+	qry = "CREATE TABLE  %s (" % ens_ids_table
+	qry += " id int NOT NULL, "
+	charlen = 20
+	for name in ['old_id', 'new_id']:
+		qry += " %s VARCHAR(%d) NOT NULL ," % (name, charlen)
+	qry += "	 PRIMARY KEY (id) "
 	qry += ") ENGINE=MyISAM"
 
 	rows = search_db(cursor, qry)
@@ -47,15 +72,18 @@ def make_ensembl_ids_table(cursor, db_name, ens_ids_table):
 def main():
 
 	ens_id_file = "/storage/databases/ensembl-94/ensembl_gene2trans_stable.tsv"
+	ens_deprecated_id_file = "/storage/databases/ensembl-94/ensembl_deprecated2new_id.tsv"
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	db_name = "icgc"
 
 	make_ensembl_ids_table(cursor, db_name, "ensembl_ids")
+	make_ensembl_deprecated_ids_table(cursor, db_name, "ensembl_deprecated_ids")
 
-	qry = "load data local infile '%s' into table %s" % (ens_id_file,"ensembl_ids")
-	search_db(cursor, qry, verbose=True)
+	for file, table in [[ens_id_file, "ensembl_ids"], [ens_deprecated_id_file, "ensembl_deprecated_ids"]]:
+		qry = "load data local infile '%s' into table %s" % (file,table)
+		search_db(cursor, qry, verbose=True)
 
 
 	cursor.close()

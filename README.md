@@ -146,7 +146,7 @@ Some checks are thrown in here that  may inform the rest of the pipeline.
 #### Getting and storing some auxilliary data
  
 In [20_hgnc_name_resolution_table.py](icgc/10_local_db_loading/20_hgnc_name_resolution_table.py) and 
- [22_ensembl_id_table.py](icgc/10_local_db_loading/22_ensembl_id_table.py) we make and fill some tables we will use later for name resolution 
+ [22_ensembl_id_table.py](icgc/10_local_db_loading/22_ensembl_id_tables.py) we make and fill some tables we will use later for name resolution 
  (translating between gene and protein names used in different contexts).
 
 The annotation across different submitters to TCGA/ICGC is not uniform In particular, for the missense mutations
