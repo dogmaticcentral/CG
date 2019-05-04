@@ -155,9 +155,10 @@ si not clear which splice is the canonical splice. To remedy that, here we do so
 we will need the coding sequence of canonical transcripts.
  
 The canonical transcript id is not readily available from Ensembl Mart, thus for our purposes
-here you can find this info in the table called ensembl_gene2trans_stable.tsv.bz2 in the
-[hacks](icgc/hacks) directory. Decompress it (bzip2 -d) and ut it someplace where
-[20_hgnc_name_resolution_table.py](icgc/10_local_db_loading/20_hgnc_name_resolution_table.py) can find it.
+here you can find this info in the tables called ensembl_gene2trans_stable.tsv.bz2 
+and in ensembl_deprecated2new_id.tsv.bz2 the
+[hacks](icgc/hacks) directory. Decompress them (bzip2 -d) and put someplace where
+[20_hgnc_name_resolution_table.py](icgc/10_local_db_loading/20_hgnc_name_resolution_table.py) can find them.
 
 From the same place (Ensembl Mart) all human coding sequences can be downloaded in fasta format.
 You can reduce that file to sequences of canonical transcript only. This is left as na exercise for the reader
