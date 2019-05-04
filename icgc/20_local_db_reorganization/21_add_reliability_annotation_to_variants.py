@@ -35,12 +35,12 @@ def add_reliability_annotation(tables, other_args):
 		# for some data sets we do not have the read count info
 		qry += "where total_read_count is not null and total_read_count>0 "
 		qry += "and mutant_allele_read_count is not null"
-		search_db(cursor,qry, verbose=True)
+		search_db(cursor,qry, verbose=False)
 		qry  = "update %s set reliability_estimate = 1 " % table
 		# for some data sets we do not have the read count info
 		qry += "where total_read_count is null or "
 		qry += "(mutant_allele_read_count>=10 and mut_to_total_read_count_ratio>=0.2)"
-		search_db(cursor,qry, verbose=True)
+		search_db(cursor,qry, verbose=False)
 
 	cursor.close()
 	db.close()
@@ -59,17 +59,10 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%_simple_somatic'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
-	for table in tables:
-		print("checking/adding reliability column to", table)
-		# TODO fuse these two - even better, fuse with adding pathogenicity estimate column
-		add_float_column(cursor, 'icgc', table, 'mut_to_total_read_count_ratio')
-		add_boolean_column(cursor, 'icgc', table, 'reliability_estimate')
 	cursor.close()
 	db.close()
 
-	print("adding annotation")
-
-	number_of_chunks = 1
+	number_of_chunks = 8
 	parallelize(number_of_chunks, add_reliability_annotation, tables, [])
 
 

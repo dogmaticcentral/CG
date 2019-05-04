@@ -34,26 +34,26 @@ mutation_columns = ['icgc_mutation_id', 'start_position', 'end_position', 'assem
 ################################################################
 # stop_retained: A sequence variant where at least one base in the terminator codon is changed, but the terminator remains
 consequence_vocab = ['stop_lost', 'synonymous', 'inframe_deletion', 'inframe_insertion', 'stop_gained',
-                     '5_prime_UTR_premature_start_codon_gain',
-                     'start_lost', 'start_gained', 'frameshift', 'disruptive_inframe_deletion', 'stop_retained',
-                     'exon_loss', 'disruptive_inframe_insertion', 'missense']
+					 '5_prime_UTR_premature_start_codon_gain',
+					 'start_lost', 'start_gained', 'frameshift', 'disruptive_inframe_deletion', 'stop_retained',
+					 'exon_loss', 'disruptive_inframe_insertion', 'missense']
 
 # location_vocab[1:4] is gene-relative
 # location_vocab[1:4] is transcript-relative
 location_vocab = ['intergenic_region', 'intragenic', 'upstream', 'downstream',
-                  '5_prime_UTR', 'exon',  'coding_sequence', 'initiator_codon',
-                  'splice_acceptor', 'splice_region', 'splice_donor',
-                  'intron', '3_prime_UTR', ]
+				  '5_prime_UTR', 'exon',  'coding_sequence', 'initiator_codon',
+				  'splice_acceptor', 'splice_region', 'splice_donor',
+				  'intron', '3_prime_UTR', ]
 
 # this is set literal
 pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained',
-                    '5_prime_UTR_premature_start_codon_gain',
-                     'start_lost', 'start_gained', 'frameshift', 'disruptive_inframe_deletion',
-                     'exon_loss', 'disruptive_inframe_insertion', 'missense',
-                     'splice_acceptor', 'splice_region', 'splice_donor',
-                      'inframe'   # there is no way we can know at this level whether an inframe change is nondsisruptive
+					'5_prime_UTR_premature_start_codon_gain',
+					 'start_lost', 'start_gained', 'frameshift', 'disruptive_inframe_deletion',
+					 'exon_loss', 'disruptive_inframe_insertion', 'missense',
+					 'splice_acceptor', 'splice_region', 'splice_donor',
+					  'inframe'   # there is no way we can know at this level whether an inframe change is nondsisruptive
 									# more likely it is than not
-             }
+			}
 
 
 #########################################
@@ -68,6 +68,7 @@ def insert (cursor, table, columns, values):
 	qry = "insert into %s (%s) " %(table, ",".join(corresponding_columns))
 	qry += "values (%s) " % ",".join(nonempty_values)
 	search_db(cursor, qry)
+
 
 #########################################
 # profile decorator is for the use with kernprof (a line profiler):
@@ -93,7 +94,7 @@ def reorganize_mutations(cursor, chromosome, table, columns):
 			print("\t\t\t chrom %s  %10s  %6d  %d%%  %ds" % (chromosome, table, ct, float(ct)/totmut*100, time.time()-time0))
 			time0 = time.time()
 		skip = False
-		conseqs   = set([])
+		conseqs = set([])
 		aa_mutations = set([])
 		mutation_values = None
 

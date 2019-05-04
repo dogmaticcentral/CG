@@ -272,17 +272,25 @@ def transcript_location_cleanup(cursor, loc, gene_stable_id):
 	if not enst_canonical: return loc
 	return location[enst_canonical]
 
+
+#########################################
+def annotation_to_dict(aa_change):
+	change = {}
+	for enst_change in aa_change.split(";"):
+		[e, c] = enst_change.split(":")
+		change[e] = c
+	return change
+
+
 #########################################
 def aa_change_cleanup(cursor, aa_change):
 	if not aa_change: return ""
 	if aa_change=="": return aa_change
-	change = {};
-	for enst_change in aa_change.split(";"):
-		[e, c] = enst_change.split(":")
-		change[e] = c
+	change = aa_change_to_dict(aa_change)
 	enst_canonical = list_of_transcript_ids_2_canonical_transcript_id(cursor, list(change.keys()))
 	if not enst_canonical or not enst_canonical in change: return aa_change
 	return change[enst_canonical]
+
 
 #########################################
 def find_53_status(cursor, tumor_short, specimen):
@@ -345,10 +353,7 @@ def co_ocurrence_raw(cursor, somatic_table, gene1, gene2):
 def quotify(something):
 	if not something:
 		return ""
-	if type(something)==str:
-		return "\'"+something+"\'"
-	else:
-		return str(something)
+	return "'{}'".format(something)
 
 
 #########################################
@@ -587,10 +592,11 @@ def list_of_transcript_ids_2_canonical_transcript_id(cursor, list_of_stable_tran
 	ensts = ",".join(["'%s'"%enst for enst in list_of_stable_transcript_ids])
 	qry  = "select distinct(canonical_transcript) from ensembl_ids  where transcript in  (%s) " % ensts
 	ret = search_db(cursor,qry)
-	if not ret or len(ret) != 1:
-		print("Warning: no unique canonical transcript id could be found for %s" % ensts)
+	if not ret:
+		print("Warning: no canonical transcript found for %s" % ensts)
 		print("Qry was: ", qry)
-		return None
-	return ret[0][0]
+		return []
+	# there may be multiple canonical transcripts if the list of transcripts belongs to different genes
+	return [r[0] for r in ret]
 
 

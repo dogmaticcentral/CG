@@ -52,7 +52,6 @@ def fix_pathogenicity(tables, other_args):
 		print()
 		print("====================")
 		print("processing  ", table, os.getpid())
-		add_boolean_column(cursor, 'icgc', table, 'pathogenicity_estimate')
 
 		qry  = "select id, icgc_mutation_id, chromosome from %s " % table
 		for line in search_db(cursor,qry):
@@ -80,7 +79,7 @@ def main():
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 12  # myISAM does not deadlock
+	number_of_chunks = 8  # myISAM does not deadlock
 	parallelize(number_of_chunks, fix_pathogenicity, tables, [], round_robin=True)
 
 

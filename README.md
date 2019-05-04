@@ -124,9 +124,9 @@ for each entry and create mysql tables.
 [06_find_max_field_length.py](icgc/10_local_db_loading/05_find_max_field_length.py) should 
 give you an idea about the longest entries found.
 
-#### Filling the icgc database tables
+#### Filling and indexing the icgc database tables
 [07_write_mutations_tsv.py](icgc/10_local_db_loading/07_write_mutations_tsv.py) through 
-[10_make_indices.py](icgc/old/10_make_indices_on_temp_tables.py).
+[10_make_indices.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py).
 For large tables, rather than loading them through python, 
 it turns out to be faster to create tsvs and  then load them from mysql shell 
 (as in [09_load_mysql.py](icgc/10_local_db_loading/09_load_mysql.py); alternative: use mysqlimport manually) 

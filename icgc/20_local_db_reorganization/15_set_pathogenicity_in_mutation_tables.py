@@ -30,15 +30,15 @@ from config import Config
 
 # this is set literal
 mutation_pathogenic = {'missense','frameshift',  'stop_gained', 'inframe',
-              'stop_lost', 'inframe_deletion', 'inframe_insertion',
-              'start_lost', 'disruptive_inframe_deletion',
-               'exon_loss', 'disruptive_inframe_insertion',
-              'splice', '5_prime_UTR_premature_start_codon_gain',
-              'splice_acceptor', 'splice_region', 'splice_donor'
-             }
+			  'stop_lost', 'inframe_deletion', 'inframe_insertion',
+			  'start_lost', 'disruptive_inframe_deletion',
+			   'exon_loss', 'disruptive_inframe_insertion',
+			  'splice', '5_prime_UTR_premature_start_codon_gain',
+			  'splice_acceptor', 'splice_region', 'splice_donor'
+			 }
 # right now we only have 'splice'
 location_pathogenic = { 'splice', '5_prime_UTR_premature_start_codon_gain',
-              'splice_acceptor', 'splice_region', 'splice_donor',
+			  'splice_acceptor', 'splice_region', 'splice_donor',
 }
 #########################################
 def fix_pathogenicity(chromosomes, other_args):
