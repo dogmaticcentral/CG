@@ -33,6 +33,7 @@ wget-log*
 *.sql
 *.sqlite
 *.tsv
+!duplicate_donors.tsv
 *.csv
 *~
 *.fa

@@ -36,7 +36,9 @@ def main():
 	tables = [field[0] for field in  search_db(cursor,qry)]
 	switch_to_db(cursor,"icgc")
 	for somatic_table in tables:
-		icgc_donor_ids = [r[0] for r in search_db(cursor, "select distinct icgc_donor_id from %s"%somatic_table)]
+		ret = search_db(cursor, "select distinct icgc_donor_id from %s"%somatic_table)
+		if not ret: continue
+		icgc_donor_ids = [r[0] for r in ret]
 		problematic = []
 		specimen_ids = {}
 		for icgc_donor_id in icgc_donor_ids:
@@ -47,7 +49,7 @@ def main():
 				problematic.append(icgc_donor_id)
 				specimen_ids[icgc_donor_id] = [r[0] for r in ret]
 		if len(problematic)==0:
-			print("%s has no duplicates in the variant table"% somatic_table)
+			print("%s has no duplicates in the variant table" % somatic_table)
 			continue
 
 		print("%s has %d donor ids with duplicate specimen ids in the variant table" % (somatic_table,len(problematic)))

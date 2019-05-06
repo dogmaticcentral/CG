@@ -17,8 +17,27 @@
 # 
 # Contact: ivana.mihalek@gmail.com
 #
-
+from icgc_utils.utils import *
 from icgc_utils.mysql import *
+
+def resolve_id_class(cursor, id_class):
+	# class can be gene or transcript
+	if id_class not in ['gene', 'transcript']: return None
+	id_root = 'ENS' + id_class[0].upper()
+	qry  = "select old_stable_id, new_stable_id from stable_id_event "
+	qry += "where old_stable_id like '%s%%' and old_stable_id!=new_stable_id" % id_root
+	id_pairs = search_db(cursor, qry)
+	if not id_pairs:
+		search_db(cursor, qry, verbose=True)
+		exit()
+	# rather than trying to follow the path, just lump them all ...
+	clusters = find_clusters(id_pairs)
+	print(id_class, len(id_pairs), len(clusters))
+
+	# ... then see which id is current
+	# select stable_id from {id_class} where biotype='protein_coding';
+	
+
 
 #########################################
 def main():
@@ -31,27 +50,11 @@ def main():
 	# deprecated id mapping
 	outf = open ("ensembl_deprecated2new_id.tsv", "w")
 
-	qry  = "select s.old_stable_id, s.new_stable_id from stable_id_event as s, gene as g "
-	qry += "where s.old_stable_id like 'ENSG%' "
-	qry += "and  s.new_stable_id=g.stable_id and s.old_stable_id!=s.new_stable_id"
-	ret = search_db(cursor, qry)
-	id = 0
-	if ret:
-		for line in ret:
-			id += 1
-			outf.write("\t".join([str(id)]+line)+"\n")
-	else:
-		print("No ret for", qry)
-	qry  = "select s.old_stable_id, s.new_stable_id from stable_id_event as s, transcript as t "
-	qry += "where s.old_stable_id like 'ENST%' "
-	qry += "and  s.new_stable_id=t.stable_id and s.old_stable_id!=s.new_stable_id"
-	ret = search_db(cursor, qry)
-	if ret:
-		for line in ret:
-			id += 1
-			outf.write("\t".join([str(id)]+line)+"\n")
-	else:
-		print("No ret for", qry)
+	resolve_id_class(cursor, 'gene')
+	resolve_id_class(cursor, 'transcript')
+	exit()
+	#outf.write("\t".join([str(id)]+line)+"\n")
+
 	outf.close()
 
 	# gene 2 transcript 2 canonical transcript

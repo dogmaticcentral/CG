@@ -141,7 +141,8 @@ def process_aa_change_line(cursor, chrom, line):
 	qry += "group by canonical_transcript, gene "
 	ret = search_db(cursor, qry, verbose=True)
 	if not ret:
-		print("no gene ids found for %s (?)" * icgc_mutation_id)
+		print("no gene ids found for %s (?)" % icgc_mutation_id)
+		exit()
 		return None
 	gene_ids = dict(ret)
 	for canonical_transcript, gene_id,  in gene_ids.items():

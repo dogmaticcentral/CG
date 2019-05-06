@@ -109,7 +109,6 @@ def main():
 	# enable if run for the first time
 	# sanity_checks(cursor, tables)
 
-
 	# abandoned: we will make the new tables by copying select fields from *temp
 	# make_new_somatic_tables(cursor, tables)
 

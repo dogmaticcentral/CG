@@ -26,29 +26,23 @@ import time
 from icgc_utils.common_queries  import  *
 from icgc_utils.processes   import  *
 from config import Config
-
-#########################################
-def add_columns(cursor, table):
-
-	# mut_to_total_read_count_ratio
-	column_name = "reliability_estimate"
-	if not column_exists(cursor, "icgc", table, column_name):
-		qry = "ALTER TABLE %s ADD  %s boolean  default 0" % (table, column_name)
-		search_db(cursor,qry, verbose=True)
-
+from random import shuffle
 
 #########################################
 def update_reliability_column_in_mutation_tables(cursor, table):
 	chromosomes = [str(i) for i in range(1,23)] + ["X","Y"]
-	for c in chromosomes:
-		# is there _any_ reliable source for this mutation?
-		# if so, set reliability to 1
-		qry  = "update  %s s, mutations_chrom_%s m " % (table, c)
-		qry += "set m.reliability_estimate=1  "
-		qry += "where m.reliability_estimate=0 and s.reliability_estimate=1 "
-		qry += "and s.icgc_mutation_id = m.icgc_mutation_id "
-		search_db(cursor,qry, verbose=False)
+	for chromosome in chromosomes:
+		qry  = "select distinct(icgc_mutation_id)  from %s " % table
+		qry += "where chromosome='%s' and reliability_estimate=1" % chromosome
+		ret = search_db(cursor,qry, verbose=False)
+		if not ret: continue
 
+		reliable_muts = [r[0] for r in ret]
+		for batch in range(len(reliable_muts),100):
+			batchstring =  ",".join(["'%s'"%m for m in reliable_muts[batch:batch+100]])
+			qry  = "update %s " % table
+			qry += "set reliability_estimate=1 where icgc_mutation_id in (%s)" % batchstring
+			ret = search_db(cursor,qry, verbose=False)
 
 ########################################
 def decorate_mutations(tables, other_args):
@@ -72,7 +66,6 @@ def decorate_mutations(tables, other_args):
 
 #########################################
 #########################################
-import math
 def main():
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
@@ -81,12 +74,14 @@ def main():
 
 	########################
 	# set reliability info to 0 in mutation tables - in case we were mucking around with it already
+	print("setting reliability to 0 in all mutatitions_chrom_% tables ...")
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like 'mutations_chrom%'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
 	for table in tables:
 		qry = "update %s set reliability_estimate=0" % table
 		search_db(cursor,qry)
+	print("... done")
 
 	#########################
 	# which temp somatic tables do we have
@@ -98,11 +93,10 @@ def main():
 	db.close()
 	# parallelize on those
 	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=True)
-	half = int(len(tables_sorted)/2)
-	tables_mirrored = tables_sorted[0:half] + list(reversed(tables_sorted[half:]))
-	number_of_chunks = half
+	shuffle(tables_sorted)
+	number_of_chunks = 8
 	print("number of pll chunks", number_of_chunks)
-	parallelize(number_of_chunks, decorate_mutations, tables_mirrored, [], round_robin=True)
+	parallelize(number_of_chunks, decorate_mutations, tables_sorted, [], round_robin=True)
 
 
 	return

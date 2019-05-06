@@ -18,8 +18,6 @@
 # Contact: ivana.mihalek@gmail.com
 #
 
-# not sure any more what exactly we are testing here,
-# but here we go ...
 
 from icgc_utils.common_queries   import  *
 from config import Config
@@ -30,6 +28,23 @@ def main():
 	cursor = db.cursor()
 	switch_to_db(cursor, "icgc")
 
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%_simple_somatic'"
+	tables = [field[0] for field in  search_db(cursor,qry)]
+	for table in tables:
+		print('======================')
+		print(table)
+		qry = "select count(*) from %s where icgc_mutation_id is null" % table
+		print("\t null icgc_mutation_id:", search_db(cursor,qry)[0][0])
+		qry = "select count(*) from %s where icgc_mutation_id=''" % table
+		print("\t empty string icgc_mutation_id:", search_db(cursor,qry)[0][0])
+		qry = "select count(*) from %s where icgc_mutation_id='MU'" % table
+		print("\t cut string icgc_mutation_id:", search_db(cursor,qry)[0][0])
+
+	# not sure any more what exactly we are testing here,
+	# but here we go ...
+	print('======================')
+	print('======================')
 	approved_symbol  = 'RPL5'
 	rpl5_muts  = mutations_in_gene(cursor, approved_symbol)
 

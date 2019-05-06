@@ -153,6 +153,9 @@ def resolve_duplicate_specimens(cursor, somatic_table, specimen_ids):
 		removable_ids = set(donor_spec_ids)
 		for line in ret3:
 			[icgc_specimen_id, icgc_donor_id, specimen_type] = line
+			# here I am counting on the capitalization
+			# there might say things like "Normal - tissue adjacent to primary"
+			# not sure how to handle this in a completely general way
 			if 'Primary' in specimen_type:
 				primary_spec_ids.add("{}: {}".format(icgc_specimen_id, specimen_type))
 			elif 'Normal' in specimen_type:
@@ -286,10 +289,16 @@ def annotation_to_dict(aa_change):
 def aa_change_cleanup(cursor, aa_change):
 	if not aa_change: return ""
 	if aa_change=="": return aa_change
-	change = aa_change_to_dict(aa_change)
+	change = annotation_to_dict(aa_change)
 	enst_canonical = list_of_transcript_ids_2_canonical_transcript_id(cursor, list(change.keys()))
-	if not enst_canonical or not enst_canonical in change: return aa_change
-	return change[enst_canonical]
+	if enst_canonical and len(enst_canonical)>0:
+		new_aa_change = []
+		for enst in enst_canonical: # there may be more than 1
+			if enst in change: new_aa_change.append("{}:{}".format(enst, change[enst]))
+		if len(new_aa_change)>0:
+			return ";".join(new_aa_change)
+	return aa_change
+
 
 
 #########################################
@@ -578,10 +587,16 @@ def get_approved_symbol(cursor, ensembl_gene_id):
 	return symbol
 
 #########################################
+def attempt_resolve_retired(cursor, ensts, verbose=False):
+	return None
+
+#########################################
 def gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id, verbose=False):
 	qry  = "select  distinct(canonical_transcript) from icgc.ensembl_ids where  gene ='%s' " % gene_stable_id
 	ret = search_db(cursor,qry)
-	if not ret or len(ret) != 1:
+	if not ret:
+		return attempt_resolve_retired(cursor, gene_stable_id, verbose)
+	elif len(ret) != 1:
 		if verbose: print("Warning: no unique canonical id could be found for %s" % gene_stable_id)
 		return None
 	return ret[0][0]

@@ -70,6 +70,7 @@ def insert (cursor, table, columns, values):
 	search_db(cursor, qry)
 
 
+
 #########################################
 # profile decorator is for the use with kernprof (a line profiler):
 #  ./icgc_utils/kernprof.py -l 13_reorganize_variants.py
@@ -79,28 +80,27 @@ def insert (cursor, table, columns, values):
 # the reason I am using local kernprof.py is that I don't know where pip
 # installed its version (if anywhere)
 # @profile
-def reorganize_mutations(cursor, chromosome, table, columns):
+def reorganize_mutations(cursor, chromosome, somatic_temp_table, columns):
 
 	mutation_table = "mutations_chrom_{}".format(chromosome)
 
-	mutations = get_mutations(cursor, table, chromosome=chromosome)
+	new_somatic_table = somatic_temp_table.replace("_temp","")
+	mutations = get_mutations(cursor, new_somatic_table, chromosome=chromosome)
 	totmut = len(mutations)
-	print("\t\t\t total mutations on chrom {} in {}: {}".format(chromosome, table, totmut))
+	print("\t\t\t total mutations on chrom {} in {}: {}".format(chromosome, somatic_temp_table, totmut))
 	ct = 0
 	time0 = time.time()
 	for mutation in mutations:
 		ct += 1
 		if ct%10000 == 0:
-			print("\t\t\t chrom %s  %10s  %6d  %d%%  %ds" % (chromosome, table, ct, float(ct)/totmut*100, time.time()-time0))
+			print("\t\t\t chrom %s  %10s  %6d  %d%%  %ds" % (chromosome, somatic_temp_table, ct, float(ct) / totmut * 100, time.time() - time0))
 			time0 = time.time()
 		skip = False
 		conseqs = set([])
 		aa_mutations = set([])
 		mutation_values = None
 
-		# this hinges on index on the *simple_somatic_temp
-		# qry  = "create index mut_gene_idx on %s (icgc_mutation_id, gene_affected)" % simple_somatic_temp_table
-		qry  = "select * from %s where icgc_mutation_id='%s' " % (table, mutation)
+		qry  = "select * from %s where icgc_mutation_id='%s' " % (somatic_temp_table, mutation)
 		qry += "and gene_affected is not null and gene_affected !='' "
 		ret  = search_db (cursor, qry)
 
@@ -158,15 +158,15 @@ def reorganize(chromosomes, other_args):
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor,"icgc")
-	tables  = other_args[0]
+	somatic_temp_tables  = other_args[0]
 	columns = other_args[1]
 
 	for chrom in chromosomes:
 		time0 = time.time()
 		print("====================")
 		print("reorganizing mutations on chromosome ", chrom, os.getpid())
-		for table in tables:
-			reorganize_mutations(cursor, chrom, table, columns)
+		for somatic_temp_table in somatic_temp_tables:
+			reorganize_mutations(cursor, chrom, somatic_temp_table, columns)
 		time1 = time.time()
 		print(("\t\t chromosome %s done in %.3f mins" % (chrom, float(time1-time0)/60)), os.getpid())
 
@@ -181,8 +181,8 @@ def reorganize(chromosomes, other_args):
 #########################################
 def main():
 
-	#print("disabled")
-	#exit()
+	print("disabled")
+	exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()

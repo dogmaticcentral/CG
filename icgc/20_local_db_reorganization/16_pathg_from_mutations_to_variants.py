@@ -43,8 +43,10 @@ location_pathogenic = { 'splice', '5_prime_UTR_premature_start_codon_gain',
 
 
 #########################################
+# an attempt to solve this by a mysql one-liner
+# didn't work for me, to put it mildly
 def fix_pathogenicity(tables, other_args):
-
+	chromosomes = other_args[0]
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor,"icgc")
@@ -52,15 +54,33 @@ def fix_pathogenicity(tables, other_args):
 		print()
 		print("====================")
 		print("processing  ", table, os.getpid())
+		for chromosome in chromosomes:
+			time0 = time.time()
+			print("\t {} chrom {}".format(table, chromosome))
+			qry  = "select icgc_mutation_id, id from %s " % table
+			qry += "where chromosome='%s'" % chromosome
+			ret = search_db(cursor,qry, verbose=False)
+			if not ret: continue
 
-		qry  = "select id, icgc_mutation_id, chromosome from %s " % table
-		for line in search_db(cursor,qry):
-			[variant_id, icgc_mutation_id, chromosome] = line
-			qry2  = "update %s v, mutations_chrom_%s m " % (table, chromosome)
-			qry2 += "set v.pathogenicity_estimate=m.pathogenicity_estimate "
-			qry2 += "where v.id = %s " % variant_id
-			qry2 += "and  m.icgc_mutation_id = '%s'" % icgc_mutation_id
-			search_db(cursor,qry2)
+			table_ids = {}
+			for icgc_mutation_id, id in ret:
+				if not icgc_mutation_id in table_ids: table_ids[icgc_mutation_id] = []
+				table_ids[icgc_mutation_id].append(id)
+
+			qry  = "select icgc_mutation_id from mutations_chrom_%s " % chromosome
+			qry += "where pathogenicity_estimate=1"
+			ret = search_db(cursor,qry, verbose=False)
+			pathogenic_muts = set([r[0] for r in ret])
+
+			path_muts_in_table = set(table_ids.keys()).intersection(pathogenic_muts)
+			path_ids = []
+			for p in path_muts_in_table: path_ids.extend(table_ids[p])
+
+			for batch in range(len(path_ids),100):
+				qry  = "update %s " % table
+				qry += "set pathogenicity_estimate=1 where  id in (%s)" % ",".join([str(i) for i in path_ids[batch:batch+100]])
+				ret = search_db(cursor,qry, verbose=False)
+			print("\t %s, chrom %s done  in %.3f mins" % (table, chromosome, float(time.time()-time0)/60))
 
 	cursor.close()
 	db.close()
@@ -69,6 +89,9 @@ def fix_pathogenicity(tables, other_args):
 
 #########################################
 def main():
+
+	chromosomes = [str(i) for i in range(1,22)] + ["X","Y"]
+
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	#########################
@@ -76,11 +99,15 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
+	table_size = get_table_size(cursor, 'icgc', tables)
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 8  # myISAM does not deadlock
-	parallelize(number_of_chunks, fix_pathogenicity, tables, [], round_robin=True)
+	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=False)
+	shuffle(tables_sorted) # so called 'lazy load balancing'
+
+	number_of_chunks = 8
+	parallelize(number_of_chunks, fix_pathogenicity,  tables_sorted, [chromosomes], round_robin=True)
 
 
 

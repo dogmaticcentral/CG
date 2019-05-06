@@ -28,9 +28,9 @@ def cleanup(tables, other_args):
 	switch_to_db(cursor,"icgc")
 	for somatic_table in tables:
 		print("\n========================================")
-
+		print(somatic_table)
 		# creating indices at this point makes sense only if we expect to run this repeatedly
-		# this will return if the index exists already
+		# this won't do anything if the index exists already
 		create_index (cursor, 'icgc', 'spec_idx', somatic_table, ['icgc_specimen_id'])
 		print( " created spec_idx on %s  " % somatic_table )
 		qry  = "select icgc_specimen_id, count(distinct(icgc_sample_id)) as c "
@@ -46,13 +46,6 @@ def cleanup(tables, other_args):
 		# most of these are innocuous, with normal sample not appearing in the variants table
 		# this, however is not always the case
 		for icgc_specimen_id in problematic:
-			qry  = "select icgc_sample_id, count(*) as c  from %s " % somatic_table
-			qry += "where icgc_specimen_id = '%s' " % icgc_specimen_id
-			qry += "group by  icgc_sample_id"
-			ret = search_db(cursor,qry)
-			#entries_per_sample = dict(ret)
-			#print(icgc_specimen_id, 'entries_per_sample:', entries_per_sample)
-
 			# however, the mutations are not necessarily  duplicated ...
 			qry  = "select icgc_mutation_id, count(*) as c "
 			qry += "from %s where  icgc_specimen_id='%s' " % (somatic_table,icgc_specimen_id)

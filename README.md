@@ -132,7 +132,7 @@ it turns out to be faster to create tsvs and  then load them from mysql shell
 (as in [09_load_mysql.py](icgc/10_local_db_loading/09_load_mysql.py); alternative: use mysqlimport manually) 
  to read them in wholesale. These scripts take care of that part, plus some index creating on the newly loaded tables.
  Make sure to run [10_make_indices.py](icgc/old/10_make_indices_on_temp_tables.py), 
- [12_reorganize_mutations.py](icgc/20_local_db_reorganization/11_reorganize_variants.py)
+ [12_reorganize_mutations.py](icgc/20_local_db_reorganization/10_reorganize_variants.py)
  pretty much does not work without it at all. 
  All index making is slow here (see [timing.txt](icgc/timing.txt)) - run overnight. 
 
@@ -206,19 +206,32 @@ mysql-connector-java:  https://dev.mysql.com/downloads/connector/j/5.1.html
 -->
 
 #### Creating new tables
-New tables are created in [10_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/08_check_icgc_tables_and_make_new_ones.py).
 
-Note that in [11_reorganize_variants.py](icgc/20_local_db_reorganization/11_reorganize_variants.py),
-[13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mutations.py),   and
-[14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) 
- you can choose to run in parallel (the number of 'chunks' in main()). 
-
-In [12_consequence_vocab.py](icgc/20_local_db_reorganization/12_consequence_vocab.py)
+In [06_consequence_vocab.py](icgc/20_local_db_reorganization/06_consequence_vocab.py)
  we inspect the 'consequence' vocabulary employed by ICGC. There seems to
 some confusion there about the location vs. the consequence of a mutation.  This info is used
 in [13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mutations.py)  to 
 come up with the pathogenicity estimate, to be stored in the eponymous field in the
 mutations\* tables.
+
+
+New tables are created in [08_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/08_check_icgc_tables_and_make_new_ones.py).
+
+In [10_reorganize_variants.py](icgc/20_local_db_reorganization/10_reorganize_variants.py),
+[11_delete_variants_from_normal.py](icgc/20_local_db_reorganization/11_delete_variants_from_normal.py),
+[13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mutations.py),   and
+[14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) 
+ you can choose to run in parallel (the number of 'chunks' in main()). 
+ 
+ 
+**Note 1:** that in [11_delete_variants_from_normal.py](icgc/20_local_db_reorganization/11_delete_variants_from_normal.py),
+ we are dropping variants from normal samples. This is something you might not want to do if you are trying to
+ annotate variants yourself. Though in that case you might want to go back to 
+ [08_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/08_check_icgc_tables_and_make_new_ones.py)
+ and keep the 'matched_icgc_sample_id' field. 
+ 
+**Note 2:** doing things carefully leads to some interesting results. NACA ()Nasopharyngeal cancer) set, for example,
+consists of normal tissue samples only. 
 
 [14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) script uses 
 UCSC gene annotation to check chromosome addresses. The only information we are looking for here is the
@@ -259,10 +272,10 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  (see [19_cleanup_multiple_donor_for_the_same_submitted_id.py](icgc/20_local_db_reorganization/19_cleanup_multiple_donor_for_the_same_submitted_id.py)). 
 
  Even after this cleanup we are still not done with the duplications problem - we might have the
- same donor with differing specimen and sample ids (apparently, not sure whether ICGC refers to
+ same donor with differing specimen and sample ids (apparently  ICGC refers to
  biological replicates - i.e. samples taken from different sites  - as specimens, and
  to technical replicates as samples). Perhaps they might have a role when answering different
- types if questions, but here we do not want to have these results mistaken for recurring mutations, 
+ types of questions than what we have in mind. Here, however we do not want to have these results mistaken for recurring mutations, 
  thus we remove them in [22_cleanup_duplicate_specimens.py](icgc/20_local_db_reorganization/22_cleanup_duplicate_specimens.py) 
  and [23_cleanup_duplicate_samples.py](icgc/20_local_db_reorganization/23_cleanup_duplicate_samples.py), but not before checking
  which of the samples produced more reliable reads (see below).
@@ -270,14 +283,23 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  these, if multiple refer to the same submitter id, we keep the ones with the largest reported number of
  somatic mutations. The investigation of the source of this duplication is again outside of our zone of interest.
  
+
+ Unfortunately, the duplicates do not stop here. See for example [DO224621](https://dcc.icgc.org/donors/DO224621)
+ and [DO230968](https://dcc.icgc.org/donors/DO230968) that have different  donor *and* submitter
+ ids, and mysteriously have 1703 identical variants. 
+ Both donors are males diagnosed with lung squamous carcinoma. One sample turns out to be WES, while the other is WGS.
+ For the full list of presumably identical donors in ICGC, see [hacks/duplicate_donors.tsv](icgc/hacks/duplicate_donors.tsv).
+ 
  #### Adding reliability info
  
  We add a couple of values to each row to later make the search for meaningful entries faster.
   we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
- to simple_somatic tables. In the following script,  [21_add_realiability_annotation_to_somatic.py](icgc/20_local_db_reorganization/21_add_reliability_annotation_to_variants.py),  
+ to simple_somatic tables. In the following script,  
+ [21_add_realiability_annotation_to_somatic.py](icgc/20_local_db_reorganization/21_add_reliability_annotation_to_variants.py),  
  we combine these two columns into a reliability estimate: a  somatic mutation in individual patient is considered reliable if mutant_allele_read_count>=10
- and mut_to_total_read_count_ratio>=0.2. Information about the mutation in general (mutations_chromosome tables;  [18_copy_reliability_info_to_mutations.py](18_copy_reliability_info_to_mutations.py)) 
- is considered reliable if there is at leas one patient for which it was reliably established.
+ and mut_to_total_read_count_ratio>=0.2. Information about the mutation in general (mutations_chromosome tables;  
+ [18_copy_reliability_info_to_mutations.py](18_copy_reliability_info_to_mutations.py)) 
+ is considered reliable if there is at least one patient for which it was reliably established.
  
  ### Merging with TCGA ([30_tcga_merge](icgc/30_tcga_merge))
  
@@ -298,6 +320,8 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  
 ## TODO 
 * disentangle from Annovar - we have all the info we need to do own annotation here
+* why does deleting normal samples take so long?
+( [11_delete_variants_from_normal.py](icgc/20_local_db_reorganization/11_delete_variants_from_normal.py))
 
 ## P.S.
 

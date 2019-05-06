@@ -153,11 +153,11 @@ def make_location_tsv(cursor, chrom, pos_file):
 # python3 -m line_profiler 14_reorganize_locations.py.lprof
 # @profile
 #########################################
-def reorganize_locations(cursor, ref_assembly, chromosome, tables):
+def reorganize_locations(cursor, ref_assembly, chromosome, somatic_temp_tables):
 
 	time0 = time.time()
 	pos_files = []
-	for variants_table  in tables:
+	for variants_table  in somatic_temp_tables:
 		# which assemblies do we have in this story (as of Apr 2019 it was only GRCh37 - takes 6 mins to find this out)
 		assemblies = ['GRCh37']
 		# qry = "select distinct assembly  from %s" % variants_table
@@ -212,7 +212,7 @@ def reorganize(chromosomes, other_args):
 	cursor = db.cursor()
 	switch_to_db(cursor,"icgc")
 	ref_assembly = other_args[0]
-	tables = other_args[1]
+	somatic_temp_tables = other_args[1]
 	home = os.getcwd()
 
 	for chrom in chromosomes:
@@ -226,7 +226,7 @@ def reorganize(chromosomes, other_args):
 		time0 = time.time()
 		print("====================")
 		print("reorganizing locations for chrom %s, pid %d" % (chrom, os.getpid()))
-		reorganize_locations(cursor, ref_assembly, chrom, tables)
+		reorganize_locations(cursor, ref_assembly, chrom, somatic_temp_tables)
 		time1 = time.time()
 		print(("chrom %s  done in %.3f mins" % (chrom, float(time1-time0)/60)), os.getpid())
 
@@ -240,8 +240,8 @@ def reorganize(chromosomes, other_args):
 #########################################
 def main():
 
-	#print("Disabled. Loads location tables without checking.")
-	#exit()
+	print("Disabled. Loads location tables without checking.")
+	exit()
 
 	ref_assembly = 'hg19' # this is the assembly I would like to see for all coords in location tables
 	db     = connect_to_mysql(Config.mysql_conf_file)
@@ -250,7 +250,7 @@ def main():
 	# which temp somatic tables do we have
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic_temp'"
-	tables = [field[0] for field in  search_db(cursor,qry)]
+	somatic_temp_tables = [field[0] for field in  search_db(cursor,qry)]
 	cursor.close()
 	db.close()
 
@@ -259,7 +259,7 @@ def main():
 
 	#chromosomes = ["Y"]
 	#number_of_chunks = 1
-	parallelize(number_of_chunks, reorganize, chromosomes, [ref_assembly, tables], round_robin=True)
+	parallelize(number_of_chunks, reorganize, chromosomes, [ref_assembly, somatic_temp_tables], round_robin=True)
 
 
 #########################################
