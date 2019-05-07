@@ -24,6 +24,16 @@ def resolve_id_class(cursor, id_class):
 	# class can be gene or transcript
 	if id_class not in ['gene', 'transcript']: return None
 	id_root = 'ENS' + id_class[0].upper()
+
+	# which ids are current
+	qry = "select stable_id from %s where biotype='protein_coding'" % id_class
+	ret =  search_db(cursor, qry)
+	if not ret:
+		search_db(cursor, qry, verbose=True)
+		exit()
+	current_ids = set([r[0] for r in ret])
+
+	# get all old->new mapping pairs
 	qry  = "select old_stable_id, new_stable_id from stable_id_event "
 	qry += "where old_stable_id like '%s%%' and old_stable_id!=new_stable_id" % id_root
 	id_pairs = search_db(cursor, qry)
@@ -31,30 +41,49 @@ def resolve_id_class(cursor, id_class):
 		search_db(cursor, qry, verbose=True)
 		exit()
 	# rather than trying to follow the path, just lump them all ...
+	# (we can do that because we are interested only on the endpoint - the current identifier
 	clusters = find_clusters(id_pairs)
 	print(id_class, len(id_pairs), len(clusters))
 
-	# ... then see which id is current
-	# select stable_id from {id_class} where biotype='protein_coding';
-	
-
+	mapped_pairs = []
+	for cluster in clusters:
+		idset = set(cluster)
+		new_ids = current_ids.intersection(idset)
+		# len(new_ids) can be 0 if the ids in question are not protein coding
+		# for example, transcribed_unprocessed_pseudogene
+		# in other words, the mapping exists, but we are not interested
+		if len(new_ids)==0: continue
+		# the intersection *can*  consist of mulitple ids (len(new_ids)>0)
+		# if one old gene was mapped to 3 new (smaller) ones
+		# see for example 'ENSG00000007816' --> 'ENSG00000226916', 'ENSG00000227057', 'ENSG00000236222'
+		old_ids = cluster.difference(new_ids)
+		# the mapping is one-to-many or many-to-one it is straightforward
+		if len(old_ids)==1 or len(new_ids)==1:
+			for o in old_ids:
+				for n in new_ids:
+					mapped_pairs.append([o,n])
+		else: #otherwise we need to take a closer look
+			for o in old_ids:
+				for n in new_ids:
+					if [o,n] in id_pairs: mapped_pairs.append([o,n])
+	return mapped_pairs
 
 #########################################
 def main():
-
+	# for this to work we need access to ensemblo hom_sapeins_core database
 	db      = connect_to_mysql("/home/ivana/.tcga_conf")
 	cursor  = db.cursor()
 	db_name = "homo_sapiens_core_94_38"
 	switch_to_db(cursor, db_name)
 
 	# deprecated id mapping
+	mapped_pairs = resolve_id_class(cursor, 'gene')
+	mapped_pairs.extend(resolve_id_class(cursor, 'transcript'))
 	outf = open ("ensembl_deprecated2new_id.tsv", "w")
-
-	resolve_id_class(cursor, 'gene')
-	resolve_id_class(cursor, 'transcript')
-	exit()
-	#outf.write("\t".join([str(id)]+line)+"\n")
-
+	idx = 0
+	for mapped_pair in mapped_pairs:
+		idx += 1
+		outf.write("\t".join([str(idx)] + mapped_pair)+"\n")
 	outf.close()
 
 	# gene 2 transcript 2 canonical transcript

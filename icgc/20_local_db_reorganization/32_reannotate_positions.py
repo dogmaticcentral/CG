@@ -96,10 +96,7 @@ def find_aa_change(coding_seq, strand, cds_position, nt):
 #########################################
 def process_aa_change_line(cursor, chrom, line):
 
-	print('++++++++++++++++++++++++')
-	print(line)
 
-	new_annotation = None
 	column_names = get_column_names(cursor, 'icgc', "mutations_chrom_%s"%chrom)
 	named_field = dict(zip(column_names, line))
 
@@ -108,60 +105,53 @@ def process_aa_change_line(cursor, chrom, line):
 	end_position = named_field['end_position']
 	aa_mutation = named_field['aa_mutation']
 
-	# the easy way out - we already have the annotation referring to the canonical transcript
-	change = annotation_to_dict(aa_mutation)
-	enst_canonical = list_of_transcript_ids_2_canonical_transcript_id(cursor, change.keys())
-	if len(enst_canonical)>0 and set(enst_canonical).issubset(set(change.keys())):
-		print("canonical already listed:", enst_canonical)
-		print('++++++++++++++++++++++++\n')
-		return None
-
-	# canonical ensts not (completely) included
-	# we will replace the annotation with the annotation for the canonical transcript only
-	print("enst canonical:", enst_canonical)
-	print("finding canonical")
-
 	# some basic sanity checking
 	if start_position != end_position:
-		print("start and end position not identical for missene (?) in %s " * icgc_mutation_id)
+		print("start and end position not identical for missene (?) in %s " % icgc_mutation_id)
 	mutation_position = start_position
 
 	# get (gene) location for this position
 	qry = "select * from locations_chrom_%s where position=%d" % (chrom, mutation_position)
 	ret = search_db(cursor, qry, verbose=True)
 	if not ret:
-		print("no gene location found for %s (? it should be a missense)" * icgc_mutation_id)
+		print("no gene location found for %s (? it should be a missense)" % icgc_mutation_id)
 		return None
 	[position, gene_relative, transcript_relative] = ret[0]
-	print("location:", position, gene_relative, transcript_relative)
 
 	# which transcript is canonical
-	qry  = "select canonical_transcript, gene  from ensembl_ids "
-	qry += "where gene in (%s) " % ",".join([quotify(e) for e in gene_relative.split(";")])
-	qry += "group by canonical_transcript, gene "
-	ret = search_db(cursor, qry, verbose=True)
-	if not ret:
-		print("no gene ids found for %s (?)" % icgc_mutation_id)
-		exit()
-		return None
-	gene_ids = dict(ret)
-	for canonical_transcript, gene_id,  in gene_ids.items():
-		print (gene_id, canonical_transcript, get_approved_symbol(cursor, gene_id))
-	print()
+	canonical_transcripts = {}
+	for ens_gene_id in gene_relative.split(";"):
+		canonical_transcript = gene_stable_id_2_canonical_transcript_id(cursor, ens_gene_id)
+		#print (ens_gene_id, get_approved_symbol(cursor, ens_gene_id), canonical_transcript)
+		if canonical_transcript: canonical_transcripts[ens_gene_id] = canonical_transcript
+
+	missing = []
+	for ens_trancript_id in canonical_transcripts.values():
+		if not ens_trancript_id in aa_mutation: missing.append(ens_trancript_id)
+
+	# easy way out - nothing more to do here
+	if len(missing)==0: return None
+
+	print('\n++++++++++++++++++++++++')
+	print(line)
+	print("location:", position, gene_relative, transcript_relative)
+	print("missing", missing)
 
 	# get transcript coordinates
 	coords_table = "coords_chrom_%s" % chrom
 	column_names = get_column_names(cursor, 'icgc', coords_table)
 	coords = {}
-	for canonical_transcript in gene_ids.keys():
+	for canonical_transcript in canonical_transcripts.values():
 		qry  = "select * from %s " % coords_table
 		qry += "where ens_transcript_id='%s' " % canonical_transcript
 		ret = search_db(cursor, qry, verbose=False)
 		if not ret:
-			print("no transcript coords found for %s (?)" * icgc_mutation_id)
+			print("no transcript coords found for %s (?)" % icgc_mutation_id)
 			continue
 		coords[canonical_transcript] = dict(zip(column_names, ret[0]))
+	# we cannot re-annotate because the coords are missing
 	if len(coords)==0:
+		print("no coords found for", list(canonical_transcripts.values()))
 		return None
 
 	# translate genomic position to coding sequence position
@@ -170,6 +160,8 @@ def process_aa_change_line(cursor, chrom, line):
 		cds_positions[enst] = genome2cds_pos(coord, mutation_position)
 
 	# translate mutation to codon change to amino acid change
+	new_annotation = None
+
 	for enst, cds_position in cds_positions.items():
 		if not cds_position:
 			# we might have had problem reconstructing that gene
@@ -187,7 +179,7 @@ def process_aa_change_line(cursor, chrom, line):
 		# note we have evaluated cds position from the left - on the "+" strand
 		nt = {'from':named_field['reference_genome_allele'], 'to':named_field['mutated_to_allele']}
 		change_string = find_aa_change(coding_seq, coords[enst]['strand'], cds_position, nt)
-		print(enst, gene_ids[enst], change_string)
+		print(enst, change_string)
 	# new annotation
 	# compare with deposited value
 	print('++++++++++++++++++++++++\n')

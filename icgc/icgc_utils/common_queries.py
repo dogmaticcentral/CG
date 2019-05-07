@@ -543,73 +543,63 @@ def pathogenic_mutations_in_gene(cursor, approved_symbol, chromosome, use_reliab
 	if not ret: return []
 	return [r[0] for r in ret]
 
+
 #########################################
-def try_to_resolve(cursor, old_ensembl_gene_id):
-	# not sure how stable or reliable this is, but if there is no common transcript,
-	# something iss seriously foul with the old_ensembl_gene_id
-	switch_to_db(cursor,"homo_sapiens_core_91_38")
-	qry = "select distinct(gene_stable_id) from gene_archive "
-	qry += "where transcript_stable_id in  "
-	qry +="(select transcript_stable_id from gene_archive where gene_stable_id = '%s')" % old_ensembl_gene_id
-	ret = search_db(cursor,qry)
-	if not ret: return None
-
-	candidate_ids = [r[0] for r in ret if r[0]!=old_ensembl_gene_id]
-	if len(candidate_ids)==0: return None  # there should be another identifier, besides the one we started from
-
-	latest_ensembl_entries = []
-	for  candidate in candidate_ids:
-		qry = "select * from gene  where stable_id = '%s'" % candidate
-		if not search_db(cursor,qry): continue  # this is another old identifier
-		latest_ensembl_entries.append(candidate)
-	#I'm not sure what to make of this if there are two live identifiers
-	# that the old one maps to
-	if len(latest_ensembl_entries) != 1: return None
-
-	new_ensembl_gene_id = latest_ensembl_entries[0]
-
-	qry = "select approved_symbol from icgc.hgnc where ensembl_gene_id='%s'"% new_ensembl_gene_id
-	ret = search_db(cursor,qry)
+def attempt_resolve_deprecated(cursor, stable_id_old, verbose=False):
+	qry = "select new_id from ensembl_deprecated_ids where old_id='%s'" % stable_id_old
+	ret = search_db(cursor,qry,verbose=verbose)
 	if not ret: return None
 	return ret[0][0]
 
 
+#########################################
 def get_approved_symbol(cursor, ensembl_gene_id):
+	symbol = None
 	qry = "select approved_symbol from hgnc where ensembl_gene_id='%s'"% ensembl_gene_id
 	ret = search_db(cursor,qry)
 	if not ret:
-		symbol = try_to_resolve(cursor, ensembl_gene_id)
-		# if it cannot be resolved, just use the ensembl_id_itself
-		if not symbol: symbol=ensembl_gene_id
-		switch_to_db(cursor,"icgc")
+		new_id =  attempt_resolve_deprecated(cursor, ensembl_gene_id)
+		if new_id:
+			qry = "select approved_symbol from hgnc where ensembl_gene_id='%s'"% new_id
+			ret = search_db(cursor,qry)
+			if ret: symbol = ret[0][0]
+
 	else:
 		symbol = ret[0][0]
-	return symbol
+	# if not resolved return the original ensebl_gene_id
+	return symbol if symbol else ensembl_gene_id
 
-#########################################
-def attempt_resolve_retired(cursor, ensts, verbose=False):
-	return None
+
 
 #########################################
 def gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id, verbose=False):
 	qry  = "select  distinct(canonical_transcript) from icgc.ensembl_ids where  gene ='%s' " % gene_stable_id
 	ret = search_db(cursor,qry)
 	if not ret:
-		return attempt_resolve_retired(cursor, gene_stable_id, verbose)
+		new_id =  attempt_resolve_deprecated(cursor, gene_stable_id, verbose)
+		if not new_id:
+			if verbose: print("No canonical transcript and no new id found for %s ", gene_stable_id)
+			return None
+		qry  = "select  distinct(canonical_transcript) from icgc.ensembl_ids where  gene ='%s' " % new_id
+		ret = search_db(cursor,qry)
+		if ret:
+			print ("RESOLVED!")
+			return ret[0][0]
+		if verbose: print("No canonical transcript id found for %s, mapped to %s" % (gene_stable_id,new_id))
 	elif len(ret) != 1:
-		if verbose: print("Warning: no unique canonical id could be found for %s" % gene_stable_id)
+		if verbose: print("No unique canonical transcript id found for %s" % gene_stable_id)
 		return None
 	return ret[0][0]
 
-
+#########################################
 def list_of_transcript_ids_2_canonical_transcript_id(cursor, list_of_stable_transcript_ids):
 	# list_od_stable_transcript_ids - refers to ensembl --> ENST00... identifier
 	ensts = ",".join(["'%s'"%enst for enst in list_of_stable_transcript_ids])
 	qry  = "select distinct(canonical_transcript) from ensembl_ids  where transcript in  (%s) " % ensts
 	ret = search_db(cursor,qry)
 	if not ret:
-		print("Warning: no canonical transcript found for %s" % ensts)
-		print("Qry was: ", qry)
+		#print("Warning: no canonical transcript found for %s" % ensts)
+		#print("Qry was: ", qry)
 		return []
 	# there may be multiple canonical transcripts if the list of transcripts belongs to different genes
 	return [r[0] for r in ret]
