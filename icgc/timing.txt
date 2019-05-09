@@ -54,7 +54,7 @@ icgc
 │   ├── 30_reorganize_tcga_mutations_and_locations.py         24min, 12 fold pll
 │   ├── 32_add_tables_for_tcga_cancers.py                     <1s
 │   ├── 33_reorganize_tcga_variants.py                        57 min, 12 fold pll
-│   ├── 35_pathg_annotation_from_mutations_to_variants.py     25 min, 12 fold pll
+│   ├── 35_pathg_annotation_from_mutations_to_variants.py     ~6 min, 8 fold pll
 │   └── 39_mutation2gene_maps.py                              ~10min
 --------------------------------------------------------
 ├── 40_housekeeping

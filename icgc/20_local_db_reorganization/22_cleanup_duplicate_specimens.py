@@ -24,8 +24,8 @@ from icgc_utils.common_queries  import  *
 #########################################
 def main():
 
-	print("disabled - this script deletes certain rows ") # comment out to run
-	exit(1)
+	#print("disabled - this script deletes certain rows ") # comment out to run
+	#exit(1)
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()

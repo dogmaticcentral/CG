@@ -170,8 +170,8 @@ def cleanup(tables, other_args):
 #########################################
 def main():
 
-	print("disabled ") # comment out to run
-	exit(1)
+	#print("disabled ") # comment out to run
+	#exit(1)
 
 
 	db     = connect_to_mysql(Config.mysql_conf_file)

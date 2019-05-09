@@ -17,12 +17,11 @@
 # 
 # Contact: ivana.mihalek@gmail.com
 #
-import subprocess
+
 import time, re
 
-from icgc_utils.common_queries  import  *
 from icgc_utils.processes   import  *
-from icgc_utils.icgc import *
+from icgc_utils.utils import *
 from icgc_utils.annovar import *
 
 from config import Config
@@ -162,7 +161,7 @@ def output_annovar_input_file (cursor, db_name, tcga_table, ref_assembly, alread
 		if reference_allele=="-": end_position=start_position
 		start_position_translated = position_translation[assembly][chromosome][start_position]
 		end_position_translated   = position_translation[assembly][chromosome][end_position]
-		outrow = "\t".join([chromosome, start_position_translated, end_position_translated, reference_allele, differing_allele])
+		outrow = "\t".join([chromosome, str(start_position_translated), str(end_position_translated), reference_allele, differing_allele])
 		outf.write(outrow+"\n")
 
 	outf.close()

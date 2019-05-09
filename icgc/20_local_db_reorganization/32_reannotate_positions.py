@@ -72,14 +72,15 @@ def genome2cds_pos(coord, mutation_position):
 	cds_position = None
 	for i in range(exon_count):
 		if exon_ends[i]<cds_start: continue
-		if cds_end<exon_starts[i]: continue
+		if cds_end<exon_starts[i]: break
 		start = max(exon_starts[i], cds_start)
 		end   = min(cds_end, exon_ends[i])
 		if mutation_position<start: continue
-		if mutation_position>end: break
+		if mutation_position>end: continue
 		cds_position = sum(length[:i])+mutation_position-start
 		break
 	# !! coding sequence already refers to the strand that the gene is encoded in!
+	# (while here we
 	if cds_position  and coord['strand']=='-': cds_position =  sum(length)-cds_position-1  # we count from 0
 	#print(cds_start, cds_end, exon_starts, exon_ends)
 	#f = "<<<<<<<  {}  tot_length {}  strand {}   modulo 3 {}    mut_pos-cds_start {}   cds pos {}"
@@ -96,6 +97,10 @@ def find_aa_change(coding_seq, strand, cds_position, nt):
 		# did we end up here by mistake?
 		# this is not a single nucleotide variant
 		if not (len(nt[label])==1 and nt[label] in 'ATCG'): return None
+
+	# ? something about ambiguous nucleotide values in Bio/Data/CodonTable.py (codon 'AIL'?)
+	# Huh, BioMArt returned 'Sequence unavailable' in 2/3 of  transcript coding seqs ...
+	if not coding_seq  or 'UNAVAILABLE' in coding_seq: return None
 
 	# ! coding sequence is already given  on the relevant strand
 	# but nt from and nt to are not)
@@ -116,6 +121,9 @@ def find_aa_change(coding_seq, strand, cds_position, nt):
 		nt_from = nt['from']
 		nt_to   = nt['to']
 
+	# codon['from'][within_codon_position] results in string index out of range on occasion ...
+	# a bug to be chased down ...
+	if len(codon['from'])!=3: return None
 	if nt_from != codon['from'][within_codon_position]:
 		if debug: print("codon mismatch", cds_position, nt_from)
 		return None
@@ -269,7 +277,8 @@ def re_annotate(chromosomes, other_args):
 		# note that here we trust [whoever annotated this] to have gotten at least this part right
 		# (that the mutation results in aa change)
 		# TODO: change this into our own independent annotation
-		qry += "where aa_mutation is not null"
+		qry += "where aa_mutation is not null "
+		#qry += "and  icgc_mutation_id in ('MU4603992')"
 		ret  = search_db(cursor,qry)
 		if not ret:
 			print("no aa mutation entries for chrom %s (?) " % chrom)

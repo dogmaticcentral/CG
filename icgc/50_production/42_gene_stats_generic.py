@@ -140,7 +140,8 @@ def gene_mutations(cursor, table, gene):
 	qry += "from mutation2gene g,  %s m " % table
 	qry += "where g.gene_symbol='%s' " % gene
 	qry += "and g.icgc_mutation_id = m.icgc_mutation_id "
-	qry += "and m.pathogenicity_estimate=1 and m.reliability_estimate=1"
+	#qry += "and m.pathogenicity_estimate=1 "
+	qry += "and m.pathogenicity_estimate=1 and (m.total_read_count is null or m.reliability_estimate=1)"
 
 	ret = search_db(cursor,qry)
 	if not ret: return
@@ -247,15 +248,15 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  h
 			# output row for this mutation
 			consequence, aa_change = get_consequence(cursor, chromosome, mutation)
 			if not consequence: consequence = ""
-			aa_change = aa_change_cleanup(cursor, aa_change)
+			aa_change = aa_change_cleanup(cursor, aa_change).split(":")[-1]
 
 			cgenotype = genotype_short(mtn_info['cgenotype'])
 			tgenotype = genotype_short(mtn_info['tgenotype'])
 
 			if hide_id: donor_display_name=str(patient_count)
 			entry = "\t".join([tumor_short, donor_display_name,  ",".join(specimen_type_short), ",".join(specimen_number_of_mutations),
-			                   cgenotype, tgenotype, consequence,
-				               aa_change, freq_in_gen_population, p53_gist, p53_detail ])
+								cgenotype, tgenotype, consequence,
+								aa_change, freq_in_gen_population, p53_gist, p53_detail ])
 			entry = entry.replace("_"," ")
 			donor_rows.append(entry)
 
@@ -304,7 +305,7 @@ def main():
 		print("\t found", len(donor_mutations),"mutations in", gene)
 		#for dm in donor_mutations.items(): print("\t\t",dm)
 		#continue
-		donor_rows = donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  hide_id=True)
+		donor_rows = donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  hide_id=False)
 		if not donor_rows: continue
 		outf.write(donor_rows+"\n")
 		outf.flush()
