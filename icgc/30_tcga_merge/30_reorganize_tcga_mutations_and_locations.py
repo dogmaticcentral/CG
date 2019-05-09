@@ -130,27 +130,17 @@ def get_position_translation(rows, ref_assembly):
 
 	return position_translation
 
-
 #########################################
 def output_annovar_input_file (cursor, db_name, tcga_table, ref_assembly, already_deposited_samples):
 
 	switch_to_db(cursor,db_name)
 	meta_table_name = tcga_table.split("_")[0] + "_mutations_meta"
 
-	# which assemblies do I have here?
-	# I'm counting on the assemblies to be hg18 and hg19 - I have annovar tables for those
-	# otherwise the annovar should complain
-	qry  = "select distinct m.assembly "
-	qry += "from %s s, %s m " % (tcga_table, meta_table_name)
-	qry += "where s.meta_info_id=m.id"
-	assemblies = [ret[0] for ret in search_db(cursor, qry)]
-
 	# get the info that annovar needs
 	qry  = "select s.tumor_sample_barcode, s.chromosome, s.start_position, s.end_position, "
 	qry += "s.reference_allele, s.tumor_seq_allele1, s.tumor_seq_allele2, m.assembly  "
 	qry += "from %s s, %s m " % (tcga_table, meta_table_name)
 	qry += "where s.meta_info_id=m.id"
-
 	rows = search_db(cursor, qry)
 
 	position_translation = get_position_translation(rows, ref_assembly)
@@ -490,11 +480,10 @@ def add_tcga_diff(tcga_tables, other_args):
 		ret = search_db(cursor,qry)
 		icgc_tumor_sample_ids = [r[0] for r in ret] if ret else []
 
-		#tcga samples already deposited in icgc
 		already_deposited_samples = list(set(icgc_tumor_sample_ids).difference(set(tcga_tumor_sample_ids)))
 		samples_not_deposited     = list(set(tcga_tumor_sample_ids).difference(set(icgc_tumor_sample_ids)))
 
-		# I am taking a leap of faith here, and I believe that the deposited data is
+		# I am taking a leap of faith here: I believe that the deposited data is
 		# really identical to what we have in tcga
 		print("not deposited:", len(samples_not_deposited))
 		process_table(home, cursor, tcga_table, ref_assembly, already_deposited_samples)

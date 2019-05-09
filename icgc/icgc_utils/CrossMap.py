@@ -198,7 +198,7 @@ def read_chain_file (chain_file, print_table=False):
     or a URL pointing to the chain file ("http://", "https://", "ftp://"). If url was used, chain file must be plain text
     '''
     
-    printlog(["Read chain_file: ", chain_file]),
+    #printlog(["Read chain_file: ", chain_file]),
     maps={}
     target_chromSize={}
     source_chromSize={}

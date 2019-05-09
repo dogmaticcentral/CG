@@ -23,8 +23,7 @@ import time
 from config import Config
 from icgc_utils.processes import *
 from icgc_utils.annovar import *
-from icgc_utils.CrossMap import *
-
+from icgc_utils.utils import *
 
 #########################################
 def get_positions(cursor, variants_table, chromosome, assembly):
@@ -49,44 +48,6 @@ def write_positions(positions, variants_table,assembly,chromosome):
 	outf.write("\n".join([str(p) for p in positions])+"\n")
 	outf.close()
 	return outfname
-
-
-#########################################
-def translate_positions(positions, chromosome, from_assembly, to_assembly, rootname=None):
-
-	if from_assembly == to_assembly:
-		return positions
-	# GRCh37 and hg19 only differ for MT
-	if (from_assembly.lower() in ['grch37', 'hg19']) and (to_assembly.lower() in ['grch37', 'hg19']) and (chromosome != "MT"):
-		return positions
-
-	if not rootname: rootname=str(os.getpid())
-	# otherwise we'll need  tools to translate
-	chain_file ="/storage/databases/liftover/{}To{}.over.chain".format(from_assembly, to_assembly.capitalize())
-	if not os.path.exists(chain_file):
-		print(chain_file, "not found")
-		exit()
-
-	outfile = "%s.tsv"%rootname
-	outf = open (outfile,"w")
-	for p in positions:
-		outf.write("\t".join([chromosome, str(p), str(p)]) + "\n")
-	outf.close()
-
-	# this is CrossMap now
-	outfile_translated  =  "%s.translated.tsv"%rootname
-	(map_tree, target_chrom_sizes, source_chrom_sizes) = read_chain_file(chain_file, print_table = False)
-	crossmap_bed_file(map_tree, outfile, outfile_translated)
-
-	#read binding regions back in
-	with open(outfile_translated,"r") as inf:
-		new_positions = [line.split("\t")[1] for line in inf.read().split("\n") if len(line.replace(" ",""))>0]
-	# remove aux files
-	os.remove(outfile)
-	os.remove(outfile_translated)
-	os.remove(outfile_translated+".unmap") # this file should probably checked - it should be empty
-
-	return new_positions
 
 
 #########################################

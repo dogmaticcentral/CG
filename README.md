@@ -322,7 +322,20 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
 * disentangle from Annovar - we have all the info we need to do own annotation here
 * why does deleting normal samples take so long?
 ( [11_delete_variants_from_normal.py](icgc/20_local_db_reorganization/11_delete_variants_from_normal.py))
-
+* when re-annotating we are looking only at positions already labeled as having aa_change
+* note to myself: there seems to be a problem in ENSEMBL homo_sapiens_core_94_38 with exon frame/phase assignment
+e.g. ENST00000435165 (ENSG00000118473), chrom 1, + strand, the translation starts at 67161031.
+The first exon is [67160376, 67161176> yet the pahse in ensembl is listed as -1, which should indicate that
+translation does not start in this exon at all. 
+Alternatively, ENST00000435165 is listed to start in ENSE00001951262, which has phase listed as -1.
+Another example: ENST00000334103	ENSG00000186094, frames listed in Ensembl vs UCSC.
+I have not used the phase info here, but it should be kept in mind that it is unreliable.
+* annotation in the production stage is incomplete, possibly because of the mismatch between TCAG/ICGC ref assembly and
+GRCh28 that i currently the standard with Ensembl
+* there might be some errors in the re-annotation \
+[32_reannotate_positions.py](icgc/20_local_db_reorganization/32_reannotate_positions.py) - \
+ coding sequences from biomart not correct (e.g ENST00000366645 vs the same seq on the Ensembl website
+[the same seq on the Ensembl website](https://grch37.ensembl.org/Homo_sapiens/Transcript/Exons?db=core;g=ENSG00000116903;r=1:231468499-231473598;t=ENST00000366645))
 ## P.S.
 
 Do not use locks in MySQL. Locks are evil. Good luck with the rest.
