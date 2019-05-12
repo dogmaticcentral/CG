@@ -313,7 +313,7 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  
  #### Optional: re-annotating missense mutations
  It may be  helpful to change the annotation of missense mutations
- ([32_reannotate_positions.py](icgc/20_local_db_reorganization/32_reannotate_positions.py)) 
+ ([32_reannotate_missense_mutations.py](icgc/20_local_db_reorganization/32_reannotate_missense_mutations.py)) 
  to include the currently accepted  canonical transcript, according to [Ensembl](https://www.ensembl.org).
  In the reference is lost to other transcripts, which can be retrieved from the locations table.
  A step toward independent annotation.
