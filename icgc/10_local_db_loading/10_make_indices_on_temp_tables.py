@@ -18,7 +18,7 @@
 # Contact: ivana.mihalek@gmail.com
 #
 
-import MySQLdb
+import time
 
 from config import Config
 from icgc_utils.mysql   import  *
@@ -31,6 +31,7 @@ def make_indices(tables, other_args):
 	switch_to_db(cursor,"icgc")
 	for table in tables:
 		print(table)
+		time0 = time.time()
 		qry  = "create index somatic_mut_idx on %s (icgc_mutation_id)" % table
 		search_db(cursor,qry,verbose=True)
 		qry  = "create index somatic_donor_idx on %s (icgc_donor_id)" % table
@@ -43,6 +44,7 @@ def make_indices(tables, other_args):
 		search_db(cursor, qry, verbose=True)
 		qry  =  "create index chrom_end_pos_idx on %s (chromosome, end_position)" % table
 		search_db(cursor, qry, verbose=True)
+		print(("\t\t  %s done in %.3f mins" % (table, float(time.time()-time0)/60)))
 	cursor.close()
 	db.close()
 
@@ -64,7 +66,7 @@ def main():
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 20  # myISAM does not deadlock
+	number_of_chunks = 1
 	parallelize(number_of_chunks, make_indices, tables, [])
 
 #########################################

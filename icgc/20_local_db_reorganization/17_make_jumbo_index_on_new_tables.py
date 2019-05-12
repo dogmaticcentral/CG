@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # This source code is part of icgc, an ICGC processing pipeline.
 # 
@@ -39,9 +39,10 @@ def main():
 	for table in tables:
 		print(table)
 		create_index(cursor, 'icgc', 'mega_idx',  table,
-		             ['icgc_mutation_id', 'icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id'], verbose=False)
+		             ['icgc_mutation_id', 'icgc_donor_id', 'icgc_specimen_id', 'icgc_sample_id'], verbose=True)
 		# while at it, let's add this one too (to be used in 18_cleanup_duplicate_specimens)
-		create_index(cursor, 'icgc','donor_idx',  table, ['icgc_donor_id'], verbose=False)
+		create_index(cursor, 'icgc','donor_idx',  table, ['icgc_donor_id'], verbose=True)
+		print()
 
 	cursor.close()
 	db.close()

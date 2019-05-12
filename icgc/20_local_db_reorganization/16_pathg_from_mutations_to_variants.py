@@ -76,10 +76,10 @@ def fix_pathogenicity(tables, other_args):
 			path_ids = []
 			for p in path_muts_in_table: path_ids.extend(table_ids[p])
 
-			for batch in range(len(path_ids),100):
+			for batch in range(0,len(path_ids),100):
 				qry  = "update %s " % table
 				qry += "set pathogenicity_estimate=1 where  id in (%s)" % ",".join([str(i) for i in path_ids[batch:batch+100]])
-				ret = search_db(cursor,qry, verbose=False)
+				search_db(cursor,qry, verbose=False)
 			print("\t %s, chrom %s done  in %.3f mins" % (table, chromosome, float(time.time()-time0)/60))
 
 	cursor.close()
@@ -105,8 +105,8 @@ def main():
 
 	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=False)
 	shuffle(tables_sorted) # so called 'lazy load balancing'
-
 	number_of_chunks = 8
+
 	parallelize(number_of_chunks, fix_pathogenicity,  tables_sorted, [chromosomes], round_robin=True)
 
 

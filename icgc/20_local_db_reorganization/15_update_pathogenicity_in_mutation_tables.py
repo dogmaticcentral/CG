@@ -18,7 +18,7 @@
 # Contact: ivana.mihalek@gmail.com
 #
 #
-# I've managed to screw this one up (missed splice?), so go back and fix
+#  Update pathogenicity estimate by location - only splice site for now.
 
 import subprocess
 import time, re
@@ -51,33 +51,29 @@ def fix_pathogenicity(chromosomes, other_args):
 		print()
 		print("====================")
 		print("processing icgc table ", mutations_table, os.getpid())
-		qry = "select icgc_mutation_id, start_position, consequence, pathogenicity_estimate from icgc.%s" % mutations_table
-		for  icgc_mutation_id, start_position, consequence, p_estimate in search_db(cursor,qry, verbose=True):
-			#print icgc_mutation_id, start_position, consequence, p_estimate
-			p_estimate_revised = 0
-			if consequence:
-				for description in mutation_pathogenic:
-					if description in consequence:
-						p_estimate_revised=1
-			if p_estimate_revised == 0: # check if location is splice
-				locations_table = "locations_chrom_%s"%chrom
-				qry2 = "select transcript_relative from icgc.%s " % locations_table
-				qry2 += "where position = %d" % start_position
-				# position is the principal key, so there should not be two of those
-				ret = search_db(cursor,qry2)
-				if not ret: continue
-				tr_relative = ret[0][0]
-				#print "tr_relative", tr_relative
-				if tr_relative:
-					for description in  location_pathogenic:
-						if description in tr_relative:
-							p_estimate_revised=1
-			#print p_estimate, p_estimate_revised
-			if (p_estimate==None) or  (p_estimate !=  p_estimate_revised): # if the revision needed, proceed
+		qry  = "select icgc_mutation_id, start_position from icgc.%s " % mutations_table
+		qry += "where pathogenicity_estimate=0"
+		for icgc_mutation_id, start_position in search_db(cursor,qry, verbose=True):
+			locations_table = "locations_chrom_%s"%chrom
+			qry2 = "select transcript_relative from icgc.%s " % locations_table
+			qry2 += "where position = %d" % start_position
+			# position is the principal key, so there should not be two of those
+			ret = search_db(cursor,qry2)
+			if not ret: continue
+			tr_relative = ret[0][0]
+
+			p_estimate_revised=False
+			if tr_relative:
+				for description in  location_pathogenic:
+					if description in tr_relative:
+						p_estimate_revised=True
+						#print("tr_relative", tr_relative)
+						break
+			if p_estimate_revised: # if the revision needed, proceed
 				qry3  = "update icgc.%s " %  mutations_table
-				qry3 += "set pathogenic_estimate=%d " % p_estimate_revised
+				qry3 += "set pathogenicity_estimate=1 "
 				qry3 += "where icgc_mutation_id='%s' " %  icgc_mutation_id
-				search_db(cursor,qry3)
+				search_db(cursor,qry3, verbose=False)
 
 	cursor.close()
 	db.close()

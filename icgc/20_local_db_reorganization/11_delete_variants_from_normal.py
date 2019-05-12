@@ -71,7 +71,7 @@ def main():
 	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=True)
 	half = int(len(tables_sorted)/2)
 	tables_mirrored  = tables_sorted[0:half] + list(reversed(tables_sorted[half:]))
-	number_of_chunks = half
+	number_of_chunks = int(half/2)
 
 	parallelize(number_of_chunks, delete_normal, tables_mirrored, [], round_robin=True)
 

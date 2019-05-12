@@ -56,6 +56,9 @@ def appendopen(original_tsv_file, filetype):
 #########################################
 def main():
 
+	print("disabled")
+	exit()
+
 	names_string = {"donor":"icgc_donor_id,submitted_donor_id,donor_sex,donor_diagnosis_icd10",
 	                "specimen":"icgc_specimen_id,icgc_donor_id,specimen_type,tumour_histological_type"}
 

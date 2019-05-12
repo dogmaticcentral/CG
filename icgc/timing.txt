@@ -17,7 +17,7 @@ icgc
 │   ├── 07_write_mutations_tsv.py           ~55 min 10fold parallelization
 │   ├── 08_write_other_tsv.py                 2 s
 │   ├── 09_load_mysql.py                     22 min
-│   ├── 10_make_indices_on_temp_tables.py   270 min (what's up with this?)
+│   ├── 10_make_indices_on_temp_tables.py   270 min, 12 fold pll (what's up with this?; parallelization bad)
 │   ├── 15_assembly_check.py                  2 min
 │   ├── 16_donor_check.py                     1 min
 │   ├── 20_hgnc_name_resolution_table.py     <1 s
@@ -31,19 +31,19 @@ icgc
 │   ├── 08_check_mut_tables_and_make_new_ones.py              <1s
 │   ├── 10_reorganize_variants.py                            ~22 min in total, 20 fold pll (advice: MyISAM)
                                                                     from<1s to 22 mins (for MELA) per tumor type
-│   ├── 11_delete_variants_from_normal.py                    100 mins, 21 fold pll
-│   ├── 13_reorganize_mutations.py                           100 mins with 12 fold parallelization
+│   ├── 11_delete_variants_from_normal.py                    107 mins, 10 fold pll
+│   ├── 13_reorganize_mutations.py                           110 mins with 12 fold parallelization
                                                                       chrom 2 takes ~90 min
-│   ├── 14_reorganize_locations.py                           ~30 mins with 12 fold parallelization
+│   ├── 14_reorganize_locations.py                           ~32 mins with 12 fold parallelization
                                                                        chrom 1 takes ~25 min, the other chroms less
-│   ├── 15_set_pathogenicity_in_mutation_tables.py            15 min, 8 fold pll
-│   ├── 16_pathg_annotation_from_mutations_to_variants.py     7 min, 8 fold pll
-
+│   ├── 15_set_pathogenicity_in_mutation_tables.py           ~15 min, 8 fold pll
+│   ├── 16_pathg_annotation_from_mutations_to_variants.py      7 min, 8 fold pll
 │   ├── 17_make_jumbo_index_on_new_tables.py                 ~20 min, no pll
-│   ├── 18_cleanup_duplicate_entries.py                      111 min, 10 fold pll
-│   ├── 19_cleanup_duplicate_donors.py                         7 min single cpu
+
+│   ├── 18_cleanup_duplicate_entries.py                      120 min, 10 fold pll
+│   ├── 19_cleanup_duplicate_donors.py                         2 min single cpu
 │   ├── 21_add_reliability_annotation_to_somatic.py            7 min, 8 fold pll
-│   ├── 22_cleanup_duplicate_specimens.py                    ~22 min, no pll
+│   ├── 22_cleanup_duplicate_specimens.py                     ~4 min, 8 fold pll
 │   ├── 23_cleanup_duplicate_samples.py                      ~14 min, 21 fold pll
 │   ├── 25_cleanup_duplicate_donors_by_variant_identity.py    ~5 min, no pll
 │   ├── 27_copy_reliability_info_to_mutations.py              ~5 min, 8 fold pll

@@ -66,8 +66,8 @@ def remove_duplicates(table_rows, other_args, verbose=False):
 #########################################
 def main():
 
-	print("disabled")
-	exit()
+	#print("disabled")
+	#exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -77,11 +77,11 @@ def main():
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
 	switch_to_db(cursor,"icgc")
+	number_of_chunks = 10 # myISAM does not deadlock
 	for table in tables:
 		print("\n====================")
 		print("inspecting ", table)
-		# coumn names/headers
-
+		# column names/headers
 		# a hack to get all entries that have all relevant ids identical
 		qry = "select concat(icgc_mutation_id,'_', icgc_donor_id,'_',icgc_specimen_id,'_',icgc_sample_id) as mega_id, "
 		qry += "count(*) as c from %s  group by mega_id having c>1 " % table
@@ -93,7 +93,6 @@ def main():
 		print("\t%s has %d duplicates" % (table, len(ret)))
 		#print(ret)
 
-		number_of_chunks = 10 # myISAM does not deadlock
 		processes = parallelize(number_of_chunks, remove_duplicates, ret, [table])
 		if processes: wait_join(processes)
 

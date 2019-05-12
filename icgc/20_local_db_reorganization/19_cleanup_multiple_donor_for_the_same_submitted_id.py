@@ -49,7 +49,6 @@ def duplicates_in_variants_table(cursor, donor_table, variants_table, donor_ids_
 		ret  = search_db(cursor,qry, verbose=False)
 		if not ret or len(ret)<=1: continue
 		duplicates[submitted_donor_id] = [r[0] for r in ret]
-
 	duplicates_in_variants_table = {}
 	for submitted_donor_id, icgc_donor_ids in duplicates.items():
 		for icgc_donor_id in icgc_donor_ids:
@@ -82,8 +81,8 @@ def duplicates_in_variants_table(cursor, donor_table, variants_table, donor_ids_
 #########################################
 def main():
 
-	print("disabled - this script deletes certain rows ") # comment out to run
-	exit(1)
+	#print("disabled - this script deletes certain rows ") # comment out to run
+	#exit(1)
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -93,18 +92,24 @@ def main():
 	qry += "where table_schema='icgc' and table_name like '%_donor'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
 	switch_to_db(cursor,"icgc")
+
 	for donor_table in tables:
+		print("\n====================")
+		print(donor_table)
 		tumor = donor_table.split("_")[0]
 		variants_table =  "%s_simple_somatic" % tumor
 		specimen_table = "%s_specimen" % tumor
 
 		donor_ids_with_duplicates_in_donor_table = duplicates_in_donor_table(cursor, donor_table)
-		if len(donor_ids_with_duplicates_in_donor_table)==0: continue
-		# these are duplicates in the donor table;
+		if len(donor_ids_with_duplicates_in_donor_table)==0:
+			#print("\t no duplicates in donor_table", donor_table)
+			continue
+		# there are duplicates in the donor table;
 		# donor table is just a bookkeeping device - do the duplicates really appear in the variants table?
 		dups = duplicates_in_variants_table(cursor, donor_table, variants_table, donor_ids_with_duplicates_in_donor_table)
-		if len(dups)==0: continue
-		print("\n====================")
+		if len(dups)==0:
+			print("\t no duplicates in variants_table", variants_table)
+			continue
 		print("%s has %d submitted_donor_id ids with duplicate icgc_donor_ids" % (variants_table,len(dups)))
 
 		for submitted_donor_id, icgc_donor_ids in dups.items():

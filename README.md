@@ -237,7 +237,7 @@ consists of normal tissue samples only.
 UCSC gene annotation to check chromosome addresses. The only information we are looking for here is the
 possibility that the location falls within the splice region just outside of an exon. Mutations at these positions
 are annotated as (possibly) pathogenic 
-in [15_location_pathogenicity_to_variants.py](icgc/20_local_db_reorganization/15_set_pathogenicity_in_mutation_tables.py)
+in [15_location_pathogenicity_to_variants.py](icgc/20_local_db_reorganization/15_update_pathogenicity_in_mutation_tables.py)
 
     
 (Do not forget to create indices
@@ -249,7 +249,7 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  same patient data finding its way into the dataset through various depositors; some are the results  of the re-sampling 
  of the same  tumor, while some are completely obscure, with all identifiers being identical everywhere.
  
- 
+ **All identifiers identical.**
   [18_cleanup_duplicate_entries.py](icgc/20_local_db_reorganization/18_cleanup_duplicate_entries.py):
   Some mutations  have identical tuple
  of identifiers (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id). Note that this
@@ -260,7 +260,7 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  [17_make_jumbo_index](icgc/20_local_db_reorganization/17_make_jumbo_index_on_new_tables.py) 
   beforehand.
  
- 
+ **Same submitted_sample_id, different donor ids.**
  There might be further problems: See for example, mutation MU2003689, which, 
  [so the ICGC page claims](https://dcc.icgc.org/mutations/MU2003689) can be found in two distinct donors. 
  The closer  inspection of the two donors shows however that their submitter ID is the same, as is the age 

@@ -187,6 +187,9 @@ def main():
 
 	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=False)
 	number_of_chunks = 1
+
+	tables_sorted=['BRCA_simple_somatic']
+	number_of_chunks = 1
 	parallelize(number_of_chunks, cleanup, tables_sorted, [], round_robin=True)
 
 

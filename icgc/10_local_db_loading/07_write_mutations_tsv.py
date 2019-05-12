@@ -112,6 +112,9 @@ def write_tsvs(cancer_types, other_args):
 #########################################
 def main():
 
+	print("disabled")
+	exit()
+
 	if not os.path.exists("tsvs"): os.mkdir("tsvs")
 
 	db     = connect_to_mysql(Config.mysql_conf_file)

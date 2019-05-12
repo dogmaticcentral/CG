@@ -73,13 +73,13 @@ def main():
 	switch_to_db(cursor,"icgc")
 
 	########################
-	# set reliability info to 0 in mutation tables - in case we were mucking around with it already
-	print("setting reliability to 0 in all mutatitions_chrom_% tables ...")
+	# set reliability info to 1 in mutation tables - innocent until proven guilty
+	print("setting reliability to 1 in all mutatitions_chrom_% tables ...")
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like 'mutations_chrom%'"
 	tables = [field[0] for field in  search_db(cursor,qry)]
 	for table in tables:
-		qry = "update %s set reliability_estimate=0" % table
+		qry = "update %s set reliability_estimate=1" % table
 		search_db(cursor,qry)
 	print("... done")
 
@@ -95,6 +95,11 @@ def main():
 	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=True)
 	shuffle(tables_sorted)
 	number_of_chunks = 8
+
+	tables_sorted=['BRCA_simple_somatic']
+	number_of_chunks = 1
+
+
 	print("number of pll chunks", number_of_chunks)
 	parallelize(number_of_chunks, decorate_mutations, tables_sorted, [], round_robin=True)
 

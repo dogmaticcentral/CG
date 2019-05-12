@@ -19,21 +19,13 @@
 #
 from config import Config
 from icgc_utils.common_queries  import  *
+from icgc_utils.processes import *
 
-#########################################
-#########################################
-def main():
 
-	#print("disabled - this script deletes certain rows ") # comment out to run
-	#exit(1)
+def cleanup_duplicate_specimens(tables, other_args):
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
-	#########################
-	# which  somatic tables do we have
-	qry  = "select table_name from information_schema.tables "
-	qry += "where table_schema='icgc' and table_name like '%_simple_somatic'"
-	tables = [field[0] for field in  search_db(cursor,qry)]
 	switch_to_db(cursor,"icgc")
 	for somatic_table in tables:
 		ret = search_db(cursor, "select distinct icgc_donor_id from %s"%somatic_table)
@@ -61,6 +53,30 @@ def main():
 	cursor.close()
 	db.close()
 
+
+	return
+
+
+#########################################
+#########################################
+def main():
+
+	print("disabled - this script deletes certain rows ") # comment out to run
+	exit(1)
+
+	db     = connect_to_mysql(Config.mysql_conf_file)
+	cursor = db.cursor()
+	#########################
+	# which  somatic tables do we have
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%_simple_somatic'"
+	tables = [field[0] for field in  search_db(cursor,qry)]
+
+	cursor.close()
+	db.close()
+
+	number_of_chunks = 8
+	parallelize(number_of_chunks, cleanup_duplicate_specimens, tables, [])
 
 	return
 
