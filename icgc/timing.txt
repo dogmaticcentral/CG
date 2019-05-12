@@ -43,10 +43,10 @@ icgc
 │   ├── 18_cleanup_duplicate_entries.py                      120 min, 10 fold pll
 │   ├── 19_cleanup_duplicate_donors.py                         2 min single cpu
 │   ├── 21_add_reliability_annotation_to_somatic.py            7 min, 8 fold pll
-│   ├── 22_cleanup_duplicate_specimens.py                     ~4 min, 8 fold pll
+│   ├── 22_cleanup_duplicate_specimens.py                     ~6 min, 8 fold pll
 │   ├── 23_cleanup_duplicate_samples.py                      ~14 min, 21 fold pll
 │   ├── 25_cleanup_duplicate_donors_by_variant_identity.py    ~5 min, no pll
-│   ├── 27_copy_reliability_info_to_mutations.py              ~5 min, 8 fold pll
+│   ├── 27_copy_reliability_info_to_mutations.py             ~10 min, 8 fold pll
 │   ├── 29_index_on_mutation_tables.py                        ~6 min
 │   └── 30_mutation2gene_maps.py                             ~90 min, 12 fold pll
 --------------------------------------------------------

@@ -271,10 +271,9 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  tumor at the same stage because even the submitter sample ids might be different
  (see [19_cleanup_multiple_donor_for_the_same_submitted_id.py](icgc/20_local_db_reorganization/19_cleanup_multiple_donor_for_the_same_submitted_id.py)). 
 
- Even after this cleanup we are still not done with the duplications problem - we might have the
- same donor with differing specimen and sample ids (apparently  ICGC refers to
- biological replicates - i.e. samples taken from different sites  - as specimens, and
- to technical replicates as samples). Perhaps they might have a role when answering different
+ **Same donor with differing specimen and sample ids.**  
+ Apparently  ICGC refers to biological replicates - i.e. samples taken from different sites  - as specimens, and
+ to technical replicates as samples. Perhaps they might have a role when answering different
  types of questions than what we have in mind. Here, however we do not want to have these results mistaken for recurring mutations, 
  thus we remove them in [22_cleanup_duplicate_specimens.py](icgc/20_local_db_reorganization/22_cleanup_duplicate_specimens.py) 
  and [23_cleanup_duplicate_samples.py](icgc/20_local_db_reorganization/23_cleanup_duplicate_samples.py), but not before checking
@@ -283,12 +282,16 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  these, if multiple refer to the same submitter id, we keep the ones with the largest reported number of
  somatic mutations. The investigation of the source of this duplication is again outside of our zone of interest.
  
-
+**Different donor and submitter ids qith overlapping variants.**
  Unfortunately, the duplicates do not stop here. See for example [DO224621](https://dcc.icgc.org/donors/DO224621)
  and [DO230968](https://dcc.icgc.org/donors/DO230968) that have different  donor *and* submitter
  ids, and mysteriously have 1703 identical variants. 
  Both donors are males diagnosed with lung squamous carcinoma. One sample turns out to be WES, while the other is WGS.
  For the full list of presumably identical donors in ICGC, see [hacks/duplicate_donors.tsv](icgc/hacks/duplicate_donors.tsv).
+ [27_reliability_from_variants_to_mutations.py](icgc/20_local_db_reorganization/27_reliability_from_variants_to_mutations.py) attempts
+ to detect such cases by looking for suspiciously high overlap in reported variants. When such case is detected,
+ the sample with the higher average depth of sampling is retained.
+ See the script for the criteria used. 
  
  #### Adding reliability info
  
