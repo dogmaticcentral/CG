@@ -48,7 +48,9 @@ icgc
 │   ├── 25_cleanup_duplicate_donors_by_variant_identity.py    ~5 min, no pll
 │   ├── 27_copy_reliability_info_to_mutations.py             ~10 min, 8 fold pll
 │   ├── 29_index_on_mutation_tables.py                        ~6 min
-│   └── 30_mutation2gene_maps.py                             ~90 min, 12 fold pll
+│   ├── 30_mutation2gene_maps.py                             ~90 min, 12 fold pll
+│   └── 32_reannotate_positions.py
+
 --------------------------------------------------------
 ├── 30_tcga_merge
 │   ├── 30_reorganize_tcga_mutations_and_locations.py         24min, 12 fold pll
@@ -78,7 +80,7 @@ icgc
 │   ├── 55_silent_to_nonsilent_ratio_per_cancer.py
 │   ├── 60_clustering_on_the_structure.py
 │   ├── 62_gnomad-clustering_on_the_structure.py
-│   ├── 64_conservatiion-clustering_on_the_structure.py
+│   ├── 64_conservation-clustering_on_the_structure.py
 │   ├── RPL5_per_cancer_breakdown.tmp.tsv
 │   └── RPL5_per_cancer_breakdown.tsv
 

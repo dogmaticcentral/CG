@@ -137,7 +137,7 @@ it turns out to be faster to create tsvs and  then load them from mysql shell
  All index making is slow here (see [timing.txt](icgc/timing.txt)) - run overnight. 
 
 Some checks are thrown in here that  may inform the rest of the pipeline.
- [15_assembly_check.py](icgc/10_local_db_loading/15_assembly_check.py) confirms tha as of v27 all ICGC entried
+ [15_assembly_check.py](icgc/10_local_db_loading/15_assembly_check.py) confirms that, as of v27, all ICGC entries
  refer to GRCh37, and [16_donor_check.py](icgc/10_local_db_loading/16_donor_check.py) highlights the fact that
  some donor ids have no somatic mutations in ICGC. This is somewhat mysterious, because some refer to
  TCGA donors with somatic mutation data available from TCGA archive.
@@ -230,7 +230,7 @@ In [10_reorganize_variants.py](icgc/20_local_db_reorganization/10_reorganize_var
  [08_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/08_check_icgc_tables_and_make_new_ones.py)
  and keep the 'matched_icgc_sample_id' field. 
  
-**Note 2:** doing things carefully leads to some interesting results. NACA ()Nasopharyngeal cancer) set, for example,
+**Note 2:** doing things carefully leads to some interesting results. NACA (Nasopharyngeal cancer) set, for example,
 consists of normal tissue samples only. 
 
 [14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) script uses 
@@ -243,7 +243,18 @@ in [15_location_pathogenicity_to_variants.py](icgc/20_local_db_reorganization/15
 (Do not forget to create indices
 using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_tables.py)) 
  
+#### Adding reliability info
  
+ We add a couple of values to each row to later make the search for meaningful entries faster.
+  we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
+ to simple_somatic tables. In the following script,  
+ [21_add_realiability_annotation_to_somatic.py](icgc/20_local_db_reorganization/21_add_reliability_annotation_to_variants.py),  
+ we combine these two columns into a reliability estimate: a  somatic mutation in individual patient is considered reliable if mutant_allele_read_count>=10
+ and mut_to_total_read_count_ratio>=0.2. Information about the mutation in general (mutations_chromosome tables;  
+ [18_copy_reliability_info_to_mutations.py](18_copy_reliability_info_to_mutations.py)) 
+ is considered reliable if there is at least one patient for which it was reliably established.
+ 
+
 #### Removing duplicates
  ICGC is rife with data duplication, coming from various sources. Some seem to be bookkeeping mistakes with the
  same patient data finding its way into the dataset through various depositors; some are the results  of the re-sampling 
@@ -271,8 +282,8 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  tumor at the same stage because even the submitter sample ids might be different
  (see [19_cleanup_multiple_donor_for_the_same_submitted_id.py](icgc/20_local_db_reorganization/19_cleanup_multiple_donor_for_the_same_submitted_id.py)). 
 
- **Same donor with differing specimen and sample ids.**  
- Apparently  ICGC refers to biological replicates - i.e. samples taken from different sites  - as specimens, and
+ **Same donor with differing specimen and sample ids.**   Apparently  ICGC refers to biological replicates - i.e. 
+ samples taken from different sites  - as specimens, and
  to technical replicates as samples. Perhaps they might have a role when answering different
  types of questions than what we have in mind. Here, however we do not want to have these results mistaken for recurring mutations, 
  thus we remove them in [22_cleanup_duplicate_specimens.py](icgc/20_local_db_reorganization/22_cleanup_duplicate_specimens.py) 
@@ -282,7 +293,7 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  these, if multiple refer to the same submitter id, we keep the ones with the largest reported number of
  somatic mutations. The investigation of the source of this duplication is again outside of our zone of interest.
  
-**Different donor and submitter ids qith overlapping variants.**
+**Different donor and submitter ids with overlapping variants.**
  Unfortunately, the duplicates do not stop here. See for example [DO224621](https://dcc.icgc.org/donors/DO224621)
  and [DO230968](https://dcc.icgc.org/donors/DO230968) that have different  donor *and* submitter
  ids, and mysteriously have 1703 identical variants. 
@@ -293,16 +304,21 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  the sample with the higher average depth of sampling is retained.
  See the script for the criteria used. 
  
- #### Adding reliability info
+ #### Mutation2gene shortcut
  
- We add a couple of values to each row to later make the search for meaningful entries faster.
-  we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
- to simple_somatic tables. In the following script,  
- [21_add_realiability_annotation_to_somatic.py](icgc/20_local_db_reorganization/21_add_reliability_annotation_to_variants.py),  
- we combine these two columns into a reliability estimate: a  somatic mutation in individual patient is considered reliable if mutant_allele_read_count>=10
- and mut_to_total_read_count_ratio>=0.2. Information about the mutation in general (mutations_chromosome tables;  
- [18_copy_reliability_info_to_mutations.py](18_copy_reliability_info_to_mutations.py)) 
- is considered reliable if there is at least one patient for which it was reliably established.
+ [29_index_on_mutation_tables.py](icgc/20_local_db_reorganization/29_index_on_mutation_tables.py) 
+ and [30_mutation2gene_maps.py](icgc/20_local_db_reorganization/30_mutation2gene_maps.py)
+ together build a table that maps icgc_mutation_id to HUGO gene
+ symbol, and vice versa.
+ 
+ #### Optional: re-annotating missense mutations
+ It may be  helpful to change the annotation of missense mutations
+ ([32_reannotate_positions.py](icgc/20_local_db_reorganization/32_reannotate_positions.py)) 
+ to include the currently accepted  canonical transcript, according to [Ensembl](https://www.ensembl.org).
+ In the reference is lost to other transcripts, which can be retrieved from the locations table.
+ A step toward independent annotation.
+ 
+ 
  
  ### Merging with TCGA ([30_tcga_merge](icgc/30_tcga_merge))
  
@@ -336,7 +352,7 @@ I have not used the phase info here, but it should be kept in mind that it is un
 * annotation in the production stage is incomplete, possibly because of the mismatch between TCAG/ICGC ref assembly and
 GRCh28 that i currently the standard with Ensembl
 * there might be some errors in the re-annotation \
-[32_reannotate_positions.py](icgc/20_local_db_reorganization/32_reannotate_positions.py) - \
+[32_reannotate_positions.py](icgc/20_local_db_reorganization/32_reannotate_missense_mutations.py) - \
  coding sequences from biomart not correct (e.g ENST00000366645 vs the same seq on the Ensembl website
 [the same seq on the Ensembl website](https://grch37.ensembl.org/Homo_sapiens/Transcript/Exons?db=core;g=ENSG00000116903;r=1:231468499-231473598;t=ENST00000366645))
 ## P.S.
