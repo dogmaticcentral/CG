@@ -507,11 +507,11 @@ def main():
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
-
 	cursor.close()
 	db.close()
 
 	number_of_chunks = 12
+
 	parallelize(number_of_chunks, add_tcga_diff, tcga_tables, [ref_assembly])
 
 #########################################

@@ -158,7 +158,7 @@ def resolve_duplicate_specimens(cursor, somatic_table, specimen_ids):
 			removable_ids_string = ",".join(["'%s'" % rid for rid in removable_ids])
 			qry = "delete from {} where icgc_specimen_id in ({})".format(somatic_table, removable_ids_string)
 			print(qry)
-			search_db(cursor, qry)
+			#search_db(cursor, qry)
 
 
 #########################################

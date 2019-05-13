@@ -33,6 +33,7 @@ def cleanup_duplicate_specimens(tables, other_args):
 		icgc_donor_ids = [r[0] for r in ret]
 		problematic = []
 		specimen_ids = {}
+		icgc_donor_ids = ['DO4128']
 		for icgc_donor_id in icgc_donor_ids:
 			qry  = "select distinct(icgc_specimen_id) "
 			qry += "from %s where icgc_donor_id='%s' " % (somatic_table,icgc_donor_id)
@@ -61,8 +62,8 @@ def cleanup_duplicate_specimens(tables, other_args):
 #########################################
 def main():
 
-	print("disabled - this script deletes certain rows ") # comment out to run
-	exit(1)
+	#print("disabled - this script deletes certain rows ") # comment out to run
+	#exit(1)
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -76,6 +77,7 @@ def main():
 	db.close()
 
 	number_of_chunks = 8
+
 	parallelize(number_of_chunks, cleanup_duplicate_specimens, tables, [])
 
 	return
