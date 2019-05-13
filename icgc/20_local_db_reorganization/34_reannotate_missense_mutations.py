@@ -278,7 +278,7 @@ def re_annotate(chromosomes, other_args):
 		# (that the mutation results in aa change)
 		# TODO: change this into our own independent annotation
 		qry += "where aa_mutation is not null "
-		#qry += "and  icgc_mutation_id in ('MU4603992')"
+		#qry += "and  icgc_mutation_id in ('MU10543')"
 		ret  = search_db(cursor,qry)
 		if not ret:
 			print("no aa mutation entries for chrom %s (?) " % chrom)
@@ -305,7 +305,6 @@ def re_annotate(chromosomes, other_args):
 			search_db(cursor, qry, verbose=False)
 			total_updates += 1
 			#print()
-
 
 		time1 = time.time()
 		print("chrom ", chrom, "done in %.3f mins, total updates %d" % (float(time1-time0)/60, total_updates))

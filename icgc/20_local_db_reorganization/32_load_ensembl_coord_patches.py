@@ -33,7 +33,7 @@ def main():
 	db_name = "icgc"
 	switch_to_db(cursor, db_name)
 	for chrom in [str(x) for x in range(1,23)] + ["X", "Y"]:
-		qry = "load data local infile 'chrom_%s_coords.patch.tsv' into table coords_chrom_%s" % (chrom ,chrom)
+		qry = "load data local infile 'coord_patches/chrom_%s_coords.patch.tsv' into table coords_chrom_%s" % (chrom ,chrom)
 		search_db(cursor,qry,verbose=True)
 
 	cursor.close()

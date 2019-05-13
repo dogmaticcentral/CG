@@ -313,10 +313,18 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  
  #### Optional: re-annotating missense mutations
  It may be  helpful to change the annotation of missense mutations
- ([32_reannotate_missense_mutations.py](icgc/20_local_db_reorganization/32_reannotate_missense_mutations.py)) 
+ ([34_reannotate_missense_mutations.py](icgc/20_local_db_reorganization/34_reannotate_missense_mutations.py)) 
  to include the currently accepted  canonical transcript, according to [Ensembl](https://www.ensembl.org).
- In the reference is lost to other transcripts, which can be retrieved from the locations table.
- A step toward independent annotation.
+ 
+ After running reference [34_reannotate_missense_mutations.py](icgc/20_local_db_reorganization/34_reannotate_missense_mutations.py),
+  the reference will be lost to other (non-canonical) transcripts, which can be retrieved from the locations table.
+  The prerequisite is [32_load_ensembl_coord_patches.py](icgc/20_local_db_reorganization/32_load_ensembl_coord_patches.py), 
+  a hacky solution to include the latest gene coordinates from Ensembl. The coordinate tables can be found in 
+  [hacks/coord_patches.tar.bz2](icgc/hacks/coord_patches.tar.bz2).
+ A step toward independent annotation. 
+ 
+ #### ICGC only - production
+ It si possible to stop here and move to production scripts, if there is no interest in including TCGA.
  
  
  
@@ -352,7 +360,7 @@ I have not used the phase info here, but it should be kept in mind that it is un
 * annotation in the production stage is incomplete, possibly because of the mismatch between TCAG/ICGC ref assembly and
 GRCh28 that i currently the standard with Ensembl
 * there might be some errors in the re-annotation \
-[32_reannotate_positions.py](icgc/20_local_db_reorganization/32_reannotate_missense_mutations.py) - \
+[32_reannotate_positions.py](icgc/20_local_db_reorganization/34_reannotate_missense_mutations.py) - \
  coding sequences from biomart not correct (e.g ENST00000366645 vs the same seq on the Ensembl website
 [the same seq on the Ensembl website](https://grch37.ensembl.org/Homo_sapiens/Transcript/Exons?db=core;g=ENSG00000116903;r=1:231468499-231473598;t=ENST00000366645))
 ## P.S.
