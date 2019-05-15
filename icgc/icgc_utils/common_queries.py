@@ -17,7 +17,8 @@
 # 
 # Contact: ivana.mihalek@gmail.com
 #
-from icgc_utils.mysql   import  *
+
+from icgc_utils.tcga import *
 #
 #########################################
 def gnomad_mutations (cursor, gene_symbol):
@@ -320,7 +321,6 @@ def quotify(something):
 		return ""
 	return "'{}'".format(something)
 
-
 #########################################
 def co_ocurrence_w_group_count(cursor, somatic_table, gene1, other_genes):
 	qry =  "select count(distinct s1.icgc_donor_id) ct "
@@ -338,7 +338,6 @@ def co_ocurrence_w_group_count(cursor, somatic_table, gene1, other_genes):
 		search_db(cursor,qry,verbose=True)
 		exit()
 	return ret[0][0]
-
 
 #########################################
 def co_ocurrence_count(cursor, somatic_table, gene1, gene2):
@@ -463,6 +462,8 @@ def mutation_provenance(cursor, table, icgc_donor_id, icgc_mutation_id):
 	qry += "where icgc_donor_id='%s' and icgc_mutation_id='%s'" % (icgc_donor_id, icgc_mutation_id)
 	return [r[0] for r in search_db(cursor,qry)]
 
+
+
 #########################################
 def mutations_in_gene_old(cursor, approved_symbol):
 	qry  = "select ensembl_gene_id_by_hgnc, ensembl_gene_id, chromosome from hgnc "
@@ -499,24 +500,22 @@ def pathogenic_mutations_in_gene(cursor, approved_symbol, chromosome, use_reliab
 	if not ret: return []
 	return [r[0] for r in ret]
 
-
 #########################################
 def attempt_resolve_deprecated(cursor, stable_id_old, verbose=False):
-	qry = "select new_id from ensembl_deprecated_ids where old_id='%s'" % stable_id_old
+	qry = "select new_id from icgc.ensembl_deprecated_ids where old_id='%s'" % stable_id_old
 	ret = search_db(cursor,qry,verbose=verbose)
 	if not ret: return None
 	return ret[0][0]
 
-
 #########################################
 def get_approved_symbol(cursor, ensembl_gene_id):
 	symbol = None
-	qry = "select approved_symbol from hgnc where ensembl_gene_id='%s'"% ensembl_gene_id
+	qry = "select approved_symbol from icgc.hgnc where ensembl_gene_id='%s'"% ensembl_gene_id
 	ret = search_db(cursor,qry)
 	if not ret:
 		new_id =  attempt_resolve_deprecated(cursor, ensembl_gene_id)
 		if new_id:
-			qry = "select approved_symbol from hgnc where ensembl_gene_id='%s'"% new_id
+			qry = "select approved_symbol from icgc.hgnc where ensembl_gene_id='%s'"% new_id
 			ret = search_db(cursor,qry)
 			if ret: symbol = ret[0][0]
 
@@ -534,13 +533,14 @@ def gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id, verbose=Fal
 	if not ret:
 		new_id =  attempt_resolve_deprecated(cursor, gene_stable_id, verbose)
 		if not new_id:
-			if verbose: print("No canonical transcript and no new id found for %s ", gene_stable_id)
+			if verbose: print("No canonical transcript and no new id found for %s "% gene_stable_id)
 			return None
 		qry  = "select  distinct(canonical_transcript) from icgc.ensembl_ids where  gene ='%s' " % new_id
 		ret = search_db(cursor,qry)
 		if ret:
 			return ret[0][0]
 		if verbose: print("No canonical transcript id found for %s, mapped to %s" % (gene_stable_id,new_id))
+		return None
 	elif len(ret) != 1:
 		if verbose: print("No unique canonical transcript id found for %s" % gene_stable_id)
 		return None

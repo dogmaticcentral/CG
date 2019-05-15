@@ -33,7 +33,6 @@ def cleanup_duplicate_specimens(tables, other_args):
 		icgc_donor_ids = [r[0] for r in ret]
 		problematic = []
 		specimen_ids = {}
-		icgc_donor_ids = ['DO4128']
 		for icgc_donor_id in icgc_donor_ids:
 			qry  = "select distinct(icgc_specimen_id) "
 			qry += "from %s where icgc_donor_id='%s' " % (somatic_table,icgc_donor_id)
@@ -49,7 +48,7 @@ def cleanup_duplicate_specimens(tables, other_args):
 
 		# most of these are innocuous, with normal sample not appearing in the variants table
 		# this, however is not always the case
-		resolve_duplicate_specimens(cursor, somatic_table, specimen_ids)
+		# resolve_duplicate_specimens(cursor, somatic_table, specimen_ids)
 
 	cursor.close()
 	db.close()
@@ -77,6 +76,9 @@ def main():
 	db.close()
 
 	number_of_chunks = 8
+
+	number_of_chunks = 1
+	tables = ['THCA_simple_somatic']
 
 	parallelize(number_of_chunks, cleanup_duplicate_specimens, tables, [])
 

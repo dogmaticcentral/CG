@@ -62,7 +62,7 @@ def main():
 	icgc_token = os.environ['ICGC_TOKEN']
 	base_url = "https://dcc.icgc.org/api/v1/download?fn="
 
-	projects_of_interest = parse_json(Config.release)
+	projects_of_interest = parse_json(Config.icgc_release)
 	for project_name, fnms in projects_of_interest.items():
 		print(project_name)
 		target_dir = "/".join([Config.data_home_local] + project_name.split('-'))

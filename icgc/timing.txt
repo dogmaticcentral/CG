@@ -39,7 +39,6 @@ icgc
 │   ├── 15_set_pathogenicity_in_mutation_tables.py           ~15 min, 8 fold pll
 │   ├── 16_pathg_annotation_from_mutations_to_variants.py      7 min, 8 fold pll
 │   ├── 17_make_jumbo_index_on_new_tables.py                 ~20 min, no pll
-
 │   ├── 18_cleanup_duplicate_entries.py                      120 min, 10 fold pll
 │   ├── 19_cleanup_duplicate_donors.py                         2 min single cpu
 │   ├── 21_add_reliability_annotation_to_somatic.py            7 min, 8 fold pll
@@ -51,6 +50,7 @@ icgc
 │   ├── 30_mutation2gene_maps.py                             ~90 min, 12 fold pll
 │   ├── 32_load_ensembl_coord_patches.py                      <1s
 │   └── 34_reannotate_missense_mutations.py                 ~180 min, 12 fold pll
+
 --------------------------------------------------------
 ├── 30_tcga_merge
 │   ├── 30_reorganize_tcga_mutations_and_locations.py         24 min, 12 fold pll
@@ -60,7 +60,7 @@ icgc
 │   ├── 35_cleanup_duplicate_samples.py                       ~30 s
 │   ├── 36_cleanup_duplicate_donors_by_variant_overlap.py      ~1 min
 │   ├── 38_pathg_from_mutations_to_variants.py                ~10 min, 8 fold pll
-│   ├── 39_reannotate_missense_mutations.py
+│   ├── 39_reannotate_missense_mutations.py                  ~180 min, 12 fold pll
 │   └── 40_mutation2gene_maps.py                              ~10min
 --------------------------------------------------------
 ├── 40_housekeeping

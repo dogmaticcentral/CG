@@ -35,15 +35,6 @@ def resolve_id_class(cursor, id_class):
 
 
 #########################################
-def hard_landing_search(cursor, qry):
-	ret =  search_db(cursor, qry)
-	if not ret or (type(ret[0][0])==str and 'error' in ret[0][0].lower()):
-		search_db(cursor, qry, verbose=True)
-		exit()
-	return ret
-
-
-#########################################
 # assumes value is string
 def entry_exists(cursor, db, table, column, value):
 	qry = "select * from %s.%s where %s='%s' limit 1" % (db, table, column, value)

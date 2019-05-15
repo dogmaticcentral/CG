@@ -65,8 +65,8 @@ tcga_icgc_table_correspondence = {
 #########################################
 def main():
 
-	print("disabled")
-	exit()
+	#print("disabled")
+	#exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -89,6 +89,30 @@ def main():
 		qry = "drop table " + somatic_table_name
 		search_db(cursor,qry, verbose=True)
 		make_variants_table(cursor, db_name, somatic_table_name)
+
+	# When reading icgc donor and specimen tables from tsv,
+	# we needed id *not* to be autoincremnet. Now we will be doing the
+	# the inserts, so turn the autoincrementing back on.
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%_donor'"
+	icgc_donor_tables = [field[0] for field in search_db(cursor,qry)]
+	for icgc_donor_table in icgc_donor_tables:
+
+		tumor = icgc_donor_table.split("_")[0]
+		set_autoincrement(cursor, 'icgc',  icgc_donor_table, 'id')
+		set_autoincrement(cursor, 'icgc',  "%s_specimen"%tumor, 'id')
+
+	# increase the width of icgc_sample_id and icgc_specime_id columns
+	# so we can store TCGA identifiers in there
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%_simple_somatic'"
+	icgc_variant_tables = [field[0] for field in search_db(cursor,qry)]
+	for table in icgc_variant_tables:
+		print ("modifying column width in", table)
+		qry = "ALTER TABLE %s MODIFY COLUMN icgc_sample_id VARCHAR(50)" % table
+		search_db(cursor,qry)
+		qry = "ALTER TABLE %s MODIFY COLUMN icgc_specimen_id VARCHAR(50)" % table
+		search_db(cursor,qry)
 
 	cursor.close()
 	db.close()

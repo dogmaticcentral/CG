@@ -100,11 +100,12 @@ def val2mysqlval(value):
 
 
 ########
-def store_without_checking(cursor, table, fields, verbose=False, database=None):
-	if database:
-		qry = "insert into %s.%s " % (database,table)
-	else:
-		qry = "insert into %s " % table
+def store_without_checking(cursor, table, fields, verbose=False, database=None, ignore=False):
+
+	qry = "insert "
+	# if we use INSERT IGNORE, the duplication attempt is ignored
+	if ignore: qry += "ignore "
+	qry += "%s.%s "%(database,table) if database else "%s "%table
 
 	qry += "("
 	qry += ",".join(fields.keys())
@@ -289,15 +290,20 @@ def table_create_time (cursor, db_name, table_name):
 	else:
 		return rows[0][0]
 
-
+import warnings
 #######
 def search_db(cursor, qry, verbose=False):
+	warnings.filterwarnings('ignore', category=MySQLdb.Warning)
 	try:
 		cursor.execute(qry)
 	except MySQLdb.Error as e:
 		if verbose:
 			print("Error running cursor.execute() for  qry:\n%s\n%s" % (qry, e.args[1]))
 		return [["Error"], e.args]
+	except MySQLdb.Warning as e: # this does not work for me - therefore filterwarnings
+		if verbose:
+			print("Warning running cursor.execute() for  qry:\n%s\n%s" % (qry, e.args[1]))
+		return [["Warning"], e.args]
 
 	try:
 		rows = cursor.fetchall()
@@ -319,6 +325,24 @@ def search_db(cursor, qry, verbose=False):
 	for row in rows:
 		rows_clean.append([r.decode('utf-8') if type(r)==bytes else r for r in row])
 	return rows_clean
+
+#########################################
+def error_intolerant_search(cursor, qry):
+	ret =  search_db(cursor, qry)
+	if not ret: return ret
+	if type(ret[0][0])==str and 'error' in ret[0][0].lower():
+		search_db(cursor, qry, verbose=True)
+		exit()
+	return ret
+
+#########################################
+def hard_landing_search(cursor, qry):
+	ret =  search_db(cursor, qry)
+	if not ret or (type(ret[0][0])==str and 'error' in ret[0][0].lower()):
+		search_db(cursor, qry, verbose=True)
+		exit()
+	return ret
+
 
 
 ########

@@ -82,7 +82,4 @@ def translate_positions(positions, chromosome, from_assembly, to_assembly, rootn
 
 	return new_positions
 
-
-
-
 #########################################

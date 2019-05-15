@@ -323,7 +323,7 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
   [hacks/coord_patches.tar.bz2](icgc/hacks/coord_patches.tar.bz2).
  A step toward independent annotation. 
  
- #### ICGC only - production
+ #### ICGC-only  production
  It si possible to stop here and move to production scripts, if there is no interest in including TCGA.
  
  

@@ -42,7 +42,7 @@ def cleanup(tables, other_args):
 
 		problematic = [r[0] for r in ret]
 		print("%s has %d specimen ids with duplicate sample ids in the variant table" % (somatic_table,len(problematic)))
-
+		continue
 		# most of these are innocuous, with normal sample not appearing in the variants table
 		# this, however is not always the case
 		for icgc_specimen_id in problematic:
@@ -69,8 +69,8 @@ def cleanup(tables, other_args):
 #########################################
 def main():
 
-	print("disabled ") # comment out to run
-	exit(1)
+	#print("disabled ") # comment out to run
+	#exit(1)
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -87,6 +87,9 @@ def main():
 	half = int(len(tables_sorted)/2)
 	tables_mirrored  = tables_sorted[0:half] + list(reversed(tables_sorted[half:]))
 	number_of_chunks = half
+
+	number_of_chunks = 1
+	tables_mirrored = ['THCA_simple_somatic']
 
 	parallelize(number_of_chunks, cleanup, tables_mirrored, [], round_robin=True)
 

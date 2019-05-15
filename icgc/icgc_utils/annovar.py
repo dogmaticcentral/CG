@@ -31,17 +31,25 @@ def assembly_name_translate(assembly, mitochondrial):
 ##################################
 def run_annovar(avinput, assembly, out_name_root, mitochondrial=False):
 
-	avoutname = "%s.%s_multianno.txt" % (out_name_root, assembly)
+	avoutname = ".".join(avinput.split(".")[:-1]+["avout"])
 	# danger zone: this file better does not exist if it is outdated
 	if os.path.exists(avoutname) and os.path.getsize(avoutname)!=0:
-		print("\t %s found"%avoutname)
+		print("\t\t %s found"%avoutname)
 		return avoutname
+	cmd = "rm -f *multianno.txt"
+	subprocess.call(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
+	# the actual run
 	translated_assembly_name = assembly_name_translate(assembly, mitochondrial)
 	cmd  = "/home/ivana/third/annovar/table_annovar.pl %s " % avinput
 	cmd += "/home/ivana/third/annovar/humandb/ -buildver %s -out %s " % (translated_assembly_name, out_name_root)
 	cmd += " -protocol ensGene  -operation g  -nastring ."
 	subprocess.call(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+
+	# move the output to the name we want (annovar insists on chopping down the name to the first few tokens)
+	cmd = "mv *multianno.txt " + avoutname
+	subprocess.call(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+
 	# clean the junk
 	cmd = "rm %s.ensGene.variant_function " % out_name_root
 	cmd += "%s.ensGene.exonic_variant_function %s.ensGene.log" % (out_name_root, out_name_root)
@@ -149,7 +157,10 @@ def parse_annovar_location_fields(cursor, annovar_named_field):
 			for gene in genes.split(";"):
 				if gene  and 'ENSG' in gene:
 					canonical = gene_stable_id_2_canonical_transcript_id(cursor, gene)
-					if canonical: tr_relative.append("{}:{}".format(canonical, 'intron'))
+					if canonical:
+						tr_relative.append("{}:{}".format(canonical, 'intron'))
+					#else:
+					#	gene_stable_id_2_canonical_transcript_id(cursor, gene, verbose=True)
 
 
 	tr_relative_string  = ";".join(list(tr_relative))
@@ -159,7 +170,126 @@ def parse_annovar_location_fields(cursor, annovar_named_field):
 
 
 ########################################
+def get_icgc_mutation_type(start, end, ref, alt):
+	frame_consequences = set([])
+	if ref=='-':
+		if len(alt)%3==0:
+			frame_consequences.add('inframe')
+		else:
+			frame_consequences.add('frameshift')
+		return 'insertion', frame_consequences
+	if alt=='-':
+		if len(ref)%3==0:
+			frame_consequences.add('inframe')
+		else:
+			frame_consequences.add('frameshift')
+		return 'deletion', frame_consequences
+	if start==end:
+		return 'single', frame_consequences
+	return 'multiple', frame_consequences
+
+#########################################
+def parse_annovar_mutation_fields(cursor, annovar_named_field):
+
+	# I should probably get rid of mutation_type columns - it is completely derivable from other columns
+	# note though that it might complement consequence notation which only says inframe or frameshift
+	tr_relative = []
+	aa_mutation = []
+	consequences = set([])
+	mutation_type, frame_consequences = get_icgc_mutation_type(annovar_named_field['start'], annovar_named_field['end'],
+	                                                           annovar_named_field['ref'], annovar_named_field['alt'])
+	# icgc fields in locations_chrom_*: position, gene_relative, transcript relative
+	# gene relative is in two annovar fields: func and gene
+	gene_relative = dict(list(zip(annovar_named_field['gene'].split(";"),annovar_named_field['func'].split(";") )))
+	gene_relative_string = ";".join(["%s:%s"%(k,gene_location_annovar_to_icgc(v))
+	                                 for k,v in gene_relative.items()])
+	# what to do with introns? can introns be  assigned to a transcript?
+	# tcga thinks they can, while annovar things they are only assignable to a gene as a whole (I'd agree)
+	# I am disregarding intronic mutations as zero impact
+	# as an ad hoc measure, I will assign the annotation to the canonical transcript
+	if 'intronic' in annovar_named_field['func']:
+		consequences.add('intronic')
+		for gene_stable_id, annot in gene_relative.items():
+			if annot != 'intronic': continue
+			canonical_transcript_id = gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id)
+			tr_relative.append("{}:{}".format(canonical_transcript_id, 'intronic'))
+	# transcript relative contains a bit more info than I need - perhaps if I was doing it
+	# again I would stick to annovar annotation, but not now
+	# I would in any case change the names in the annovar header - they do not reflect the content
+	for trrel in annovar_named_field['aachange'].split(","):
+		fields = trrel.split(":") # the content of each field is not fixed
+		[enst,cdna_change, aa_change, annotation] = [None]*4
+		for field in fields:
+			if field[:4] == "ENSG":
+				# just drop, we already have that info
+				pass
+			elif field[:4] == "ENST":
+				enst = field
+			elif field[:2] == "c.":
+				cdna_change = field
+				pass
+			elif field[:2] == "p.":
+				aa_change = field
+			elif field[:4] == "exon":
+				annotation = 'exon'
+			elif field[:4] == "UTR3":
+				annotation = 'UTR3'
+			elif field[:4] == "UTR5":
+				annotation = 'UTR5'
+
+		if not enst:
+			if aa_change:
+				print("aa change without specified ENST", fields)
+				exit()
+			else:
+				continue
+
+		if annotation=='exon' and cdna_change and ('-' in cdna_change or '+' in cdna_change):
+			annotation = 'splice_region'
+			consequences.add('splice_region')
+		tr_relative.append("{}:{}".format(enst, annotation))
+
+		if aa_change:
+			aa_mutation.append("{}:{}".format(enst, aa_change[2:]))
+			if aa_change[-1] in ['X','x','*']:
+				consequences.add('stop_gained')
+			elif aa_change[-2:].lower()=='fs':
+				consequences.add('frameshift')
+			elif aa_change[-2:].lower() in ['ins','del']:
+				pass
+			elif aa_change[2]==aa_change[-1]:
+				consequences.add('synonymous')
+			else:
+				consequences.add('missense')
+
+	tr_relative_string  = ";".join(list(tr_relative))
+	if 'exon' in tr_relative_string: consequences |= frame_consequences
+	consequences_string = ";".join(list(consequences))
+	aa_mutation_string = ";".join(list(aa_mutation))
+
+	return [mutation_type, consequences_string, aa_mutation_string, gene_relative_string, tr_relative_string]
+
+########################################
 def parse_annovar_line(cursor, header_fields, line):
 	fields = line.rstrip().split('\t')
-	annovar_named_field = dict(list(zip(header_fields,fields)))
-	return parse_annovar_location_fields(cursor, annovar_named_field)
+	named_field = dict(list(zip(header_fields,fields)))
+	dictkey = "_".join([named_field['chr'], named_field['start'], named_field['end'], named_field['ref'], named_field['alt']])
+	return dictkey, parse_annovar_location_fields(cursor, named_field), parse_annovar_mutation_fields(cursor, named_field)
+
+########################################
+def parse_annovar(cursor, avout):
+	annotation = {}
+	inf = open(avout, "r")
+	header_fields = None
+	for line in inf:
+		if not header_fields:
+			header_fields = parse_annovar_header_fields(line)
+			if not header_fields: # header must be the first line
+				print("header not found in", avout)
+				exit()
+		else:
+			dictkey, loc, mut = parse_annovar_line(cursor, header_fields, line)
+			annotation[dictkey]= {'loc':loc, 'mut': mut}
+
+	return annotation
+
