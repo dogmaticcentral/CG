@@ -96,9 +96,10 @@ def resolve_duplicate_specimens(cursor, somatic_table, specimen_ids):
 			exit(1)
 		entries_per_specimen = dict(ret2)
 		print(entries_per_specimen)
+
 		qry = "select icgc_specimen_id, icgc_donor_id, specimen_type "
-		qry += "from %s_specimen where icgc_specimen_id in (%s)" % (
-		tumor, ",".join(["'%s'" % id for id in entries_per_specimen.keys()]))
+		qry += "from %s_specimen where icgc_specimen_id in (%s)" % \
+				(tumor, ",".join(["'%s'" % id for id in entries_per_specimen.keys()]))
 		ret3 = search_db(cursor, qry)
 		if not ret3:
 			search_db(cursor, qry, verbose=True)
@@ -159,7 +160,7 @@ def resolve_duplicate_specimens(cursor, somatic_table, specimen_ids):
 			removable_ids_string = ",".join(["'%s'" % rid for rid in removable_ids])
 			qry = "delete from {} where icgc_specimen_id in ({})".format(somatic_table, removable_ids_string)
 			print(qry)
-			#search_db(cursor, qry)
+			search_db(cursor, qry)
 
 
 #########################################
@@ -243,9 +244,10 @@ def annotation_to_dict(aa_change):
 
 
 #########################################
-def aa_change_cleanup(cursor, aa_change):
+def consequence_cleanup(cursor, aa_change):
 	if not aa_change: return ""
 	if aa_change=="": return aa_change
+	if not ":" in aa_change: return aa_change
 	change = annotation_to_dict(aa_change)
 	enst_canonical = list_of_transcript_ids_2_canonical_transcript_id(cursor, list(change.keys()))
 	if enst_canonical and len(enst_canonical)>0:
@@ -257,35 +259,44 @@ def aa_change_cleanup(cursor, aa_change):
 	return aa_change
 
 
-
 #########################################
-def find_53_status(cursor, tumor_short, specimen):
+def find_background_status(cursor, tumor_short, specimen, bg_gene_symbol):
+
+	# which chromosome is our background gene on?
+	chromosome = find_chromosome(cursor, bg_gene_symbol)
+
 	# g = gene
-	# m = mutation
 	# v = variant
+	# m = mutation
+	# l = location
 	qry  = "select g.icgc_mutation_id, v.pathogenicity_estimate, m.consequence, m.aa_mutation, l.transcript_relative "
-	qry += "from mutation2gene g, %s_simple_somatic v, mutations_chrom_17 m , locations_chrom_17 l " % (tumor_short)
-	qry += "where g.gene_symbol='TP53' "
-	qry += "and v.icgc_specimen_id = '%s' "  % specimen
+	qry += "from mutation2gene g, %s_simple_somatic v,  " % (tumor_short)
+	qry += "mutations_chrom_%s m , locations_chrom_%s l " % (chromosome, chromosome)
+	qry += "where g.gene_symbol='%s' " % bg_gene_symbol
+	qry += "and v.icgc_specimen_id = '%s' " % specimen
 	qry += "and g.icgc_mutation_id = v.icgc_mutation_id "
 	qry += "and g.icgc_mutation_id = m.icgc_mutation_id "
 	qry += "and m.start_position = l.position "
 	ret = search_db(cursor,qry)
 	if not ret: return ["wt",""]
 
-	impact_estimate =  "benign"
+	impact_estimate = "benign"
 	cons = []
 	for line in ret:
-		if line[1]==1:  impact_estimate = "pathogenic"
-		if line[-1]!=None and 'splice' in line[-1]:
-			cons.append(line[-1])
+		[icgc_mutation_id, pathogenicity, consequence, aa_mutation, transcript_relative] = line
+		if pathogenicity==1:  impact_estimate = "pathogenic"
+		if transcript_relative!=None and 'splice' in transcript_relative:
+			clean = consequence_cleanup(cursor,transcript_relative)
+			if clean and ":" in clean: clean = clean.split(":")[1]
+			cons.append(clean)
 			continue
-		if line[2] and line[3]:
-			aa_change = aa_change_cleanup(cursor, line[3])
+		if consequence and aa_mutation:
+			aa_change = consequence_cleanup(cursor, aa_mutation).split(":")[1]
 			if aa_change and aa_change != "":
-				cons.append("%s:%s"%(line[2], aa_change))
+				cons.append("%s:%s"%(consequence, aa_change))
 			else:
-				cons.append(line[2])
+				cons.append(consequence)
+
 	return [impact_estimate, ";".join(cons)]
 
 
@@ -500,12 +511,6 @@ def pathogenic_mutations_in_gene(cursor, approved_symbol, chromosome, use_reliab
 	if not ret: return []
 	return [r[0] for r in ret]
 
-#########################################
-def attempt_resolve_deprecated(cursor, stable_id_old, verbose=False):
-	qry = "select new_id from icgc.ensembl_deprecated_ids where old_id='%s'" % stable_id_old
-	ret = search_db(cursor,qry,verbose=verbose)
-	if not ret: return None
-	return ret[0][0]
 
 #########################################
 def get_approved_symbol(cursor, ensembl_gene_id):
@@ -525,7 +530,16 @@ def get_approved_symbol(cursor, ensembl_gene_id):
 	return symbol if symbol else ensembl_gene_id
 
 
+#########################################
+def attempt_resolve_deprecated(cursor, stable_id_old, verbose=False):
+	qry = "select new_id from icgc.ensembl_deprecated_ids where old_id='%s'" % stable_id_old
+	ret = search_db(cursor,qry,verbose=verbose)
+	if not ret: return None
+	return ret[0][0]
 
+# ./icgc_utils/kernprof.py -l 39_reannotate_missense_mutations.py
+# python3 -m line_profiler 39_reannotate_missense_mutations.py.lprof
+#@profile
 #########################################
 def gene_stable_id_2_canonical_transcript_id(cursor, gene_stable_id, verbose=False):
 	qry  = "select  distinct(canonical_transcript) from icgc.ensembl_ids where  gene ='%s' " % gene_stable_id

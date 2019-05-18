@@ -132,6 +132,7 @@ def resolve(cursor, somatic_table, cluster):
 	if len(preferred_set)==1:
 		keep_id = preferred_set.pop()
 	else:
+		# this is arbitrary  if all depths are 0
 		keep_id = sorted(preferred_set,key=lambda x: avg_depth[x], reverse=True)[0]
 
 	cluster.remove(keep_id)
@@ -170,8 +171,8 @@ def cleanup(tables, other_args):
 #########################################
 def main():
 
-	#print("disabled ") # comment out to run
-	#exit(1)
+	print("disabled ") # comment out to run
+	exit(1)
 
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
@@ -186,8 +187,10 @@ def main():
 	db.close()
 
 	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=False)
-	number_of_chunks = 5
+	number_of_chunks = 1
 
+	#tables_sorted = ['GBM_simple_somatic']
+	#number_of_chunks = 1
 	parallelize(number_of_chunks, cleanup, tables_sorted, [], round_robin=True)
 
 

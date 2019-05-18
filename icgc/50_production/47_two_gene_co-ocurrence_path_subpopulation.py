@@ -92,8 +92,8 @@ def main():
 			                'p smaller', 'p bigger'])+"\n")
 
 	for table in tables:
-		print "================================="
-		print table
+		print("=================================")
+		print(table)
 
 		tumor_short = table.split("_")[0]
 
@@ -107,19 +107,19 @@ def main():
 
 		patients_with_path_mutations_in_gene_2 = {}
 		for p,m,s in ret:
-			if not patients_with_path_mutations_in_gene_2.has_key(p): patients_with_path_mutations_in_gene_2[p] = []
+			if p not in patients_with_path_mutations_in_gene_2: patients_with_path_mutations_in_gene_2[p] = []
 			patients_with_path_mutations_in_gene_2[p].append([m,s])
 
 		patients = 0
 		p53path = 0
 		miss    = 0
 		cooc    = 0
-		for p, muts_specs in patients_with_path_mutations_in_gene_2.iteritems():
+		for p, muts_specs in patients_with_path_mutations_in_gene_2.items():
 			p53_pathogenic = False
 			gene_2_missense = False
 			for mutation,specimen in muts_specs:
 				# is p53 pathogenic or not?
-				[gist,details] = find_53_status(cursor,tumor_short,specimen)
+				[gist,details] = find_background_status(cursor,tumor_short,specimen, 'TP53')
 				if gist=='pathogenic': p53_pathogenic = True
 				# is mutation missense?
 				qry  = "select consequence from mutations_chrom_%s " % chromosome
@@ -141,14 +141,14 @@ def main():
 		total_p53path += p53path
 		total_miss += miss
 		total_cooc += cooc
-		print "patients ", patients
-		print "p53path  ", p53path
-		print "miss     ", miss
-		print "co-ocurrence:", cooc
-		print "    expected: %.1f" % expected
-		print "   p_smaller: %.2f" % p_smaller
-		print "    p_bigger: %.2f" % p_bigger
-		print
+		print("patients ", patients)
+		print("p53path  ", p53path)
+		print("miss     ", miss)
+		print("co-ocurrence:", cooc)
+		print("    expected: %.1f" % expected)
+		print("   p_smaller: %.2f" % p_smaller)
+		print("    p_bigger: %.2f" % p_bigger)
+		print()
 		#
 		# if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
 		#                 (tumor_short,donors, patients_with_muts_in_gene.get(gene_1, 0),
@@ -157,16 +157,16 @@ def main():
 
 	if True:
 		p_smaller, p_bigger = myfisher(total_donors, total_p53path, total_miss, total_cooc)
-		print
-		print "================================="
-		print gene_2
-		print "total donors:", total_donors
-		print "tota_p53path:", total_p53path
-		print "total_miss:  ", total_miss
-		print "        cooc:", total_cooc
-		print "    expected: %.1f" % (float(total_p53path)/total_donors*total_miss)
-		print "   p_smaller: %.1e" % p_smaller
-		print "    p_bigger: %.1e" % p_bigger
+		print()
+		print("=================================")
+		print(gene_2)
+		print("total donors:", total_donors)
+		print("tota_p53path:", total_p53path)
+		print("total_miss:  ", total_miss)
+		print("        cooc:", total_cooc)
+		print("    expected: %.1f" % (float(total_p53path)/total_donors*total_miss))
+		print("   p_smaller: %.1e" % p_smaller)
+		print("    p_bigger: %.1e" % p_bigger)
 		expected =(float(total_p53path)/total_donors*total_miss)
 		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
 									("total", total_donors, total_p53path,

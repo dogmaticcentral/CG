@@ -142,6 +142,9 @@ def find_aa_change(coding_seq, strand, cds_position, nt):
 	change_string= "{}{}{}".format(aa['from'], pep_pos, aa['to'])
 	return change_string
 
+# ./icgc_utils/kernprof.py -l 39_reannotate_missense_mutations.py
+# python3 -m line_profiler 39_reannotate_missense_mutations.py.lprof
+# @profile
 #########################################
 def process_aa_change_line(cursor, chrom, line):
 
@@ -302,7 +305,7 @@ def re_annotate(chromosomes, other_args):
 					%(new_annotation, new_consequence, new_pathogenicity)
 			qry += "where icgc_mutation_id='%s' " %  line[0]
 			#print(line)
-			search_db(cursor, qry, verbose=False)
+			#search_db(cursor, qry, verbose=False)
 			total_updates += 1
 			#print()
 
@@ -319,9 +322,16 @@ def re_annotate(chromosomes, other_args):
 #########################################
 def main():
 
-	chromosomes = [str(i) for i in range(1,13)] + ["Y"] + [str(i) for i in range(22,12,-1)] + ["X"]
-	number_of_chunks = 12
+	db     = connect_to_mysql(Config.mysql_conf_file)
+	cursor = db.cursor()
+	# check that we have the index that we need
+	create_index(cursor, 'icgc', 'gene_idx', 'ensembl_ids', ['gene'])
+	cursor.close()
+	db.close()
 
+	chromosomes = [str(i) for i in range(1,13)] + ["Y"] + [str(i) for i in range(22,12,-1)] + ["X"]
+
+	number_of_chunks = 12
 	parallelize (number_of_chunks, re_annotate, chromosomes, [], round_robin=True)
 
 

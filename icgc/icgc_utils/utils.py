@@ -39,11 +39,13 @@ def find_clusters(string_pairs):
 #########################################
 def translate_positions(positions, chromosome, from_assembly, to_assembly, rootname=None):
 
+	if type(positions)==set: positions = list(positions)
+	int_positions = [int(p) for p in positions]
 	if from_assembly == to_assembly:
-		return positions
+		return dict(zip(int_positions, int_positions))
 	# GRCh37 and hg19 only differ for MT
 	if (from_assembly.lower() in ['grch37', 'hg19']) and (to_assembly.lower() in ['grch37', 'hg19']) and (chromosome != "MT"):
-		return positions
+		return dict(zip(int_positions, int_positions))
 	if "grch" in from_assembly.lower():  from_assembly = from_assembly.lower().replace("grch", "GRCh")
 	if "grch" in to_assembly.lower():  to_assembly = to_assembly.lower().replace("grch", "GRCh")
 
@@ -56,9 +58,9 @@ def translate_positions(positions, chromosome, from_assembly, to_assembly, rootn
 
 	outfile = "%s.tsv"%rootname
 	outf = open (outfile,"w")
-	for p in positions:
-		chr = chromosome if 'chr' in chromosome else 'chr'+chromosome
-		outf.write("\t".join([chr, str(p), str(p)]) + "\n")
+	for p in int_positions:
+		chrom = chromosome if 'chr' in chromosome else 'chr'+chromosome
+		outf.write("\t".join([chrom, str(p), str(p), str(p)]) + "\n")
 	outf.close()
 
 	# this is CrossMap now
@@ -66,20 +68,23 @@ def translate_positions(positions, chromosome, from_assembly, to_assembly, rootn
 	(map_tree, target_chrom_sizes, source_chrom_sizes) = read_chain_file(chain_file, print_table=False)
 	crossmap_bed_file(map_tree, outfile, outfile_translated)
 
-	#read binding regions back in
+	#read  regions back in - note that some positions might end upr untranslatable (the unmap file below)
+	translation = {}
 	with open(outfile_translated,"r") as inf:
-		new_positions = [int(line.split("\t")[1]) for line in inf.read().split("\n") if len(line.replace(" ",""))>0]
+		for line in inf:
+			if len(line.replace(" ",""))==0: continue
+			f = line.rstrip().split("\t")
+			translation[int(f[3])] = int(f[2])
 
-	if len(new_positions) != len(positions):
-		print("translation mismatch, {}, chromosome {}, {} to {}".format(os.getcwd(), chromosome, from_assembly, to_assembly))
-		#print("process", os.getpid(), "exiting")
-		return None
+	# remove aux files
+	os.remove(outfile)
+	os.remove(outfile_translated)
+	if os.stat(outfile_translated+".unmap").st_size != 0:
+		print("Warning: {}.unmap in {}", outfile_translated, os.getcwd())
+		print("        is not empty - check this file for untranslated positions.")
 	else:
-		# remove aux files
-		os.remove(outfile)
-		os.remove(outfile_translated)
-		os.remove(outfile_translated+".unmap") # this file should probably checked - it should be empty
+		os.remove(outfile_translated+".unmap")
 
-	return new_positions
+	return translation
 
 #########################################

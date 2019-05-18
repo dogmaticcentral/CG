@@ -53,15 +53,14 @@ icgc
 
 --------------------------------------------------------
 ├── 30_tcga_merge
-│   ├── 30_reorganize_tcga_mutations_and_locations.py         24 min, 12 fold pll
-│   ├── 31_add_tables_for_tcga_variants.py                    <1s
-│   ├── 33_reorganize_tcga_variants.py                        33 min, 12 fold pll
-│   ├── 34_cleanup_duplicate_specimens.py                      <1s
-│   ├── 35_cleanup_duplicate_samples.py                       ~30 s
-│   ├── 36_cleanup_duplicate_donors_by_variant_overlap.py      ~1 min
-│   ├── 38_pathg_from_mutations_to_variants.py                ~10 min, 8 fold pll
-│   ├── 39_reannotate_missense_mutations.py                  ~180 min, 12 fold pll
-│   └── 40_mutation2gene_maps.py                              ~10min
+│   ├── 28_add_tables_for_tcga_variants.py                    <1 min (didn't ime)
+│   ├── 30_reorganize_tcga_variants.py                       ~60 min, 8 fold pll
+│   ├── 34_cleanup_duplicate_specimens.py                     ~3 min, no pll
+│   ├── 35_cleanup_duplicate_samples.py                       <1 min, 8 fold pll
+│   ├── 36_cleanup_duplicate_donors_by_variant_overlap.py     ~3 min, no pll
+│   ├── 38_pathg_from_mutations_to_variants.py                ~6 min, 8 fold pll
+│   ├── 39_reannotate_missense_mutations.py                  ~12 min, 12 fold pll
+│   └── 40_mutation2gene_maps.py                              ~6 min
 --------------------------------------------------------
 ├── 40_housekeeping
 │   ├── 35_database_stats.py                                  ~1min

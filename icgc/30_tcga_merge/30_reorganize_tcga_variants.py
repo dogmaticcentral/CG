@@ -19,10 +19,12 @@
 #
 
 from icgc_utils.processes import *
-from icgc_utils.tcga import *
+from time import time
 from icgc_utils.annovar import *
 from icgc_utils.common_queries import *
 from config import Config
+from random import choices
+import string
 
 # this is set literal
 pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained', '5_prime_UTR_premature_start_codon_gain',
@@ -35,7 +37,7 @@ pathogenic = {'stop_lost', 'inframe_deletion', 'inframe_insertion', 'stop_gained
 
 #########################################
 def store_specimen_info(cursor, tumor_short, donor_id, tcga_barcode):
-	fixed_fields  = {'icgc_donor_id':donor_id, 'icgc_specimen_id': tcga_barcode}
+	fixed_fields  = {'icgc_donor_id':donor_id, 'icgc_specimen_id': tcga_sample2tcga_specimen(tcga_barcode)}
 	update_fields = {'specimen_type':specimen_type_from_TCGA_barcode(tcga_barcode)}
 	store_or_update(cursor, "icgc.%s_specimen"%tumor_short, fixed_fields, update_fields)
 	return
@@ -49,15 +51,19 @@ def store_donor_info(cursor, tumor_short, donor_id, tcga_barcode):
 	return
 
 
-
 #########################################
 def variant_key(position_translation,  chromosome, start_position, end_position,
 				reference_allele, tumor_seq_allele1, tumor_seq_allele2):
 	differing_allele = tumor_seq_allele1
+	start_position = int(start_position)
+	end_position = int(end_position)
 	if differing_allele==reference_allele: differing_allele = tumor_seq_allele2
 	# somebody in  the TCGA decided to innovate and mark the insert with the before- and after- position
 	# Annovar expects both numbers to be the same in such case
 	if reference_allele=="-": end_position=start_position
+	if not (start_position in position_translation and end_position in position_translation):
+		return None
+
 	start_position_translated = position_translation[start_position]
 	end_position_translated   = position_translation[end_position]
 
@@ -82,7 +88,6 @@ def output_annovar_input_file (cursor, tcga_table, chromosome, position_translat
 	qry += "where s.chromosome='%s' and  s.meta_info_id=m.id" % chromosome
 	rows = hard_landing_search(cursor, qry)
 
-	#target_donors = [tcga_sample2tcga_donor(s) for s in target_samples_or_donors]
 	outf = open(outfname, 'w')
 
 	for row in rows:
@@ -94,6 +99,9 @@ def output_annovar_input_file (cursor, tcga_table, chromosome, position_translat
 		if not tumor_sample_barcode in target_samples: continue
 		key_data = variant_key(position_translation[assembly][chromosome], chromosome, start_position, end_position,
 								ref_allele, tumor_allele1, tumor_allele2)
+		if not key_data:
+			print("null key_data for",assembly, chromosome,  start_position, end_position)
+			continue # coordinate_translation may have failed
 		outrow = "\t".join(key_data)
 		outf.write(outrow+"\n")
 
@@ -102,7 +110,6 @@ def output_annovar_input_file (cursor, tcga_table, chromosome, position_translat
 	os.rename(outfname+".tmp", outfname)
 
 	return outfname
-
 
 #########################################
 def intragenic(gene_relative_string):
@@ -145,13 +152,13 @@ def store_location(cursor, location_table, location):
 #########################################
 def create_new_mutation_id(cursor, chromosome, mutation_table):
 	# find the last used id and create a new one
-	qry  = "select icgc_mutation_id from %s "  % mutation_table
-	qry += "where icgc_mutation_id like 'MUT_%' order by icgc_mutation_id desc limit 1"
-	ret = search_db(cursor,qry)
-	ordinal = 1
-	if ret:
-		ordinal = int( ret[0][0].split("_")[-1].lstrip("0") ) + 1
-	return  "MUT_%s_%08d"%(chromosome,ordinal)
+	# qry  = "select icgc_mutation_id from %s "  % mutation_table
+	# qry += "where icgc_mutation_id like 'MUT_%' order by icgc_mutation_id desc limit 1"
+	# ret = search_db(cursor,qry)
+	# ordinal = 1
+	# if ret:
+	# 	ordinal = int( ret[0][0].split("_")[-1].lstrip("0") ) + 1
+	return "MUT_%s_%s"%(chromosome,''.join(choices(string.ascii_uppercase + string.digits, k=10)))
 
 def make_pathogenicity_estimate(consequences_string, tr_relative_string):
 	pathogenicity_estimate=0
@@ -163,6 +170,11 @@ def make_pathogenicity_estimate(consequences_string, tr_relative_string):
 
 ###########
 def store_mutation(cursor, mutation_table, var_key, mutation):
+
+	# by a freak change, if two processes happen to be working on the same chromosome
+	# and come across the exact same mutation, we may end up with the same mutation
+	# under two different identifiers - the mutation itself should be good enough identifier
+
 	[chromosome,  start, end , ref, alt] = var_key.split("_")
 	[mutation_type, consequences_string, aa_mutation_string, gene_relative_string, tr_relative_string] = mutation
 
@@ -196,7 +208,8 @@ def store_mutation(cursor, mutation_table, var_key, mutation):
 	return [new_id, pathogenicity_estimate]
 
 #########################################
-def store_variant(cursor, icgc_variant_table, donor_id, specimen_id, sample_barcode, var_key, mutation_id, pathogenicity_estimate):
+def store_variant(cursor, icgc_variant_table, id_pack, sample_barcode, var_key, mutation_id, pathogenicity_estimate):
+	[donor_id, specimen_id, sample_id] = id_pack
 	[chromosome,  start, end , ref, alt] = var_key.split("_")
 	#have we stored this by any chance?
 	qry  = "select count(*) from icgc.%s " % icgc_variant_table
@@ -217,7 +230,7 @@ def store_variant(cursor, icgc_variant_table, donor_id, specimen_id, sample_barc
 		'chromosome': chromosome,
 		'icgc_donor_id': donor_id,
 		'icgc_specimen_id': specimen_id,
-		'icgc_sample_id': sample_barcode,
+		'icgc_sample_id': sample_id,
 		'submitted_sample_id': sample_barcode,
 		'tumor_genotype': "{}/{}".format(ref,alt),
 		'pathogenicity_estimate': pathogenicity_estimate,
@@ -230,9 +243,9 @@ def store_variant(cursor, icgc_variant_table, donor_id, specimen_id, sample_barc
 	return
 
 #########################################
-def get_donor_id(cursor, icgc_table, sample_id):
+def get_donor_id(cursor, icgc_table, submitted_sample_id):
 	qry  = "select distinct(icgc_donor_id) from icgc.%s " % icgc_table
-	qry += "where submitted_sample_id='%s'" % sample_id
+	qry += "where submitted_sample_id='%s'" % submitted_sample_id
 	ret = error_intolerant_search(cursor, qry)
 	if ret:
 		donor_ids = [r[0] for r in ret]
@@ -240,14 +253,14 @@ def get_donor_id(cursor, icgc_table, sample_id):
 		donor_id = donor_ids[0]
 	else:
 		# use tcga id
-		donor_id = tcga_sample2tcga_donor(sample_id)
+		donor_id = tcga_sample2tcga_donor(submitted_sample_id)
 		#print("using tcga id", donor_id)
 	return donor_id
 
 #########################################
-def get_specimen_id(cursor, icgc_table, sample_id):
+def get_specimen_id(cursor, icgc_table, submitted_sample_id):
 	qry  = "select distinct(icgc_specimen_id) from icgc.%s " % icgc_table
-	qry += "where submitted_sample_id='%s'" % sample_id
+	qry += "where submitted_sample_id='%s'" % submitted_sample_id
 	ret = error_intolerant_search(cursor, qry)
 	if ret:
 		specimen_ids = [r[0] for r in ret]
@@ -255,38 +268,72 @@ def get_specimen_id(cursor, icgc_table, sample_id):
 		specimen_id = specimen_ids[0]
 	else:
 		# use tcga id
-		specimen_id = tcga_sample2tcga_donor(sample_id)
+		specimen_id = tcga_sample2tcga_donor(submitted_sample_id)
+		#print("using tcga id", specimen_id)
+	return specimen_id
+
+#########################################
+def get_sample_id(cursor, icgc_table, submitted_sample_id):
+	qry  = "select distinct(icgc_sample_id) from icgc.%s " % icgc_table
+	qry += "where submitted_sample_id='%s'" % submitted_sample_id
+	ret = error_intolerant_search(cursor, qry)
+	if ret:
+		specimen_ids = [r[0] for r in ret]
+		if len(specimen_ids)>1:
+			print("mutliple icgc_sample_ids for sumbitted_sample_id", submitted_sample_id, specimen_ids)
+			exit()
+		#print(specimen_ids) # wht do I do in this case?
+		specimen_id = specimen_ids[0]
+	else:
+		# use tcga id
+		specimen_id = tcga_sample2tcga_donor(submitted_sample_id)
 		#print("using tcga id", specimen_id)
 	return specimen_id
 
 #########################################
 def resolve_ids(cursor, icgc_table, tumor_sample_barcode, flag):
-	donor_id = None
-	specimen_id  = None
+	donor_id = specimen_id  = sample_id = None
 	if flag=='donors':
 		donor_id = tcga_sample2tcga_donor(tumor_sample_barcode)
-		specimen_id = specimen_id_from_TCGA_barcode(tumor_sample_barcode)
+		specimen_id = tcga_sample2tcga_specimen(tumor_sample_barcode)
+		sample_id = tumor_sample_barcode
 	elif flag=='vars':
 		donor_id = get_donor_id(cursor, icgc_table, tumor_sample_barcode)
 		specimen_id = get_specimen_id(cursor, icgc_table, tumor_sample_barcode)
+		sample_id = get_sample_id(cursor, icgc_table, tumor_sample_barcode)
 	else:
 		print("unrecognized flag", flag)
 		exit()
-	return donor_id, specimen_id
+	return [donor_id, specimen_id, sample_id]
+
+#################
+def clean_tcga_variant_row(columns):
+	clean_columns = [str(entry, 'utf-8') if type(entry)==bytes else str(entry) for entry in columns]
+	(chromosome, start_position, end_position, ref_allele,
+	 tumor_allele1, tumor_allele2, assembly) = clean_columns
+	start_position = int(start_position)
+	end_position = int(end_position)
+	if len(ref_allele)>200: ref_allele = ref_allele[:200]+"etc"
+	if len(tumor_allele1)>200: tumor_allele1 = tumor_allele1[:200]+"etc"
+	if len(tumor_allele2)>200: tumor_allele2 = tumor_allele2[:200]+"etc"
+	return [chromosome, start_position, end_position, ref_allele, tumor_allele1, tumor_allele2, assembly]
 
 #########################################
-def process_samples(cursor, tcga_table, icgc_table, chromosome, target_samples, position_translation, flag):
+def process_samples(cursor, chromosome, tcga_table, icgc_table,  target_samples, position_translation, flag, annovar_only=False):
 
-	print("\t", flag, tcga_table, chromosome)
-	avinput  = output_annovar_input_file(cursor, tcga_table, chromosome,
-										position_translation, target_samples, flag)
+	print("\t", flag, tcga_table, "chrom "+chromosome, "nr of samples", len(target_samples))
+	if len(target_samples)==0: return
+
+	avinput  = output_annovar_input_file(cursor, tcga_table, chromosome, position_translation, target_samples, flag)
 	avoutput = run_annovar(avinput, Config.ref_assembly, tcga_table)
+	if annovar_only: return
+
 	annovar_annotation = parse_annovar(cursor, avoutput)
 	tumor_short = icgc_table.split("_")[0]
 	meta_table_name = tcga_table.split("_")[0] + "_mutations_meta"
 	for tumor_sample_barcode in target_samples:
 		#print(tumor_sample_barcode)
-		donor_id, specimen_id = resolve_ids(cursor, icgc_table, tumor_sample_barcode, flag)
+		id_pack = resolve_ids(cursor, icgc_table, tumor_sample_barcode, flag)
 		qry  = "select  s.chromosome, s.start_position, s.end_position, "
 		qry += "s.reference_allele, s.tumor_seq_allele1, s.tumor_seq_allele2, m.assembly  "
 		qry += "from tcga.%s s, tcga.%s m " % (tcga_table, meta_table_name)
@@ -297,35 +344,46 @@ def process_samples(cursor, tcga_table, icgc_table, chromosome, target_samples, 
 
 		if not ret: continue
 		for columns in  ret:
-			clean_columns = [str(entry, 'utf-8') if type(entry)==bytes else str(entry) for entry in columns]
-			(chromosome, start_position, end_position, ref_allele,
-					tumor_allele1, tumor_allele2, assembly) = clean_columns
+			clean_columns = clean_tcga_variant_row(columns)
+			[chromosome, start, end, ref, alt1, alt2, assembly] = clean_columns
 			if flag=='donors':
 				# this is redundant, but then the specimen table is small ...
+				donor_id = id_pack[0]
 				store_specimen_info(cursor, tumor_short, donor_id, tumor_sample_barcode)
 				store_donor_info(cursor, tumor_short, donor_id, tumor_sample_barcode)
 
 			# (remind me to get rid of annovar)
 			# unpacking  the list into positional arguments using asterisk
 			key_data = variant_key(position_translation[assembly][chromosome], *(clean_columns[:-1]))
+			if not key_data: continue # we may have had trouble translating positions
 			dict_key = "_".join(key_data)
 			if not dict_key in annovar_annotation:
 				print(dict_key, "not found in annovar_annotation. Is the annovar dir up to date?")
-				exit()
+				# I am losing variants longer than 200 nt but its ok - these are probably sequencing mistakes anyway
+				# If this error pops up in a few isolated cases it may also be an unmappable position (? may it?)
+				continue
 			ret_flag = store_location(cursor, "locations_chrom_%s"%chromosome, annovar_annotation[dict_key]['loc'])
 			if ret_flag != "ok":
 				#print(ret_flag)
 				continue
 			[mutation_id, pathogenicity_estimate] = \
 				store_mutation(cursor,"mutations_chrom_%s"%chromosome, dict_key, annovar_annotation[dict_key]['mut'])
-			store_variant(cursor, icgc_table, donor_id, specimen_id, tumor_sample_barcode, dict_key, mutation_id, pathogenicity_estimate)
+			store_variant(cursor, icgc_table, id_pack, tumor_sample_barcode, dict_key, mutation_id, pathogenicity_estimate)
 	return
+
+#############
+def process_chromosomes(chromosomes, other_args):
+
+	db     = connect_to_mysql(Config.mysql_conf_file)
+	cursor = db.cursor()
+	for chrom in chromosomes:
+		process_samples(cursor, chrom, *other_args)
+	cursor.close()
+	db.close()
 
 
 #########################################
 def locate_complementary_ids(cursor, tcga_table, icgc_table):
-
-	print(tcga_table, icgc_table)
 
 	# sample ids in TCGA
 	qry  = "select distinct(tumor_sample_barcode) from tcga.%s " % tcga_table
@@ -384,25 +442,58 @@ def find_preferred_samples(cursor, tcga_table, donor_ids_not_in_icgc):
 		preferred_samples.extend(tumor_sample_barcodes)
 	return preferred_samples
 
+
+def filter_existing_samples_by_overlap(cursor, tcga_table, icgc_table, sample_ids_already_in_icgc):
+
+	filtered_samples = []
+	for sample_id in sample_ids_already_in_icgc:
+		qry = "select count(*) from tcga.%s where tumor_sample_barcode='%s'" % (tcga_table, sample_id)
+		tcga_count = hard_landing_search(cursor,qry)[0][0]
+		qry = "select count(*) from icgc.%s where submitted_sample_id='%s'" % (icgc_table, sample_id)
+		icgc_count = hard_landing_search(cursor,qry)[0][0]
+		if icgc_count>tcga_count: continue
+		if tcga_count>1000 and icgc_count>100: continue # a processed genome?
+		pct_diff = 0
+		if tcga_count>0: pct_diff = int(100*float(abs(tcga_count-icgc_count))/tcga_count)
+		if pct_diff<10: continue
+		#print("%s  %d  %d   %d%%" %(sample_id, tcga_count, icgc_count, pct_diff))
+		filtered_samples.append(sample_id)
+	return filtered_samples
+
+
 #########################################
 def process_tables(tcga_tables, other_args):
+
+	# This way of doing the merge will not converge, in the sense that each time we
+	# run we may conclude that TCGA
+
+	annovar_only = other_args[0]
+	home   = os.getcwd()
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
-	home   = os.getcwd()
+
 	for tcga_table in tcga_tables:
+
+		# what is the icgc table we will be storing to?
+		icgc_table = Config.tcga_icgc_table_correspondence[tcga_table]
+		if not icgc_table: icgc_table = tcga_table.replace("somatic_mutations", "simple_somatic")
+
+		print(tcga_table, icgc_table)
 		# make a workdir and move there
 		tumor_short = tcga_table.split("_")[0]
 		workdir  = tumor_short + "_annovar"
 		workpath = "{}/annovar/{}".format(home,workdir)
 		if not os.path.exists(workpath): os.makedirs(workpath)
 		os.chdir(workpath)
-		# translate all positions en masse
-		position_translation = get_position_translation(cursor, tcga_table, Config.ref_assembly)
 
-		# what is the icgc table we eill be storing to?
-		icgc_table = Config.tcga_icgc_table_correspondence[tcga_table]
-		if not icgc_table: icgc_table = tcga_table.replace("somatic_mutations", "simple_somatic")
+		# checking index
+		time0 = time()
+		print(" ... indexing")
+		create_index(cursor, 'tcga', 'barcode_idx', tcga_table, ['tumor_sample_barcode'])
+		create_index(cursor, 'icgc', 'submitted_idx', icgc_table, ['submitted_sample_id'])
+		print("%s indices in %d min" %(tcga_table, float(time()-time0)/60))
 
+		time0 = time()
 		# TCGA has something called sample barcode, which containus info about the donor,
 		# as well as the sample (and implicitly, the specimen)
 		#     There are two cases we are interested in - either we have not seen this donor at all,
@@ -414,15 +505,32 @@ def process_tables(tcga_tables, other_args):
 		# and the sample they have analyzed is somehow superior to what is deposited in TCGA.
 		[donor_ids_not_in_icgc, sample_ids_already_in_icgc] = locate_complementary_ids(cursor, tcga_table, icgc_table)
 		preferred_samples_for_compl_donors = find_preferred_samples(cursor, tcga_table, donor_ids_not_in_icgc)
-		# process info on -per chromosome basis
-		chromosomes = [str(i) for i in range(1,23)] + ['X','Y']
-		for chrom in chromosomes:
-			process_samples(cursor, tcga_table, icgc_table, chrom, preferred_samples_for_compl_donors, position_translation, 'donors')
-			#process_samples(cursor, tcga_table, icgc_table, chrom, sample_ids_already_in_icgc, position_translation, 'vars')
+		filtered_existing_samples = filter_existing_samples_by_overlap(cursor, tcga_table, icgc_table, sample_ids_already_in_icgc)
 
+		# translate all positions en masse
+		position_translation = get_position_translation(cursor, tcga_table, Config.ref_assembly)
+		print(" ... position translation ok")
+
+		# process info on -per chromosome basis
+		chromosomes = [str(i) for i in range(1,13)] + ["Y"] + [str(i) for i in range(22,12,-1)] + ["X"]
+		if len(preferred_samples_for_compl_donors)>0:
+			argpack = [tcga_table, icgc_table, preferred_samples_for_compl_donors,position_translation, 'donors', annovar_only]
+			process_chromosomes (chromosomes, argpack)
+			print("\t\t donors ok")
+		else:
+			print("\t\t no donors to process ")
+		if len(filtered_existing_samples)>0:
+			argpack = [tcga_table, icgc_table, filtered_existing_samples, position_translation, 'vars', annovar_only]
+			process_chromosomes (chromosomes, argpack)
+			print("\t\t variants ok")
+		else:
+			print("\t\t no variants to process ")
+
+		print("%s done in %d min" %(tcga_table, float(time()-time0)/60))
 
 	cursor.close()
 	db.close()
+
 
 	return
 
@@ -430,22 +538,19 @@ def process_tables(tcga_tables, other_args):
 #########################################
 def main():
 
-	# divide by cancer types, because I have duplicates within each cancer type
-	# that I'll resolve as I go, but I do not want the threads competing)
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='tcga' and table_name like '%_somatic_mutations'"
 	tcga_tables = [field[0] for field in search_db(cursor,qry)]
-
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 1
-	tcga_tables = ['THCA_somatic_mutations']
-	parallelize(number_of_chunks, process_tables, tcga_tables, [])
-
+	#tcga_tables = ['THCA_somatic_mutations']
+	number_of_chunks = 8
+	annovar_only = False
+	parallelize(number_of_chunks, process_tables, tcga_tables, [annovar_only])
 
 #########################################
 if __name__ == '__main__':

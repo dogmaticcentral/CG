@@ -37,12 +37,18 @@ def cleanup(tables, other_args):
 		qry += "from %s group by icgc_specimen_id having c>1 " % somatic_table
 		ret = search_db(cursor,qry)
 		if not ret:
-			print("%s has no duplicate samples in the variant table"% somatic_table)
+			print("%s has no multiple sample ids in the variant table"% somatic_table)
 			continue
 
 		problematic = [r[0] for r in ret]
-		print("%s has %d specimen ids with duplicate sample ids in the variant table" % (somatic_table,len(problematic)))
-		continue
+		print("%s has %d specimen ids with multiple sample ids in the variant table" % (somatic_table,len(problematic)))
+		# for icgc_specimen_id in problematic:
+		# 	print(problematic)
+		# 	qry  = "select distinct(icgc_sample_id) from %s " % somatic_table
+		# 	qry += "where icgc_specimen_id='%s' " % icgc_specimen_id
+		# 	ret =search_db(cursor,qry)
+		# 	print([r[0] for r in ret])
+
 		# most of these are innocuous, with normal sample not appearing in the variants table
 		# this, however is not always the case
 		for icgc_specimen_id in problematic:
@@ -53,8 +59,10 @@ def cleanup(tables, other_args):
 			ret2 = search_db(cursor,qry)
 			if not ret2 or len(ret2)==0:
 				print("\t %s no duplicate mutation ids" %icgc_specimen_id)
+				pass
 			else:
 				duplicates = dict(ret2)
+				print("\t duplicate mutation ids for %s:" %icgc_specimen_id, duplicates)
 				for icgc_mutation_id, ct in duplicates.items():
 					qry  = "select * from %s " % somatic_table
 					qry += "where icgc_specimen_id='%s' and  icgc_mutation_id='%s'" % (icgc_specimen_id, icgc_mutation_id)
@@ -69,8 +77,8 @@ def cleanup(tables, other_args):
 #########################################
 def main():
 
-	#print("disabled ") # comment out to run
-	#exit(1)
+	print("disabled ") # comment out to run
+	exit(1)
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -86,13 +94,10 @@ def main():
 	tables_sorted = sorted(tables, key=lambda t: table_size[t], reverse=True)
 	half = int(len(tables_sorted)/2)
 	tables_mirrored  = tables_sorted[0:half] + list(reversed(tables_sorted[half:]))
-	number_of_chunks = half
 
-	number_of_chunks = 1
-	tables_mirrored = ['THCA_simple_somatic']
+	number_of_chunks = 8
 
 	parallelize(number_of_chunks, cleanup, tables_mirrored, [], round_robin=True)
-
 
 	return
 

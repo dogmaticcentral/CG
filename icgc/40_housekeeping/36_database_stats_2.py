@@ -45,7 +45,7 @@ def main():
 	switch_to_db(cursor,"icgc")
 	for table in tables:
 		if verbose: print("\n=================================\n%s"%table)
-		qry = "select count(1) from %s where icgc_donor_id like 'DOT_%%'" % table
+		qry = "select count(1) from %s where icgc_donor_id like 'TCGA%%' or icgc_donor_id like 'TARGET%%" % table
 		ret = search_db(cursor, qry)
 		print ('TCGA donors:', ret[0][0])
 	cursor.close()

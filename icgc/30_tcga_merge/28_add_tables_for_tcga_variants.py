@@ -65,8 +65,8 @@ tcga_icgc_table_correspondence = {
 #########################################
 def main():
 
-	#print("disabled")
-	#exit()
+	print("disabled")
+	exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -99,20 +99,14 @@ def main():
 	for icgc_donor_table in icgc_donor_tables:
 
 		tumor = icgc_donor_table.split("_")[0]
+		icgc_specimen_table = "%s_specimen"%tumor
 		set_autoincrement(cursor, 'icgc',  icgc_donor_table, 'id')
-		set_autoincrement(cursor, 'icgc',  "%s_specimen"%tumor, 'id')
+		set_autoincrement(cursor, 'icgc',  icgc_specimen_table, 'id')
 
-	# increase the width of icgc_sample_id and icgc_specime_id columns
-	# so we can store TCGA identifiers in there
-	qry  = "select table_name from information_schema.tables "
-	qry += "where table_schema='icgc' and table_name like '%_simple_somatic'"
-	icgc_variant_tables = [field[0] for field in search_db(cursor,qry)]
-	for table in icgc_variant_tables:
-		print ("modifying column width in", table)
-		qry = "ALTER TABLE %s MODIFY COLUMN icgc_sample_id VARCHAR(50)" % table
-		search_db(cursor,qry)
-		qry = "ALTER TABLE %s MODIFY COLUMN icgc_specimen_id VARCHAR(50)" % table
-		search_db(cursor,qry)
+		# cleanup in case we were already fiddling with TCGA merge
+		qry = "delete from {} where icgc_donor_id like 'TARGET%' or icgc_donor_id like 'TCGA%'"
+		search_db(cursor,qry.format(icgc_donor_table), verbose=True)
+		search_db(cursor,qry.format(icgc_specimen_table), verbose=True)
 
 	cursor.close()
 	db.close()

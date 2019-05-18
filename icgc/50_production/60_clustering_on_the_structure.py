@@ -61,13 +61,13 @@ def protein_mutations (cursor, tables, gene_symbol):
 			# specimen related info
 			if not specimen_seen.has_key(specimen_id):
 				specimen_seen[specimen_id] = True
-				p53_status_per_specimen[specimen_id] = find_53_status(cursor, tumor_short, specimen_id)
+				p53_status_per_specimen[specimen_id] = find_background_status(cursor, tumor_short, specimen_id, 'TP53')
 
 			#print specimen_id, "    ", aa_change_cleanup(cursor, aa_change), "    ", p53_status_per_specimen[specimen_id]
 			if p53_status_per_specimen[specimen_id][0] == 'pathogenic':
-				p53_mut.append(aa_change_cleanup(cursor, aa_change))
+				p53_mut.append(consequence_cleanup(cursor, aa_change))
 			else:
-				p53_wt.append(aa_change_cleanup(cursor, aa_change))
+				p53_wt.append(consequence_cleanup(cursor, aa_change))
 
 	# TODO: note in the paper some mutations recurrent
 	p53_wt = set(p53_wt)

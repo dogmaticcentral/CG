@@ -190,9 +190,9 @@ def gene_mutations(cursor, table, gene):
 
 
 #########################################
-def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  hide_id=True):
+def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations, bg_gene,  hide_id=True):
 
-	p53_status_per_specimen = {}
+	bg_status_per_specimen = {}
 	mutations_per_specimen  = {}
 	specimen_seen = {}
 	donor_rows = []
@@ -203,7 +203,7 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  h
 		donor_display_name = donor
 		for mutation, mtn_info in mutations.items():
 
-			print(tumor_short, donor, mutation, mtn_info)
+			#print(tumor_short, donor, mutation, mtn_info)
 
 			chromosome = mtn_info['chromosome']
 			freq_in_gen_population = gnomad_info(cursor, mutation, chromosome)
@@ -227,28 +227,28 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  h
 
 			###################
 			# specimen related info
-			p53_gist   = "wt"
-			p53_detail = ""
+			bg_gist   = "wt"
+			bg_detail = ""
 			specimen_number_of_mutations = []
 			for specimen in mtn_info['specimens']:
 				if specimen not in specimen_seen: # we might have seen it related to another mutation
 					specimen_seen[specimen] = True
 					table = "%s_simple_somatic" % tumor_short
-					mutations_per_specimen[specimen]  = get_number_of_path_mutations_per_specimen(cursor, table, specimen)
-					p53_status_per_specimen[specimen] = find_53_status(cursor, tumor_short, specimen)
+					mutations_per_specimen[specimen] = get_number_of_path_mutations_per_specimen(cursor, table, specimen)
+					bg_status_per_specimen[specimen] = find_background_status(cursor, tumor_short, specimen, bg_gene)
 
 				specimen_number_of_mutations.append(str(mutations_per_specimen[specimen]))
-				if p53_gist!="pathogenic":
-					new_gist, detail = p53_status_per_specimen[specimen]
+				if bg_gist!="pathogenic":
+					new_gist, detail = bg_status_per_specimen[specimen]
 					if new_gist!="wt":
-						p53_gist=new_gist
-						p53_detail = detail
+						bg_gist=new_gist
+						bg_detail = detail
 
 			###################
 			# output row for this mutation
 			consequence, aa_change = get_consequence(cursor, chromosome, mutation)
 			if not consequence: consequence = ""
-			aa_change = aa_change_cleanup(cursor, aa_change).split(":")[-1]
+			aa_change = consequence_cleanup(cursor, aa_change).split(":")[-1]
 
 			cgenotype = genotype_short(mtn_info['cgenotype'])
 			tgenotype = genotype_short(mtn_info['tgenotype'])
@@ -256,7 +256,7 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  h
 			if hide_id: donor_display_name=str(patient_count)
 			entry = "\t".join([tumor_short, donor_display_name,  ",".join(specimen_type_short), ",".join(specimen_number_of_mutations),
 								cgenotype, tgenotype, consequence,
-								aa_change, freq_in_gen_population, p53_gist, p53_detail ])
+								aa_change, freq_in_gen_population, bg_gist, bg_detail ])
 			entry = entry.replace("_"," ")
 			donor_rows.append(entry)
 
@@ -271,12 +271,19 @@ def donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  h
 def main():
 
 	if len(sys.argv) < 2:
-		print(("usage: %s <gene symbol> " % sys.argv[0]))
+		print(("usage: %s <gene symbol> [<background gene symbol>]" % sys.argv[0]))
 		exit()
 	gene = sys.argv[1].upper()
+	bg_gene = sys.argv[2] if len(sys.argv)>2 else 'TP53'
 
 	db     = connect_to_mysql("/home/ivana/.tcga_conf")
 	cursor = db.cursor()
+
+	#########################
+	# index ...
+	print (".. creating index (this needs to be done only once in the db lifetime)")
+	create_index(cursor, 'icgc', 'gene_idx', 'mutation2gene', ['gene_symbol'])
+	print ("... index ok.");
 
 	#########################
 	# which simple somatic tables do we have
@@ -293,7 +300,6 @@ def main():
 						"no muts",   "control genotype", "tumor genotype",
 						"consequence", "aa change", "freq in general population",
 						"p53 status", "p53 mutation", "function"])+"\n")
-	#tables = ['BLCA_simple_somatic']
 	for table in tables:
 		tumor_short = table.split("_")[0]
 		if verbose: print("=================================")
@@ -303,9 +309,7 @@ def main():
 			print("\t no mutations found in", gene)
 			continue
 		print("\t found", len(donor_mutations),"mutations in", gene)
-		#for dm in donor_mutations.items(): print("\t\t",dm)
-		#continue
-		donor_rows = donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations,  hide_id=False)
+		donor_rows = donor_mutations_to_printable_format(cursor, tumor_short, donor_mutations, bg_gene, hide_id=False)
 		if not donor_rows: continue
 		outf.write(donor_rows+"\n")
 		outf.flush()

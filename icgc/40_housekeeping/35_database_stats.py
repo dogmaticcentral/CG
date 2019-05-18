@@ -87,7 +87,6 @@ def main():
 		if verbose: print("variants: ", variants)
 
 
-
 	print("total_donors:", total_donors)
 	print("donors_with_multiple_specimen labels:", donors_with_multiple_specimens)
 	print("donors_with_multiple_sample labels:", donors_with_multiple_samples)

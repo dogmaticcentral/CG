@@ -22,7 +22,7 @@ from icgc_utils.mysql import *
 
 #########################################
 def get_position_translation(cursor, tcga_somatic_table, ref_assembly):
-
+	standard_chroms = [str(i) for i in range(1,23)] + ['X','Y']
 	meta_table_name = tcga_somatic_table.split("_")[0] + "_mutations_meta"
 
 	# get the info that annovar needs
@@ -38,6 +38,7 @@ def get_position_translation(cursor, tcga_somatic_table, ref_assembly):
 		(tumor_sample_barcode, chromosome, start_position, end_position, reference_allele,
 			tumor_seq_allele1, tumor_seq_allele2, assembly) = \
 			[str(entry, 'utf-8') if type(entry)==bytes else str(entry) for entry in row]
+		if not chromosome in standard_chroms: continue
 		if not assembly in positions: positions[assembly] = {}
 		if not chromosome in positions[assembly]: positions[assembly][chromosome] = set()
 		positions[assembly][chromosome] |= {start_position, end_position} # set literal
@@ -45,9 +46,8 @@ def get_position_translation(cursor, tcga_somatic_table, ref_assembly):
 	for assembly, pos_per_assembly in positions.items():
 		if not assembly in position_translation: position_translation[assembly] = {}
 		for chromosome, pos in pos_per_assembly.items():
-			# failure is not an option: I am assuming translation always succeeds here
-			pos_translated =  translate_positions(pos, chromosome, assembly, ref_assembly)
-			position_translation[assembly][chromosome] = dict(zip(pos, pos_translated))
+			# some positions may remain untranslated - translate_positions() will issue warning
+			position_translation[assembly][chromosome] = translate_positions(pos, chromosome, assembly, ref_assembly)
 
 	return position_translation
 
@@ -56,7 +56,7 @@ def tcga_sample2tcga_donor(s):
 	return "-".join(s.split("-")[:3])
 
 #########################################
-def specimen_id_from_TCGA_barcode(sample_barcode):
+def tcga_sample2tcga_specimen(sample_barcode):
 	pieces = sample_barcode.split("-")
 	sample_id = "-".join(pieces[:4])
 	# the last character here is a "vial"

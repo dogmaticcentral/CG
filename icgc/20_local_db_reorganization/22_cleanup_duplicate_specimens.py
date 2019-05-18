@@ -48,7 +48,7 @@ def cleanup_duplicate_specimens(tables, other_args):
 
 		# most of these are innocuous, with normal sample not appearing in the variants table
 		# this, however is not always the case
-		# resolve_duplicate_specimens(cursor, somatic_table, specimen_ids)
+		resolve_duplicate_specimens(cursor, somatic_table, specimen_ids)
 
 	cursor.close()
 	db.close()
@@ -61,8 +61,8 @@ def cleanup_duplicate_specimens(tables, other_args):
 #########################################
 def main():
 
-	#print("disabled - this script deletes certain rows ") # comment out to run
-	#exit(1)
+	print("disabled - this script deletes certain rows ") # comment out to run
+	exit(1)
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -75,11 +75,7 @@ def main():
 	cursor.close()
 	db.close()
 
-	number_of_chunks = 8
-
 	number_of_chunks = 1
-	tables = ['THCA_simple_somatic']
-
 	parallelize(number_of_chunks, cleanup_duplicate_specimens, tables, [])
 
 	return

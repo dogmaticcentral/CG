@@ -134,9 +134,8 @@ def main():
 
 				# translate to GRCh37  - thr translation here is not from DNA to protein
 				# but from one coord system to another
-				ref_assembly_positions = translate_positions(positions, chrom, assembly, ref_assembly)
-				if not ref_assembly_positions: continue # translation failed; move on
-				pos_translated = dict(zip(positions, ref_assembly_positions))
+				pos_translated = translate_positions(positions, chrom, assembly, ref_assembly)
+				if not pos_translated or len(pos_translated)==0: continue # translation failed; move on
 
 				# construct ucsc-like input and compare with ucscs input that we have
 				# are we counting from 1 or from 0 here?
