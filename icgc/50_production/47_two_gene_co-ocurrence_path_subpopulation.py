@@ -114,7 +114,7 @@ def main():
 		p53path = 0
 		miss    = 0
 		cooc    = 0
-		for p, muts_specs in patients_with_path_mutations_in_gene_2.items():
+		for p, muts_specs in list(patients_with_path_mutations_in_gene_2.items()):
 			p53_pathogenic = False
 			gene_2_missense = False
 			for mutation,specimen in muts_specs:
@@ -141,13 +141,13 @@ def main():
 		total_p53path += p53path
 		total_miss += miss
 		total_cooc += cooc
-		print("patients ", patients)
-		print("p53path  ", p53path)
-		print("miss     ", miss)
-		print("co-ocurrence:", cooc)
-		print("    expected: %.1f" % expected)
-		print("   p_smaller: %.2f" % p_smaller)
-		print("    p_bigger: %.2f" % p_bigger)
+		print(("patients ", patients))
+		print(("p53path  ", p53path))
+		print(("miss     ", miss))
+		print(("co-ocurrence:", cooc))
+		print(("    expected: %.1f" % expected))
+		print(("   p_smaller: %.2f" % p_smaller))
+		print(("    p_bigger: %.2f" % p_bigger))
 		print()
 		#
 		# if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
@@ -160,13 +160,13 @@ def main():
 		print()
 		print("=================================")
 		print(gene_2)
-		print("total donors:", total_donors)
-		print("tota_p53path:", total_p53path)
-		print("total_miss:  ", total_miss)
-		print("        cooc:", total_cooc)
-		print("    expected: %.1f" % (float(total_p53path)/total_donors*total_miss))
-		print("   p_smaller: %.1e" % p_smaller)
-		print("    p_bigger: %.1e" % p_bigger)
+		print(("total donors:", total_donors))
+		print(("tota_p53path:", total_p53path))
+		print(("total_miss:  ", total_miss))
+		print(("        cooc:", total_cooc))
+		print(("    expected: %.1f" % (float(total_p53path)/total_donors*total_miss)))
+		print(("   p_smaller: %.1e" % p_smaller))
+		print(("    p_bigger: %.1e" % p_bigger))
 		expected =(float(total_p53path)/total_donors*total_miss)
 		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
 									("total", total_donors, total_p53path,

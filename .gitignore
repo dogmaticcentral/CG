@@ -47,6 +47,10 @@ sys_tfm
 *to_*.pdb
 *seqs_not_found
 
+*.pml
+*.input
+*.output
+
 *.txt        # ignore txt
 !timing.txt  #Except for timing.txt
 scratch/

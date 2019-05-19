@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 #
 # This source code is part of icgc, an ICGC processing pipeline.
 # 
@@ -90,48 +90,48 @@ def main():
 
 		tumor_short = table.split("_")[0]
 		fields = [tumor_short]
-		if verbose: print "================================="
-		if verbose: print table
+		if verbose: print("=================================")
+		if verbose: print(table)
 
 		# total number of donors?
 		qry  = "select distinct(icgc_donor_id) from %s " % table
 		donors = [ret[0] for ret in search_db(cursor,qry)]
-		if verbose: print "\t donors: ", len(donors)
+		if verbose: print("\t donors: ", len(donors))
 		fields.append(len(donors))
 
 		qry  = "select distinct(icgc_specimen_id) from %s " % table
 		specimens = [ret[0] for ret in search_db(cursor,qry)]
-		if verbose: print "\t specimens: ", len(specimens)
+		if verbose: print("\t specimens: ", len(specimens))
 		#fields.append(len(specimens))
 
 		# number of unique mutations for each patient
 		number_of_patients_w_pathogenic_mutations,avg_no_muts = avg_number_of_muts_per_patient(cursor, table, donors)
-		if verbose: print "\t number of patients with pathogenic mutations: %d" % number_of_patients_w_pathogenic_mutations,
+		if verbose: print("\t number of patients with pathogenic mutations: %d" % number_of_patients_w_pathogenic_mutations, end=' ')
 		pct = float(number_of_patients_w_pathogenic_mutations)/len(donors)*100
-		if verbose: print "\t (%d%%)" % (pct)
+		if verbose: print("\t (%d%%)" % (pct))
 		#fields.append(number_of_patients_w_pathogenic_mutations)
 		fields.append("%.0f" % pct)
 
-		if verbose: print "\t avg number of mutations  %.1f " % avg_no_muts
+		if verbose: print("\t avg number of mutations  %.1f " % avg_no_muts)
 		fields.append(" %.1f " % avg_no_muts)
 
 		patients_with_muts_in_gene = patients_per_gene_breakdown(cursor, table)
 		if patients_with_muts_in_gene.get('RPL5',0)==0  and \
 				patients_with_muts_in_gene.get('RPL11',0)==0: continue
 
-		if verbose: print "\t patients with mutations in "
+		if verbose: print("\t patients with mutations in ")
 		for gene in ['RPL5', 'RPL11']:
-			if patients_with_muts_in_gene.has_key(gene):
+			if gene in patients_with_muts_in_gene:
 				nr_muts =  patients_with_muts_in_gene[gene]
-				genes_w_eq_or_gt_number_of_donors = len([g for g in patients_with_muts_in_gene.keys() if patients_with_muts_in_gene[g]>=nr_muts])
-				if verbose: print "\t\t ", gene, nr_muts,  nr_muts, genes_w_eq_or_gt_number_of_donors
+				genes_w_eq_or_gt_number_of_donors = len([g for g in list(patients_with_muts_in_gene.keys()) if patients_with_muts_in_gene[g]>=nr_muts])
+				if verbose: print("\t\t ", gene, nr_muts,  nr_muts, genes_w_eq_or_gt_number_of_donors)
 				pct  = float(nr_muts)/number_of_patients_w_pathogenic_mutations*100
 				fields.append(nr_muts)
 				fields.append("%.1f" % pct)
 				fields.append(genes_w_eq_or_gt_number_of_donors)
 				fields.append("%.0f" % (genes_w_eq_or_gt_number_of_donors/20000.0*100))
 			else:
-				if verbose: print "\t\t ", gene,0
+				if verbose: print("\t\t ", gene,0)
 				fields.append(0)
 				fields.append(0.0)
 				fields.append(20000)

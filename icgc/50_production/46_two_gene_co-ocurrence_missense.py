@@ -131,16 +131,16 @@ def main():
 		if patients_with_muts_in_gene.get(gene_2,0)==0: continue
 
 
-		print "================================="
-		print table
+		print("=================================")
+		print(table)
 		donors = len(get_donors(cursor, table))
-		print "donors: ", donors
+		print("donors: ", donors)
 		total_donors += donors
-		print gene_2, patients_with_muts_in_gene.get(gene_2, 0)
+		print(gene_2, patients_with_muts_in_gene.get(gene_2, 0))
 
 		gene_1_mutated  = patients_with_muts_in_gene.get(gene_1,0)
 		gene_2_missense = patients_with_missense(cursor, table, gene_2)
-		print "patients with missense:", gene_2_missense
+		print("patients with missense:", gene_2_missense)
 		total_gene_1   += gene_1_mutated
 		total_other    += gene_2_missense
 
@@ -149,11 +149,11 @@ def main():
 		p_smaller, p_bigger = myfisher(donors, gene_1_mutated, gene_2_missense, cooc)
 
 		expected = float(gene_1_mutated)/donors*gene_2_missense
-		print "co-ocurrence:", cooc
-		print "    expected: %.1f" % expected
-		print "   p_smaller: %.2f" % p_smaller
-		print "    p_bigger: %.2f" % p_bigger
-		print
+		print("co-ocurrence:", cooc)
+		print("    expected: %.1f" % expected)
+		print("   p_smaller: %.2f" % p_smaller)
+		print("    p_bigger: %.2f" % p_bigger)
+		print()
 
 		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
 		                (tumor_short,donors, patients_with_muts_in_gene.get(gene_1, 0),
@@ -162,16 +162,16 @@ def main():
 
 
 	p_smaller, p_bigger = myfisher(total_donors, total_gene_1, total_other, total_cooc)
-	print
-	print "================================="
-	print  gene_2
-	print "total donors:", total_donors
-	print "        other:", total_other
-	print "          %s: %d" % (gene_1, total_gene_1)
-	print "        cooc:", total_cooc
-	print "    expected: %.1f" % (float(total_gene_1)/total_donors*total_other)
-	print "   p_smaller: %.1e" % p_smaller
-	print "    p_bigger: %.1e" % p_bigger
+	print()
+	print("=================================")
+	print(gene_2)
+	print("total donors:", total_donors)
+	print("        other:", total_other)
+	print("          %s: %d" % (gene_1, total_gene_1))
+	print("        cooc:", total_cooc)
+	print("    expected: %.1f" % (float(total_gene_1)/total_donors*total_other))
+	print("   p_smaller: %.1e" % p_smaller)
+	print("    p_bigger: %.1e" % p_bigger)
 	expected = (float(total_gene_1)/total_donors*total_other)
 	if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
 								("total", total_donors, total_gene_1,

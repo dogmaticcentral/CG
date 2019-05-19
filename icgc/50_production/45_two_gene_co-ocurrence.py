@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 #
 # This source code is part of icgc, an ICGC processing pipeline.
 # 
@@ -59,7 +59,7 @@ def fisher(donors, gene_1_mutated, other_mutated, cooc):
 def main():
 
 	if len(sys.argv) < 2:
-		print "usage: %s <gene symbol> [<gene symbol> ...]" % sys.argv[0]
+		print("usage: %s <gene symbol> [<gene symbol> ...]" % sys.argv[0])
 		exit()
 	other_genes = [g.upper() for g in sys.argv[1:]]
 
@@ -102,13 +102,13 @@ def main():
 			break
 		if no_mutant: continue
 
-		print "================================="
-		print table
+		print("=================================")
+		print(table)
 		donors = len(get_donors(cursor, table))
-		print "donors: ", donors
+		print("donors: ", donors)
 		total_donors += donors
 		for gene in [gene_1]+other_genes:
-			print gene, patients_with_muts_in_gene.get(gene, 0)
+			print(gene, patients_with_muts_in_gene.get(gene, 0))
 
 		gene_1_mutated  = patients_with_muts_in_gene.get(gene_1,0)
 		other_mutated = patients_with_muts_in_gene_group(cursor, table, other_genes)
@@ -123,11 +123,11 @@ def main():
 		#pval_lt, pval_gt = fisher(donors, gene_1_mutated, other_mutated, cooc)
 
 		expected = float(gene_1_mutated)/donors*other_mutated
-		print "co-ocurrence:", cooc
-		print "    expected: %.1f" % expected
-		print "   p_smaller: %.2f" % p_smaller
-		print "    p_bigger: %.2f" % p_bigger
-		print
+		print("co-ocurrence:", cooc)
+		print("    expected: %.1f" % expected)
+		print("   p_smaller: %.2f" % p_smaller)
+		print("    p_bigger: %.2f" % p_bigger)
+		print()
 
 		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t%.1f\n"%
 		                (tumor_short,donors, patients_with_muts_in_gene.get(gene_1, 0),
@@ -137,16 +137,16 @@ def main():
 
 
 	p_smaller, p_bigger = myfisher(total_donors, total_gene_1, total_other, total_cooc)
-	print
-	print "================================="
-	print other_genes
-	print "total donors:", total_donors
-	print "        other:", total_other
-	print "          %s: %d" % (gene_1, total_gene_1)
-	print "        cooc:", total_cooc
-	print "    expected: %.1f" % (float(total_gene_1)/total_donors*total_other)
-	print "   p_smaller: %.1e" % p_smaller
-	print "    p_bigger: %.1e" % p_bigger
+	print()
+	print("=================================")
+	print(other_genes)
+	print("total donors:", total_donors)
+	print("        other:", total_other)
+	print("          %s: %d" % (gene_1, total_gene_1))
+	print("        cooc:", total_cooc)
+	print("    expected: %.1f" % (float(total_gene_1)/total_donors*total_other))
+	print("   p_smaller: %.1e" % p_smaller)
+	print("    p_bigger: %.1e" % p_bigger)
 	expected = (float(total_gene_1)/total_donors*total_other)
 	if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t%.1f\n"%
 								("total", total_donors, total_gene_1,

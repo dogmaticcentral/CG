@@ -61,10 +61,10 @@ def main():
 			silent_ratio[gene] = float(silent)/(silent+other)
 		snvs[gene] = silent+other
 
-	gene_ratio_list =[(gene,ratio) for gene,ratio in sorted(silent_ratio.iteritems(), key=lambda (k,v): v)]
+	gene_ratio_list =[(gene,ratio) for gene,ratio in sorted(iter(silent_ratio.items()), key=lambda k_v: k_v[1])]
 
 	for gene,ratio in gene_ratio_list[:100]:
-		print "%15s  %5.2f  %4d " % (gene, ratio, snvs[gene])
+		print("%15s  %5.2f  %4d " % (gene, ratio, snvs[gene]))
 
 	outf = open ("silent_ratio.tsv","w")
 	for gene,ratio in gene_ratio_list:

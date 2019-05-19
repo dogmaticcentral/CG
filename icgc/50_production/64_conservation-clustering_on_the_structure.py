@@ -35,7 +35,7 @@ def main():
 
 	for fnm in [pdb_file,clustering_prog,conservation_score_file]:
 		if not os.path.exists(fnm):
-			print fnm, "not found"
+			print(fnm, "not found")
 			exit()
 
 	# clustering input

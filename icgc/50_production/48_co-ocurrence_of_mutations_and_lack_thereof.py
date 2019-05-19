@@ -43,7 +43,7 @@ def coocurrence(tables, other_args):
 		tumor_short = table.split("_")[0]
 		patients_with_muts_in_gene = patients_per_gene_breakdown(cursor, table)
 		donors = len(get_donors(cursor, table))
-		print "="*20, "\n", table, "donors: ", donors, "donors with mutated TP53:", patients_with_muts_in_gene.get('TP53',0)
+		print("="*20, "\n", table, "donors: ", donors, "donors with mutated TP53:", patients_with_muts_in_gene.get('TP53',0))
 		if patients_with_muts_in_gene.get('TP53',0)==0: continue
 
 		# the total sums are per gene, over tumors that have a mutation in this gene
@@ -51,18 +51,18 @@ def coocurrence(tables, other_args):
 		total = {}
 		total_tp53 = {} # total tp53 mutated in tumors that have gene of interest mutated
 		total_cooc = {}
-		for gene, number_of_patients in patients_with_muts_in_gene.iteritems():
+		for gene, number_of_patients in patients_with_muts_in_gene.items():
 			if gene=='TP53': continue
-			if not total_donors.has_key(gene): hashinit([total_donors,total,total_tp53,total_cooc], gene)
+			if gene not in total_donors: hashinit([total_donors,total,total_tp53,total_cooc], gene)
 			total_donors[gene] += donors
 			total_tp53[gene]   += patients_with_muts_in_gene.get('TP53',0)
 			total[gene] += number_of_patients
 			total_cooc[gene] += co_ocurrence_count(cursor, table, gene, 'TP53')
 
-		print table, "donors: ", donors, "done, %.1f mins" % (float(time.time()-t0)/60)
+		print(table, "donors: ", donors, "done, %.1f mins" % (float(time.time()-t0)/60))
 
 		outf = open("coocurrence/%s.tsv"%tumor_short,"w")
-		for gene, donors in total_donors.iteritems():
+		for gene, donors in total_donors.items():
 			if donors<10: continue
 			outf.write("%s\t%d\t%d\t%d\t%d\n" % (gene, donors, total_tp53[gene], total[gene], total_cooc[gene]))
 		outf.close()

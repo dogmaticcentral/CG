@@ -244,23 +244,17 @@ def annotation_to_dict(aa_change):
 
 
 #########################################
-def consequence_cleanup(cursor, aa_change):
+def consequence_cleanup(canonical_transcript, aa_change):
 	if not aa_change: return ""
 	if aa_change=="": return aa_change
 	if not ":" in aa_change: return aa_change
 	change = annotation_to_dict(aa_change)
-	enst_canonical = list_of_transcript_ids_2_canonical_transcript_id(cursor, list(change.keys()))
-	if enst_canonical and len(enst_canonical)>0:
-		new_aa_change = []
-		for enst in enst_canonical: # there may be more than 1
-			if enst in change: new_aa_change.append("{}:{}".format(enst, change[enst]))
-		if len(new_aa_change)>0:
-			return ";".join(new_aa_change)
-	return aa_change
+	if not canonical_transcript in change: return aa_change
+	return change[canonical_transcript]
 
 
 #########################################
-def find_background_status(cursor, tumor_short, specimen, bg_gene_symbol):
+def find_background_status(cursor, tumor_short, specimen, bg_gene_symbol, bg_canonical_transcript):
 
 	# which chromosome is our background gene on?
 	chromosome = find_chromosome(cursor, bg_gene_symbol)
@@ -291,7 +285,7 @@ def find_background_status(cursor, tumor_short, specimen, bg_gene_symbol):
 			cons.append(clean)
 			continue
 		if consequence and aa_mutation:
-			aa_change = consequence_cleanup(cursor, aa_mutation).split(":")[1]
+			aa_change = consequence_cleanup(bg_canonical_transcript, aa_mutation)
 			if aa_change and aa_change != "":
 				cons.append("%s:%s"%(consequence, aa_change))
 			else:
@@ -513,7 +507,7 @@ def pathogenic_mutations_in_gene(cursor, approved_symbol, chromosome, use_reliab
 
 
 #########################################
-def get_approved_symbol(cursor, ensembl_gene_id):
+def ensembl_gene_id2approved_symbol(cursor, ensembl_gene_id):
 	symbol = None
 	qry = "select approved_symbol from icgc.hgnc where ensembl_gene_id='%s'"% ensembl_gene_id
 	ret = search_db(cursor,qry)
@@ -528,7 +522,6 @@ def get_approved_symbol(cursor, ensembl_gene_id):
 		symbol = ret[0][0]
 	# if not resolved return the original ensebl_gene_id
 	return symbol if symbol else ensembl_gene_id
-
 
 #########################################
 def attempt_resolve_deprecated(cursor, stable_id_old, verbose=False):
@@ -574,3 +567,9 @@ def list_of_transcript_ids_2_canonical_transcript_id(cursor, list_of_stable_tran
 	return [r[0] for r in ret]
 
 
+#########################################
+def approved_symbol2ensembl_canonical_transcript(cursor, gene_symbol):
+	qry  = "select ensembl_gene_id from icgc.hgnc "
+	qry += "where approved_symbol = '%s' " % gene_symbol
+	[ensembl_gene_id] = hard_landing_search(cursor,qry)[0]
+	return gene_stable_id_2_canonical_transcript_id(cursor, ensembl_gene_id)

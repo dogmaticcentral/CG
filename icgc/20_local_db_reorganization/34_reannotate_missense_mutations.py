@@ -170,11 +170,12 @@ def process_aa_change_line(cursor, chrom, line):
 	if not ret:
 		#print("no gene location found for %s (? it should be a missense)" % icgc_mutation_id)
 		return None
-	[position, gene_relative, transcript_relative] = ret[0]
+	[position, gene_relative_locations, transcript_relative_locations] = ret[0]
 
 	# which transcript is canonical
 	canonical_transcripts = {}
-	for ens_gene_id in gene_relative.split(";"):
+	for gene_relative_location in gene_relative_locations.split(";"):
+		ens_gene_id = gene_relative_location.split(":")[0]
 		canonical_transcript = gene_stable_id_2_canonical_transcript_id(cursor, ens_gene_id)
 		#print (ens_gene_id, get_approved_symbol(cursor, ens_gene_id), canonical_transcript)
 		if canonical_transcript: canonical_transcripts[ens_gene_id] = canonical_transcript
@@ -185,7 +186,6 @@ def process_aa_change_line(cursor, chrom, line):
 
 	# easy way out - nothing more to do here
 	if len(missing)==0: return None
-
 
 	# get transcript coordinates
 	coords_table = "coords_chrom_%s" % chrom
@@ -258,12 +258,11 @@ def process_aa_change_line(cursor, chrom, line):
 	if False and len(annotstring)>0 and not annotstring in aa_mutation:
 		print('\n++++++++++++++++++++++++')
 		print(line)
-		print("location:", position, gene_relative, transcript_relative)
+		print("location:", position, gene_relative_locations, transcript_relative_locations)
 		print("cds positions:", cds_positions)
 		print("missing", missing)
 		print("have annotation string", annotstring)
 		print('++++++++++++++++++++++++\n')
-	#exit()
 	return annotstring, consequence_string, new_pathogenicity
 
 #########################################
@@ -281,13 +280,13 @@ def re_annotate(chromosomes, other_args):
 		# (that the mutation results in aa change)
 		# TODO: change this into our own independent annotation
 		qry += "where aa_mutation is not null "
-		#qry += "and  icgc_mutation_id in ('MU10543')"
+		#qry += "and  icgc_mutation_id in ('MUT_12_MMB2U7QQ5O')"
 		ret  = search_db(cursor,qry)
 		if not ret:
 			print("no aa mutation entries for chrom %s (?) " % chrom)
 			continue
 		if 'error' in ret[0][0].lower():
-			search_db(cursor,qry, verbose=True)
+			search_db(cursor, qry, verbose=True)
 			exit()
 
 		total_updates = 0
@@ -302,12 +301,10 @@ def re_annotate(chromosomes, other_args):
 			# update table set aa_mutation to new_annotation
 			qry  = "update %s set " % mutations_table
 			qry += "aa_mutation='%s', consequence='%s', pathogenicity_estimate=%d " \
-					%(new_annotation, new_consequence, new_pathogenicity)
-			qry += "where icgc_mutation_id='%s' " %  line[0]
-			#print(line)
-			#search_db(cursor, qry, verbose=False)
+					% (new_annotation, new_consequence, new_pathogenicity)
+			qry += "where icgc_mutation_id='%s' " % line[0]
+			search_db(cursor, qry, verbose=False)
 			total_updates += 1
-			#print()
 
 		time1 = time.time()
 		print("chrom ", chrom, "done in %.3f mins, total updates %d" % (float(time1-time0)/60, total_updates))
@@ -330,8 +327,8 @@ def main():
 	db.close()
 
 	chromosomes = [str(i) for i in range(1,13)] + ["Y"] + [str(i) for i in range(22,12,-1)] + ["X"]
-
 	number_of_chunks = 12
+
 	parallelize (number_of_chunks, re_annotate, chromosomes, [], round_robin=True)
 
 

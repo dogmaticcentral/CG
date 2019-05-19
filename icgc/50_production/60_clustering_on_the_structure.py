@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 #
 # This source code is part of icgc, an ICGC processing pipeline.
 # 
@@ -17,17 +17,23 @@
 # 
 # Contact: ivana.mihalek@gmail.com
 #
-import subprocess
-
 
 from icgc_utils.common_queries import *
 from icgc_utils.pymol import *
 from icgc_utils.clustering import *
-###############################
-def protein_mutations (cursor, tables, gene_symbol):
 
-	p53_wt = []
-	p53_mut = []
+###############################
+def protein_mutations (cursor, tables, gene_symbol, bg_gene):
+
+	canonical_transcript  = {}
+	for g in [gene_symbol, bg_gene]:
+		canonical_transcript[g] = approved_symbol2ensembl_canonical_transcript(cursor,g)
+		if not canonical_transcript[g]:
+			print ("canonical transcript not found for", g)
+			exit()
+
+	bg_wt = []
+	bg_mut = []
 	for table in tables:
 
 		tumor_short = table.split("_")[0]
@@ -36,55 +42,56 @@ def protein_mutations (cursor, tables, gene_symbol):
 		qry += "from mutation2gene g,  %s m " % table
 		qry += "where g.gene_symbol='%s' " % gene_symbol
 		qry += "and g.icgc_mutation_id = m.icgc_mutation_id "
-		qry += "and m.pathogenic_estimate=1 and m.reliability_estimate=1"
+		qry += "and m.pathogenicity_estimate=1 and m.reliability_estimate=1"
 
-		ret = search_db(cursor,qry)
+		ret = error_intolerant_search(cursor,qry)
 
 		if not ret: continue # no mutations here
 
-		donor_rows = {}
-		p53_status_per_specimen = {}
+		bg_status_per_specimen = {}
 		specimen_seen = {}
-		mutations_per_specimen = {}
+		bgct = canonical_transcript[bg_gene]
 		for line in ret:
-			[mutation_id, specimen_id, chromsome] = line
-			qry = "select consequence, aa_mutation from mutations_chrom_%s " % chromsome
-			qry += "where icgc_mutation_id='%s' " %  mutation_id
-			ret2 = search_db(cursor,qry)
-			if not ret2:
-				search_db(cursor,qry,verbose=True)
-				exit(1)
-			[consequence, aa_change] = ret2[0]
-			if consequence!='missense': continue
-
+			[mutation_id, specimen_id, chromosome] = line
+			consequence, aa_change  = get_consequence(cursor, chromosome, mutation_id)
+			if not 'missense' in consequence: continue
+			aa_change = consequence_cleanup(canonical_transcript[gene_symbol], aa_change)
+			if ":" in aa_change: continue # mutation in an alternative transcript only
 			###################
 			# specimen related info
-			if not specimen_seen.has_key(specimen_id):
+			if not specimen_id  in specimen_seen:
 				specimen_seen[specimen_id] = True
-				p53_status_per_specimen[specimen_id] = find_background_status(cursor, tumor_short, specimen_id, 'TP53')
-
-			#print specimen_id, "    ", aa_change_cleanup(cursor, aa_change), "    ", p53_status_per_specimen[specimen_id]
-			if p53_status_per_specimen[specimen_id][0] == 'pathogenic':
-				p53_mut.append(consequence_cleanup(cursor, aa_change))
+				bg_status_per_specimen[specimen_id] = find_background_status(cursor, tumor_short, specimen_id, bg_gene, bgct)
+			#print(tumor_short , specimen_id, "  ",  aa_change, "  ", bg_status_per_specimen[specimen_id])
+			if bg_status_per_specimen[specimen_id][0] == 'pathogenic':
+				bg_mut.append(aa_change)
 			else:
-				p53_wt.append(consequence_cleanup(cursor, aa_change))
+				bg_wt.append(aa_change)
 
-	# TODO: note in the paper some mutations recurrent
-	p53_wt = set(p53_wt)
-	p53_mut = set(p53_mut)
-	#return list(p53_wt.difference(p53_mut)), list(p53_mut.difference(p53_wt))
-	return list(p53_wt.difference(p53_mut)), list(p53_mut.difference(p53_wt)), list(p53_wt.union(p53_mut))
+	bg_wt = set(bg_wt)
+	bg_mut = set(bg_mut)
+
+	return list(bg_wt.difference(bg_mut)), list(bg_mut.difference(bg_wt)), list(bg_wt.union(bg_mut))
 
 ###############################
 def main():
 
-
-
-	gene = 'RPL11'
-	pdb_file       = "/home/ivana/Dropbox/Sinisa/ribosomal/data/structures/5s-rRNP.%s.pdb" % gene
+	if len(sys.argv)<3:
+		print("usage: %s <gene symbol>  <pdb file> [<background gene symbol>]" % sys.argv[0])
+		exit()
+		
+	gene    = sys.argv[1].upper()
+	pdb_file = sys.argv[2]
+	bg_gene = sys.argv[3] if len(sys.argv)>2 else 'TP53'
+	
 	clustering_prog = "/home/ivana/c-utils/pdb_clust/pc"
+	
+	for fnm in [pdb_file, clustering_prog]:
+		if os.path.exists(fnm) and os.path.getsize(fnm)>0: continue
+		print(fnm,"not found or empty")
+		exit(1)
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql("/home/ivana/.tcga_conf")
 	cursor = db.cursor()
 
 	#########################
@@ -95,10 +102,9 @@ def main():
 	#########################
 	switch_to_db(cursor,"icgc")
 
-	p53_wt, p53_mut, both = protein_mutations (cursor, tables, gene)
+	bg_wt, bg_mut, both = protein_mutations (cursor, tables, gene, bg_gene)
 
-
-	for background in ['p53_wt', 'p53_mut', 'both']:
+	for background in ['bg_wt', 'bg_mut', 'both']:
 
 		mutations = eval(background)
 

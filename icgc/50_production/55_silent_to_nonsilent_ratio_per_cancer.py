@@ -46,7 +46,7 @@ def main():
 		for gene, consq in ret:
 			if not consq in ['synonymous', 'missense', 'stop_gained']: continue
 			#print "*{}*  *{}*".format(gene, consq)
-			if not silent.has_key(gene):
+			if gene not in silent:
 				silent[gene] = 0
 				other[gene] = 0
 			if consq=='synonymous':
@@ -54,17 +54,17 @@ def main():
 			else:
 				other[gene] += 1
 
-	for gene, silent_count in silent.iteritems():
+	for gene, silent_count in silent.items():
 		other_count = other[gene]
 		if silent_count==0 and other_count==0: continue # paranoia
 		if (silent_count+other_count)<3: continue
 		silent_ratio[gene] = float(silent_count)/(silent_count+other_count)
 		snvs[gene] = (silent_count+other_count)
 
-	gene_ratio_list =[(gene,ratio) for gene,ratio in sorted(silent_ratio.iteritems(), key=lambda (k,v): v)]
+	gene_ratio_list =[(gene,ratio) for gene,ratio in sorted(iter(silent_ratio.items()), key=lambda k_v: k_v[1])]
 
 	for gene,ratio in gene_ratio_list[:100]:
-		print "%15s  %5.2f  %4d " % (gene, ratio, snvs[gene])
+		print("%15s  %5.2f  %4d " % (gene, ratio, snvs[gene]))
 
 	outf = open ("silent_ratio.%s.tsv"%tumor_short,"w")
 	for gene,ratio in gene_ratio_list:

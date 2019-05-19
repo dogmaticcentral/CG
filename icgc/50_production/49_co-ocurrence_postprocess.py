@@ -48,7 +48,7 @@ def myfisher(donors, tp53_mutated, other_mutated, cooc):
 def main():
 
 	if not os.path.exists("coocurrence"):
-		print "coocurrence dir not found";
+		print("coocurrence dir not found");
 		exit()
 
 	tsv_files = []
@@ -63,7 +63,7 @@ def main():
 		inf = open("coocurrence/"+file,"r")
 		for line in inf:
 			gene, donors, tot_tp53, tot, tot_cooc = line.split()
-			if not total_donors.has_key(gene): hashinit([total_donors,total,total_tp53,total_cooc], gene)
+			if gene not in total_donors: hashinit([total_donors,total,total_tp53,total_cooc], gene)
 			total_donors[gene] += int(donors)
 			total[gene]        += int(tot)
 			total_tp53[gene]   += int(tot_tp53)
@@ -71,7 +71,7 @@ def main():
 		inf.close()
 
 	ct = 0
-	for gene in total.keys():
+	for gene in list(total.keys()):
 		fract_tp53 = float(total_tp53[gene])/total_donors[gene]
 		expected   = total[gene]*fract_tp53
 		if total[gene]<10: continue
@@ -81,9 +81,9 @@ def main():
 		#print "%10s   %5d %5d %5d    %5d    %6.2f   %.2f     %.1e    %.1e " % \
 		#		(gene, total_donors[gene], total[gene], total_tp53[gene],
 		#		total_cooc[gene], expected, ratio, p_smaller, p_greater)
-		print "%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e" % \
+		print("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e" % \
 				(gene, total_donors[gene], total[gene], total_tp53[gene],
-				total_cooc[gene], expected,  p_smaller, p_greater)
+				total_cooc[gene], expected,  p_smaller, p_greater))
 		ct += 1
 		#if ct==100: break
 #########################################
