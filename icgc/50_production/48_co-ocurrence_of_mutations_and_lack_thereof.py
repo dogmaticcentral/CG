@@ -49,27 +49,26 @@ def cooccurrence(tables, other_args):
 		nr_of_donors_w_bg_gene_mutated  = patients_with_muts_in_gene.get(bg_gene,0)
 		print("="*20, "\n", table, "donors: ", total_number_of_donors, "donors with mutated %s:"%bg_gene, nr_of_donors_w_bg_gene_mutated)
 		if nr_of_donors_w_bg_gene_mutated==0: continue
+		# using a view here doesn't do jack squat
+		# (lesson: don't trust forums)
+		# bg_view = create_gene_view(cursor, table, bg_gene)
+		bg_temp = create_gene_temp(cursor, table, bg_gene)
 		outlines = []
-
-		bg_gene_view = create_gene_view(cursor, table, bg_gene)
-
 		ctr = 0
-		# randomize to minimize the wait on loched m2g tables
-		shuffled_genes = list(patients_with_muts_in_gene.keys())
-		shuffle(shuffled_genes)
-		for gene in shuffled_genes:
+		for gene in patients_with_muts_in_gene.keys():
 			ctr += 1
 			nr_of_donors_w_gene_mutated = patients_with_muts_in_gene.get(gene,0)
 			if nr_of_donors_w_gene_mutated==0: continue
 			if gene==bg_gene: continue
-			if ctr%1000==0:
+			if ctr%5000==0:
 				print("\t\t {}: {} out of {}, {} mins".
 					format(tumor_short, ctr, len(patients_with_muts_in_gene), "%.1f"%(float(time.time()-t0)/60)))
-			cooc = co_occurrence_count(cursor,table,bg_gene_view, gene)
+			#cooc = co_occurrence_count(cursor,table, bg_gene, gene)
+			cooc = co_occurrence_count_with_a_temp(cursor, table, bg_temp, gene)
 			outlines.append("%s\t%d\t%d\t%d\t%d" % (gene, total_number_of_donors,
 													nr_of_donors_w_bg_gene_mutated, nr_of_donors_w_gene_mutated, cooc))
-		drop_view(cursor, bg_gene_view)
-
+		#drop_view(cursor, bg_view)
+		check_and_drop(cursor, 'icgc', bg_temp)
 
 		if len(outlines)>0:
 			outf = open("{}/{}.tsv".format(outdir,tumor_short),"w")
@@ -104,11 +103,10 @@ def main():
 	tables = [field[0] for field in search_db(cursor,qry)]
 
 
-
 	# ###################################
 	# #number_of_chunks = 1
-	tables = ['THYM_simple_somatic', 'UCEC_simple_somatic', 'UTCA_simple_somatic', 'UVM_simple_somatic', 'WT_simple_somatic']
-	number_of_chunks = 5
+	#tables = ['UCEC_simple_somatic', 'BLCA_simple_somatic', 'THCA_simple_somatic', 'BRCA_simple_somatic']
+	number_of_chunks = 12
 	processes = parallelize(number_of_chunks, cooccurrence, tables, [bg_gene, outdir])
 	if processes: wait_join(processes)
 

@@ -324,6 +324,29 @@ def quotify(something):
 	return "'{}'".format(something)
 
 #########################################
+# beats me, but using the intermediate (mutation2gene) is faster
+# using inner join or not makes not difference
+def co_ocurrence_w_group_count_inner_join(cursor, somatic_table, gene1, other_genes):
+	qry =  "select count(distinct s1.icgc_donor_id) ct "
+	qry += "from  %s s1,  %s s2  " % (somatic_table, somatic_table)
+	#qry += "from  %s s1  " % (somatic_table)
+	qry += "where s1.icgc_donor_id=s2.icgc_donor_id "
+	qry += "and s1.gene_symbol='%s' " % gene1
+	#qry += "inner join %s as s2 on s1.icgc_donor_id=s2.icgc_donor_id " %somatic_table
+	#qry += "where  s1.gene_symbol='%s' " % gene1
+	group_string = (",".join([quotify(gene2) for gene2 in other_genes]))
+	qry += "and s2.gene_symbol in (%s) " % group_string
+	qry += "and s1.pathogenicity_estimate=1 and s1.reliability_estimate=1 "
+	qry += "and s2.pathogenicity_estimate=1 and s2.reliability_estimate=1 "
+
+	ret = search_db(cursor,qry)
+
+	if not ret:
+		search_db(cursor,qry,verbose=True)
+		exit()
+	return ret[0][0]
+
+#########################################
 def co_ocurrence_w_group_count(cursor, somatic_table, gene1, other_genes):
 	qry =  "select count(distinct s1.icgc_donor_id) ct "
 	qry += "from mutation2gene g1, mutation2gene g2,  %s s1,  %s s2  " % (somatic_table, somatic_table)
@@ -345,11 +368,21 @@ def co_ocurrence_w_group_count(cursor, somatic_table, gene1, other_genes):
 def create_gene_view(cursor, somatic_table, gene):
 	view_name = "view_{}_{}_{}".format(somatic_table, gene, os.getpid())
 	qry = "create view %s " % view_name
-	qry += "as select distinct s.icgc_donor_id from mutation2gene  m, %s s " % somatic_table
-	qry += "where s.icgc_mutation_id=m.icgc_mutation_id and m.gene_symbol='%s' " % gene
-	qry += "and s.pathogenicity_estimate=1 and s.reliability_estimate=1"
+	qry += "as select distinct icgc_donor_id from  %s  " % somatic_table
+	qry += "where gene_symbol='%s' " % gene
+	qry += "and pathogenicity_estimate=1 and reliability_estimate=1"
 	error_intolerant_search(cursor, qry)
 	return view_name
+
+#########################################
+def create_gene_temp(cursor, somatic_table, gene):
+	temp_name = "temp_{}_{}_{}".format(somatic_table, gene, os.getpid())
+	qry = "create temporary table %s " % temp_name
+	qry += "as select distinct icgc_donor_id from  %s  " % somatic_table
+	qry += "where gene_symbol='%s' " % gene
+	qry += "and pathogenicity_estimate=1 and reliability_estimate=1"
+	error_intolerant_search(cursor, qry)
+	return temp_name
 ############
 def drop_view(cursor, view_name):
 	qry = "drop view if exists %s " % view_name
@@ -360,15 +393,32 @@ def drop_view(cursor, view_name):
 # python3 -m line_profiler .....py.lprof
 # @profile
 #########################################
-def co_occurrence_count(cursor, somatic_table, view_gene1, gene2):
+def co_occurrence_count_with_a_temp(cursor, somatic_table, gene1_view, gene2):
 
-	gene2_view_name = gene2.replace("-","_")
-	mutation_view = "temp_m2g_%s " % gene2_view_name
+	qry =  "select count(distinct s1.icgc_donor_id) ct "
+	qry += "from  %s s1,  %s s2  " % (gene1_view, somatic_table)
+	qry += "where s1.icgc_donor_id=s2.icgc_donor_id "
+	qry += "and s2.gene_symbol='%s' " % gene2
+	qry += "and s2.pathogenicity_estimate=1 and s2.reliability_estimate=1 "
+	ret = search_db(cursor,qry,verbose=True)
+	if not ret:
+		search_db(cursor,qry,verbose=True)
+		retval = 0
+	else:
+		retval = ret[0][0]
 
-	qry  = "select count(distinct s.icgc_donor_id)  from %s  m, %s s "  % (mutation_view, somatic_table)
-	qry += "right join %s v on s.icgc_donor_id=v.icgc_donor_id  "  % view_gene1
-	qry += "where s.icgc_mutation_id=m.icgc_mutation_id "
-	qry += "and s.pathogenicity_estimate=1 and s.reliability_estimate=1"
+	return retval
+
+def co_occurrence_count(cursor, somatic_table, gene1, gene2):
+
+	qry =  "select count(distinct s1.icgc_donor_id) ct "
+	qry += "from  %s s1,  %s s2  " % (somatic_table, somatic_table)
+	qry += "where s1.icgc_donor_id=s2.icgc_donor_id "
+	qry += "and s1.gene_symbol='%s' " % gene1
+	qry += "and s2.gene_symbol='%s' " % gene2
+	qry += "and s1.pathogenicity_estimate=1 and s1.reliability_estimate=1 "
+	qry += "and s2.pathogenicity_estimate=1 and s2.reliability_estimate=1 "
+
 	ret = search_db(cursor,qry,verbose=True)
 	if not ret:
 		search_db(cursor,qry,verbose=True)

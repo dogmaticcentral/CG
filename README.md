@@ -337,7 +337,7 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  [Duplicate data removal](#removing-duplicates) should be probably be re-applied 
  (steps [19_cleanup_duplicate_donors.py](19_cleanup_duplicate_donors.py) 
  and [22_cleanup_duplicate_specimens.py](22_cleanup_duplicate_specimens.py)).
- If everything is ok, [35_database_stats.py](icgc/40_housekeeping/35_database_stats.py) should report
+ If everything is ok, [35_database_stats.py](icgc/40_housekeeping/37_database_stats.py) should report
  no duplicates in any of the tables.
  
  ### Housekeeping ([]())

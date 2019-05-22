@@ -63,27 +63,15 @@ icgc
 │   └── 40_mutation2gene_maps.py                              ~6 min
 --------------------------------------------------------
 ├── 40_housekeeping
-│   ├── 35_database_stats.py                                  ~1min
-│   ├── 38_gene_idx_on_mutation2gene.py                       ~4min
-│   ├── 39_var_sanity_checks.py                               <1s
-│   └── 40_cancer_types_table.py                              <1s
+│   ├── 33_drop_empty_tables.py                                <1min
+│   ├── 35_gene_column_to_variants.py                          ~15min
+│   ├── 37_database_stats.py                                   ~1min
+│   ├── 38_database_stats_2.py
+│   ├── 40_var_sanity_checks.py                                <1s
+│   ├── 45_cancer_types_table.py                               <1s
+
 --------------------------------------------------------
 ├── 50_production
 │   ├── 40_specimen_idx_on_varians.py                         14min, no pll
 │   ├── 42_gene_stats_generic.py
-│   ├── 43_gene_stats.py
-│   ├── 44_cancer_stats.py
-│   ├── 45_two_gene_co-ocurrence.py
-│   ├── 46_two_gene_co-ocurrence_missense.py
-│   ├── 47_two_gene_co-ocurrence_path_subpopulation.py
-│   ├── 48_co-ocurrence_of_mutations_and_lack_thereof.py
-│   ├── 49_co-ocurrence_postprocess.py
-│   ├── 50_silent_to_nonsilent_ratio.py
-│   ├── 52_silent_to_nonsilent_plot.py
-│   ├── 55_silent_to_nonsilent_ratio_per_cancer.py
-│   ├── 60_clustering_on_the_structure.py
-│   ├── 62_gnomad-clustering_on_the_structure.py
-│   ├── 64_conservation-clustering_on_the_structure.py
-│   ├── RPL5_per_cancer_breakdown.tmp.tsv
-│   └── RPL5_per_cancer_breakdown.tsv
-
+│   ├── 48_co-occurence                                       cuople of mins, depending on the reference gene chosen

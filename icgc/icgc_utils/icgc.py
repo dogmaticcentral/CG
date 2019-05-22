@@ -141,6 +141,7 @@ def make_variants_table(cursor, db_name, table_name):
 	qry += "     id INT NOT NULL AUTO_INCREMENT, "
 	qry += "  	 icgc_mutation_id VARCHAR (20) NOT NULL, "
 	qry += "     chromosome CHAR(2) NOT NULL,"
+	qry += "     gene_symbol  VARCHAR (30), "
 	qry += "  	 icgc_donor_id VARCHAR (20) NOT NULL, "
 	qry += "     icgc_specimen_id VARCHAR (50), "  # we want to be able to stick the TCGA sample id later
 	qry += "     icgc_sample_id VARCHAR (50), "

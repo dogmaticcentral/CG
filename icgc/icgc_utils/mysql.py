@@ -191,12 +191,12 @@ def create_index (cursor, db_name, index_name, table, columns, verbose=False):
 
 	# check whether this index exists already
 	qry = "show index from %s where key_name like '%s'" % ( table, index_name)
-	rows = search_db(cursor, qry, verbose=verbose)
+	rows = error_intolerant_search(cursor, qry)
 	if (rows):return True
 
 	# columns is a list of columns that we want to have indexed
 	qry = "create index %s on %s (%s)" % (index_name, table, ",".join(columns))
-	rows = search_db(cursor, qry, verbose=verbose)
+	rows = error_intolerant_search(cursor, qry)
 	if (rows): return False
 	return True
 
@@ -234,19 +234,21 @@ def column_exists (cursor, db_name, table_name, column_name):
 	else:
 		return False
 
-#########################################
-def add_boolean_column(cursor, db_name, table_name, column_name):
+def add_column(cursor, db_name, table_name, column_name, col_type, default=None, after_col=None):
 	if not column_exists (cursor, db_name, table_name, column_name):
-		qry = "alter table  %s.%s add  %s boolean  default 0" % (db_name, table_name, column_name)
-		search_db(cursor,qry, verbose=True)
+		qry = "alter table  %s.%s add  %s %s  " %(db_name, table_name, column_name, col_type)
+		if default: qry += "default %s " % default
+		if after_col: qry += "after %s" % after_col
+		error_intolerant_search(cursor,qry)
 	return
 
 #########################################
+def add_boolean_column(cursor, db_name, table_name, column_name):
+	return add_column(cursor, db_name, table_name, column_name, 'boolean', '0')
+
+#########################################
 def add_float_column(cursor, db_name, table_name, column_name):
-	if not column_exists (cursor, db_name, table_name, column_name):
-		qry = "alter table  %s.%s add  %s float  default 0.0" % (db_name, table_name, column_name)
-		search_db(cursor,qry, verbose=True)
-	return
+	return add_column(cursor, db_name, table_name, column_name, 'float', '0.0')
 
 
 #########################################
