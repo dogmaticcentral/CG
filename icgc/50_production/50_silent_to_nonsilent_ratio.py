@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 #
 # This source code is part of icgc, an ICGC processing pipeline.
 # 
@@ -19,11 +19,11 @@
 #
 
 from icgc_utils.common_queries import *
-import random
+from config import Config
 
 def main():
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	# all protein coding genes
@@ -45,7 +45,7 @@ def main():
 
 		# other
 		qry  = "select count(*) from mutation2gene g, mutations_chrom_%s  m where g.gene_symbol='%s' "  % (chrom[gene], gene)
-		qry += "and m.icgc_mutation_id=g.icgc_mutation_id and  m.consequence in ('missense','stop_gained') "
+		qry += "and m.icgc_mutation_id=g.icgc_mutation_id and  m.consequence in ('missense','stop_gained','stop_lost') "
 		qry += "and m.reliability_estimate=1"
 		ret = search_db(cursor,qry, verbose=True)
 		if ret:

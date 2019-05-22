@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 #
 # This source code is part of icgc, an ICGC processing pipeline.
 # 
@@ -18,21 +18,23 @@
 # Contact: ivana.mihalek@gmail.com
 #
 
-
 import time
 from icgc_utils.common_queries import *
 from icgc_utils.processes import  *
+from config import Config
+from random import shuffle
+
 verbose = False
 
-def hashinit(list_of_hashes, key):
-	for hash in list_of_hashes:
-		hash[key] = 0
-
-
+# ./icgc_utils/kernprof.py -l 48_....py
+# python3 -m line_profiler 48_....py.lprof
+# @profile
 ######################
-def coocurrence(tables, other_args):
+def cooccurrence(tables, other_args):
+	
+	[bg_gene, outdir] = other_args
 
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	#########################
@@ -41,31 +43,41 @@ def coocurrence(tables, other_args):
 	for table in tables:
 		t0 = time.time()
 		tumor_short = table.split("_")[0]
+
 		patients_with_muts_in_gene = patients_per_gene_breakdown(cursor, table)
-		donors = len(get_donors(cursor, table))
-		print("="*20, "\n", table, "donors: ", donors, "donors with mutated TP53:", patients_with_muts_in_gene.get('TP53',0))
-		if patients_with_muts_in_gene.get('TP53',0)==0: continue
+		total_number_of_donors = len(get_donors(cursor, table))
+		nr_of_donors_w_bg_gene_mutated  = patients_with_muts_in_gene.get(bg_gene,0)
+		print("="*20, "\n", table, "donors: ", total_number_of_donors, "donors with mutated %s:"%bg_gene, nr_of_donors_w_bg_gene_mutated)
+		if nr_of_donors_w_bg_gene_mutated==0: continue
+		outlines = []
 
-		# the total sums are per gene, over tumors that have a mutation in this gene
-		total_donors = {}
-		total = {}
-		total_tp53 = {} # total tp53 mutated in tumors that have gene of interest mutated
-		total_cooc = {}
-		for gene, number_of_patients in patients_with_muts_in_gene.items():
-			if gene=='TP53': continue
-			if gene not in total_donors: hashinit([total_donors,total,total_tp53,total_cooc], gene)
-			total_donors[gene] += donors
-			total_tp53[gene]   += patients_with_muts_in_gene.get('TP53',0)
-			total[gene] += number_of_patients
-			total_cooc[gene] += co_ocurrence_count(cursor, table, gene, 'TP53')
+		bg_gene_view = create_gene_view(cursor, table, bg_gene)
 
-		print(table, "donors: ", donors, "done, %.1f mins" % (float(time.time()-t0)/60))
+		ctr = 0
+		# randomize to minimize the wait on loched m2g tables
+		shuffled_genes = list(patients_with_muts_in_gene.keys())
+		shuffle(shuffled_genes)
+		for gene in shuffled_genes:
+			ctr += 1
+			nr_of_donors_w_gene_mutated = patients_with_muts_in_gene.get(gene,0)
+			if nr_of_donors_w_gene_mutated==0: continue
+			if gene==bg_gene: continue
+			if ctr%1000==0:
+				print("\t\t {}: {} out of {}, {} mins".
+					format(tumor_short, ctr, len(patients_with_muts_in_gene), "%.1f"%(float(time.time()-t0)/60)))
+			cooc = co_occurrence_count(cursor,table,bg_gene_view, gene)
+			outlines.append("%s\t%d\t%d\t%d\t%d" % (gene, total_number_of_donors,
+													nr_of_donors_w_bg_gene_mutated, nr_of_donors_w_gene_mutated, cooc))
+		drop_view(cursor, bg_gene_view)
 
-		outf = open("coocurrence/%s.tsv"%tumor_short,"w")
-		for gene, donors in total_donors.items():
-			if donors<10: continue
-			outf.write("%s\t%d\t%d\t%d\t%d\n" % (gene, donors, total_tp53[gene], total[gene], total_cooc[gene]))
-		outf.close()
+
+		if len(outlines)>0:
+			outf = open("{}/{}.tsv".format(outdir,tumor_short),"w")
+			outf.write("\n".join(outlines))
+			outf.write("\n")
+			outf.close()
+
+		print(table, "donors: ", total_number_of_donors, "done, %.1f mins" % (float(time.time()-t0)/60))
 
 	cursor.close()
 	db.close()
@@ -74,24 +86,34 @@ def coocurrence(tables, other_args):
 #########################################
 def main():
 
-	if not os.path.exists("coocurrence"): os.mkdir("coocurrence")
+	if len(sys.argv) < 2:
+		print("usage: %s <bg gene> " % sys.argv[0])
+		exit()
+
+	bg_gene = sys.argv[1].upper()
+	outdir = "cooccurrence"
+	if not os.path.exists(outdir): os.mkdir(outdir)
 
 	# divide by cancer types, because I have duplicates within each cancer type
 	# that I'll resolve as I go, but I do not want the threads competing)
-	db     = connect_to_mysql()
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%_simple_somatic'"
 	tables = [field[0] for field in search_db(cursor,qry)]
 
+
+
+	# ###################################
+	# #number_of_chunks = 1
+	tables = ['THYM_simple_somatic', 'UCEC_simple_somatic', 'UTCA_simple_somatic', 'UVM_simple_somatic', 'WT_simple_somatic']
+	number_of_chunks = 5
+	processes = parallelize(number_of_chunks, cooccurrence, tables, [bg_gene, outdir])
+	if processes: wait_join(processes)
+
 	cursor.close()
 	db.close()
-
-	#tables= ['ALL_simple_somatic']
-	number_of_chunks = 8  # myISAM does not deadlock
-	parallelize(number_of_chunks, coocurrence, tables, [])
-
 
 
 #########################################

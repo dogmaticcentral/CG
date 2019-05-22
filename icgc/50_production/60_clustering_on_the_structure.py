@@ -21,6 +21,7 @@
 from icgc_utils.common_queries import *
 from icgc_utils.pymol import *
 from icgc_utils.clustering import *
+from config import Config
 
 ###############################
 def protein_mutations (cursor, tables, gene_symbol, bg_gene):
@@ -91,7 +92,7 @@ def main():
 		print(fnm,"not found or empty")
 		exit(1)
 
-	db     = connect_to_mysql("/home/ivana/.tcga_conf")
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	#########################

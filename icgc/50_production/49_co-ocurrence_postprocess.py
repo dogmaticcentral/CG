@@ -47,51 +47,51 @@ def myfisher(donors, tp53_mutated, other_mutated, cooc):
 #########################################
 def main():
 
-	if not os.path.exists("coocurrence"):
-		print("coocurrence dir not found");
+	indir = "cooccurrence"
+
+	if not os.path.exists(indir):
+		print(indir, "directory not found")
 		exit()
 
 	tsv_files = []
-	for path, dir, files in  os.walk("coocurrence"):
+	for path, dir, files in  os.walk(indir):
 		tsv_files += [f for f in files if f[-4:]==".tsv"]
 
 	total_donors = {}
 	total = {}
-	total_tp53 = {} # total tp53 mutated in tumors that have gene of interest mutated
+	total_bg = {} # total bg gene mutated in tumors that have the gene of interest mutated
 	total_cooc = {}
 	for file in tsv_files:
-		inf = open("coocurrence/"+file,"r")
+		inf = open("{}/{}".format(indir, file),"r")
 		for line in inf:
-			gene, donors, tot_tp53, tot, tot_cooc = line.split()
-			if gene not in total_donors: hashinit([total_donors,total,total_tp53,total_cooc], gene)
+			gene, donors, tot_bg, tot, tot_cooc = line.split()
+			if gene not in total_donors: hashinit([total_donors,total,total_bg,total_cooc], gene)
 			total_donors[gene] += int(donors)
 			total[gene]        += int(tot)
-			total_tp53[gene]   += int(tot_tp53)
+			total_bg[gene]     += int(tot_bg)
 			total_cooc[gene]   += int(tot_cooc)
 		inf.close()
 
 	ct = 0
 	for gene in list(total.keys()):
-		fract_tp53 = float(total_tp53[gene])/total_donors[gene]
-		expected   = total[gene]*fract_tp53
+		fract_bg = float(total_bg[gene])/total_donors[gene]
+		expected   = total[gene]*fract_bg
 		if total[gene]<10: continue
 		if expected==0: continue
-		ratio = total_cooc[gene]/(expected)
-		p_smaller, p_greater = myfisher(total_donors[gene], total_tp53[gene], total[gene], total_cooc[gene])
-		#print "%10s   %5d %5d %5d    %5d    %6.2f   %.2f     %.1e    %.1e " % \
-		#		(gene, total_donors[gene], total[gene], total_tp53[gene],
-		#		total_cooc[gene], expected, ratio, p_smaller, p_greater)
+		p_smaller, p_greater = myfisher(total_donors[gene], total_bg[gene], total[gene], total_cooc[gene])
 		print("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e" % \
-				(gene, total_donors[gene], total[gene], total_tp53[gene],
+				(gene, total_donors[gene], total[gene], total_bg[gene],
 				total_cooc[gene], expected,  p_smaller, p_greater))
 		ct += 1
-		#if ct==100: break
-#########################################
-'''
-further sorting (with rank number)
-sort -gk7 anticorrelates.txt | awk '{ct +=1; printf "%6d", ct; print}' |  grep RPL | grep -v MRPL
-'''
+
 
 #########################################
 if __name__ == '__main__':
 	main()
+
+
+#########################################
+'''
+further sorting (with rank number) 7: anticorrelate, 8: correlates
+sort -gk8 anticorrelates.tsv | awk '{ct +=1; printf "%6d  ", ct; print}' |  grep RPL | grep -v MRPL
+'''

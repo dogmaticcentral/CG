@@ -27,8 +27,8 @@ from icgc_utils.icgc   import  *
 #########################################
 def main():
 
-	print("disabled")
-	exit()
+	#print("disabled")
+	#exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -36,16 +36,21 @@ def main():
 	switch_to_db(cursor,"icgc")
 
 	# indices on simple somatic temp
-	qry  = "select table_name from information_schema.tables "
-	qry += "where table_schema='icgc' and table_name like '%_donor'"
-	tables = [field[0] for field in  search_db(cursor,qry)]
-	for table in tables:
-		print(table)
-		qry = "drop table " + table
+	qry  = "show tables like 'view%'"
+	views = [field[0] for field in  search_db(cursor,qry)]
+	for view in views:
+		print(view)
+		qry = "drop view " + view
 		search_db(cursor, qry, verbose=True)
-		#make_somatic_table(cursor, table)
-		#make_mutations_table(cursor, 'icgc', table)
-		make_donors_table(cursor, 'icgc', table)
+
+	qry  = "show tables like 'temp%'"
+	temps = [field[0] for field in  search_db(cursor,qry)]
+	for temp in temps:
+		print(temp)
+		qry = "drop table " + temp
+		search_db(cursor, qry, verbose=True)
+		
+	
 
 	cursor.close()
 	db.close()

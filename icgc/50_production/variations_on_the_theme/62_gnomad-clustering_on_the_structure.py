@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 #
 # This source code is part of icgc, an ICGC processing pipeline.
 # 
@@ -19,19 +19,30 @@
 #
 import subprocess
 
-
 from icgc_utils.common_queries import *
 from icgc_utils.pymol import *
 from icgc_utils.clustering import *
+from config import Config
 
 ###############################
 def main():
 
-	gene = 'RPL5'
-	pdb_file       = "/home/ivana/Dropbox/Sinisa/ribosomal/data/structures/5s-rRNP.%s.pdb" % gene
+
+	if len(sys.argv)<3:
+		print("usage: %s <gene symbol>  <pdb file> " % sys.argv[0])
+		exit()
+
+	gene    = sys.argv[1].upper()
+	pdb_file = sys.argv[2]
+
 	clustering_prog = "/home/ivana/c-utils/pdb_clust/pc"
 
-	db     = connect_to_mysql()
+	for fnm in [pdb_file, clustering_prog]:
+		if os.path.exists(fnm) and os.path.getsize(fnm)>0: continue
+		print(fnm,"not found or empty")
+		exit(1)
+
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	switch_to_db(cursor,"icgc")
@@ -42,13 +53,13 @@ def main():
 	mut_positions_file = "{}.{}.clust.input".format(gene,"gnomad")
 	outf = open (mut_positions_file,"w")
 	for m in mutations:
-		if m =='M200' : m='L200'
 		outf.write ("%s  %s\n" % (m[0],m[1:-1]))
 	outf.close()
 
 	# clustering run
 	clustering_output  =  "{}.{}.clust.output".format(gene,"gnomad")
 	cmd = "{} {} - {} 4.5 > {}".format(clustering_prog, pdb_file, mut_positions_file, clustering_output)
+	print(cmd)
 	subprocess.call(["bash","-c", cmd])
 
 	# parse clustering output

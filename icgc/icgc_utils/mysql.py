@@ -275,6 +275,11 @@ def check_table_exists (cursor, db_name, table_name):
 	else:
 		return False
 
+############
+def check_and_drop(cursor, db_name, table):
+	if check_table_exists(cursor, db_name, table):
+		search_db(cursor, "drop table %s.%s"% (db_name, table))
+	return
 
 #########################################
 def table_create_time (cursor, db_name, table_name):

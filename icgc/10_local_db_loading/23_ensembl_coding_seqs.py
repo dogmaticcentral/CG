@@ -18,7 +18,7 @@
 # Contact: ivana.mihalek@gmail.com
 #
 
-# from ensembl biomart:  human sequences coding, stabe transcript id in the header
+# from ensembl biomart:  human sequences coding, stable transcript id in the header
 
 from config import Config
 from icgc_utils.mysql import *

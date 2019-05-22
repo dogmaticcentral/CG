@@ -59,7 +59,7 @@ def basic_pymol_input(pdb_file, isolated, clusters, output_file):
 		outf.write("color orange, %s\n" % clust_id)
 		outf.write("show spheres, %s\n" % clust_id)
 
-		outf.write("\ndeselect\n")
+	outf.write("\ndeselect\n")
 
 
 	outf.close()

@@ -17,10 +17,8 @@
 # 
 # Contact: ivana.mihalek@gmail.com
 #
-
-
 from icgc_utils.common_queries   import  *
-
+from config import Config
 verbose = True
 
 #########################################
@@ -34,15 +32,15 @@ verbose = True
 #########################################
 def avg_number_of_muts_per_patient(cursor, table, donors):
 	number_of_patients_w_pathogenic_mutations = 0
-	avg_no_muts = 0
+	avg_no_muts = 0.0
 
 	if len(donors)==0: return
 	for donor_id in  donors:
 		qry  = "select distinct icgc_mutation_id from %s " % table
 		qry += "where  icgc_donor_id='%s' " % donor_id
-		qry += "and  pathogenic_estimate =1 "
+		qry += "and  pathogenicity_estimate =1 "
 		qry += "and  reliability_estimate=1"
-		ret = search_db(cursor,qry)
+		ret = error_intolerant_search(cursor,qry)
 		if not ret: continue
 		number_of_muts = len(ret) if ret else 0
 		if number_of_muts==0: continue
@@ -51,61 +49,68 @@ def avg_number_of_muts_per_patient(cursor, table, donors):
 		avg_no_muts += number_of_muts
 
 	# why is this in this function?
-	if number_of_patients_w_pathogenic_mutations: avg_no_muts/= number_of_patients_w_pathogenic_mutations
-	return number_of_patients_w_pathogenic_mutations, avg_no_muts
+	if number_of_patients_w_pathogenic_mutations>0: avg_no_muts /= number_of_patients_w_pathogenic_mutations
+	return [number_of_patients_w_pathogenic_mutations, avg_no_muts]
 
 
 #########################################
 #########################################
 # produce table of the format
 # tumor short | tumor long | number of patients | avg number of mutations per patient |
-#  number of patients with mutated rpl5 (%of patients; number of genes which are seen mutated in the same or bigger number of patients)
-#  | ditto for rp111
+#  number of patients with mutated gene1 (%of patients; number of genes which are seen mutated in the same or bigger number of patients)
+#  | ditto for gene2
 
 def main():
 
-	db     = connect_to_mysql()
+	if len(sys.argv) < 2:
+		print("usage: %s <gene1 symbol> [<gene2 symbol>]" % sys.argv[0])
+		exit()
+	gene1 = sys.argv[1].upper()
+	gene2 = sys.argv[2] if len(sys.argv)>2 else 'TP53'
+
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
+	number_of_genes_in_human_genome = 20000
 	#########################
 	# which simple somatic tables do we have
 	qry  = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
-	tables = [field[0] for field in  search_db(cursor,qry)]
+	variant_tables = [field[0] for field in  search_db(cursor,qry)]
+
 	#########################
 	switch_to_db(cursor,"icgc")
 
-	outf = open("mutations_per_cancer_breakdown.tsv", "w")
+	outf = open("mutation_freqs_per_cancer.%s.%s.tsv"%(gene1, gene2), "w")
 	outf.write("\t".join(["tumor short", "donors", #"specimen",
 							#"donors w pathogenic mutations",
-                            "pct",
-							"avg mutations per patient",
-							"RPL5 donors", "pct of all donors",
-							"genes with path muts in more donors than RPL5", "pct genome",
-							"RPL11 donors", "pct of all donors",
-							"genes wiht path muts in more donors than RPL11", "pct genome"
+							"pct", "avg mutations per patient",
+							"%s donors"%gene1, "pct of all donors",
+							"genes with path muts in more donors than %s"%gene1, "pct genome",
+							"%s donors"%gene2, "pct of all donors",
+							"genes wiht path muts in more donors than %s"%gene2, "pct genome"
 							])+"\n")
 
-	for table in tables:
+	for variant_table in variant_tables:
 
-		tumor_short = table.split("_")[0]
+		tumor_short = variant_table.split("_")[0]
 		fields = [tumor_short]
 		if verbose: print("=================================")
-		if verbose: print(table)
+		if verbose: print(variant_table)
 
 		# total number of donors?
-		qry  = "select distinct(icgc_donor_id) from %s " % table
-		donors = [ret[0] for ret in search_db(cursor,qry)]
+		qry  = "select distinct(icgc_donor_id) from %s " % variant_table
+		donors = [ret[0] for ret in hard_landing_search(cursor,qry)]
 		if verbose: print("\t donors: ", len(donors))
 		fields.append(len(donors))
 
-		qry  = "select distinct(icgc_specimen_id) from %s " % table
-		specimens = [ret[0] for ret in search_db(cursor,qry)]
+		qry  = "select distinct(icgc_specimen_id) from %s " % variant_table
+		specimens = [ret[0] for ret in hard_landing_search(cursor,qry)]
 		if verbose: print("\t specimens: ", len(specimens))
 		#fields.append(len(specimens))
 
 		# number of unique mutations for each patient
-		number_of_patients_w_pathogenic_mutations,avg_no_muts = avg_number_of_muts_per_patient(cursor, table, donors)
+		[number_of_patients_w_pathogenic_mutations,avg_no_muts] = avg_number_of_muts_per_patient(cursor, variant_table, donors)
 		if verbose: print("\t number of patients with pathogenic mutations: %d" % number_of_patients_w_pathogenic_mutations, end=' ')
 		pct = float(number_of_patients_w_pathogenic_mutations)/len(donors)*100
 		if verbose: print("\t (%d%%)" % (pct))
@@ -115,26 +120,26 @@ def main():
 		if verbose: print("\t avg number of mutations  %.1f " % avg_no_muts)
 		fields.append(" %.1f " % avg_no_muts)
 
-		patients_with_muts_in_gene = patients_per_gene_breakdown(cursor, table)
-		if patients_with_muts_in_gene.get('RPL5',0)==0  and \
-				patients_with_muts_in_gene.get('RPL11',0)==0: continue
+		patients_with_muts_in_gene = patients_per_gene_breakdown(cursor, variant_table)
+		if patients_with_muts_in_gene.get(gene1,0)==0  and \
+				patients_with_muts_in_gene.get(gene2,0)==0: continue
 
-		if verbose: print("\t patients with mutations in ")
-		for gene in ['RPL5', 'RPL11']:
+		if verbose: print("\t patients with mutations in  (gene| donors | genes w more donors)")
+		for gene in [gene1, gene2]:
 			if gene in patients_with_muts_in_gene:
-				nr_muts =  patients_with_muts_in_gene[gene]
-				genes_w_eq_or_gt_number_of_donors = len([g for g in list(patients_with_muts_in_gene.keys()) if patients_with_muts_in_gene[g]>=nr_muts])
-				if verbose: print("\t\t ", gene, nr_muts,  nr_muts, genes_w_eq_or_gt_number_of_donors)
-				pct  = float(nr_muts)/number_of_patients_w_pathogenic_mutations*100
-				fields.append(nr_muts)
+				nr_donors =  patients_with_muts_in_gene[gene]
+				genes_w_eq_or_gt_number_of_donors = len([g for g in list(patients_with_muts_in_gene.keys()) if patients_with_muts_in_gene[g]>=nr_donors])
+				if verbose: print("\t\t ", gene, nr_donors,   genes_w_eq_or_gt_number_of_donors)
+				pct  = float(nr_donors)/number_of_patients_w_pathogenic_mutations*100
+				fields.append(nr_donors)
 				fields.append("%.1f" % pct)
 				fields.append(genes_w_eq_or_gt_number_of_donors)
-				fields.append("%.0f" % (genes_w_eq_or_gt_number_of_donors/20000.0*100))
+				fields.append("%.0f" % (genes_w_eq_or_gt_number_of_donors/number_of_genes_in_human_genome*100.0))
 			else:
 				if verbose: print("\t\t ", gene,0)
 				fields.append(0)
 				fields.append(0.0)
-				fields.append(20000)
+				fields.append(number_of_genes_in_human_genome)
 				fields.append(100)
 		outf.write("\t".join([str(f) for f in fields])+"\n")
 		outf.flush()

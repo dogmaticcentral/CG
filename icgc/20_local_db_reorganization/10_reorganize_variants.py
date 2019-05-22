@@ -29,10 +29,6 @@ variant_columns = ['icgc_mutation_id', 'chromosome','icgc_donor_id', 'icgc_speci
 				   'submitted_sample_id','control_genotype', 'tumor_genotype', 'total_read_count', 'mutant_allele_read_count']
 
 
-def check_and_drop(cursor, table):
-	if check_table_exists(cursor, 'icgc', table):
-		search_db(cursor, "drop table %s"% table)
-	return
 
 def time_qry(cursor, qry):
 	time0 = time.time()
@@ -68,7 +64,7 @@ def reorganize_variants(cursor, orig_icgc_table):
 	qry = "alter table %s  add column id  int not null primary key auto_increment first" % new_icgc_table
 	time_qry(cursor,qry)
 
-	check_and_drop(cursor,tmp_table)
+	check_and_drop(cursor,'icgc', tmp_table)
 
 
 #########################################

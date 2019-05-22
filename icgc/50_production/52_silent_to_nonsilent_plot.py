@@ -1,4 +1,4 @@
-#!/usr/bin/python -u
+#!/usr/bin/python3 -u
 #
 # This source code is part of icgc, an ICGC processing pipeline.
 # 

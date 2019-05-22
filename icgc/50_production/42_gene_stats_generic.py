@@ -19,7 +19,7 @@
 #
 
 from icgc_utils.common_queries   import  *
-
+from config import Config
 verbose =True
 
 #########################################
@@ -287,7 +287,7 @@ def main():
 	gene = sys.argv[1].upper()
 	bg_gene = sys.argv[2] if len(sys.argv)>2 else 'TP53'
 
-	db     = connect_to_mysql("/home/ivana/.tcga_conf")
+	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
 	#########################

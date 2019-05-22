@@ -23,7 +23,7 @@ from icgc_utils.tcga import *
 #########################################
 def gnomad_mutations (cursor, gene_symbol):
 
-	mutations = []
+	mutations = set([])
 
 	chromosome = find_chromosome(cursor, gene_symbol)
 	#column_names
@@ -31,33 +31,30 @@ def gnomad_mutations (cursor, gene_symbol):
 
 	# brute force approach seems to be fast enough for a single gene
 	qry = "select * from gnomad.gnomad_freqs_chr_{} where consequences like '%|{}|%' ".format(chromosome, gene_symbol)
-	ret = search_db(cursor,qry)
+	ret = error_intolerant_search(cursor,qry)
 	if not ret:
 		print("nothing found for {}, chromosome {}".format(gene_symbol, chromosome))
 		exit()
 	for line in ret:
 		named_fields = dict(list(zip(colnames,line)))
-		relevant_variants = []
+		if int(named_fields['variant_count'])<2: continue
+		relevant_consequences = []
 		for description in named_fields['consequences'].split(","):
-			if not 'RPL5' in description: continue
+			if not  gene_symbol in description: continue
 			if not 'missense' in description: continue
 			description_field = description.split("|")
 			# I don't have ensembl info here - in a more through implementation one should
 			# at least go for annotator here
 			# for now just hope that the uniprot is canonical
 			if len(description_field[2])==0: continue
-			relevant_variants.append(description)
-		if len(relevant_variants)==0: continue
-		if float(named_fields['variant_count'])<2: continue
-		freqency = float(named_fields['variant_count'])/named_fields['total_count']
-		#print "%.1e" % freqency,
-		for description in relevant_variants:
+			relevant_consequences.append(description)
+		if len(relevant_consequences)==0: continue
+		for description in relevant_consequences:
 			description_field = description.split("|")
-			#print "  ", description_field[7], description_field[8], # example:  280 V/A
-			mutations.append(description_field[8].split("/")[0] + description_field[7] + description_field[8].split("/")[1])
-		#print
+			mutation = description_field[8].split("/")[0] + description_field[7] + description_field[8].split("/")[1]
+			mutations.add(mutation)
 
-	return list(set(mutations))
+	return list(mutations)
 
 
 #########################################
@@ -301,7 +298,7 @@ def protein_coding_genes(cursor):
 	chrom = {}
 	qry  = "select approved_symbol, chromosome from icgc.hgnc "
 	qry += "where locus_group='protein-coding gene'"
-	for gene,chr in search_db(cursor,qry):
+	for gene,chr in hard_landing_search(cursor,qry):
 		if not chr in standard_chromosomes: continue
 		genes.append(gene)
 		chrom[gene] = chr
@@ -316,8 +313,8 @@ def co_ocurrence_raw(cursor, somatic_table, gene1, gene2):
 	qry += "where s1.icgc_donor_id=s2.icgc_donor_id "
 	qry += "and s1.icgc_mutation_id=g1.icgc_mutation_id and g1.gene_symbol='%s' " % gene1
 	qry += "and s2.icgc_mutation_id=g2.icgc_mutation_id and g2.gene_symbol='%s' " % gene2
-	qry += "and s1.pathogenic_estimate=1 and s1.reliability_estimate=1  "
-	qry += "and s2.pathogenic_estimate=1 and s2.reliability_estimate=1 "
+	qry += "and s1.pathogenicity_estimate=1 and s1.reliability_estimate=1  "
+	qry += "and s2.pathogenicity_estimate=1 and s2.reliability_estimate=1 "
 	return search_db(cursor,qry)
 
 #########################################
@@ -334,8 +331,8 @@ def co_ocurrence_w_group_count(cursor, somatic_table, gene1, other_genes):
 	qry += "and s1.icgc_mutation_id=g1.icgc_mutation_id and g1.gene_symbol='%s' " % gene1
 	group_string = (",".join([quotify(gene2) for gene2 in other_genes]))
 	qry += "and s2.icgc_mutation_id=g2.icgc_mutation_id and g2.gene_symbol in (%s) " % group_string
-	qry += "and s1.pathogenic_estimate=1 and s1.reliability_estimate=1 "
-	qry += "and s2.pathogenic_estimate=1 and s2.reliability_estimate=1 "
+	qry += "and s1.pathogenicity_estimate=1 and s1.reliability_estimate=1 "
+	qry += "and s2.pathogenicity_estimate=1 and s2.reliability_estimate=1 "
 
 	ret = search_db(cursor,qry)
 
@@ -345,37 +342,42 @@ def co_ocurrence_w_group_count(cursor, somatic_table, gene1, other_genes):
 	return ret[0][0]
 
 #########################################
-def co_ocurrence_count(cursor, somatic_table, gene1, gene2):
+def create_gene_view(cursor, somatic_table, gene):
+	view_name = "view_{}_{}_{}".format(somatic_table, gene, os.getpid())
+	qry = "create view %s " % view_name
+	qry += "as select distinct s.icgc_donor_id from mutation2gene  m, %s s " % somatic_table
+	qry += "where s.icgc_mutation_id=m.icgc_mutation_id and m.gene_symbol='%s' " % gene
+	qry += "and s.pathogenicity_estimate=1 and s.reliability_estimate=1"
+	error_intolerant_search(cursor, qry)
+	return view_name
+############
+def drop_view(cursor, view_name):
+	qry = "drop view if exists %s " % view_name
+	error_intolerant_search(cursor, qry)
+	return
 
-	if True: # this is still  twice as fast as the search below
-		# are we running thruoght the same row twice bcs of s1 <-> s2?
-		# still, distinct should get rid of double counting
-		qry =  "select count(distinct s1.icgc_donor_id) ct "
-		qry += "from mutation2gene g1, mutation2gene g2,  %s s1,  %s s2  " % (somatic_table, somatic_table)
-		qry += "where s1.icgc_donor_id=s2.icgc_donor_id "
-		qry += "and s1.icgc_mutation_id=g1.icgc_mutation_id and g1.gene_symbol='%s' " % gene1
-		qry += "and s2.icgc_mutation_id=g2.icgc_mutation_id and g2.gene_symbol='%s' " % gene2
-		qry += "and s1.pathogenic_estimate=1 and s1.reliability_estimate=1  "
-		qry += "and s2.pathogenic_estimate=1 and s2.reliability_estimate=1 "
-		ret = search_db(cursor,qry)
-		if not ret:
-			search_db(cursor,qry,verbose=True)
-			exit()
-		return ret[0][0]
+# ./icgc_utils/kernprof.py -l  ....py
+# python3 -m line_profiler .....py.lprof
+# @profile
+#########################################
+def co_occurrence_count(cursor, somatic_table, view_gene1, gene2):
+
+	gene2_view_name = gene2.replace("-","_")
+	mutation_view = "temp_m2g_%s " % gene2_view_name
+
+	qry  = "select count(distinct s.icgc_donor_id)  from %s  m, %s s "  % (mutation_view, somatic_table)
+	qry += "right join %s v on s.icgc_donor_id=v.icgc_donor_id  "  % view_gene1
+	qry += "where s.icgc_mutation_id=m.icgc_mutation_id "
+	qry += "and s.pathogenicity_estimate=1 and s.reliability_estimate=1"
+	ret = search_db(cursor,qry,verbose=True)
+	if not ret:
+		search_db(cursor,qry,verbose=True)
+		retval = 0
 	else:
-		donors = {}
-		for gene in [gene1, gene2]:
-			qry  = "select distinct s.icgc_donor_id "
-			qry += "from mutation2gene g,  %s s  " % (somatic_table)
-			qry += "where s.icgc_mutation_id=g.icgc_mutation_id and g.gene_symbol='%s' " % gene
-			qry += "and s.pathogenic_estimate=1 and s.reliability_estimate=1  "
-			ret  = search_db(cursor,qry)
-			if not ret:
-				search_db(cursor,qry,verbose=True)
-				exit()
-			donors[gene] = [r[0] for r in ret]
+		retval = ret[0][0]
 
-		return len(set(donors[gene1])&set(donors[gene2]))
+	return retval
+
 
 #########################################
 def patients_per_gene_breakdown(cursor, table):
@@ -384,13 +386,10 @@ def patients_per_gene_breakdown(cursor, table):
 	# having icgc_mutation_id indexed both on s and g:
 	qry  = "select g.gene_symbol symbol, count(distinct  s.icgc_donor_id) ct "
 	qry += "from mutation2gene g, %s s  " % table
-	qry += "where s.icgc_mutation_id=g.icgc_mutation_id and s.pathogenic_estimate=1  "
+	qry += "where s.icgc_mutation_id=g.icgc_mutation_id and s.pathogenicity_estimate=1  "
 	qry += "and s.reliability_estimate=1 "
 	qry += "group by symbol"
-	ret = search_db(cursor,qry)
-	if not ret:
-		search_db(cursor,qry, verbose=True)
-		exit()
+	ret = hard_landing_search(cursor,qry)
 	return dict(ret)
 
 #########################################
@@ -400,15 +399,12 @@ def patients_with_muts_in_gene_group(cursor, table, gene_list):
 	# having icgc_mutation_id indexed both on s and g:
 	qry  = "select count(distinct  s.icgc_donor_id) ct "
 	qry += "from mutation2gene g, %s s  " % table
-	qry += "where s.icgc_mutation_id=g.icgc_mutation_id and s.pathogenic_estimate=1  "
+	qry += "where s.icgc_mutation_id=g.icgc_mutation_id and s.pathogenicity_estimate=1  "
 	qry += "and s.reliability_estimate=1 "
 	group_string = (",".join([quotify(gene2) for gene2 in gene_list]))
 	qry += "and g.gene_symbol in (%s)" %  group_string
 
-	ret = search_db(cursor,qry)
-	if not ret:
-		search_db(cursor,qry, verbose=True)
-		exit()
+	ret = hard_landing_search(cursor, qry)
 	return ret[0][0]
 
 ########################################
