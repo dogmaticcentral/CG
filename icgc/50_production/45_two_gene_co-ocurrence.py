@@ -20,9 +20,11 @@
 import subprocess
 
 from icgc_utils.common_queries import *
-from scipy import stats
-from config import  Config
-
+from scipy  import stats
+from config import Config
+from random import randint
+from numpy  import searchsorted, cumsum
+from time   import time
 verbose = False
 
 
@@ -54,9 +56,61 @@ def fisher(donors, gene_1_mutated, other_mutated, cooc):
 
 	return pval_lt, pval_gt
 
+#####################################
+def bin_selection(cumulative_size, number_of_selections):
+	selection = set([])
+	for b in range(number_of_selections):
+		while True: # no replacement - otherwise the most probable bins are the attractors
+			# random.randint(a, b) Return a random integer N such that a <= N <= b
+			random_val = randint(1, cumulative_size[-1])
+			# numpy.searchsorted(a, v, side='left', sorter=None)
+			# side='left' : left 	a[i-1] < v <= a[i]
+			bin_this_val_belongs_to = searchsorted(cumulative_size, random_val)
+			if not bin_this_val_belongs_to in selection: break
+		selection.add(bin_this_val_belongs_to)
+	return selection
+
+#####################################
+def size_corrected_pvals_C(rbf, cumulative_size, selection_size_1, selection_size_2, overlap_size):
+
+	number_of_simulation_rounds = 1000
+	pval_lt, pval_gt = 0, 0
+	boutf = open("bdries.txt","w")
+	boutf.write("\n".join([str(i) for i in cumulative_size]) + "\n")
+	boutf.close()
+
+	cmd = "{} bdries.txt {} {} {} {}".format(rbf, selection_size_1, selection_size_2, overlap_size, number_of_simulation_rounds)
+	line = subprocess.check_output(cmd, shell=True).decode('utf8').split("\n")[0]
+	token = line.rstrip().split("\t")
+	if token[0] != "OK":
+		print("error running:\ncmd")
+		print("returned:\nline")
+		exit()
+	[pval_lt, pval_gt] = [float(t) for t in token[1:3]]
+	return pval_lt, pval_gt
+
+
+def size_corrected_pvals_python(cumulative_size, selection_size_1, selection_size_2, overlap_size):
+	#print(cumulative_size, bg_gene_mutated, other_mutated, cooc)
+	number_of_simulation_rounds = 100
+	count_smaller_or_equal = 0;
+	count_bigger_or_equal = 0
+	for r in  range(number_of_simulation_rounds): # simulation replicates
+		selection_1 = bin_selection(cumulative_size, selection_size_1)
+		selection_2 = bin_selection(cumulative_size, selection_size_2)
+		random_ovlp_size = len(selection_1.intersection(selection_2))
+		if random_ovlp_size<=overlap_size: count_smaller_or_equal+=1
+		if random_ovlp_size>=overlap_size: count_bigger_or_equal+=1
+
+	pval_lt  = float(count_smaller_or_equal)/number_of_simulation_rounds
+	pval_gt  = float(count_bigger_or_equal)/number_of_simulation_rounds
+
+	return pval_lt, pval_gt
 
 ###################################
 def main():
+
+	size_corrected = True
 
 	if len(sys.argv) < 3:
 		print("usage: %s <bg gene>  <gene 1> [<gene 2> ...]" % sys.argv[0])
@@ -66,6 +120,12 @@ def main():
 	other_genes = [g.upper() for g in sys.argv[2:]]
 
 	# TODO: check that all gene names exist
+
+	# rbf is a small C program that runs the simulation
+	# to evaluate Fisher-like probabilities for bins of uneven size (i.e probaility of being chosen)
+
+	rbf = Config().rbf_path()
+
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -94,6 +154,8 @@ def main():
 							"mutations in %s"%other_genes[0], 'cooccurrence','expected',
 							'p smaller', 'p bigger'])+"\n")
 
+	pancan_mut_count_values = []
+	p_smaller_sc, p_bigger_sc = 0 ,0 # to make the code checker shut up
 	for table in tables:
 		tumor_short = table.split("_")[0]
 		patients_with_muts_in_gene = patients_per_gene_breakdown(cursor, table)
@@ -105,7 +167,11 @@ def main():
 			break
 		if no_mutant: continue
 
-		total_patients = len(get_donors(cursor, table))
+		cumulative_size = [0]
+		mut_count = mutation_count_per_donor(cursor, table)
+		total_patients = len(mut_count)
+		cumulative_size.extend(cumsum(list(mut_count.values())))
+		pancan_mut_count_values.extend(list(mut_count.values()))
 
 		print("=================================")
 		print(table)
@@ -114,6 +180,7 @@ def main():
 		pancan_donors += total_patients
 		for gene in [bg_gene]+other_genes:
 			print(gene, patients_with_muts_in_gene.get(gene, 0))
+		#cumulative_size.append(cumulative_size[-1]+total_patients)
 
 		bg_gene_mutated  = patients_with_muts_in_gene.get(bg_gene,0)
 		other_mutated    = patients_with_muts_in_gene_group(cursor, table, other_genes)
@@ -124,12 +191,18 @@ def main():
 
 		p_smaller, p_bigger = myfisher(total_patients, bg_gene_mutated, other_mutated, cooc)
 		#pval_lt, pval_gt = fisher(donors, gene_1_mutated, other_mutated, cooc)
+		if size_corrected: p_smaller_sc, p_bigger_sc = size_corrected_pvals_C (rbf, cumulative_size, bg_gene_mutated, other_mutated, cooc)
 
 		expected = float(bg_gene_mutated)/total_patients*other_mutated
 		print("co-ocurrence:", cooc)
 		print("    expected: %.1f" % expected)
 		print("   p_smaller: %.2f" % p_smaller)
 		print("    p_bigger: %.2f" % p_bigger)
+		if size_corrected:
+			print("----------------------")
+			print("sc p_smaller: %.2f" % p_smaller_sc)
+			print("sc  p_bigger: %.2f" % p_bigger_sc)
+
 		print()
 
 		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t%.1f\n"%
@@ -137,6 +210,7 @@ def main():
 						patients_with_muts_in_gene.get(other_genes[0], 0),
 						cooc,expected,p_smaller,p_bigger))
 		pancan_cooc += cooc
+
 
 
 	p_smaller, p_bigger = myfisher(pancan_donors, pancan_bg_gene, pancan_other, pancan_cooc)
@@ -150,6 +224,18 @@ def main():
 	print("    expected: %.1f" % (float(pancan_bg_gene)/pancan_donors*pancan_other))
 	print("   p_smaller: %.1e" % p_smaller)
 	print("    p_bigger: %.1e" % p_bigger)
+	if size_corrected:
+		time0 = time()
+		# python version takes 0 as the first value in the cumulative soze array
+		# pancan_cumulative_size = [0]
+		# pancan_cumulative_size.extend(cumsum(pancan_mut_count_values))
+		# p_smaller_sc, p_bigger_sc = size_corrected_pvals_python(pancan_cumulative_size, pancan_bg_gene, pancan_other, pancan_cooc)
+		pancan_cumulative_size = cumsum(pancan_mut_count_values)
+		p_smaller_sc, p_bigger_sc = size_corrected_pvals_C(rbf, pancan_cumulative_size, pancan_bg_gene, pancan_other, pancan_cooc)
+		print("----------------------")
+		print("\t\t time for szie corrected sim: %.1f mins"% (float(time()-time0)/60))
+		print("sc p_smaller: %.2e" % p_smaller_sc)
+		print("sc  p_bigger: %.2e" % p_bigger_sc)
 	expected = (float(pancan_bg_gene)/pancan_donors*pancan_other)
 	if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.1e\t%.1e\n"%
 								("total", pancan_donors, pancan_bg_gene,

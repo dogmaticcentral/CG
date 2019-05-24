@@ -513,6 +513,12 @@ def mutation_provenance(cursor, table, icgc_donor_id, icgc_mutation_id):
 	qry += "where icgc_donor_id='%s' and icgc_mutation_id='%s'" % (icgc_donor_id, icgc_mutation_id)
 	return [r[0] for r in search_db(cursor,qry)]
 
+def mutation_count_per_donor(cursor, somatic_table):
+	qry = "select icgc_donor_id, count(*) as c  from %s " % somatic_table
+	qry += "where pathogenicity_estimate=1 and reliability_estimate=1 "
+	qry += "group by  icgc_donor_id"
+	ret = hard_landing_search(cursor, qry)
+	return dict(ret)
 
 
 #########################################

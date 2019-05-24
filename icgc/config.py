@@ -17,6 +17,9 @@
 # 
 # Contact: ivana.mihalek@gmail.com
 #
+import os
+
+
 class Config:
 
 	ref_assembly = "hg19"
@@ -26,7 +29,6 @@ class Config:
 
 	mysql_conf_file = "/home/ivana/.tcga_conf"
 	ucsc_mysql_conf_file  = "/home/ivana/.ucsc_mysql_conf"
-
 
 	tcga_icgc_table_correspondence = {
 		"ACC_somatic_mutations" : None,
@@ -64,3 +66,21 @@ class Config:
 		"UCS_somatic_mutations" : "UTCA_simple_somatic",
 		"UVM_somatic_mutations" : None
 	}
+
+	# rbf is a small C program that runs the simulation
+	# to evaluate Fisher-like probabilities for bins of uneven size (i.e probaility of being chosen)
+	rbf_dir = "c-utils/random_binsize_fisher"
+	rbf_path_relative = "%s/rbf" % rbf_dir
+
+	def rbf_path(self):
+		path = os.path.dirname(os.path.abspath(__file__))
+		pathdirs = path.split("/")
+		while pathdirs[-1]!= 'icgc': pathdirs.pop()
+		rootpath = "/".join(pathdirs)
+
+		full_rbf_path = "{}/{}".format(rootpath, self.rbf_path_relative)
+		if not os.path.exists(full_rbf_path) or not os.access(full_rbf_path, os.X_OK):
+			print("rbf executable not found as", full_rbf_path)
+			print("Perhapse it needs to be compiled by chdir-ing to $ICGC_HOME/%s and typing 'make'." % self.rbf_dir)
+
+		return full_rbf_path
