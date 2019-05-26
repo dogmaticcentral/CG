@@ -36,17 +36,8 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
 * [ICGC](#icgc)
      * [config file](#config-file)
      * [ICGC data download ](#icgc-data-download-00_data_download)
-     * [Loading data into local version of the database ](#loading-data-into-local-version-of-the-database-10_local_db_loading)
-        * [Measuring the field lengths and making MySQL tables](#measuring-the-field-lengths-and-making-mysql-tables)
-        * [Filling and indexing the icgc database tables](#filling-and-indexing-the-icgc-database-tables)
-        * [Getting and storing some auxilliary data](#getting-and-storing-some-auxilliary-data)
-     * [Reorganizing mutation data ](#reorganizing-mutation-data-20_local_db_reorganization)
-        * [Creating new tables](#creating-new-tables)
-        * [Adding reliability info](#adding-reliability-info)
-        * [Removing duplicates](#removing-duplicates)
-        * [Mutation2gene shortcut](#mutation2gene-shortcut)
-        * [Optional: re-annotating missense mutations](#optional-re-annotating-missense-mutations)
-        * [ICGC-only  production](#icgc-only--production)
+     * [Loading data into local version of the database](#loading-data-into-local-version-of-the-database-10_local_db_loading)
+     * [Reorganizing mutation data](#reorganizing-mutation-data-20_local_db_reorganization)
      * [Merging with TCGA](#merging-with-tcga-30_tcga_merge)
      * [Housekeeping](#housekeeping-40_housekeeping)
      * [Production](#production-50_production)
@@ -61,7 +52,8 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  * gene symbols from HUGO gene nomenclature committee (see [here](https://www.genenames.org/download/custom/))
  * [Annovar](http://annovar.openbioinformatics.org/en/latest/) for location and functional annotation - int TCGA merge
  * CrossMap  (in TCGA merge) - (sudo pip3 install CrossMap, pyBigWig, pysam)
- * Optional: [line-profiler](https://github.com/rkern/line_profiler#line-profiler) for python
+ * Optional: [line-profiler](https://github.com/rkern/line_profiler#line-profiler) for python; gcc compiler for c-utils
+  used in postprocessing.
  
 ## TCGA
  The tcga branch of the icgc pipeline got obsoleted before coming to production stage. 
@@ -78,6 +70,9 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  You can set some recurring constants - such as data directories or mysql conf file(s) - 
  in the [config.py](icgc/config.py) file.
  
+<!-- **********************************************************  -->
+<!-- **********************************************************  -->
+<!-- **********************************************************  -->
 ### ICGC data download ([00_data_download](icgc/00_data_download))
  
  Just like the tcga branch, this branch of the pipeline starts by downloading the data from
@@ -85,7 +80,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  Obtaining one is a lengthy process (as in several weeks to several months) which you can
  start investigating [here](https://icgc.org/daco).
  
- One you have the access token place it in the environmental variable called ICGC_TOKEN, to make
+ One you have the access token,  place it in the environmental variable called ICGC_TOKEN, to make
  the download scripts work.
  
  Note in particular that we are grouping some cancers under the same head-group. 
@@ -98,8 +93,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
 ### Loading data into local version of the database ([10_local_db_loading](icgc/10_local_db_loading))
  
- 
-  Make sure you have 
+ Make sure you have 
  the mysql conf file  and set its path in these two scripts, or arrange some other way to
  access the local database. The last I checked, python's MySQLdb package did not work with
  the encripted cnf files, so the only alternative is using 
@@ -125,7 +119,7 @@ and give _blah_  the permissions to write to and read from _icgc_:
 [06_make_tables.py](icgc/10_local_db_loading/06_make_tables.py): 
 Make sure that the fields in the mysql tables are big enough 
 for each entry and create mysql tables. 
-[06_find_max_field_length.py](icgc/10_local_db_loading/05_find_max_field_length.py) should 
+[05_find_max_field_length.py](icgc/10_local_db_loading/05_find_max_field_length.py) should 
 give you an idea about the longest entries found.
 
 #### Filling and indexing the icgc database tables
@@ -135,8 +129,8 @@ For large tables, rather than loading them through python,
 it turns out to be faster to create tsvs and  then load them from mysql shell 
 (as in [09_load_mysql.py](icgc/10_local_db_loading/09_load_mysql.py); alternative: use mysqlimport manually) 
  to read them in wholesale. These scripts take care of that part, plus some index creating on the newly loaded tables.
- Make sure to run [10_make_indices.py](icgc/old/10_make_indices_on_temp_tables.py), 
- [12_reorganize_mutations.py](icgc/20_local_db_reorganization/10_reorganize_variants.py)
+ Make sure to run [10_make_indices_on_temp_tables.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py), 
+ [10_reorganize_variants.py in 20_local_db_reorganization](icgc/20_local_db_reorganization/10_reorganize_variants.py)
  pretty much does not work without it at all. 
  All index making is slow here (see [timing.txt](icgc/timing.txt)) - run overnight. 
 
@@ -188,6 +182,11 @@ from their MySQl server you will need an internet connection, mysql client, and 
 
 Again, the path to that file is expected to be defined in the [config.py](icgc/config.py) file.
 
+
+ 
+<!-- **********************************************************  -->
+<!-- **********************************************************  -->
+<!-- **********************************************************  -->
 ### Reorganizing mutation data ([20_local_db_reorganization](icgc/20_local_db_reorganization))
 
 This is where we depart from ICGC original database architecture - which is pretty much
@@ -241,30 +240,34 @@ consists of normal tissue samples only.
 UCSC gene annotation to check chromosome addresses. The only information we are looking for here is the
 possibility that the location falls within the splice region just outside of an exon. Mutations at these positions
 are annotated as (possibly) pathogenic 
-in [15_location_pathogenicity_to_variants.py](icgc/20_local_db_reorganization/15_update_pathogenicity_in_mutation_tables.py)
+in [15_update_pathogenicity_in_mutation_tables.py](icgc/20_local_db_reorganization/15_update_pathogenicity_in_mutation_tables.py).
+In [16_pathg_from_mutations_to_variants.py](icgc/20_local_db_reorganization/16_pathg_from_mutations_to_variants.py) we are adding this
+same info (it is a boolean flag, no big elaboration on the table) to the variantis (*_simple_somatic) tables.
 
     
 (Do not forget to create indices
 using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_tables.py)) 
  
-#### Adding reliability info
+ 
+ #### Adding reliability info
  
  We add a couple of values to each row to later make the search for meaningful entries faster.
   we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
- to simple_somatic tables. In the following script,  
+ to simple_somatic tables. These scripts can be run in the order indicated in the name, rather than at this point.
+ In the following script,  
  [21_add_realiability_annotation_to_somatic.py](icgc/20_local_db_reorganization/21_add_reliability_annotation_to_variants.py),  
  we combine these two columns into a reliability estimate: a  somatic mutation in individual patient is considered reliable if mutant_allele_read_count>=10
  and mut_to_total_read_count_ratio>=0.2. Information about the mutation in general (mutations_chromosome tables;  
- [18_copy_reliability_info_to_mutations.py](18_copy_reliability_info_to_mutations.py)) 
+ [27_reliability_from_variants_to_mutations.py](icgc/20_local_db_reorganization/27_reliability_from_variants_to_mutations.py)) 
  is considered reliable if there is at least one patient for which it was reliably established.
- 
+
 
 #### Removing duplicates
  ICGC is rife with data duplication, coming from various sources. Some seem to be bookkeeping mistakes with the
  same patient data finding its way into the dataset through various depositors; some are the results  of the re-sampling 
  of the same  tumor, while some are completely obscure, with all identifiers being identical everywhere.
  
- **All identifiers identical.**
+**All identifiers identical.**
   [18_cleanup_duplicate_entries.py](icgc/20_local_db_reorganization/18_cleanup_duplicate_entries.py):
   Some mutations  have identical tuple
  of identifiers (icgc_mutation_id, icgc_donor_id, icgc_specimen_id, icgc_sample_id). Note that this
@@ -275,7 +278,7 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  [17_make_jumbo_index](icgc/20_local_db_reorganization/17_make_jumbo_index_on_new_tables.py) 
   beforehand.
  
- **Same submitted_sample_id, different donor ids.**
+**Same submitted_sample_id, different donor ids.**
  There might be further problems: See for example, mutation MU2003689, which, 
  [so the ICGC page claims](https://dcc.icgc.org/mutations/MU2003689) can be found in two distinct donors. 
  The closer  inspection of the two donors shows however that their submitter ID is the same, as is the age 
@@ -286,7 +289,7 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  tumor at the same stage because even the submitter sample ids might be different
  (see [19_cleanup_multiple_donor_for_the_same_submitted_id.py](icgc/20_local_db_reorganization/19_cleanup_multiple_donor_for_the_same_submitted_id.py)). 
 
- **Same donor with differing specimen and sample ids.**   Apparently  ICGC refers to biological replicates - i.e. 
+**Same donor with differing specimen and sample ids.**   Apparently  ICGC refers to biological replicates - i.e. 
  samples taken from different sites  - as specimens, and
  to technical replicates as samples. Perhaps they might have a role when answering different
  types of questions than what we have in mind. Here, however we do not want to have these results mistaken for recurring mutations, 
@@ -302,9 +305,9 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  and [DO230968](https://dcc.icgc.org/donors/DO230968) that have different  donor *and* submitter
  ids, and mysteriously have 1703 identical variants. 
  Both donors are males diagnosed with lung squamous carcinoma. One sample turns out to be WES, while the other is WGS.
- For the full list of presumably identical donors in ICGC, see [hacks/duplicate_donors.tsv](icgc/hacks/duplicate_donors.tsv).
- [27_reliability_from_variants_to_mutations.py](icgc/20_local_db_reorganization/27_reliability_from_variants_to_mutations.py) attempts
- to detect such cases by looking for suspiciously high overlap in reported variants. When such case is detected,
+ 
+[25_cleanup_duplicate_donors_by_variant_overlap.py](icgc/20_local_db_reorganization/25_cleanup_duplicate_donors_by_variant_overlap.py)
+attempts to detect such cases by looking for suspiciously high overlap in reported variants. When such case is detected,
  the sample with the higher average depth of sampling is retained.
  See the script for the criteria used. 
  
@@ -339,8 +342,8 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  [somatic_tables_dump.pl](hacks/somatic_tables_dump.pl) will dump them out, just make sure you move to the storage direcotry, 
  and [somatic_tables_load.pl](hacks/somatic_tables_load.pl) will load them back in if needs be.
  If you choose to do the full database dump, 
- [somatic_tables_from_dump.pl](hacks/somatic_tables_from_dump.pl) can extract only *_simple_somatic tables.
- The process if slow, however.
+ [somatic_tables_from_dump.pl](hacks/somatic_tables_from_dump.pl) can extract only *_simple_somatic tables, 
+ the process if slow, however.
  
 #### Merging
  The scripts [29_index_on_mutation_tables.py](icgc/20_local_db_reorganization/29_index_on_mutation_tables.py)

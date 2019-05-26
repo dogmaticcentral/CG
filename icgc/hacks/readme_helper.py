@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#! /usr/bin/python3
 #
 # This source code is part of icgc, an ICGC processing pipeline.
 #
@@ -18,26 +18,14 @@
 # Contact: ivana.mihalek@gmail.com
 #
 
-use strict;
-use warnings FATAL => 'all';
+import os
 
-my $infile  = "icgc.May13.no_tcga.table_bdries.txt";
-my @table_names;
-
-open(INF,"<$infile") || die "CNo $infile: $!\n";
-while(<INF>) {
-    chomp;
-     /somatic`$/ || next;
-    my @aux = split;
-    my $table_name = pop @aux; $table_name =~ s/\`//g;
-    push @table_names, $table_name;
-}
-close INF;
-
-foreach my $table_name (@table_names) {
-    print "$table_name \n";
-    `mysqldump icgc  $table_name > $table_name.sql`;
-}
-
-
-0;
+for path, subdirs, files in os.walk("icgc"):
+	outlines=[]
+	for file in sorted(files):
+		if not file[-3:] in [".pl",".py"]: continue
+		outlines.append("[{}]({}/{})".format(file, path,file))
+	if len(outlines)>0:
+		print(path)
+		print("\n".join(outlines))
+		print()

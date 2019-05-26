@@ -66,8 +66,8 @@ def remove_duplicates(table_rows, other_args, verbose=False):
 #########################################
 def main():
 
-	#print("disabled")
-	#exit()
+	print("disabled")
+	exit()
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
