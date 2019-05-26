@@ -58,7 +58,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  
 ## TCGA
  The tcga branch of the icgc pipeline got obsoleted before coming to production stage. 
- It contains various blind a alleys and wrong turns. Its current use is as a prep
+ It contains various blind alleys and wrong turns. Its current use is as a prep
  step for merging with the icgc branch. It has [its own README page](tcga).
  
 ## ICGC
@@ -167,7 +167,7 @@ You can reduce that file to sequences of canonical transcript only. This is left
    [blastdbcmd](https://www.ncbi.nlm.nih.gov/books/NBK279689/)
   tool; blastdbcmd has batch mode (blastdbcmd -h)). When you are happy with your fasta file, put is somewhere 
   where [23_ensembl_coding_seqs.py](icgc/10_local_db_loading/23_ensembl_coding_seqs.py) can find it.
-  Note that this is optional: if you are happy wihtout knowing the position of the missense mutant on
+  Note that this is optional: if you are happy without knowing the position of the missense mutant on
   the canonical translation, you can move on without this step.
 
 
@@ -232,7 +232,7 @@ New tables are created in [08_check_mut_tables_and_make_new_ones.py](icgc/20_loc
  
 **Note 2:** In [11_delete_variants_from_normal.py](icgc/20_local_db_reorganization/11_delete_variants_from_normal.py),
  we are dropping variants from normal samples. This is something you might not want to do if you are trying to
- annotate variants yourself. Though in that case you might want to go back to 
+ annotate variants yourself. Though in that case you might want to go back to without
  [08_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/08_check_icgc_tables_and_make_new_ones.py)
  and keep the 'matched_icgc_sample_id' field. 
  
@@ -253,7 +253,7 @@ same info (it is a boolean flag, no big elaboration on the table) to the variant
  
  #### Adding reliability info
  
- We add a couple of values to each row to later make the search for meaningful entries faster.
+ We add a couple of values to each row to later make the search for meaningful entries faster 
   we are adding mutant_allele_read_count/total_read_count ratio and pathogenicity estimate (boolean)
  to simple_somatic tables. These scripts can be run in the order indicated in the name, rather than at this point.
  In the following script,  
@@ -361,7 +361,7 @@ attempts to detect such cases by looking for suspiciously high overlap in report
 ### Housekeeping ([40_housekeeping](icgc/40_housekeeping))
 Assorted stats and checks, including  the late-point decision to mark
 variants from hypermutating cancers (by def, more than 1000 pathogenic mutations in coding regions)
-as unreliable, 42_mark_hypermutators_as_unreliable.py](icgc/40_housekeeping/42_mark_hypermutators_as_unreliable.py).
+as unreliable, [42_mark_hypermutators_as_unreliable.py](icgc/40_housekeeping/42_mark_hypermutators_as_unreliable.py).
  
 ### Production ([50_production](icgc/50_production))
 The fun starts here, and you probably might want to do something else for fun. Here is what we looked into:
@@ -437,7 +437,7 @@ their numbering corresponds to the canonical transcript of the gene.
 * when re-annotating we are looking only at positions already labeled as having aa_change
 * note to myself: there seems to be a problem in ENSEMBL homo_sapiens_core_94_38 with exon frame/phase assignment
 e.g. ENST00000435165 (ENSG00000118473), chrom 1, + strand, the translation starts at 67161031.
-The first exon is [67160376, 67161176> yet the pahse in ensembl is listed as -1, which should indicate that
+The first exon is [67160376, 67161176> yet the phase in ensembl is listed as -1, which should indicate that
 translation does not start in this exon at all. 
 Alternatively, ENST00000435165 is listed to start in ENSE00001951262, which has phase listed as -1.
 Another example: ENST00000334103	ENSG00000186094, frames listed in Ensembl vs UCSC.
