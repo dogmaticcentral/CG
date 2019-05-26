@@ -67,20 +67,36 @@ class Config:
 		"UVM_somatic_mutations" : None
 	}
 
+	def __init__(self):
+		path = os.path.dirname(os.path.abspath(__file__))
+		pathdirs = path.split("/")
+		while pathdirs[-1]!= 'icgc': pathdirs.pop()
+		self.rootpath = "/".join(pathdirs)
+
+
 	# rbf is a small C program that runs the simulation
 	# to evaluate Fisher-like probabilities for bins of uneven size (i.e probaility of being chosen)
 	rbf_dir = "c-utils/random_binsize_fisher"
 	rbf_path_relative = "%s/rbf" % rbf_dir
-
 	def rbf_path(self):
-		path = os.path.dirname(os.path.abspath(__file__))
-		pathdirs = path.split("/")
-		while pathdirs[-1]!= 'icgc': pathdirs.pop()
-		rootpath = "/".join(pathdirs)
-
-		full_rbf_path = "{}/{}".format(rootpath, self.rbf_path_relative)
+		full_rbf_path = "{}/{}".format(self.rootpath, self.rbf_path_relative)
 		if not os.path.exists(full_rbf_path) or not os.access(full_rbf_path, os.X_OK):
 			print("rbf executable not found as", full_rbf_path)
-			print("Perhapse it needs to be compiled by chdir-ing to $ICGC_HOME/%s and typing 'make'." % self.rbf_dir)
+			print("Perhaps it needs to be compiled by chdir-ing to $ICGC_HOME/%s and typing 'make'." % self.rbf_dir)
 			exit()
 		return full_rbf_path
+
+	# pc outputs clusters on the structure given the input
+	# selection of residues and the cutoff neighboring distance.
+	# It also provides a z-score for the nonrandomness of the clustering
+	# compared to random selection of the same size.
+	pc_dir = "c-utils/clustering"
+	pc_path_relative = "%s/pc" % pc_dir
+	def pc_path(self):
+		full_pc_path = "{}/{}".format(self.rootpath, self.pc_path_relative)
+		if not os.path.exists(full_pc_path) or not os.access(full_pc_path, os.X_OK):
+			print("pc executable not found as", full_pc_path)
+			print("Perhaps it needs to be compiled by chdir-ing to $ICGC_HOME/%s and typing 'make'." % self.pc_dir)
+			exit()
+		return full_pc_path
+

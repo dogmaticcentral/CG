@@ -21,6 +21,10 @@ def basic_pymol_input(pdb_file, isolated, clusters, output_file):
 	# pymol input
 	outf = open(output_file,"w")
 
+	outf.write("#This is input script for PyMol.\n")
+	outf.write("#See https://github.com/schrodinger/pymol-open-source for the open source executable.\n")
+	outf.write("#To run, give the name of this script as a commandline argument to pymol,\n")
+	outf.write("#or open pymol, and then File->Run Script, and select the name of this script.\n")
 	outf.write("\n")
 	outf.write("load %s\n" %pdb_file)
 	outf.write("\nbg_color  white\nhide all\nshow cartoon\ncolor white\n")

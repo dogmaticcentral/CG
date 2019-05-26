@@ -94,8 +94,8 @@ def main():
 
 
 		total_patients = len(mut_count)
-		cumulative_size.extend(cumsum(list(mut_count.values())))
-		pancan_mut_count_values.extend(list(mut_count.values()))
+		# cumulative_size.extend(cumsum(list(mut_count.values())))
+		# pancan_mut_count_values.extend(list(mut_count.values()))
 
 		# hypermutated samples completely skew the stats
 		# shaving off the peaks this way seems to work,
@@ -106,9 +106,12 @@ def main():
 		# https://www.pnas.org/content/115/26/E6010
 		# consider  a sample with >3,000 mutations in a coding region a hypermutator
 		# I think I should go even lower - to >1,000 mutations
-		# weights = [int(10*log10(m)) for m in mut_count.values()]
-		# cumulative_size.extend(cumsum(weights))
-		# pancan_mut_count_values.extend(weights)
+		# THis correction downplays the probabilty of highly mutated samples.
+		# I am not sure what is the justification, but it does produce
+		# much more reasonable results than plain number of mutated genes (or plain number of mutations)
+		weights = [int(10*log10(m)) for m in mut_count.values()]
+		cumulative_size.extend(cumsum(weights))
+		pancan_mut_count_values.extend(weights)
 
 		print("=================================")
 		print(table)
@@ -117,7 +120,6 @@ def main():
 		pancan_donors += total_patients
 		for gene in [bg_gene]+other_genes:
 			print(gene, patients_with_muts_in_gene.get(gene, 0))
-		#cumulative_size.append(cumulative_size[-1]+total_patients)
 
 		bg_gene_mutated  = patients_with_muts_in_gene.get(bg_gene,0)
 		other_mutated    = patients_with_muts_in_gene_group(cursor, table, other_genes)
@@ -125,7 +127,9 @@ def main():
 		pancan_other    += other_mutated
 
 		cooc = co_ocurrence_w_group_count(cursor, table, bg_gene, other_genes)
+		pancan_cooc += cooc
 
+		#
 		p_smaller, p_bigger = myfisher(total_patients, bg_gene_mutated, other_mutated, cooc)
 		#pval_lt, pval_gt = fisher(donors, gene_1_mutated, other_mutated, cooc)
 
@@ -148,11 +152,10 @@ def main():
 
 		print()
 
-		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t%.1f\n"%
-						(tumor_short,total_patients, patients_with_muts_in_gene.get(bg_gene, 0),
-						patients_with_muts_in_gene.get(other_genes[0], 0),
-						cooc,expected,p_smaller,p_bigger))
-		pancan_cooc += cooc
+		# if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t%.1f\n"%
+		# 				(tumor_short,total_patients, patients_with_muts_in_gene.get(bg_gene, 0),
+		# 				patients_with_muts_in_gene.get(other_genes[0], 0),
+		# 				cooc,expected,p_smaller,p_bigger))
 
 
 

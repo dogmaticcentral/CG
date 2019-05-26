@@ -85,7 +85,11 @@ def main():
 	pdb_file = sys.argv[2]
 	bg_gene = sys.argv[3] if len(sys.argv)>2 else 'TP53'
 	
-	clustering_prog = "/home/ivana/c-utils/pdb_clust/pc"
+	# pc outputs clusters on the structure given the input
+	# selection of residues and the cutoff neighboring distance.
+	# It also provides a z-score for the nonrandomness of the clustering
+	# compared to random selection of the same size.
+	clustering_prog = Config().pc_path()
 	
 	for fnm in [pdb_file, clustering_prog]:
 		if os.path.exists(fnm) and os.path.getsize(fnm)>0: continue

@@ -25,6 +25,7 @@ from icgc_utils.processes import *
 from icgc_utils.icgc_stats import *
 from icgc_utils.common_queries import *
 from config import Config
+from math import log10
 import time
 
 def hashinit(list_of_hashes, key):
@@ -88,19 +89,21 @@ def main():
 	if len(sys.argv)>2:
 		precision = min(int(sys.argv[2]), 6)
 	# rbf is a small C program that runs the simulation
-	# to evaluate Fisher-like probabilities for bins of uneven size (i.e probaility of being chosen)
+	# to evaluate Fisher-like probabilities for bins of uneven size (i.e probability of being chosen)
 	rbf = Config().rbf_path()
 
 	print("mutations per tumor per sample  ...")
 	db = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor, "icgc")
-	mut_count = {}
+	weights = {}
 	qry = "select table_name from information_schema.tables "
 	qry += "where table_schema='icgc' and table_name like '%_simple_somatic'"
 	tables = [field[0] for field in search_db(cursor, qry)]
 	for table in tables:
-		mut_count[table] = mutation_count_per_donor(cursor, table)
+		#mut_count[table] = mutation_count_per_donor(cursor, table)
+		mut_count = genes_per_patient_breakdown(cursor, table)
+		weights[table] = [int(10*log10(m)) for m in mut_count.values()]
 	cursor.close()
 	db.close()
 	print("                                ... done")
@@ -128,7 +131,8 @@ def main():
 			pancan_mutations[gene] += int(tot)
 			pancan_bg[gene]        += int(tot_bg)
 			pancan_cooc[gene]      += int(tot_cooc)
-			pancan_mut_count_values[gene].extend(list(mut_count[table].values()))
+			#pancan_mut_count_values[gene].extend(list(mut_count[table].values()))
+			pancan_mut_count_values[gene].extend(list(weights[table]))
 		inf.close()
 	print("            ... done")
 
