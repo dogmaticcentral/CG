@@ -327,9 +327,7 @@ attempts to detect such cases by looking for suspiciously high overlap in report
   the reference will be lost to other (non-canonical) transcripts, which can be retrieved from the locations table.
   The prerequisite is [32_load_ensembl_coord_patches.py](icgc/20_local_db_reorganization/32_load_ensembl_coord_patches.py), 
   a hacky solution to include the latest gene coordinates from Ensembl. The coordinate tables can be found in 
-  [hacks/coord_patches.tar.bz2](icgc/hacks/coord_patches.tar.bz2)
-   <a href="/icgc/hacks/coord_patches.tar.bz2" download> dwld</a>
-  .
+  [hacks/coord_patches.tar.bz2 (rightclick to download)](icgc/hacks/coord_patches.tar.bz2)
  A step toward independent annotation. 
  
 #### ICGC-only  production
@@ -341,27 +339,47 @@ attempts to detect such cases by looking for suspiciously high overlap in report
 #### Disaster recovery strategy
  It might be advisable to backup the newly-created tables, by storing them as an sqldump, for example.
  There is a couple of scripts in [hacks](icgc/hacks) directory to help along.
- [somatic_tables_dump.pl](hacks/somatic_tables_dump.pl) will dump them out, just make sure you move to the storage direcotry, 
- and [somatic_tables_load.pl](hacks/somatic_tables_load.pl) will load them back in if needs be.
+ [somatic_tables_dump.pl](icgc/hacks/somatic_tables_dump.pl) will dump them out, just make sure you move to the storage direcotry, 
+ and [somatic_tables_load.pl](icgc/hacks/somatic_tables_load.pl) will load them back in if needs be.
  If you choose to do the full database dump, 
- [somatic_tables_from_dump.pl](hacks/somatic_tables_from_dump.pl) can extract only *_simple_somatic tables, 
+ [somatic_tables_from_dump.pl](icgc/hacks/somatic_tables_from_dump.pl) can extract only *_simple_somatic tables, 
  the process if slow, however.
  
 #### Merging
- The scripts [29_index_on_mutation_tables.py](icgc/20_local_db_reorganization/29_index_on_mutation_tables.py)
- through [34_tcga_specimen_hack.py](icgc/30_tcga_merge/37_tcga_specimen_hack.py)
+ The scripts [28_add_tables_for_tcga_variants.py](icgc/30_tcga_merge/28_add_tables_for_tcga_variants.py)
+ through [40_mutation2gene_maps.py](icgc/30_tcga_merge/40_mutation2gene_maps.py)
  concern themselves with merging TCGA info created in TCGA branch with the ICGC.
- This sub-pipe runs from preparatory indexing to data input.  
- [Duplicate data removal](#removing-duplicates) should be probably be re-applied 
- (steps [19_cleanup_duplicate_donors.py](19_cleanup_duplicate_donors.py) 
- and [22_cleanup_duplicate_specimens.py](22_cleanup_duplicate_specimens.py)).
+ This sub-pipe runs from creating tables, to checking for duplicates in the newly merged database.
+ Note thus, that some scripts are actually softlinks to the scripts we used in cleaning up the ICGC version.
  If everything is ok, [35_database_stats.py](icgc/40_housekeeping/37_database_stats.py) should report
- no duplicates in any of the tables.
+ no donor or specimen duplicates in any of the tables. Samples might be duplicated, we take these are
+ _bona fide_ from the same biopsy. The potential duplicates should have been resolved on the level of variants - 
+ the entries from different samples are ok unless they report the exact same variant (location and replacement).
  
 ### Housekeeping ([40_housekeeping](icgc/40_housekeeping))
+Assorted stats and checks, including  the late-point decision to mark
+variants from hypermutating cancers (by def, more than 1000 pathogenic mutations in coding regions)
+as unreliable, 42_mark_hypermutators_as_unreliable.py](icgc/40_housekeeping/42_mark_hypermutators_as_unreliable.py).
  
 ### Production ([50_production](icgc/50_production))
- 
+The fun starts here, and you probably might want to do something else for fun. Here is what we looked into:
+
+**[42_gene_stats_generic.py](icgc/50_production/42_gene_stats_generic.py).**
+
+**[44_mutation_freq_stats.py](icgc/50_production/44_mutation_freq_stats.py).**
+
+**[45_two_gene_co-ocurrence.py](icgc/50_production/45_two_gene_co-ocurrence.py).**
+
+**[48_co-ocurrence_of_mutations_and_lack_thereof.py](icgc/50_production/48_co-ocurrence_of_mutations_and_lack_thereof.py).**
+
+**[50_co-ocurrence_postprocess.py](icgc/50_production/50_co-ocurrence_postprocess.py).**
+
+**[56_silent_to_nonsilent_ratio.py](icgc/50_production/56_silent_to_nonsilent_ratio.py).**
+
+**[58_silent_to_nonsilent_plot.py](icgc/50_production/58_silent_to_nonsilent_plot.py).**
+
+**[60_clustering_on_the_structure.py](icgc/50_production/60_clustering_on_the_structure.py).**
+
  
 ## TODO 
 * disentangle from Annovar - we have all the info we need to do own annotation here
