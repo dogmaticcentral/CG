@@ -383,6 +383,15 @@ def create_gene_temp(cursor, somatic_table, gene):
 	qry += "and pathogenicity_estimate=1 and reliability_estimate=1"
 	error_intolerant_search(cursor, qry)
 	return temp_name
+#########################################
+def create_gene_faux_temp(cursor, somatic_table, gene):
+	temp_name = "temp_{}_{}_{}".format(somatic_table, gene, os.getpid())
+	qry = "create  table %s " % temp_name
+	qry += "as select distinct icgc_donor_id from  %s  " % somatic_table
+	qry += "where gene_symbol='%s' " % gene
+	qry += "and pathogenicity_estimate=1 and reliability_estimate=1"
+	error_intolerant_search(cursor, qry)
+	return temp_name
 ############
 def drop_view(cursor, view_name):
 	qry = "drop view if exists %s " % view_name
@@ -441,6 +450,19 @@ def patients_per_gene_breakdown(cursor, table):
 	qry += "group by symbol"
 	ret = hard_landing_search(cursor,qry)
 	return dict(ret)
+
+########################################
+def genes_per_patient_breakdown(cursor, table):
+	qry  = "select distinct s.icgc_donor_id donor, count(distinct g.gene_symbol) ct "
+	qry += "from mutation2gene g, %s s  " % table
+	qry += "where s.icgc_mutation_id=g.icgc_mutation_id and s.pathogenicity_estimate=1  "
+	qry += "and s.reliability_estimate=1 "
+	qry += "group by donor"
+	ret = hard_landing_search(cursor,qry)
+	return dict(ret)
+
+
+
 
 #########################################
 def patients_with_muts_in_gene_group(cursor, table, gene_list):

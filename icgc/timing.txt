@@ -74,4 +74,5 @@ icgc
 ├── 50_production
 │   ├── 40_specimen_idx_on_varians.py                         14min, no pll
 │   ├── 42_gene_stats_generic.py
-│   ├── 48_co-occurence                                       cuople of mins, depending on the reference gene chosen
+│   ├── 48_co-occurence                                        <2 mins 12 fold pll
+│   ├── 50_co-occurence_postprocess.py                        10-20 mins depdnding on the gene and required precision

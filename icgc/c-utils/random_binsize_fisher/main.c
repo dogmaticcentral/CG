@@ -35,12 +35,47 @@ int mark_selection(Node * root, int nsel, char * selection_array, int max_val, c
     }
     return 0;
 }
+
+/*****************************************************/
+int simulation_loop(int * boundaries, int bds_length, Node * root, int nsel1,  int nsel2,  int noverlap,  int nrounds,
+                float *pvl_smaller, float *pvl_bigger, float *expected_ovlp) {
+
+    if (nrounds<1){
+        *pvl_smaller = *pvl_bigger  = *expected_ovlp = 0.0;
+        return 1;
+    }
+    int n, i;
+    char * selection_array = calloc(bds_length, sizeof(char));
+    int max_val = boundaries[bds_length-1];
+    int count_smaller=0, count_bigger=0;
+    int avg_overlap = 0;
+    for(n=0; n<nrounds; n++) {
+        memset(selection_array, 0, bds_length*sizeof(char));
+        mark_selection(root, nsel1, selection_array, max_val, 1);
+        mark_selection(root, nsel2, selection_array, max_val, 2);
+        int overlap_size = 0;
+        for (i=0; i<bds_length; i++) {
+            if (selection_array[i]==3) overlap_size+=1;
+        }
+        if (overlap_size>=noverlap) count_bigger++;
+        if (overlap_size<=noverlap) count_smaller++;
+        avg_overlap += overlap_size;
+    }
+    if (count_smaller<nrounds/2) count_smaller +=1; // to remind ourselves that e cannot go below 1/nrounds in precision
+    if (count_bigger<nrounds/2) count_bigger +=1; // to remind ourselves that e cannot go below 1/nrounds in precision
+
+    *pvl_smaller  = (float)count_smaller/nrounds;
+    *pvl_bigger   = (float)count_bigger/nrounds;
+    *expected_ovlp = (float)avg_overlap/nrounds;
+    return 0;
+}
+
 /*****************************************************/
 int main ( int argc, char * argv[]) {
     /* parse command line */
     if ( argc < 6 ) {
       	fprintf (stderr,
-      		 "Usage: %s  <bin bdries file>  <selection size 1>   <selection size 2>  <overlap size> <number of simluation rounds>\n"
+      		 "Usage: %s  <bin bdries file>  <selection size 1>   <selection size 2>  <overlap size> <number of simulation rounds>\n"
            "where <bin bdries file is of the format (for example) \n"
            " 113 \n"
            " 256 \n"
@@ -51,17 +86,29 @@ int main ( int argc, char * argv[]) {
     }
     char infilename[150] = {'\0'};
     int nsel1, nsel2, noverlap, nrounds;
-    sprintf ( infilename, "%s", argv[1]);
+    sprintf (infilename, "%s", argv[1]);
     nsel1 = atoi(argv[2]);
     nsel2 = atoi(argv[3]);
     noverlap = atoi(argv[4]);
     nrounds = atoi(argv[5]);
+    if (nsel1<1 || nsel2<1) {
+        fprintf(stderr, "Both selection sizes must be > 0.\n");
+        fprintf(stdout, "Bad input.\n");
+        exit(1);
+    }
+
     /* read in boundary array */
     int * boundaries;
     int bds_length;
     if (read_boundaries (infilename, &boundaries,  &bds_length)) exit (1);
     if (nsel1>bds_length || nsel2>bds_length) {
-        fprintf (stderr,  "Both selection sizes must be no bigger than the number of bins.\n");
+        fprintf(stderr, "Both selection sizes must be no bigger than the number of bins.\n");
+        fprintf(stdout, "Bad input.\n");
+        exit(1);
+    }
+    if (bds_length<2) {
+        fprintf (stderr, "There should be at least 2 bins in %s.\n", infilename);
+        fprintf(stdout, "Bad input.\n");
         exit(1);
     }
 
@@ -74,22 +121,13 @@ int main ( int argc, char * argv[]) {
 
     /* simulation */
     srand48(time(NULL));
-    int n, i;
-    char * selection_array = calloc(bds_length, sizeof(char));
-    int max_val = boundaries[bds_length-1];
-    int count_smaller=0, count_bigger=0;
-    for(n=0; n<nrounds; n++) {
-        memset(selection_array, 0, bds_length*sizeof(char));
-        mark_selection(root, nsel1, selection_array, max_val, 1);
-        mark_selection(root, nsel2, selection_array, max_val, 2);
-        int overlap_size = 0;
-        for (i=0; i<bds_length; i++) {
-            if (selection_array[i]==3) overlap_size+=1;
-        }
-        if (overlap_size>=noverlap) count_bigger++;
-        if (overlap_size<=noverlap) count_smaller++;
-    }
-    count_smaller +=1; // to remind ourselves that e cannot go below 1/nrounds in precision
-    printf("OK\t%.2e\t%.2e\n", (float)count_smaller/nrounds, (float)count_bigger/nrounds);
+    float pvl_smaller, pvl_bigger, expected_ovlp;
+    int trial_nrounds = 10; // if this number of rounds is enough, we stop here
+    do {
+       trial_nrounds*=10;
+       simulation_loop(boundaries, bds_length, root, nsel1,  nsel2, noverlap, trial_nrounds,
+                        &pvl_smaller, &pvl_bigger, &expected_ovlp);
+     } while (trial_nrounds<nrounds && (pvl_smaller<=2.0/trial_nrounds || pvl_bigger<=2.0/trial_nrounds) );
+    printf("OK\t%.2e\t%.2e\t%.1f\n",  pvl_smaller, pvl_bigger, expected_ovlp);
     return 0;
 }

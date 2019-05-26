@@ -10,6 +10,7 @@ struct
 *.o
 *.so
 *.pyc
+rbf
 
 # Packages #
 ############

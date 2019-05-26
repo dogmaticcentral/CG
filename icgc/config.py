@@ -82,5 +82,5 @@ class Config:
 		if not os.path.exists(full_rbf_path) or not os.access(full_rbf_path, os.X_OK):
 			print("rbf executable not found as", full_rbf_path)
 			print("Perhapse it needs to be compiled by chdir-ing to $ICGC_HOME/%s and typing 'make'." % self.rbf_dir)
-
+			exit()
 		return full_rbf_path
