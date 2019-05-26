@@ -34,7 +34,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
 * [Dependencies](#dependencies)
 * [TCGA](#tcga)
 * [ICGC](#icgc)
-     * [config file](#config-file)
+     * [config file](#Config-file)
      * [ICGC data download ](#icgc-data-download-00_data_download)
      * [Loading data into local version of the database](#loading-data-into-local-version-of-the-database-10_local_db_loading)
      * [Reorganizing mutation data](#reorganizing-mutation-data-20_local_db_reorganization)
@@ -66,7 +66,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  These are the scripts that drop tables and/or store without checking. Enable them by commenting the exit line.
  (The advice is to put the comment back in once the script is done.)
  
-### config file
+### Config file
  You can set some recurring constants - such as data directories or mysql conf file(s) - 
  in the [config.py](icgc/config.py) file.
  
@@ -147,12 +147,12 @@ In [20_hgnc_name_resolution_table.py](icgc/10_local_db_loading/20_hgnc_name_reso
  [22_ensembl_id_table.py](icgc/10_local_db_loading/22_ensembl_id_tables.py) we make and fill some tables we will use later for name resolution 
  (translating between gene and protein names used in different contexts).
 
-The annotation across different submitters to TCGA/ICGC is not uniform In particular, for the missense mutations
+The annotation across different submitters to TCGA/ICGC is not uniform. In particular, for the missense mutations
 sometimes it is not clear which splice they refer to. Alternatively, when the reference splice(s) is listed, it
-si not clear which splice is the canonical splice. To remedy that, here we do some basic annotation of our own. For that
+may not be clear which splice is the canonical splice. To remedy that, here we do some basic annotation on our own. For that
 we will need the coding sequence of canonical transcripts.
  
-The canonical transcript id is not readily available from Ensembl Mart, thus for our purposes
+The canonical transcript id is not readily available from Ensembl Mart. For our purposes
 here you can find this info in the tables called ensembl_gene2trans_stable.tsv.bz2 
 and in ensembl_deprecated2new_id.tsv.bz2 the
 [hacks](icgc/hacks) directory. Decompress them (bzip2 -d) and put someplace where
@@ -220,20 +220,20 @@ mutations\* tables.
 
 New tables are created in [08_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/08_check_icgc_tables_and_make_new_ones.py).
 
-In [10_reorganize_variants.py](icgc/20_local_db_reorganization/10_reorganize_variants.py),
+**Note 1:** In [10_reorganize_variants.py](icgc/20_local_db_reorganization/10_reorganize_variants.py),
 [11_delete_variants_from_normal.py](icgc/20_local_db_reorganization/11_delete_variants_from_normal.py),
 [13_reorganize_mutations.py](icgc/20_local_db_reorganization/13_reorganize_mutations.py),   and
 [14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) 
  you can choose to run in parallel (the number of 'chunks' in main()). 
  
  
-**Note 1:** that in [11_delete_variants_from_normal.py](icgc/20_local_db_reorganization/11_delete_variants_from_normal.py),
+**Note 2:** In [11_delete_variants_from_normal.py](icgc/20_local_db_reorganization/11_delete_variants_from_normal.py),
  we are dropping variants from normal samples. This is something you might not want to do if you are trying to
  annotate variants yourself. Though in that case you might want to go back to 
  [08_check_mut_tables_and_make_new_ones.py](icgc/20_local_db_reorganization/08_check_icgc_tables_and_make_new_ones.py)
  and keep the 'matched_icgc_sample_id' field. 
  
-**Note 2:** doing things carefully leads to some interesting results. NACA (Nasopharyngeal cancer) set, for example,
+**Note 3:** doing things carefully leads to some interesting results. NACA (Nasopharyngeal cancer) set, for example,
 consists of normal tissue samples only. 
 
 [14_reorganize_locations.py](icgc/20_local_db_reorganization/14_reorganize_locations.py) script uses 
@@ -246,7 +246,7 @@ same info (it is a boolean flag, no big elaboration on the table) to the variant
 
     
 (Do not forget to create indices
-using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_tables.py)) 
+using [10_make_indices_on_temp_tables.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py)) 
  
  
  #### Adding reliability info
@@ -294,7 +294,7 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  to technical replicates as samples. Perhaps they might have a role when answering different
  types of questions than what we have in mind. Here, however we do not want to have these results mistaken for recurring mutations, 
  thus we remove them in [22_cleanup_duplicate_specimens.py](icgc/20_local_db_reorganization/22_cleanup_duplicate_specimens.py) 
- and [23_cleanup_duplicate_samples.py](icgc/20_local_db_reorganization/23_cleanup_duplicate_samples.py), but not before checking
+ and [23_cleanup_multiple_sample_ids.py](icgc/20_local_db_reorganization/23_cleanup_multiple_sample_ids.py), but not before checking
  which of the samples produced more reliable reads (see below).
  In this version of the pipeline we keep only the sample annotated as 'Primary tumour - solid tissue.' Out of
  these, if multiple refer to the same submitter id, we keep the ones with the largest reported number of
@@ -327,10 +327,12 @@ attempts to detect such cases by looking for suspiciously high overlap in report
   the reference will be lost to other (non-canonical) transcripts, which can be retrieved from the locations table.
   The prerequisite is [32_load_ensembl_coord_patches.py](icgc/20_local_db_reorganization/32_load_ensembl_coord_patches.py), 
   a hacky solution to include the latest gene coordinates from Ensembl. The coordinate tables can be found in 
-  [hacks/coord_patches.tar.bz2](icgc/hacks/coord_patches.tar.bz2).
+  [hacks/coord_patches.tar.bz2](icgc/hacks/coord_patches.tar.bz2)
+   <a href="/icgc/hacks/coord_patches.tar.bz2" download> dwld</a>
+  .
  A step toward independent annotation. 
  
- #### ICGC-only  production
+#### ICGC-only  production
  It is possible to stop here and move to production scripts, if there is no interest in including TCGA.
  
  
