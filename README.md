@@ -421,9 +421,12 @@ The script relies on a piece of C-code, to be found in [c-utils/clustering](icgc
 A simple make will do, no need to move the executable, no further dependencies. 
 
 Three sets of output files are produced, one for mutations seen in the wt background gene, one for mutated background
-gene, and one for all mutations, irrespective of the background status.
+gene, and one for all mutations, irrespective of the background status: *output files that list the membership
+of the clusters on the structure, and *pml files, the PyMol visualization scripts. 
+If you are not familiar with PyMOol, click [here](wiki/Using-PyMol) for some pointers.
 
-Note that you are on your own to procure the PDB structure and assure that the residues there are not mutated and 
+Note that you are on your own to [procure the PDB structure and]()
+ and assure that the residues there are not mutated and 
 their numbering corresponds to the canonical transcript of the gene.
 
 ## TODO 
@@ -439,9 +442,9 @@ Alternatively, ENST00000435165 is listed to start in ENSE00001951262, which has 
 Another example: ENST00000334103	ENSG00000186094, frames listed in Ensembl vs UCSC.
 I have not used the phase info here, but it should be kept in mind that it is unreliable.
 * annotation in the production stage is incomplete, possibly because of the mismatch between TCGA/ICGC ref assembly and
-GRCh28 that i currently the standard with Ensembl
-* there might be some errors in the re-annotation \
-[32_reannotate_positions.py](icgc/20_local_db_reorganization/34_reannotate_missense_mutations.py) - \
+GRCh28 that is currently the standard with Ensembl
+* there might be some errors in the re-annotation 
+[32_reannotate_positions.py](icgc/20_local_db_reorganization/34_reannotate_missense_mutations.py) - 
  coding sequences from biomart not correct (e.g ENST00000366645 vs the same seq on the Ensembl website
 [the same seq on the Ensembl website](https://grch37.ensembl.org/Homo_sapiens/Transcript/Exons?db=core;g=ENSG00000116903;r=1:231468499-231473598;t=ENST00000366645))
 

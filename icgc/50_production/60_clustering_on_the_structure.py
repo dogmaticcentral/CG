@@ -125,6 +125,9 @@ def main():
 		cmd = "{} {} - {} 4.5 > {}".format(clustering_prog, pdb_file, mut_positions_file, clustering_output)
 		subprocess.call(["bash","-c", cmd])
 
+		# remove clustering input
+		os.remove(mut_positions_file)
+
 		# parse clustering output
 		zscore, isolated, clusters = parse_clust_out(clustering_output)
 		pymol_file = "{}.{}.clust.pml".format(gene,background)
