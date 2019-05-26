@@ -1,8 +1,6 @@
 # CG
 
-_(writeup in progress)_
-
-CG is a set of scripts for extracting information about somatic 
+CG is a set of scripts for extracting information about (localized) somatic 
 mutations from 
 [TCGA](https://portal.gdc.cancer.gov/)
 and 
@@ -16,7 +14,8 @@ geared toward answering particular questions for which they were originally writ
 CG is not an out-of-the box solution. Rather, it is a starter kit, in case you would like to
 do some cancer genomics data analysis on your own. Installing CG database(s) may take a
 day or two if you are willing to go with the pipeline as-is. The (approximate) timings
-for a default installation of the ICGC branch can be found in [timing.txt](timing.txt). With tweaks, a week is 
+for a default installation of the ICGC branch can be found in [timing.txt](icgc/timing.txt).
+ With tweaks, a week is 
 not an unreasonable time estimate.
 
 
@@ -35,22 +34,27 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
 * [Dependencies](#dependencies)
 * [TCGA](#tcga)
 * [ICGC](#icgc)
-    * [config file](#config-file)
-    * [ICGC data download](#icgc-data-download-00_data_download)
-    * [Loading data into local version of the database](#loading-data-into-local-version-of-the-database-10_local_db_loading)
-         * [Getting and storing some auxilliary data](#getting-and-storing-some-auxilliary-data)
-         * [Measuring the field lengths and making MySQL tables](#measuring-the-field-lengths-and-making-mysql-tables)
-         * [Filling and  indexing database tables](#filling-and--indexing-database-tables)
-    * [Reorganizing mutation data](#reorganizing-mutation-data-20_local_db_reorganization)
-         * [Removing duplicates](#removing-duplicates)
-         * [Adding reliability info](#adding-reliability-info)
-    * [Merging with TCGA](#merging-with-tcga)
-    * [Some generic stats](#some-generic-stats)
-    * [Project-specific stats](#project-specific-stats)
+     * [config file](#config-file)
+     * [ICGC data download (<a href="icgc/00_data_download">00_data_download</a>)](#icgc-data-download-00_data_download)
+     * [Loading data into local version of the database (<a href="icgc/10_local_db_loading">10_local_db_loading</a>)](#loading-data-into-local-version-of-the-database-10_local_db_loading)
+            * [Measuring the field lengths and making MySQL tables](#measuring-the-field-lengths-and-making-mysql-tables)
+            * [Filling and indexing the icgc database tables](#filling-and-indexing-the-icgc-database-tables)
+            * [Getting and storing some auxilliary data](#getting-and-storing-some-auxilliary-data)
+     * [Reorganizing mutation data (<a href="icgc/20_local_db_reorganization">20_local_db_reorganization</a>)](#reorganizing-mutation-data-20_local_db_reorganization)
+            * [Creating new tables](#creating-new-tables)
+            * [Adding reliability info](#adding-reliability-info)
+            * [Removing duplicates](#removing-duplicates)
+            * [Mutation2gene shortcut](#mutation2gene-shortcut)
+            * [Optional: re-annotating missense mutations](#optional-re-annotating-missense-mutations)
+            * [ICGC-only  production](#icgc-only--production)
+     * [Merging with TCGA (<a href="icgc/30_tcga_merge">30_tcga_merge</a>)](#merging-with-tcga-30_tcga_merge)
+     * [Housekeeping (<a href="icgc/40_housekeeping">40_housekeeping</a>)](#housekeeping-40_housekeeping)
+     * [Production (<a href="icgc/50_production">50_production</a>)](#production-50_production)
+* [TODO](#todo)
   
  
  
- ## Dependencies
+## Dependencies
  In addition to TCGA and ICGC databases themselves, CG relies on
  * MySQL
  * MySQLdb python module, installed with _sudo apt install python3-mysqldb_
@@ -74,7 +78,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  You can set some recurring constants - such as data directories or mysql conf file(s) - 
  in the [config.py](icgc/config.py) file.
  
- ### ICGC data download ([00_data_download](icgc/00_data_download))
+### ICGC data download ([00_data_download](icgc/00_data_download))
  
  Just like the tcga branch, this branch of the pipeline starts by downloading the data from
  the source, ICGC in this case. Note however that here you will need the access token. 
@@ -92,7 +96,7 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  the grouping defined in [06_group_cancers.py](icgc/00_data_download/06_group_cancers.py), or to skip it altogether.
  
  
- ### Loading data into local version of the database ([10_local_db_loading](icgc/10_local_db_loading))
+### Loading data into local version of the database ([10_local_db_loading](icgc/10_local_db_loading))
  
  
   Make sure you have 
@@ -324,12 +328,21 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  A step toward independent annotation. 
  
  #### ICGC-only  production
- It si possible to stop here and move to production scripts, if there is no interest in including TCGA.
+ It is possible to stop here and move to production scripts, if there is no interest in including TCGA.
  
  
+### Merging with TCGA ([30_tcga_merge](icgc/30_tcga_merge))
+
+#### Disaster recovery strategy
+ It might be advisable to backup the newly-created tables, by storing them as an sqldump, for example.
+ There is a couple of scripts in [hacks](icgc/hacks) directory to help along.
+ [somatic_tables_dump.pl](hacks/somatic_tables_dump.pl) will dump them out, just make sure you move to the storage direcotry, 
+ and [somatic_tables_load.pl](hacks/somatic_tables_load.pl) will load them back in if needs be.
+ If you choose to do the full database dump, 
+ [somatic_tables_from_dump.pl](hacks/somatic_tables_from_dump.pl) can extract only *_simple_somatic tables.
+ The process if slow, however.
  
- ### Merging with TCGA ([30_tcga_merge](icgc/30_tcga_merge))
- 
+#### Merging
  The scripts [29_index_on_mutation_tables.py](icgc/20_local_db_reorganization/29_index_on_mutation_tables.py)
  through [34_tcga_specimen_hack.py](icgc/30_tcga_merge/37_tcga_specimen_hack.py)
  concern themselves with merging TCGA info created in TCGA branch with the ICGC.
@@ -340,9 +353,9 @@ using [10_make_indices_on_temp_tables.py](icgc/old/10_make_indices_on_temp_table
  If everything is ok, [35_database_stats.py](icgc/40_housekeeping/37_database_stats.py) should report
  no duplicates in any of the tables.
  
- ### Housekeeping ([]())
+### Housekeeping ([40_housekeeping](icgc/40_housekeeping))
  
- ### Production ([]())
+### Production ([50_production](icgc/50_production))
  
  
 ## TODO 
@@ -363,6 +376,7 @@ GRCh28 that i currently the standard with Ensembl
 [32_reannotate_positions.py](icgc/20_local_db_reorganization/34_reannotate_missense_mutations.py) - \
  coding sequences from biomart not correct (e.g ENST00000366645 vs the same seq on the Ensembl website
 [the same seq on the Ensembl website](https://grch37.ensembl.org/Homo_sapiens/Transcript/Exons?db=core;g=ENSG00000116903;r=1:231468499-231473598;t=ENST00000366645))
-## P.S.
 
+
+## P.S.
 Do not use locks in MySQL. Locks are evil. Good luck with the rest.
