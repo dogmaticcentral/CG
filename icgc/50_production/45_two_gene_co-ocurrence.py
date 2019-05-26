@@ -106,7 +106,7 @@ def main():
 		# https://www.pnas.org/content/115/26/E6010
 		# consider  a sample with >3,000 mutations in a coding region a hypermutator
 		# I think I should go even lower - to >1,000 mutations
-		# THis correction downplays the probabilty of highly mutated samples.
+		# This correction downplays the probabilty of highly mutated samples.
 		# I am not sure what is the justification, but it does produce
 		# much more reasonable results than plain number of mutated genes (or plain number of mutations)
 		weights = [int(10*log10(m)) for m in mut_count.values()]
@@ -152,10 +152,10 @@ def main():
 
 		print()
 
-		# if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t%.1f\n"%
-		# 				(tumor_short,total_patients, patients_with_muts_in_gene.get(bg_gene, 0),
-		# 				patients_with_muts_in_gene.get(other_genes[0], 0),
-		# 				cooc,expected,p_smaller,p_bigger))
+		if write_to_file: outf.write("%s\t%d\t%d\t%d\t%d\t%.1f\t%.2f\t%.1f\n"%
+						(tumor_short,total_patients, patients_with_muts_in_gene.get(bg_gene, 0),
+						patients_with_muts_in_gene.get(other_genes[0], 0),
+						cooc,expected,p_smaller,p_bigger))
 
 
 

@@ -1,7 +1,7 @@
 # CG
 
 CG is a set of scripts for extracting information about (localized) somatic 
-mutations from 
+mutations in protein coding regions of cancer genomes from 
 [TCGA](https://portal.gdc.cancer.gov/)
 and 
 [ICGC](https://dcc.icgc.org/)
@@ -65,6 +65,8 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  A general note: throughout the pipeline, you will find scripts disabled by having exit() right on the top of the file.
  These are the scripts that drop tables and/or store without checking. Enable them by commenting the exit line.
  (The advice is to put the comment back in once the script is done.)
+ 
+ A general note no. 2: all scripts that take an argument issue their usage statement.
  
 ### Config file
  You can set some recurring constants - such as data directories or mysql conf file(s) - 
@@ -245,8 +247,7 @@ In [16_pathg_from_mutations_to_variants.py](icgc/20_local_db_reorganization/16_p
 same info (it is a boolean flag, no big elaboration on the table) to the variantis (*_simple_somatic) tables.
 
     
-(Do not forget to create indices
-using [10_make_indices_on_temp_tables.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py)) 
+(Do not forget to create indices using [10_make_indices_on_temp_tables.py](icgc/10_local_db_loading/10_make_indices_on_temp_tables.py).) 
  
  
  #### Adding reliability info
@@ -364,11 +365,35 @@ as unreliable, 42_mark_hypermutators_as_unreliable.py](icgc/40_housekeeping/42_m
 ### Production ([50_production](icgc/50_production))
 The fun starts here, and you probably might want to do something else for fun. Here is what we looked into:
 
-**[42_gene_stats_generic.py](icgc/50_production/42_gene_stats_generic.py).**
+**[42_gene_stats_generic.py](icgc/50_production/42_gene_stats_generic.py).** Given an HGNC symbol for a protein coding gene,
+it produces a table in tsv format of all pathogenic mutations found in the database. It also reports the mutation status
+of a background gene (default is TP53). The table is created in the directory where the script is invoked.
 
-**[44_mutation_freq_stats.py](icgc/50_production/44_mutation_freq_stats.py).**
+**[44_mutation_freq_stats.py](icgc/50_production/44_mutation_freq_stats.py).** Given an HGNC symbol (or two) for a protein coding gene,
+it produces a table in tsv format containing the information about
+   the overall stats of the cancers in which the query gene appears mutated. This should give you an idea
+   how extraordinary (or not) is the number of mutations from the previous script. Thus for example, if a gene is
+   mutated in 5% of all patients of the database, it might not be very significant if the same is true of 7,000 other
+   genes, if the cancer at hand is mutation-happy. To the contrary, 2% of the patients  might be meaningful if it holds
+   for a small percentage of the genome. The table is created in the directory where the script is invoked.
 
-**[45_two_gene_co-ocurrence.py](icgc/50_production/45_two_gene_co-ocurrence.py).**
+**[45_two_gene_co-ocurrence.py](icgc/50_production/45_two_gene_co-ocurrence.py).** Given a background gene and a list
+of other gene names, the script reports how often the members of this list, taken as a group, appear mutated in the
+same tumor sample as the background gene.  The script also attempts to give a statistical evaluation of how (un)likely 
+would be the size of the overlap under random selection of tumors (or patients; in our database there is only 
+one specimen per patient). 
+
+Both simple Fisher test  and  mutation-propensity-corrected test results are reported.
+To use the latter you need to compile the C code in [c-utils/random_binsize_fisher](icgc/c-utils/random_binsize_fisher).
+A simple make will do, no need to move the executable, no further dependencies. Alternatively you can comment it out
+in the python script (the invocation point is called 'size_corrected_pvals_C'). 
+
+The C code is neutral on  the issue of
+how to measure the mutation propensity (actually it does not know anything about the mutation, it only samples
+from a non-uniform distribution). Trial and error seems to indicate that assigning a measure that is directly 
+proportional to the number of mutations tends to significantly over-estimate the expected co-occurrence of mutations.
+As of this writing, the question remains open.
+
 
 **[48_co-ocurrence_of_mutations_and_lack_thereof.py](icgc/50_production/48_co-ocurrence_of_mutations_and_lack_thereof.py).**
 
