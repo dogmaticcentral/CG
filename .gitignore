@@ -52,7 +52,7 @@ sys_tfm
 *.input
 *.output
 
-*.txt        # ignore txt
+*.txt # ignore txt
 !timing.txt  #Except for timing.txt
 scratch/
 old/
