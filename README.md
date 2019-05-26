@@ -52,8 +52,9 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
  * gene symbols from HUGO gene nomenclature committee (see [here](https://www.genenames.org/download/custom/))
  * [Annovar](http://annovar.openbioinformatics.org/en/latest/) for location and functional annotation - int TCGA merge
  * CrossMap  (in TCGA merge) - (sudo pip3 install CrossMap, pyBigWig, pysam)
- * Optional: [line-profiler](https://github.com/rkern/line_profiler#line-profiler) for python; gcc compiler for c-utils
-  used in postprocessing.
+ * Optional: [line-profiler](https://github.com/rkern/line_profiler#line-profiler) for python.
+ * Optional in postprocessing: gcc compiler for [c-utils](icgc/c-utils); [Matplotlib](https://matplotlib.org/); 
+    [PyMol](https://github.com/schrodinger/pymol-open-source).
  
 ## TCGA
  The tcga branch of the icgc pipeline got obsoleted before coming to production stage. 
@@ -372,9 +373,9 @@ of a background gene (default is TP53). The table is created in the directory wh
 **[44_mutation_freq_stats.py](icgc/50_production/44_mutation_freq_stats.py).** Given an HGNC symbol (or two) for a protein coding gene,
 it produces a table in tsv format containing the information about
    the overall stats of the cancers in which the query gene appears mutated. This should give you an idea
-   how extraordinary (or not) is the number of mutations from the previous script. Thus for example, if a gene is
-   mutated in 5% of all patients of the database, it might not be very significant if the same is true of 7,000 other
-   genes, if the cancer at hand is mutation-happy. To the contrary, 2% of the patients  might be meaningful if it holds
+   of how extraordinary (or not) is the number of mutations from the previous script. Thus for example, if a gene is
+   mutated in 5% of all patients in the database, it might not be very significant if the same is true for 7,000 other
+   genes, as might be the case if the cancer at hand is mutation-happy. To the contrary, 2% of the patients  might be meaningful if it holds
    for a small percentage of the genome. The table is created in the directory where the script is invoked.
 
 **[45_two_gene_co-ocurrence.py](icgc/50_production/45_two_gene_co-ocurrence.py).** Given a background gene and a list
@@ -394,18 +395,37 @@ from a non-uniform distribution). Trial and error seems to indicate that assigni
 proportional to the number of mutations tends to significantly over-estimate the expected co-occurrence of mutations.
 As of this writing, the question remains open.
 
-
 **[48_co-ocurrence_of_mutations_and_lack_thereof.py](icgc/50_production/48_co-ocurrence_of_mutations_and_lack_thereof.py).**
+This script will take a single gene and output some prep files for calculating the co-occurrence propensity of mutations
+in this gene against all other protein coding genes in the human genome. It is supposed to work in pair with the following script.
 
-**[50_co-ocurrence_postprocess.py](icgc/50_production/50_co-ocurrence_postprocess.py).**
+**[50_co-ocurrence_postprocess.py](icgc/50_production/50_co-ocurrence_postprocess.py).** What
+[45_two_gene_co-ocurrence.py](icgc/50_production/45_two_gene_co-ocurrence.py) script does for a single gene,
+this script repeats for one-against-all case: it reads the output from 
+[48_co-ocurrence_of_mutations_and_lack_thereof.py](icgc/50_production/48_co-ocurrence_of_mutations_and_lack_thereof.py) 
+and adds Fisher and mutation-propensity-corrected stats for the co-occurrence of mutations.
+This might take several hours for a highly mutated gene such as TP53.
 
 **[56_silent_to_nonsilent_ratio.py](icgc/50_production/56_silent_to_nonsilent_ratio.py).**
+Silent-to-nonsilent ratio of mutations for all protein coding genes in the database.
 
 **[58_silent_to_nonsilent_plot.py](icgc/50_production/58_silent_to_nonsilent_plot.py).**
+Plot of the previous, using [Matplotlib](https://matplotlib.org/).
 
 **[60_clustering_on_the_structure.py](icgc/50_production/60_clustering_on_the_structure.py).**
+Given gene symbol, a protein structure in the [PDB](https://www.rcsb.org/) format and the name of the "background" gene, 
+the  script produces statistical estimate of the (non)randomness of the mutation positions seen in cancers when mapped 
+on the protein structure. The script also produces input for [PyMol](https://pymolwiki.org/index.php/Practical_Pymol_for_Beginners).
 
- 
+The script relies on a piece of C-code, to be found in [c-utils/clustering](icgc/c-utils/clustering).
+A simple make will do, no need to move the executable, no further dependencies. 
+
+Three sets of output files are produced, one for mutations seen in the wt background gene, one for mutated background
+gene, and one for all mutations, irrespective of the background status.
+
+Note that you are on your own to procure the PDB structure and assure that the residues there are not mutated and 
+their numbering corresponds to the canonical transcript of the gene.
+
 ## TODO 
 * disentangle from Annovar - we have all the info we need to do own annotation here
 * why does deleting normal samples take so long?
@@ -418,7 +438,7 @@ translation does not start in this exon at all.
 Alternatively, ENST00000435165 is listed to start in ENSE00001951262, which has phase listed as -1.
 Another example: ENST00000334103	ENSG00000186094, frames listed in Ensembl vs UCSC.
 I have not used the phase info here, but it should be kept in mind that it is unreliable.
-* annotation in the production stage is incomplete, possibly because of the mismatch between TCAG/ICGC ref assembly and
+* annotation in the production stage is incomplete, possibly because of the mismatch between TCGA/ICGC ref assembly and
 GRCh28 that i currently the standard with Ensembl
 * there might be some errors in the re-annotation \
 [32_reannotate_positions.py](icgc/20_local_db_reorganization/34_reannotate_missense_mutations.py) - \
