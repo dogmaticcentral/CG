@@ -423,7 +423,8 @@ A simple make will do, no need to move the executable, no further dependencies.
 Three sets of output files are produced, one for mutations seen in the wt background gene, one for mutated background
 gene, and one for all mutations, irrespective of the background status: *output files that list the membership
 of the clusters on the structure, and *pml files, the PyMol visualization scripts. 
-If you are not familiar with PyMOol, click [here](wiki/Using-PyMol) for some pointers.
+If you are not familiar with PyMol, click [here](https://github.com/dogmaticcentral/CG/wiki/Using-PyMol) 
+for some pointers.
 
 Note that you are on your own to [procure the PDB structure and]()
  and assure that the residues there are not mutated and 
