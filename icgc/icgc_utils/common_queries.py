@@ -21,6 +21,18 @@
 from icgc_utils.tcga import *
 #
 #########################################
+
+def check_gene_hgnc(cursor, gene):
+	qry = "select * from icgc.hgnc where approved_symbol='%s' limit 1" %gene
+	ret = error_intolerant_search(cursor, qry)
+	return ret!=None
+
+def get_somatic_variant_tables(cursor):
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%simple_somatic'"
+	tables = [field[0] for field in error_intolerant_search(cursor,qry)]
+	return tables
+
 def gnomad_mutations (cursor, gene_symbol):
 
 	mutations = set([])
