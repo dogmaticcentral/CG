@@ -152,5 +152,6 @@ if __name__ == '__main__':
 #########################################
 '''
 further sorting (with rank number) 7: anticorrelate, 8: correlates
-sort -gk8 anticorrelates.tsv | awk '{ct +=1; printf "%6d  ", ct; print}' |  grep RPL | grep -v MRPL
+
+cat *.tsv | sort -gk8  | awk '{ct +=1; printf "%6d  ", ct; print}' |  grep RPL | grep -v MRPL
 '''
