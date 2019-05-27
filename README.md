@@ -97,8 +97,9 @@ agglomerate data on per-gene basis, in order to protect the privacy of sample do
 ### Loading data into local version of the database ([10_local_db_loading](icgc/10_local_db_loading))
  
  Make sure you have 
- the mysql conf file  and set its path in these two scripts, or arrange some other way to
- access the local database. The last I checked, python's MySQLdb package did not work with
+ the mysql conf file, and set its path in [config.py](icgc/config.py) (or arrange some other way to
+ access the local database, by modifying connect_to_mysql() in [icgc_utils/mysql.py](icgc/icgc_utils/mysql.py)). 
+ The last I checked, python's MySQLdb package did not work with
  the encripted cnf files, so the only alternative is using 
  [client field in generic mysql option file](https://dev.mysql.com/doc/refman/8.0/en/option-files.html),
  like this:
