@@ -77,16 +77,17 @@ def switch_to_db (cursor, db_name):
 
 
 ########
-def get_table_size(cursor, db_name, tables):
-	table_size = {}
+def get_table_size(cursor, db_name, tables, as_list = False):
+	table_size = [] if as_list else {}
 	for table in tables:
 		qry = "select count(1) from %s.%s" % (db_name,table)
 		ret = search_db (cursor, qry, verbose=True)
-		if ret and ret[0] and type(ret[0][0])==int:
-			table_size[table] = ret[0][0]
+		size = 0
+		if ret and ret[0] and type(ret[0][0])==int: size = ret[0][0]
+		if as_list:
+			table_size.append(size)
 		else:
-			table_size[table] = 0
-
+			table_size[table] = size
 	return table_size
 
 
