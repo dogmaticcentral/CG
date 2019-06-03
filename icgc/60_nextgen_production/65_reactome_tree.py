@@ -56,8 +56,11 @@ def print_genes(cursor, gene_ids, depth):
 	gene_id_string = ",".join([quotify(z) for z in gene_ids])
 	qry = "select ensembl_gene_id, approved_name from hgnc  where ensembl_gene_id in (%s)" % gene_id_string
 	gene_names = dict(hard_landing_search(cursor, qry))
+	qry = "select ensembl_gene_id, approved_symbol from hgnc  where ensembl_gene_id in (%s)" % gene_id_string
+	gene_symbols = dict(hard_landing_search(cursor, qry))
+
 	for gene in gene_ids:
-		print("\t"*depth, gene, gene_names.get(gene,""))
+		print("\t"*depth, gene_symbols.get(gene,""), gene_names.get(gene,""))
 	return
 
 
@@ -92,12 +95,12 @@ from matplotlib import pyplot as plt
 def hist_plot(gene_groups):
 	data = [len(gene_list) for gene_list in list(gene_groups.values())]
 	# fixed bin size
-	bins = np.arange(0, 105, 5) # fixed bin size
-	plt.xlim(0,101)
+	bins = np.arange(0, 505, 5) # fixed bin size
+	plt.xlim(0,500)
 	plt.hist(data, bins=bins, alpha=0.5)
 	# plt.title('Random Gaussian data (fixed bin size)')
-	# plt.xlabel('variable X (bin size = 5)')
-	# plt.ylabel('count')
+	plt.xlabel('number of genes in group (bin size = 5)')
+	plt.ylabel('number of groups')
 	#
 	plt.show()
 
@@ -136,19 +139,32 @@ def main():
 
 	node_id_string = ",".join([quotify(z) for z in zero_in_degee_nodes])
 	qry_template = "select * from reactome_pathways where reactome_pathway_id in (%s)"
-	root_names =  hard_landing_search(cursor, qry_template% node_id_string)
+	root_names  = hard_landing_search(cursor, qry_template% node_id_string)
 	gene_groups = {}
 	for pthwy_id, name in root_names:
 		if "disease" in name.lower(): continue
 		if verbose: print(pthwy_id, name)
 		characterize_subtree(cursor, graph, pthwy_id,  gene_groups,  1, verbose=verbose)
+
+	print("\n===========================")
+	max_group=0
+	for group, genes in gene_groups.items():
+		groupsize = len(genes)
+		if max_group< groupsize: max_group=groupsize
+		print (group, len(genes))
+	print("\n===========================")
+	print("number of groups", len(gene_groups))
+	print("largest group", max_group)
+	print("\n===========================")
+	for pthwy_name, genes in gene_groups.items():
+		if len(genes)<=150: continue
+		print("\n",pthwy_name, len(genes))
+		#print_genes(cursor, genes, 1)
+
+
+	#hist_plot(gene_groups)
 	cursor.close()
 	db.close()
-
-	# print("\n===========================")
-	# for group, genes in gene_groups.items():
-	# 	print (group, len(genes))
-	hist_plot(gene_groups)
 
 
 #########################################

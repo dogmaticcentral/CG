@@ -164,7 +164,7 @@ def parallelize(number_of_chunks, embarassingly_pllbl_fn, list, other_args, roun
 
 
 ###########
-def pll_w_return(number_of_chunks, embarassingly_pllbl_fn, input_list, other_args, weights=None):
+def pll_w_return(number_of_chunks, embarassingly_pllbl_fn, input_list, other_args, weights=None, dehash = True):
 	if number_of_chunks < 1:
 		print("number of processes is expected to be >= 1")
 		return False
@@ -184,7 +184,16 @@ def pll_w_return(number_of_chunks, embarassingly_pllbl_fn, input_list, other_arg
 
 	wait_join(processes)
 
-	return return_dict
+	if dehash:
+		# return dict is dict with process ids as keys
+		# this assumes that we are expecting key-value return
+		# if the return is array, for example, this should be rewritten
+		dehashed_return = {}
+		[dehashed_return.update(payload) for payload in  return_dict.values()]
+		return dehashed_return
+
+	else: # return raw
+		return return_dict
 
 #########################################
 def wait_join(processes):

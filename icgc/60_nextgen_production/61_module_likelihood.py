@@ -30,7 +30,7 @@ def gulp_in_list(listname, column=0):
 		print(listname, "not found")
 		exit()
 	with open(listname,"r") as inf:
-		retlist = [line.rstrip().split("\t")[column] for line in inf]
+		retlist = [line.split("\t")[column].strip() for line in inf]
 	return retlist
 
 def avg_for_random_gene_sel(cursor, table, all_genes, sel_size):
@@ -75,7 +75,6 @@ def main():
 	infilename = sys.argv[1]
 	gene_list = gulp_in_list(infilename, int(sys.argv[2])-1 if len(sys.argv)>2 else 0)
 	print("number of genes in {}: {}".format(infilename, len(gene_list)))
-
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 
@@ -110,11 +109,8 @@ def main():
 	print("avg values over random gene selections of the same size ... ")
 	number_of_chunks = 10
 	other_args = [all_genes, len(mutated_gene_list)]
-	avg_estimates_dict = pll_w_return(number_of_chunks, avg_pll_chunk, tables, other_args, table_sizes)
+	avg_estimates = pll_w_return(number_of_chunks, avg_pll_chunk, tables, other_args, table_sizes)
 	print("                       ... done in %.1f mins" %( (float(time.time()-time0))/60) )
-	# avg estimates dict is dict with process ids as keys
-	avg_estimates = {}
-	[avg_estimates.update(estimates) for estimates in   avg_estimates_dict.values()]
 
 	gene_string = ",".join([quotify(g) for g in mutated_gene_list])
 	for table in tables:
