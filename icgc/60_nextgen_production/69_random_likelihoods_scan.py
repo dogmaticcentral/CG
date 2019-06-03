@@ -25,7 +25,7 @@ from config import Config
 from random import sample
 from math import sqrt
 
-
+###############
 def avg_for_random_gene_sel(cursor, table, all_genes, sel_size, nr_sim_steps):
 	base_qry = "select count(distinct icgc_sample_id) from %s " % table
 	base_qry += "where pathogenicity_estimate=1 and reliability_estimate=1 "
@@ -58,11 +58,23 @@ def avg_pll_chunk(tables, other_args, return_dict):
 	db.close()
 	return_dict[get_process_id()]=avg_estimates
 
+	return
+
+
+######################################
+def store_stats_description(cursor, stats_id):
+	fixed_fields  = {'stats_id':stats_id}
+	descr = "Random selection sample coverage: in how many samples will a gene from random selection of genes be mutated, " \
+			"given the selection size? To be compared with non-random, pathway-related selection of genes."
+	update_fields = {'description':descr,
+					'parameters':"tumor_short:string;selection_size:int",
+					'stats':"average:float;stdev:float"}
+	store_or_update(cursor, 'stats_description', fixed_fields, update_fields)
 
 ####################################################
 def main():
 
-	nr_sim_steps = 100
+	nr_sim_steps = 200
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
@@ -77,8 +89,11 @@ def main():
 	tables = get_somatic_variant_tables(cursor)
 	table_sizes = get_table_size(cursor,'icgc',tables, as_list=True)
 
+	# we would like to store this run to our database, not to leave it laying around
+	stats_id = "RSSC"
+	store_stats_description(cursor, stats_id)
+
 	# random sampling
-	outf = open("random_selection_likelihood.tsv","w")
 	for selection_size in range (5,155,5):
 		time0 = time.time()
 		print("avg values over random gene selections of size", selection_size)
@@ -89,11 +104,9 @@ def main():
 		for table, stats in avg_estimates.items():
 			tumor_short = table.split("_")[0]
 			avg, stdev = stats
-			outf.write("%d\t%s\t%.1f\t%.1f\n"%(selection_size, tumor_short,avg, stdev))
-		outf.flush()
-
-	outf.close()
-
+			parameters = "{};{}".format(tumor_short, selection_size)
+			stats_string = "%.1f;%.1f"%(avg, stdev)
+			store_without_checking(cursor, 'stats',{'stats_id':stats_id, 'parameters':parameters, 'stats':stats_string})
 	cursor.close()
 	db.close()
 
