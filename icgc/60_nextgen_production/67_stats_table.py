@@ -25,11 +25,6 @@ from config import Config
 from random import sample
 from math import sqrt
 
-# todo: stats store as  stat name | params (txt, separator ";")| values (txt, separator ";")
-# todo: stats description , params, values
-# todo: bezier for random selections:
-# https://pypi.org/project/bezier/, https://github.com/dhermes/bezier/blob/master/src/bezier/curve.py
-
 def make_tables(cursor, db_name):
 	switch_to_db(cursor, db_name)
 

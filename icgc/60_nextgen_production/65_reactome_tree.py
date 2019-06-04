@@ -24,10 +24,8 @@
 # R-HSA-2408499       | Formation of selenosugars for excretion
 
 from icgc_utils.common_queries import quotify
-from icgc_utils.mysql import  *
+from icgc_utils.reactome import *
 from config import Config
-# https://networkx.github.io/documentation/stable/index.html
-import networkx as nx
 
 def count_successors(graph, pthwy_id):
 	return len(list(graph.successors(pthwy_id)))
@@ -98,7 +96,7 @@ def hist_plot(gene_groups):
 	bins = np.arange(0, 505, 5) # fixed bin size
 	plt.xlim(0,500)
 	plt.hist(data, bins=bins, alpha=0.5)
-	# plt.title('Random Gaussian data (fixed bin size)')
+	# plt.title('')
 	plt.xlabel('number of genes in group (bin size = 5)')
 	plt.ylabel('number of groups')
 	#
@@ -122,20 +120,9 @@ def main():
 	print("number of children with multiple parents:", len(ret))
 
 	# feed the parent/child pairs as edges into graph
-	ret = hard_landing_search(cursor, 'select parent, child from reactome_hierarchy')
-	graph = nx.DiGraph(ret) # directed graph
-	print("graph is directed: ", graph.is_directed())
-	print("number of edges:", len(graph.edges))
-	print("graph is multigraph:", graph.is_multigraph())
-	try:
-		edges = nx.find_cycle(graph)
-	except:
-		print("hooray, no cycles found")
-
-	# graph.in_degree is a list of pairs, rather than a method
-
+	graph = build_reactome_graph(cursor, verbose=True)
 	# candidate roots
-	zero_in_degee_nodes = [name for name, indegree in graph.in_degree if indegree==0]
+	zero_in_degee_nodes = get_roots(graph)
 
 	node_id_string = ",".join([quotify(z) for z in zero_in_degee_nodes])
 	qry_template = "select * from reactome_pathways where reactome_pathway_id in (%s)"

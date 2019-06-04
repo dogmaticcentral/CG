@@ -474,8 +474,6 @@ def genes_per_patient_breakdown(cursor, table):
 	return dict(ret)
 
 
-
-
 #########################################
 def patients_with_muts_in_gene_group(cursor, table, gene_list):
 
@@ -554,6 +552,11 @@ def mutation_count_per_donor(cursor, somatic_table):
 	ret = hard_landing_search(cursor, qry)
 	return dict(ret)
 
+def get_number_of_genes_affected(cursor, table):
+	qry = "select  count(distinct gene_symbol) from mutation2gene where icgc_mutation_id in "
+	qry += "(select distinct icgc_mutation_id from %s " % table
+	qry += "where pathogenicity_estimate=1 and reliability_estimate=1)"
+	return hard_landing_search(cursor,qry)[0][0]
 
 #########################################
 def mutations_in_gene_old(cursor, approved_symbol):
