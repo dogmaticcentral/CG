@@ -612,6 +612,7 @@ def ensembl_gene_id2approved_symbol(cursor, ensembl_gene_id):
 	# if not resolved return the original ensebl_gene_id
 	return symbol if symbol else ensembl_gene_id
 
+
 #########################################
 def attempt_resolve_deprecated(cursor, stable_id_old, verbose=False):
 	qry = "select new_id from icgc.ensembl_deprecated_ids where old_id='%s'" % stable_id_old

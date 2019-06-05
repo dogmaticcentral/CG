@@ -61,6 +61,7 @@ old/
 coapp_tables/
 output/
 tsvs/
+gene_groups/
 .idea
 *function
 annovar/

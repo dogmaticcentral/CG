@@ -26,26 +26,7 @@
 from icgc_utils.common_queries import quotify
 from icgc_utils.reactome import *
 from config import Config
-
-def count_successors(graph, pthwy_id):
-	return len(list(graph.successors(pthwy_id)))
-
-def genes_in_subgraph(cursor, graph, parent_id):
-	genes = []
-	# this is the whole subtree
-	descendants = [pid for pid in nx.dfs_preorder_nodes(graph, parent_id) if count_successors(graph, pid) == 0]
-
-	desc_id_string = ",".join([quotify(d) for d in descendants])
-	qry = "select distinct(ensembl_gene_id) from  ensembl2reactome "
-	qry += "where reactome_pathway_id in (%s)" % desc_id_string
-	ret = error_intolerant_search(cursor,qry)
-	if not ret:
-		print("possible problem in Reactome: no associated genes found for ", desc_id_string)
-		return []
-	return [r[0] for r in ret]
-
-
-##############
+############
 def print_genes(cursor, gene_ids, depth):
 	if len(gene_ids)<1:
 		print("\t"*depth, "no genes listed")
