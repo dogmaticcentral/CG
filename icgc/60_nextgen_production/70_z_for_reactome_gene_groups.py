@@ -71,8 +71,12 @@ def curve_value_at_x (curve, x):
 	intersections = curve.intersect(vertical_line) # why is this plural?  why two parameters?
 	s_vals = np.asfortranarray(intersections[0, :])
 	point = curve.evaluate_multi(s_vals)
-	# point is given as [[x],[y]] these people must imbecils
-	return point[1][0]
+	# point is given as [[x],[y]]
+
+	if point.size==2:
+		return point[1][0]
+	else:
+		return None
 
 
 
@@ -120,7 +124,9 @@ def reactome_groups_in_tumor(cursor, table, number_of_donors, number_of_genes_mu
 			#print("%s  %d  %.2f  skipping" % (pathway, len(group), scaled_donors_affected))
 			continue
 		avg_interpolated   = curve_value_at_x(curve_avg, group_size)
+		if not avg_interpolated: continue # how does that happen?
 		stdev_interpolated = curve_value_at_x(curve_stdev, group_size)
+		if not stdev_interpolated: continue
 		z = 0
 		if stdev_interpolated>0: z = (scaled_donors_affected-avg_interpolated)/stdev_interpolated
 		if abs(z)>3.0:
@@ -155,7 +161,7 @@ def reactome_groups_in_tumor(cursor, table, number_of_donors, number_of_genes_mu
 		plt.scatter(red_points_x, red_points_y, c='red')
 		plt.scatter(green_points_x, green_points_y, c='green')
 		plt.savefig("{}/pathways.png".format(outdir))
-
+		plt.clf()
 		# stdev
 		# plt.ylim(-0.01, 0.15)
 		# plt.scatter(sample_sizes, stdev)
@@ -186,6 +192,11 @@ def find_gene_groups(cursor):
 	return gene_groups
 
 
+# todo: check the length  of cdna's in the group
+# hgnc --> ensembl --> canonical transcript --> length of cdna
+#      hgnc         ensembl_ids       ensembl_coding_seqs
+# should be parameter in likelihood scan, rather than the number of genes
+
 ####################################################
 def main():
 
@@ -200,6 +211,7 @@ def main():
 
 	# for all tables fit the Bezier curve to avg and stdev
 	tables = get_somatic_variant_tables(cursor)
+
 	number_of_donors = {}
 	number_of_genes_mutated = {}
 	for table in tables:
