@@ -79,9 +79,8 @@ def curve_value_at_x (curve, x):
 		return None
 
 
-
 ####################################################
-def reactome_groups_in_tumor(cursor, table, number_of_donors, number_of_genes_mutated,  gene_groups, plot=False):
+def reactome_groups_in_tumor(cursor, table, number_of_donors, number_of_genes_mutated,  gene_groups, cdna_length, plot=False):
 	# CMDI avgs behave in a bizarre way, investigate at some other point
 	if not number_of_donors:
 		print("no samples for %s (?)"% table)
@@ -131,7 +130,7 @@ def reactome_groups_in_tumor(cursor, table, number_of_donors, number_of_genes_mu
 		if stdev_interpolated>0: z = (scaled_donors_affected-avg_interpolated)/stdev_interpolated
 		if abs(z)>3.0:
 			outf.write("\n{}\n".format(pathway))
-			outf.write("\t number of genes:  %3d   \n" % group_size)
+			outf.write("\t number of genes:  %3d   combined cdna length: %d \n" % (group_size, cdna_length[parent]) )
 			outf.write("\t number of donors affected:  %3d \n" % group_mutated)
 			outf.write("\t  expected donors affected:  %6.2f      stdev:  %6.2f    z:  %6.2f \n" %
 					(avg_interpolated*number_of_donors, stdev_interpolated*number_of_donors, z))
@@ -191,11 +190,33 @@ def find_gene_groups(cursor):
 
 	return gene_groups
 
+####################################################
+def gene_group_cdna_length(cursor, gene_groups):
+	cdna_length = {}
+	for parent, group in gene_groups.items():
 
-# todo: check the length  of cdna's in the group
-# hgnc --> ensembl --> canonical transcript --> length of cdna
-#      hgnc         ensembl_ids       ensembl_coding_seqs
-# should be parameter in likelihood scan, rather than the number of genes
+		if len(group)==0:
+			cdna_length[parent]=0
+			continue
+
+		gene_string = ",".join([quotify(g) for g in group])
+		qry  = "select distinct(ensembl_gene_id) from hgnc "
+		qry += "where approved_symbol in (%s)" % gene_string
+		ensembl_gene_ids = [r[0] for r in hard_landing_search(cursor,qry)]
+
+		ensid_string = ",".join([quotify(ensid) for ensid in ensembl_gene_ids])
+		qry  = "select distinct(canonical_transcript) from ensembl_ids "
+		qry += "where gene in (%s)" % ensid_string
+		ensembl_transcript_ids = [r[0] for r in hard_landing_search(cursor,qry)]
+
+		enstr_string = ",".join([quotify(ensid) for ensid in ensembl_transcript_ids])
+		qry  = "select length(sequence) from ensembl_coding_seqs "
+		qry += "where transcript_id in (%s)" % enstr_string
+		total_length = sum([r[0] for r in hard_landing_search(cursor,qry)])
+
+		cdna_length[parent] = total_length
+
+	return cdna_length
 
 ####################################################
 def main():
@@ -208,6 +229,8 @@ def main():
 	switch_to_db(cursor, 'icgc')
 	
 	gene_groups = find_gene_groups(cursor)
+	cdna_length = gene_group_cdna_length(cursor, gene_groups)
+
 
 	# for all tables fit the Bezier curve to avg and stdev
 	tables = get_somatic_variant_tables(cursor)
@@ -223,7 +246,7 @@ def main():
 	for table in tables:
 		reactome_groups_in_tumor(cursor, table,
 								 number_of_donors[table], number_of_genes_mutated[table],
-								 gene_groups, plot=plot)
+								 gene_groups, cdna_length, plot=plot)
 
 	cursor.close()
 	db.close()
