@@ -62,6 +62,7 @@ def avg_expectations(cursor, tumor_short, number_of_donors):
 	nodes = np.asfortranarray([sample_sizes, stdev])
 	curve_stdev = bezier.Curve(nodes, degree=2)
 
+
 	return [sample_sizes, avg, stdev, curve_avg, curve_stdev]
 
 

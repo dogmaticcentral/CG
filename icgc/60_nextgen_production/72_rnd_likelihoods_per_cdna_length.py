@@ -96,7 +96,8 @@ def avg_pll_chunk(tables, other_args):
 def store_stats_description(cursor, stats_id):
 	fixed_fields  = {'stats_id':stats_id}
 	descr = "Random selection sample coverage per cDNA length: in how many samples will a gene from random selection of genes be mutated, " \
-			"given the total cDNA length of the sample? To be compared with non-random, pathway-related selection of genes."
+			"given the total cDNA length of the sample? To be compared with non-random, pathway-related selection of genes. " \
+	        "Bin width: 1000 (nucleotides)."
 	update_fields = {'description':descr,
 					'parameters':"tumor_short:string;bin_start:int;pop_size:int",
 					'stats':"average:float;stdev:float"}
