@@ -663,3 +663,28 @@ def approved_symbol2ensembl_canonical_transcript(cursor, gene_symbol):
 	qry += "where approved_symbol = '%s' " % gene_symbol
 	[ensembl_gene_id] = hard_landing_search(cursor,qry)[0]
 	return gene_stable_id_2_canonical_transcript_id(cursor, ensembl_gene_id)
+
+####################################################
+def nonzerolen(stringlist):
+	return list(filter(lambda x: len(x)>0, stringlist))
+####################################################
+def gene_group_cdna_length(cursor, gene_group):
+
+	if len(gene_group)==0: return 0
+
+	gene_string = ",".join([quotify(g) for g in gene_group])
+	qry  = "select distinct(ensembl_gene_id) from hgnc "
+	qry += "where approved_symbol in (%s)" % gene_string
+	ensembl_gene_ids = nonzerolen([r[0] for r in hard_landing_search(cursor,qry)])
+
+	ensid_string = ",".join([quotify(ensid) for ensid in ensembl_gene_ids])
+	qry  = "select distinct(canonical_transcript) from ensembl_ids "
+	qry += "where gene in (%s)" % ensid_string
+	ensembl_transcript_ids = nonzerolen([r[0] for r in hard_landing_search(cursor,qry)])
+
+	enstr_string = ",".join([quotify(ensid) for ensid in ensembl_transcript_ids])
+	qry  = "select length(sequence) from ensembl_coding_seqs "
+	qry += "where transcript_id in (%s)" % enstr_string
+	length = sum([r[0] for r in hard_landing_search(cursor,qry)])
+
+	return length

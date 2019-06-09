@@ -95,7 +95,7 @@ def weighted_partition(number_of_chunks, input_list,  weights):
 	return partition, partition_weight
 
 ##############
-def weighted_pll(number_of_chunks, embarassingly_pllbl_fn, input_list,  weights, other_args, return_dict):
+def weighted_pll(number_of_chunks, embarassingly_pllbl_fn, input_list,  weights, other_args, return_dict=None):
 	partition, partition_weight = weighted_partition(number_of_chunks, input_list,  weights)
 	# for s, sublist in enumerate(partition):
 	# 	print(" ========= sublist  wt: %10d  (%.2e )=======" % (partition_weight[s],partition_weight[s]) )
@@ -119,7 +119,7 @@ def weighted_pll(number_of_chunks, embarassingly_pllbl_fn, input_list,  weights,
 
 
 ########################################
-def round_robin_pll(number_of_chunks,embarassingly_pllbl_fn, list, other_args):
+def round_robin_pll(number_of_chunks,embarassingly_pllbl_fn, list, other_args,):
 	list_per_process = []
 	for process in range(number_of_chunks):
 		list_per_process.append([])
@@ -144,7 +144,7 @@ def round_robin_pll(number_of_chunks,embarassingly_pllbl_fn, list, other_args):
 
 
 ###########
-def parallelize(number_of_chunks, embarassingly_pllbl_fn, list, other_args, round_robin=False):
+def parallelize(number_of_chunks, embarassingly_pllbl_fn, list, other_args, strategy=None, weights=None):
 
 	if number_of_chunks < 1:
 		print("number of processes is expected to be >= 1")
@@ -157,8 +157,13 @@ def parallelize(number_of_chunks, embarassingly_pllbl_fn, list, other_args, roun
 			ret = embarassingly_pllbl_fn(list, other_args)
 		return ret
 
-	if round_robin:
+	if strategy == 'round_robin':
 		return round_robin_pll(number_of_chunks,embarassingly_pllbl_fn, list, other_args)
+	elif strategy == 'weighted':
+		if not weights:
+			print("need wights for the weighted pll")
+			exit()
+		return weighted_pll(number_of_chunks, embarassingly_pllbl_fn, list,  weights, other_args)
 	else:
 		return linear_pll(number_of_chunks,embarassingly_pllbl_fn, list, other_args)
 
@@ -172,17 +177,15 @@ def pll_w_return(number_of_chunks, embarassingly_pllbl_fn, input_list, other_arg
 	if number_of_chunks == 1:
 		return_dict = {}
 		embarassingly_pllbl_fn(input_list, other_args, return_dict)
-		return return_dict
 
-	manager = multiprocessing.Manager()
-	return_dict = manager.dict()
-
-	if not weights:
-		processes = linear_pll(number_of_chunks, embarassingly_pllbl_fn, input_list, other_args, return_dict)
 	else:
-		processes = weighted_pll(number_of_chunks, embarassingly_pllbl_fn, input_list,  weights, other_args, return_dict)
-
-	wait_join(processes)
+		manager = multiprocessing.Manager()
+		return_dict = manager.dict()
+		if not weights:
+			processes = linear_pll(number_of_chunks, embarassingly_pllbl_fn, input_list, other_args, return_dict)
+		else:
+			processes = weighted_pll(number_of_chunks, embarassingly_pllbl_fn, input_list,  weights, other_args, return_dict)
+		wait_join(processes)
 
 	if dehash:
 		# return dict is dict with process ids as keys

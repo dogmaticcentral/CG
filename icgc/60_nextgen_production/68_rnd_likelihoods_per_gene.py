@@ -64,8 +64,9 @@ def avg_pll_chunk(tables, other_args, return_dict):
 ######################################
 def store_stats_description(cursor, stats_id):
 	fixed_fields  = {'stats_id':stats_id}
-	descr = "Random selection sample coverage: in how many samples will a gene from random selection of genes be mutated, " \
-			"given the selection size? To be compared with non-random, pathway-related selection of genes."
+	descr = "Random selection sample coverage per gene: in how many samples will a gene from random selection " \
+			"of genes be mutated, given the selection size? " \
+			"To be compared with non-random, pathway-related selection of genes. "
 	update_fields = {'description':descr,
 					'parameters':"tumor_short:string;selection_size:int",
 					'stats':"average:float;stdev:float"}
@@ -90,11 +91,11 @@ def main():
 	table_sizes = get_table_size(cursor,'icgc',tables, as_list=True)
 
 	# we would like to store this run to our database, not to leave it laying around
-	stats_id = "RSSC"
+	stats_id = "RSSCgene"
 	store_stats_description(cursor, stats_id)
 
 	# random sampling
-	for selection_size in range (5,155,5):
+	for selection_size in range(5,155,5):
 		time0 = time.time()
 		print("avg values over random gene selections of size", selection_size)
 		number_of_chunks = 10

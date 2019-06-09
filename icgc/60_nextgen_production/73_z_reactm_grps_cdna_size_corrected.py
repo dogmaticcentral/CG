@@ -45,24 +45,27 @@ def atomic_groups(cursor, graph, root, groups):
 
 ####################################################
 def avg_expectations(cursor, tumor_short, number_of_donors):
-	avg   = []
-	stdev = []
-	sample_sizes= []
-	qry = "select parameters, stats from stats where stats_id='RSSC' and parameters like '%s%%'" % tumor_short
+	avg   = [0]
+	stdev = [0]
+	bin_centerpoints= [0]
+
+	qry = "select parameters, stats from stats where stats_id='RSSCcdna' and parameters like '%s%%'" % tumor_short
 	for params, stats in hard_landing_search(cursor,qry):
-		cancer, sample_size = params.split(";")
+		cancer, bin_centerpoint = params.split(";")
+		bin_centerpoint = float(bin_centerpoint)+ 500
 		a, s = stats.split(";")
-		sample_sizes.append(float(sample_size))
+		bin_centerpoints.append(bin_centerpoint)
 		avg.append(float(a)/number_of_donors)
 		stdev.append(float(s)/number_of_donors)
 
-	# fit Bezier curve - it survives all kinds of numerical idiocy
-	nodes = np.asfortranarray([sample_sizes, avg])
+	# Bezier curve survives all kinds of numerical idiocy - and does not take initial guess
+	# however, it chokes on too many points to fit
+	nodes = np.asfortranarray([bin_centerpoints, avg])
 	curve_avg = bezier.Curve(nodes, degree=2)
-	nodes = np.asfortranarray([sample_sizes, stdev])
+	nodes = np.asfortranarray([bin_centerpoints, stdev])
 	curve_stdev = bezier.Curve(nodes, degree=2)
 
-	return [sample_sizes, avg, stdev, curve_avg, curve_stdev]
+	return [bin_centerpoints, avg, stdev, curve_avg, curve_stdev]
 
 
 ####################################################
@@ -81,7 +84,7 @@ def curve_value_at_x (curve, x):
 
 ####################################################
 def reactome_groups_in_tumor(cursor, table, number_of_donors, number_of_genes_mutated,  gene_groups, cdna_length, plot=False):
-	# CMDI avgs behave in a bizarre way, investigate at some other point
+
 	if not number_of_donors:
 		print("no samples for %s (?)"% table)
 		return
@@ -96,7 +99,7 @@ def reactome_groups_in_tumor(cursor, table, number_of_donors, number_of_genes_mu
 	outf.write("{}     number of donors: {}    number of genes mutated: {}  \n".
 			format(tumor_short, number_of_donors, number_of_genes_mutated))
 
-	[sample_sizes, avg, stdev, curve_avg, curve_stdev] = avg_expectations(cursor, tumor_short, number_of_donors)
+	[bin_centerpoints, avg, stdev, curve_avg, curve_stdev] = avg_expectations(cursor, tumor_short, number_of_donors)
 
 	# for all reactome groups, check the coverage in all tables and show the z-score
 	red_points_x = []
@@ -107,6 +110,8 @@ def reactome_groups_in_tumor(cursor, table, number_of_donors, number_of_genes_mu
 	for parent, group in gene_groups.items():
 		group_size = len(group)
 		if group_size==0: continue
+		if cdna_length[parent]>=bin_centerpoints[-1]: continue
+
 		pathway = get_pathway_name(cursor, parent)
 		gene_string = ",".join([quotify(g) for g in group])
 		qry  = "select count(distinct icgc_sample_id) from %s " % table
@@ -114,17 +119,10 @@ def reactome_groups_in_tumor(cursor, table, number_of_donors, number_of_genes_mu
 		qry += "and gene_symbol in (%s)" % gene_string
 		group_mutated = error_intolerant_search(cursor, qry)[0][0]
 		scaled_donors_affected = float(group_mutated)/number_of_donors
-		# Note that curve.evaluate() takes 1D parameter along the curve as the input
-		# avg_interpolated   = curve_avg.evaluate(float(group_size))
-		# It looks like no other method for evaluating is provided
-		# but to use the intersection with the perp line
-		# https://bezier.readthedocs.io/en/0.9.0/algorithms/curve-curve-intersection.html
-		if group_size<10 or group_size>150:
-			#print("%s  %d  %.2f  skipping" % (pathway, len(group), scaled_donors_affected))
-			continue
-		avg_interpolated   = curve_value_at_x(curve_avg, group_size)
+
+		avg_interpolated   = curve_value_at_x(curve_avg, cdna_length[parent])
 		if not avg_interpolated: continue # how does that happen?
-		stdev_interpolated = curve_value_at_x(curve_stdev, group_size)
+		stdev_interpolated = curve_value_at_x(curve_stdev, cdna_length[parent])
 		if not stdev_interpolated: continue
 		z = 0
 		if stdev_interpolated>0: z = (scaled_donors_affected-avg_interpolated)/stdev_interpolated
@@ -147,7 +145,7 @@ def reactome_groups_in_tumor(cursor, table, number_of_donors, number_of_genes_mu
 	if plot:
 		# avg
 		# plt.ylim(-0.01, 1.0)
-		plt.scatter(sample_sizes, avg)
+		plt.scatter(bin_centerpoints, avg)
 		plt.title("{}, {}, {} - avg".format(tumor_short, number_of_donors, number_of_genes_mutated))
 		plt.ylabel('fraction of donors with mutation in sample')
 		plt.xlabel('sample size')
@@ -205,6 +203,48 @@ def gene_groups_cdna_length(cursor, gene_groups):
 
 	return cdna_length
 
+
+####################################################
+from lmfit import Minimizer, Parameters, report_fit
+
+
+def plot_sim_results(cursor, tumor_short):
+	avg   = [0]
+	stdev = [0]
+	bin_centerpoints= [0]
+
+	qry = "select parameters, stats from stats where stats_id='RSSCcdna' and parameters like '%s%%' order by id" % tumor_short
+	for params, stats in hard_landing_search(cursor,qry):
+		cancer, bin_centerpoint = params.split(";")
+		bin_centerpoint = float(bin_centerpoint) + 500
+		a, s = stats.split(";")
+		bin_centerpoints.append(bin_centerpoint)
+		avg.append(float(a))
+		stdev.append(float(s))
+
+	for i in range(30):
+		print(i, bin_centerpoints[i], avg[i])
+
+	# decimation - Bezier chokes on too many points
+	x = [0]
+	y = [0]
+	for i in range(0, len(bin_centerpoints), 10):
+		n = len(bin_centerpoints[i:i+10])
+		x.append(sum(bin_centerpoints[i:i+10])/n)
+		y.append(sum(avg[i:i+10])/n)
+
+	nodes = np.asfortranarray([x,y])
+	curve_avg = bezier.Curve(nodes, degree=2)
+
+	plt.scatter(bin_centerpoints, avg)
+	plt.title("{}  - avg".format(tumor_short))
+	plt.ylabel('fraction of donors with mutation in sample')
+	plt.xlabel('cdna length')
+	ax = plt.gca()
+	curve_avg.plot(num_pts=256, ax=ax, color = 'red')
+
+	plt.show()
+
 ####################################################
 def main():
 
@@ -214,14 +254,21 @@ def main():
 	cursor = db.cursor()
 
 	switch_to_db(cursor, 'icgc')
-	
+
+
+	tables = get_somatic_variant_tables(cursor)
+	for table in tables:
+		tumor_short = table.split("_")[0]
+		if tumor_short in ['MELA', 'ESAD']: continue
+		plot_sim_results(cursor, tumor_short)
+	exit()
+
+
 	gene_groups = find_gene_groups(cursor)
 	# note the plural: groupS
 	cdna_length = gene_groups_cdna_length(cursor, gene_groups)
 
 	# for all tables fit the Bezier curve to avg and stdev
-	tables = get_somatic_variant_tables(cursor)
-
 	number_of_donors = {}
 	number_of_genes_mutated = {}
 	for table in tables:
