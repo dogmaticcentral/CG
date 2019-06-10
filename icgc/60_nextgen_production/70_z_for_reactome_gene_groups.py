@@ -48,7 +48,7 @@ def avg_expectations(cursor, tumor_short, number_of_donors):
 	avg   = []
 	stdev = []
 	sample_sizes= []
-	qry = "select parameters, stats from stats where stats_id='RSSC' and parameters like '%s%%'" % tumor_short
+	qry = "select parameters, stats from stats where stats_id='RSSCgene' and parameters like '%s%%'" % tumor_short
 	for params, stats in hard_landing_search(cursor,qry):
 		cancer, sample_size = params.split(";")
 		a, s = stats.split(";")
@@ -69,7 +69,7 @@ def avg_expectations(cursor, tumor_short, number_of_donors):
 ####################################################
 def curve_value_at_x (curve, x):
 	vertical_line = bezier.Curve(np.asfortranarray([[float(x), float(x)],[0.0, 0.75]]), degree=1)
-	intersections = curve.intersect(vertical_line) # why is this plural?  why two parameters?
+	intersections = curve.intersect(vertical_line) # intersecting curves might have multiple intersection points
 	s_vals = np.asfortranarray(intersections[0, :])
 	point = curve.evaluate_multi(s_vals)
 	# point is given as [[x],[y]]
