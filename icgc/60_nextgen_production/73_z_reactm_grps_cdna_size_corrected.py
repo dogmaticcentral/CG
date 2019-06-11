@@ -25,26 +25,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import bezier
 
-####################################################
-def atomic_groups(cursor, graph, root, groups):
-	children = [node for node in graph.successors(root)]
-	if len(children)==0: return False
-	for child in children:
-		# all genes that this sub-graph encompasses
-		genes = list(filter(lambda g: g!='TP53', genes_in_subgraph(cursor, graph, child)))
-		# if they are fewer than 100, we call that an atomic group
-		if len(genes)<100:
-			groups[child] = genes
-			continue
-		# otherwise we keep subdividing
-		if not atomic_groups(cursor, graph, child, groups): # no further subdivisions
-			groups[child] = genes
-			continue
-
-	return groups
-
-
-####################################################
+###################################################
 def binvals_fit(bin_centerpoints, bin_vals):
 	# decimation - Bezier chokes on too many points
 	superbin_size = int(len(bin_centerpoints)/20)
@@ -236,21 +217,6 @@ def reactome_groups_in_tumor(cursor, table, number_of_donors, number_of_genes_mu
 
 
 ####################################################
-def find_gene_groups(cursor):
-	# feed the parent/child pairs as edges into graph
-	graph = build_reactome_graph(cursor, verbose=True)
-	# candidate roots
-	zero_in_degee_nodes = get_roots(graph)
-	root_name = get_pathway_names(cursor, zero_in_degee_nodes)
-
-	gene_groups = {}
-	for root in zero_in_degee_nodes:
-		if 'disease' in root_name[root].lower(): continue
-		atomic_groups(cursor, graph, root, gene_groups)
-
-	return gene_groups
-
-####################################################
 def gene_groups_cdna_length(cursor, gene_groups):
 	cdna_length = {}
 	for parent, group in gene_groups.items():
@@ -286,7 +252,7 @@ def plot_binvals(bin_centerpoints, bin_vals, tumor_short, label, vert_line_at_x 
 
 	plt.show()
 
-
+##########
 def plot_sim_results(cursor, stats_id, tumor_short):
 	avg   = [0]
 	stdev = [0]
@@ -301,8 +267,6 @@ def plot_sim_results(cursor, stats_id, tumor_short):
 		bin_centerpoints.append(bin_centerpoint)
 		avg.append(float(a))
 		stdev.append(float(s))
-
-
 
 	plot_binvals(bin_centerpoints, avg, tumor_short, "average")
 	plot_binvals(bin_centerpoints, stdev, tumor_short, "stdev")

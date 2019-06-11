@@ -19,7 +19,8 @@
 #
 
 from icgc_utils.tcga import *
-#
+
+
 #########################################
 
 def check_gene_hgnc(cursor, gene):

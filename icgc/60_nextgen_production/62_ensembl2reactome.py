@@ -57,10 +57,8 @@
 import time
 
 from icgc_utils.common_queries import *
-from icgc_utils.processes import *
 from config import Config
-from random import sample
-from math import sqrt
+
 
 def make_tables(cursor, db_name):
 	switch_to_db(cursor, db_name)

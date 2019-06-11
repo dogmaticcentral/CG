@@ -93,3 +93,37 @@ def get_pathway_names(cursor, list_of_node_ids):
 	if not ret: return {}
 	return dict(ret)
 
+
+####################################################
+def atomic_groups(cursor, graph, root, groups):
+	children = [node for node in graph.successors(root)]
+	if len(children)==0: return False
+	for child in children:
+		# all genes that this sub-graph encompasses
+		genes = list(filter(lambda g: g!='TP53', genes_in_subgraph(cursor, graph, child)))
+		# if they are fewer than 100, we call that an atomic group
+		if len(genes)<100:
+			groups[child] = genes
+			continue
+		# otherwise we keep subdividing
+		if not atomic_groups(cursor, graph, child, groups): # no further subdivisions
+			groups[child] = genes
+			continue
+
+	return groups
+
+
+####################################################
+def find_gene_groups(cursor):
+	# feed the parent/child pairs as edges into graph
+	graph = build_reactome_graph(cursor, verbose=True)
+	# candidate roots
+	zero_in_degee_nodes = get_roots(graph)
+	root_name = get_pathway_names(cursor, zero_in_degee_nodes)
+
+	gene_groups = {}
+	for root in zero_in_degee_nodes:
+		if 'disease' in root_name[root].lower(): continue
+		atomic_groups(cursor, graph, root, gene_groups)
+
+	return gene_groups
