@@ -34,7 +34,7 @@ def parse(infile):
 			name = entry[0]
 			[number_of_genes, cdna_length] = map(int, re.findall(r'\d+', entry[1]))
 			[donors_affected] = map(int, re.findall(r'\d+', entry[2]))
-			[expected_donors, stdev, zscore] =  map(float, re.findall(r'\d+\.\d+', line))
+			[expected_donors, stdev, zscore] =  map(float, re.findall(r'-*\d+\.\d+', line))
 			gene_groups.append([name, number_of_genes, cdna_length, donors_affected, expected_donors, stdev, zscore])
 		elif len(line)==0:
 			entry = []
@@ -47,25 +47,28 @@ def parse(infile):
 ####################################################
 def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group):
 	[name, number_of_genes, cdna_length, donors_affected, expected_donors, stdev, zscore] = group
-	if zscore<5: return
+	if abs(zscore)<5: return None
 	reactome_id = name2reactome_id[name]
-	print(name, zscore)
-	print("\t number of genes:  %3d   combined cdna length: %d " % (number_of_genes, cdna_length) )
-	print("\t number of donors affected:  %3d " %  donors_affected)
-	print("\t expected donors affected:  %6.2f      stdev:  %6.2f    z:  %6.2f " % (expected_donors, stdev, zscore))
+	retlines = []
+	retlines.append("{}  {}".format(name, zscore))
+	retlines.append("\t number of genes:  %3d   combined cdna length: %d " % (number_of_genes, cdna_length) )
+	retlines.append("\t number of donors affected:  %3d " %  donors_affected)
+	retlines.append("\t expected donors affected:  %6.2f      stdev:  %6.2f    z:  %6.2f " % (expected_donors, stdev, zscore))
 	if donors_affected==0: return
 
-	print("all genes", len(reactome_gene_groups[reactome_id]))
-	print(sorted(reactome_gene_groups[reactome_id]))
+	retlines.append("all genes in the Reactome group %d " % len(reactome_gene_groups[reactome_id]))
+	retlines.append(str(sorted(reactome_gene_groups[reactome_id])))
 	gene_string = ",".join([quotify(g) for g in reactome_gene_groups[reactome_id]])
-	qry  = "select distinct(gene_symbol) from %s " % table
+	qry  = "select  gene_symbol, count(distinct(icgc_donor_id)) from %s " % table
 	qry += "where pathogenicity_estimate=1 and reliability_estimate=1 "
-	qry += "and gene_symbol in (%s)" % gene_string
-	genes_mutated = [r[0] for r in error_intolerant_search(cursor, qry)]
-	print("actually affected", len(genes_mutated))
-	print(sorted(genes_mutated))
-
-	print()
+	qry += "and gene_symbol in (%s) group by gene_symbol" % gene_string
+	# Under Python 3.6, the built-in dict does track insertion order,
+	# although this behavior is a side-effect of an implementation change and should not be relied on.
+	genes_mutated = dict(sorted(error_intolerant_search(cursor, qry), key= lambda r: r[1], reverse=True))
+	retlines.append("actually affected %d " % len(genes_mutated))
+	retlines.append(str(genes_mutated))
+	retlines.append("")
+	return retlines
 
 ####################################################
 def main():
@@ -80,16 +83,19 @@ def main():
 
 	indir = "gene_groups"
 	for tumor_short in sorted(os.listdir(indir)):
-		table = tumor_short+"_simple_somatic"
-		print("\n=============================")
 		print(tumor_short)
-		if tumor_short in cancer_dict: print(cancer_dict[tumor_short]["description"])
-		print("total donors:", len(get_donors(cursor, table)))
-		print()
+		outf = open("{}/{}/drilldown.txt".format(indir, tumor_short), "w")
+		table = tumor_short+"_simple_somatic"
+		outf.write("\n=============================\n")
+		outf.write(tumor_short+"\n")
+		if tumor_short in cancer_dict: outf.write(cancer_dict[tumor_short]["description"]+"\n")
+		outf.write("total donors: {}\n".format(len(get_donors(cursor, table))))
+		outf.write("\n")
 		gene_groups = parse("{}/{}/{}".format(indir, tumor_short, 'pathways.txt'))
 		for group in gene_groups:
-			elaborate(cursor, table, reactome_gene_groups, name2reactome_id,  group)
-
+			retlines = elaborate(cursor, table, reactome_gene_groups, name2reactome_id,  group)
+			if retlines: outf.write("\n".join(retlines)+"\n")
+		outf.close()
 	cursor.close()
 	db.close()
 
