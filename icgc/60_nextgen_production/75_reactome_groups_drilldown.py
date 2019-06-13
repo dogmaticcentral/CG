@@ -70,12 +70,63 @@ def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group):
 	retlines.append("")
 	return retlines
 
+###################
+from Bio.Seq import Seq
+from Bio.Alphabet import generic_dna
+
+def count_silent(codon):
+	orig_translation = Seq(codon, generic_dna).translate()
+	orig_codon = list(codon)
+	silent = 0
+	nonsilent = 0
+	for i in range(len(orig_codon)):
+		for substitution in ['A', 'C', 'T', 'G']:
+			if substitution == orig_codon[i]: continue
+			mutated_codon = orig_codon.copy()
+			mutated_codon[i] = substitution
+			translation = Seq(''.join(mutated_codon), generic_dna).translate()
+			if translation==orig_translation:
+				silent+=1
+			else:
+				nonsilent += 1
+	return silent, nonsilent
+
+####################################################
+def silent_nonsilent_theoretical(cursor, gene_symbol):
+	ratio = 1
+	gene_symbol = gene_symbol.upper()
+	qry = "select s.sequence from ensembl_coding_seqs s, ensembl_ids i, hgnc h "
+	qry += "where s.transcript_id=i.transcript and i.gene=h.ensembl_gene_id and h.approved_symbol='%s' " % gene_symbol
+	ret = error_intolerant_search(cursor,qry)
+	if not ret: return -1
+	sequence = ret[0][0]
+	print(len(sequence)/3)
+	read_in_last_codon = False
+	silent = 0
+	nonsilent = 0
+	for codon in [sequence[i:i+3] for i in range(0, len(sequence),3)]:
+		if read_in_last_codon:
+			print("{} the sequence  has a nonsense stop codon".format(gene_symbol))
+			exit()
+		bp_codon = Seq(codon, generic_dna)
+		translation = bp_codon.translate()
+		read_in_last_codon = translation=="*"
+		[codon_silent, codon_nonsilent] = count_silent(codon)
+		print(codon, translation, codon_silent, codon_nonsilent)
+		silent += codon_silent
+		nonsilent += codon_nonsilent
+	return silent, nonsilent
+
 ####################################################
 def main():
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor, 'icgc')
+
+	silent, nonsilent = silent_nonsilent_theoretical(cursor, '')
+	print(" %d   %d  %.3f   %.3f"%(silent, nonsilent, silent/nonsilent, silent/(silent+nonsilent)))
+	exit()
 
 	cancer_dict = cancer_dictionary()
 	reactome_gene_groups = find_gene_groups(cursor)
