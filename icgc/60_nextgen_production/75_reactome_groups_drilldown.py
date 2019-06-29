@@ -22,7 +22,10 @@ from config import Config
 from icgc_utils.reactome import *
 from icgc_utils.common_queries import *
 from icgc_utils.utils import cancer_dictionary
+from time import time
 import re
+
+
 ####################################################
 def parse(infile):
 	gene_groups = []
@@ -44,8 +47,30 @@ def parse(infile):
 	gene_groups.sort(key=lambda x:x[-1], reverse=True)
 	return gene_groups
 
+
+#########################################
+def silent_nonsilent_retrieve(cursor, gene):
+	transcript_id = approved_symbol2ensembl_canonical_transcript(cursor, gene)
+	if not transcript_id: return -5, -5
+	qry = "select silent, nonsilent from ensembl_coding_seqs where transcript_id='%s' " % transcript_id
+	ret = error_intolerant_search(cursor, qry)
+	if ret:
+		return ret[0]
+	else:
+		return -6, -6
+
+#
+#########################################
+# profile decorator is for the use with kernprof (a line profiler):
+#  ./icgc_utils/kernprof.py -l 75_....py
+# followed by
+# python3 -m line_profiler 75_....py.lprof
+# see here https://github.com/rkern/line_profiler#line-profiler
+# the reason I am using local kernprof.py is that I don't know where pip
+# installed its version (if anywhere)
+#@profile
 ####################################################
-def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group):
+def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group, mut_type_characterization):
 	[name, number_of_genes, cdna_length, donors_affected, expected_donors, stdev, zscore] = group
 	if abs(zscore)<5: return None
 	reactome_id = name2reactome_id[name]
@@ -59,7 +84,7 @@ def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group):
 	retlines.append("all genes in the Reactome group %d " % len(reactome_gene_groups[reactome_id]))
 	retlines.append(str(sorted(reactome_gene_groups[reactome_id])))
 	gene_string = ",".join([quotify(g) for g in reactome_gene_groups[reactome_id]])
-	qry  = "select  gene_symbol, count(distinct(icgc_donor_id)) from %s " % table
+	qry  = "select  gene_symbol,  count(distinct(icgc_donor_id)) from %s " % table
 	qry += "where pathogenicity_estimate=1 and reliability_estimate=1 "
 	qry += "and gene_symbol in (%s) group by gene_symbol" % gene_string
 	# Under Python 3.6, the built-in dict does track insertion order,
@@ -67,44 +92,36 @@ def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group):
 	genes_mutated = dict(sorted(error_intolerant_search(cursor, qry), key= lambda r: r[1], reverse=True))
 	retlines.append("actually affected %d " % len(genes_mutated))
 	retlines.append(str(genes_mutated))
+	for gene in genes_mutated.keys():
+		if gene in mut_type_characterization:
+			retlines.extend(mut_type_characterization[gene])
+			continue
+		temp_storage = []
+		silent, nonsilent =  silent_nonsilent_retrieve(cursor, gene)
+		temp_storage.append("\t %s all possible:  silent %d    nonsilent %d    silent/nonsilent %.3f    silent/(silent+nonsilent) %.3f " %
+						(gene, silent, nonsilent, silent/nonsilent, silent/(silent+nonsilent) ))
+		chromosome = find_chromosome(cursor, gene)
+		qry  = "select m.mutation_type, count(*) c from  %s a, mutations_chrom_%s m where a.gene_symbol = '%s' " % (table, chromosome, gene)
+		qry += "and a.icgc_mutation_id=m.icgc_mutation_id   group by m.mutation_type"
+		ret = error_intolerant_search(cursor, qry)
+		if not ret or len(ret)==0: continue
+		type_count = dict(ret)
+		for muttype, ct in type_count.items():
+			temp_storage.append("\t\t {}: {}".format(muttype, ct))
+			if muttype != 'single': continue
+			qry = "select m.consequence, count(*) c from  %s a, mutations_chrom_%s m where a.gene_symbol = '%s' " % (table, chromosome, gene)
+			qry += "and a.icgc_mutation_id=m.icgc_mutation_id  and m.mutation_type='single'  group by m.consequence"
+			ret = error_intolerant_search(cursor, qry)
+			if not ret or len(ret)==0: continue
+			cons_ct = dict(ret)
+			for cons, ct in cons_ct.items():
+				temp_storage.append("\t\t\t\t {}: {}".format(cons, ct))
+		if len(temp_storage)>0:
+			mut_type_characterization[gene] = temp_storage
+			retlines.extend(mut_type_characterization[gene])
 	retlines.append("")
 	return retlines
 
-###################
-from Bio.Seq import Seq
-from Bio.Alphabet import generic_dna
-
-
-
-####################################################
-def silent_nonsilent_count(cursor, gene_symbol):
-	gene_symbol = gene_symbol.upper()
-	qry = "select s.sequence from ensembl_coding_seqs s, ensembl_ids i, hgnc h "
-	qry += "where s.transcript_id=i.transcript and i.gene=h.ensembl_gene_id and h.approved_symbol='%s' " % gene_symbol
-	ret = error_intolerant_search(cursor,qry)
-	if not ret: return -1
-	cdna = ret[0][0]
-
-	mutated_codons = []
-	codons = []
-	for i in range(0,len(cdna),3):
-		codon = cdna[i:i+3]
-		codons.append(codon)
-		for pos in range(3):
-			for subs in ['A','C','T','G']:
-				if subs == codon[pos]: continue
-				mutated_codon = ''.join([subs if j==pos else codon[j] for j in range(3)])
-				mutated_codons.append(mutated_codon)
-	codonstring = ''.join(mutated_codons)
-	mutation_seq = str(Seq(codonstring, generic_dna).translate())
-
-	aa_seq = str(Seq(cdna, generic_dna).translate())
-	silent = 0
-	for i in range(len(mutated_codons)):
-		#print(codons[int(i/9)], aa_seq[int(i/9)], mutated_codons[i], mutation_seq[i])
-		if aa_seq[int(i/9)]==mutation_seq[i]: silent+=1
-
-	return silent, len(mutated_codons)-silent
 
 ####################################################
 def main():
@@ -113,17 +130,16 @@ def main():
 	cursor = db.cursor()
 	switch_to_db(cursor, 'icgc')
 
-	silent, nonsilent = silent_nonsilent_theoretical(cursor, 'tp53')
-	#print(" %d   %d  %.3f   %.3f"%(silent, nonsilent, silent/nonsilent, silent/(silent+nonsilent)))
-	exit()
 
 	cancer_dict = cancer_dictionary()
 	reactome_gene_groups = find_gene_groups(cursor)
 	name2reactome_id = dict(hard_landing_search(cursor, "select name, reactome_pathway_id from reactome_pathways"))
 
 	indir = "gene_groups"
-	for tumor_short in sorted(os.listdir(indir)):
+	for tumor_short in sorted(os.listdir(indir))[3:]:
+	#for tumor_short in ['AML']:
 		print(tumor_short)
+		time0 = time()
 		outf = open("{}/{}/drilldown.txt".format(indir, tumor_short), "w")
 		table = tumor_short+"_simple_somatic"
 		outf.write("\n=============================\n")
@@ -132,10 +148,12 @@ def main():
 		outf.write("total donors: {}\n".format(len(get_donors(cursor, table))))
 		outf.write("\n")
 		gene_groups = parse("{}/{}/{}".format(indir, tumor_short, 'pathways.txt'))
+		mut_type_characterization = {} # store results for individual genes
 		for group in gene_groups:
-			retlines = elaborate(cursor, table, reactome_gene_groups, name2reactome_id,  group)
+			retlines = elaborate(cursor, table, reactome_gene_groups, name2reactome_id,  group, mut_type_characterization)
 			if retlines: outf.write("\n".join(retlines)+"\n")
 		outf.close()
+		print("\t done in  %.2f mins" % (float(time()-time0)/60))
 	cursor.close()
 	db.close()
 
