@@ -25,6 +25,10 @@ from icgc_utils.utils import cancer_dictionary
 from time import time
 import re
 
+# use R functions - rpy2
+from rpy2.robjects.packages import importr
+# in particular, p-value under hypergeometric distribution
+phyper = importr('stats').phyper
 
 ####################################################
 def parse(infile):
@@ -81,8 +85,8 @@ def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group, mut
 	retlines.append("\t expected donors affected:  %6.2f      stdev:  %6.2f    z:  %6.2f " % (expected_donors, stdev, zscore))
 	if donors_affected==0: return
 
-	retlines.append("all genes in the Reactome group %d " % len(reactome_gene_groups[reactome_id]))
-	retlines.append(str(sorted(reactome_gene_groups[reactome_id])))
+	retlines.append("\tall genes in the Reactome group %d " % len(reactome_gene_groups[reactome_id]))
+	retlines.append("\t"+str(sorted(reactome_gene_groups[reactome_id])))
 	gene_string = ",".join([quotify(g) for g in reactome_gene_groups[reactome_id]])
 	qry  = "select  gene_symbol,  count(distinct(icgc_donor_id)) from %s " % table
 	qry += "where pathogenicity_estimate=1 and reliability_estimate=1 "
@@ -90,32 +94,52 @@ def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group, mut
 	# Under Python 3.6, the built-in dict does track insertion order,
 	# although this behavior is a side-effect of an implementation change and should not be relied on.
 	genes_mutated = dict(sorted(error_intolerant_search(cursor, qry), key= lambda r: r[1], reverse=True))
-	retlines.append("actually affected %d " % len(genes_mutated))
-	retlines.append(str(genes_mutated))
+	retlines.append("\tactually affected %d " % len(genes_mutated))
+	retlines.append("\tdonors per affected gene: "+str(genes_mutated))
 	for gene in genes_mutated.keys():
 		if gene in mut_type_characterization:
 			retlines.extend(mut_type_characterization[gene])
 			continue
 		temp_storage = []
-		silent, nonsilent =  silent_nonsilent_retrieve(cursor, gene)
+		silent_possible, nonsilent_possible =  silent_nonsilent_retrieve(cursor, gene)
 		temp_storage.append("\t %s all possible:  silent %d    nonsilent %d    silent/nonsilent %.3f    silent/(silent+nonsilent) %.3f " %
-						(gene, silent, nonsilent, silent/nonsilent, silent/(silent+nonsilent) ))
+						(gene, silent_possible, nonsilent_possible, silent_possible/nonsilent_possible,
+						 silent_possible/(silent_possible+nonsilent_possible) ))
+		expected_silent_to_nonsilent = silent_possible/nonsilent_possible
 		chromosome = find_chromosome(cursor, gene)
-		qry  = "select m.mutation_type, count(*) c from  %s a, mutations_chrom_%s m where a.gene_symbol = '%s' " % (table, chromosome, gene)
-		qry += "and a.icgc_mutation_id=m.icgc_mutation_id   group by m.mutation_type"
+		qry  = "select m.mutation_type, count(*) c from  %s s, mutations_chrom_%s m where s.gene_symbol = '%s' " % (table, chromosome, gene)
+		qry += "and s.icgc_mutation_id=m.icgc_mutation_id  "
+		qry += "and s.pathogenicity_estimate=1 and s.reliability_estimate=1  "
+		qry += "group by m.mutation_type"
 		ret = error_intolerant_search(cursor, qry)
 		if not ret or len(ret)==0: continue
 		type_count = dict(ret)
 		for muttype, ct in type_count.items():
 			temp_storage.append("\t\t {}: {}".format(muttype, ct))
 			if muttype != 'single': continue
-			qry = "select m.consequence, count(*) c from  %s a, mutations_chrom_%s m where a.gene_symbol = '%s' " % (table, chromosome, gene)
-			qry += "and a.icgc_mutation_id=m.icgc_mutation_id  and m.mutation_type='single'  group by m.consequence"
+			qry = "select m.consequence, count(*) c from  %s s, mutations_chrom_%s m where s.gene_symbol = '%s' " % (table, chromosome, gene)
+			qry += "and s.icgc_mutation_id=m.icgc_mutation_id  and m.mutation_type='single'  "
+			# we want silent mutations here, that are already marked with pathg 0 (thus drop pathg=1 filter)
+			qry += "and s.reliability_estimate=1  "
+			qry += "group by m.consequence"
 			ret = error_intolerant_search(cursor, qry)
 			if not ret or len(ret)==0: continue
-			cons_ct = dict(ret)
-			for cons, ct in cons_ct.items():
-				temp_storage.append("\t\t\t\t {}: {}".format(cons, ct))
+			conseq_ct = dict(ret)
+			nonsilent = conseq_ct.get('missense',0) + conseq_ct.get('stop_gained',0) + conseq_ct.get('stop_lost',0)
+			silent = conseq_ct.get('synonymous',0)
+			if silent+nonsilent==0: continue
+			for conseq, ct in conseq_ct.items():
+				temp_storage.append("\t\t\t\t {}: {}".format(conseq, ct))
+			silent_to_nonsilent  = float(silent)/nonsilent if nonsilent>0 else 1.0
+			# pvalue under hypergeometric distribution (R)
+			# https://stackoverflow.com/questions/8382806/hypergeometric-test-phyper
+			# phyper(success in sample, success in population, failure in population, sample size)
+			# that is
+			# phyper(silent, silent_possible, nonsilent_possible, silent+nonsilent)
+			phyper_ret = phyper(silent, silent_possible, nonsilent_possible, silent+nonsilent)
+			pval = phyper_ret[0] if phyper_ret else 1.0
+			temp_storage.append("\t\t silent/nonsilent = %.3f    expected = %.3f    pval = %.0e" %
+			                    (silent_to_nonsilent, expected_silent_to_nonsilent, pval))
 		if len(temp_storage)>0:
 			mut_type_characterization[gene] = temp_storage
 			retlines.extend(mut_type_characterization[gene])
@@ -130,13 +154,12 @@ def main():
 	cursor = db.cursor()
 	switch_to_db(cursor, 'icgc')
 
-
 	cancer_dict = cancer_dictionary()
 	reactome_gene_groups = find_gene_groups(cursor)
 	name2reactome_id = dict(hard_landing_search(cursor, "select name, reactome_pathway_id from reactome_pathways"))
 
 	indir = "gene_groups"
-	for tumor_short in sorted(os.listdir(indir))[3:]:
+	for tumor_short in sorted(os.listdir(indir)):
 	#for tumor_short in ['AML']:
 		print(tumor_short)
 		time0 = time()
