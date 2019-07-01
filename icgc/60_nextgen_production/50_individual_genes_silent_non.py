@@ -19,80 +19,35 @@
 #
 
 from config import Config
-from icgc_utils.reactome import *
 from icgc_utils.common_queries import *
-from icgc_utils.utils import cancer_dictionary
 from time import time
-import re
+from math import isnan
 
 # use R functions - rpy2
 from rpy2.robjects.packages import importr
 # in particular, p-value under hypergeometric distribution
 phyper = importr('stats').phyper
 
+
 ####################################################
-def parse(infile):
-	gene_groups = []
-	inf = open(infile, "r")
-	entry = []
-	for line in inf:
-		line = line.strip()
-		if 'expected' in line:
-			name = entry[0]
-			[number_of_genes, cdna_length] = map(int, re.findall(r'\d+', entry[1]))
-			[donors_affected] = map(int, re.findall(r'\d+', entry[2]))
-			[expected_donors, stdev, zscore] =  map(float, re.findall(r'-*\d+\.\d+', line))
-			gene_groups.append([name, number_of_genes, cdna_length, donors_affected, expected_donors, stdev, zscore])
-		elif len(line)==0:
-			entry = []
-		else:
-			entry.append(line)
-
-	gene_groups.sort(key=lambda x:x[-1], reverse=True)
-	return gene_groups
-
-
-
-#
-#########################################
-# profile decorator is for the use with kernprof (a line profiler):
-#  ./icgc_utils/kernprof.py -l 75_....py
-# followed by
-# python3 -m line_profiler 75_....py.lprof
-# see here https://github.com/rkern/line_profiler#line-profiler
-# the reason I am using local kernprof.py is that I don't know where pip
-# installed its version (if anywhere)
-#@profile
-####################################################
-def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group, mut_type_characterization):
-	[name, number_of_genes, cdna_length, donors_affected, expected_donors, stdev, zscore] = group
-	if abs(zscore)<5: return None
-	reactome_id = name2reactome_id[name]
+def silent_count(cursor, table):
 	retlines = []
-	retlines.append("{}  {}".format(name, zscore))
-	retlines.append("\t number of genes:  %3d   combined cdna length: %d " % (number_of_genes, cdna_length) )
-	retlines.append("\t number of donors affected:  %3d " %  donors_affected)
-	retlines.append("\t expected donors affected:  %6.2f      stdev:  %6.2f    z:  %6.2f " % (expected_donors, stdev, zscore))
-	if donors_affected==0: return
-
-	retlines.append("\tall genes in the Reactome group %d " % len(reactome_gene_groups[reactome_id]))
-	retlines.append("\t"+str(sorted(reactome_gene_groups[reactome_id])))
-	gene_string = ",".join([quotify(g) for g in reactome_gene_groups[reactome_id]])
 	qry  = "select  gene_symbol,  count(distinct(icgc_donor_id)) from %s " % table
 	qry += "where pathogenicity_estimate=1 and reliability_estimate=1 "
-	qry += "and gene_symbol in (%s) group by gene_symbol" % gene_string
+	qry += "and not gene_symbol is null "
+	qry += "group by gene_symbol"
 	# Under Python 3.6, the built-in dict does track insertion order,
 	# although this behavior is a side-effect of an implementation change and should not be relied on.
 	genes_mutated = dict(sorted(error_intolerant_search(cursor, qry), key= lambda r: r[1], reverse=True))
-	retlines.append("\tactually affected %d " % len(genes_mutated))
-	retlines.append("\tdonors per affected gene: "+str(genes_mutated))
-	for gene in genes_mutated.keys():
-		if gene in mut_type_characterization:
-			retlines.extend(mut_type_characterization[gene])
-			continue
-		temp_storage = []
-		silent_possible, nonsilent_possible =  silent_nonsilent_retrieve(cursor, gene)
-		temp_storage.append("\t %s all possible:  silent %d    nonsilent %d    silent/nonsilent %.3f    silent/(silent+nonsilent) %.3f " %
+	retlines.append("affected genes %d " % len(genes_mutated))
+	retlines_per ={}
+	pval_per = {}
+	for gene, ct in list(genes_mutated.items())[:100]:
+		retlines_per[gene] = []
+		retlines_per[gene].append("\n%-10s  mutated %d times" % (gene, ct))
+		silent_possible, nonsilent_possible = silent_nonsilent_retrieve(cursor, gene)
+		if silent_possible<0: continue # this signals some problem with the submitted cdan sequence
+		retlines_per[gene].append("\t %s all possible:  silent %d    nonsilent %d    silent/nonsilent %.3f    silent/(silent+nonsilent) %.3f " %
 						(gene, silent_possible, nonsilent_possible, silent_possible/nonsilent_possible,
 						 silent_possible/(silent_possible+nonsilent_possible) ))
 		expected_silent_to_nonsilent = silent_possible/nonsilent_possible
@@ -105,7 +60,7 @@ def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group, mut
 		if not ret or len(ret)==0: continue
 		type_count = dict(ret)
 		for muttype, ct in type_count.items():
-			temp_storage.append("\t\t {}: {}".format(muttype, ct))
+			retlines_per[gene].append("\t\t {}: {}".format(muttype, ct))
 			if muttype != 'single': continue
 			qry = "select m.consequence, count(*) c from  %s s, mutations_chrom_%s m where s.gene_symbol = '%s' " % (table, chromosome, gene)
 			qry += "and s.icgc_mutation_id=m.icgc_mutation_id  and m.mutation_type='single'  "
@@ -116,10 +71,11 @@ def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group, mut
 			if not ret or len(ret)==0: continue
 			conseq_ct = dict(ret)
 			nonsilent = conseq_ct.get('missense',0) + conseq_ct.get('stop_gained',0) + conseq_ct.get('stop_lost',0)
+			if nonsilent==0: continue
 			silent = conseq_ct.get('synonymous',0)
 			if silent+nonsilent==0: continue
 			for conseq, ct in conseq_ct.items():
-				temp_storage.append("\t\t\t\t {}: {}".format(conseq, ct))
+				retlines_per[gene].append("\t\t\t\t {}: {}".format(conseq, ct))
 			silent_to_nonsilent  = float(silent)/nonsilent if nonsilent>0 else 1.0
 			# pvalue under hypergeometric distribution (R)
 			# https://stackoverflow.com/questions/8382806/hypergeometric-test-phyper
@@ -127,44 +83,47 @@ def elaborate (cursor, table, reactome_gene_groups, name2reactome_id, group, mut
 			# that is
 			# phyper(silent, silent_possible, nonsilent_possible, silent+nonsilent)
 			phyper_ret = phyper(silent, silent_possible, nonsilent_possible, silent+nonsilent)
-			pval = phyper_ret[0] if phyper_ret else 1.0
-			temp_storage.append("\t\t silent/nonsilent = %.3f    expected = %.3f    pval = %.0e" %
+			pval = phyper_ret[0] if phyper_ret  and not isnan(phyper_ret[0]) else 1.0
+			retlines_per[gene].append("\t\t silent/nonsilent = %.3f    expected = %.3f    pval = %.0e" %
 			                    (silent_to_nonsilent, expected_silent_to_nonsilent, pval))
-		if len(temp_storage)>0:
-			mut_type_characterization[gene] = temp_storage
-			retlines.extend(mut_type_characterization[gene])
-	retlines.append("")
+			pval_per[gene] = pval
+
+	genes_sorted = sorted(pval_per.keys(), key=lambda g: pval_per[g], reverse=False)
+	for gene in genes_sorted:
+		if pval_per[gene]>0.5: continue
+		retlines_per[gene][0] = "\n%3d %s   %.0e" % (genes_sorted.index(gene), retlines_per[gene][0].strip(), pval_per[gene])
+		retlines.extend(retlines_per[gene])
+
 	return retlines
 
 
-####################################################
+############################
 def main():
 
 	db     = connect_to_mysql(Config.mysql_conf_file)
 	cursor = db.cursor()
 	switch_to_db(cursor, 'icgc')
 
-	cancer_dict = cancer_dictionary()
-	reactome_gene_groups = find_gene_groups(cursor)
-	name2reactome_id = dict(hard_landing_search(cursor, "select name, reactome_pathway_id from reactome_pathways"))
+	outdir = "genes"
 
-	indir = "gene_groups"
-	for tumor_short in sorted(os.listdir(indir)):
+	#########################
+	# which simple somatic tables do we have
+	qry  = "select table_name from information_schema.tables "
+	qry += "where table_schema='icgc' and table_name like '%_simple_somatic'"
+	tables = [field[0] for field in  search_db(cursor,qry)]
+
+	for table in tables:
 	#for tumor_short in ['AML']:
-		print(tumor_short)
+		print(table)
+		tumor_short = table.replace("_simple_somatic",'')
+		os.makedirs("{}/{}".format(outdir, tumor_short),exist_ok=True)
 		time0 = time()
-		outf = open("{}/{}/drilldown.txt".format(indir, tumor_short), "w")
-		table = tumor_short+"_simple_somatic"
+		outf = open("{}/{}/silent_nonsilent.txt".format(outdir, tumor_short), "w")
 		outf.write("\n=============================\n")
 		outf.write(tumor_short+"\n")
-		if tumor_short in cancer_dict: outf.write(cancer_dict[tumor_short]["description"]+"\n")
 		outf.write("total donors: {}\n".format(len(get_donors(cursor, table))))
-		outf.write("\n")
-		gene_groups = parse("{}/{}/{}".format(indir, tumor_short, 'pathways.txt'))
-		mut_type_characterization = {} # store results for individual genes
-		for group in gene_groups:
-			retlines = elaborate(cursor, table, reactome_gene_groups, name2reactome_id,  group, mut_type_characterization)
-			if retlines: outf.write("\n".join(retlines)+"\n")
+		retlines = silent_count(cursor, table)
+		if retlines: outf.write("\n".join(retlines)+"\n")
 		outf.close()
 		print("\t done in  %.2f mins" % (float(time()-time0)/60))
 	cursor.close()

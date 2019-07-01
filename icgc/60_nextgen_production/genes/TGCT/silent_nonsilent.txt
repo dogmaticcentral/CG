@@ -1,0 +1,353 @@
+
+=============================
+TGCT
+total donors: 149
+affected genes 6405 
+
+  0 TVP23C      mutated 29 times   9e-04
+	 TVP23C all possible:  silent 566    nonsilent 1927    silent/nonsilent 0.294    silent/(silent+nonsilent) 0.227 
+		 single: 30
+				 missense: 27
+				 splice_acceptor: 3
+		 silent/nonsilent = 0.000    expected = 0.294    pval = 9e-04
+
+  1 KIT         mutated 27 times   1e-03
+	 KIT all possible:  silent 1931    nonsilent 6862    silent/nonsilent 0.281    silent/(silent+nonsilent) 0.220 
+		 deletion: 1
+		 single: 27
+				 missense: 27
+		 silent/nonsilent = 0.000    expected = 0.281    pval = 1e-03
+
+  2 TMPRSS13    mutated 7 times   3e-02
+	 TMPRSS13 all possible:  silent 1246    nonsilent 3866    silent/nonsilent 0.322    silent/(silent+nonsilent) 0.244 
+		 single: 13
+				 missense: 13
+		 silent/nonsilent = 0.000    expected = 0.322    pval = 3e-02
+
+  3 PTMA        mutated 13 times   6e-02
+	 PTMA all possible:  silent 187    nonsilent 821    silent/nonsilent 0.228    silent/(silent+nonsilent) 0.186 
+		 single: 14
+				 missense: 14
+		 silent/nonsilent = 0.000    expected = 0.228    pval = 6e-02
+
+  4 KRTAP4-5    mutated 17 times   6e-02
+	 KRTAP4-5 all possible:  silent 336    nonsilent 1302    silent/nonsilent 0.258    silent/(silent+nonsilent) 0.205 
+		 insertion: 5
+		 single: 12
+				 missense: 12
+		 silent/nonsilent = 0.000    expected = 0.258    pval = 6e-02
+
+  5 KRAS        mutated 18 times   7e-02
+	 KRAS all possible:  silent 353    nonsilent 1357    silent/nonsilent 0.260    silent/(silent+nonsilent) 0.206 
+		 single: 18
+				 missense: 18
+				 synonymous: 1
+		 silent/nonsilent = 0.056    expected = 0.260    pval = 7e-02
+
+  6 ATXN1       mutated 13 times   8e-02
+	 ATXN1 all possible:  silent 1792    nonsilent 5552    silent/nonsilent 0.323    silent/(silent+nonsilent) 0.244 
+		 deletion: 3
+		 insertion: 4
+		 single: 9
+				 missense: 9
+		 silent/nonsilent = 0.000    expected = 0.323    pval = 8e-02
+
+  7 FAM104B     mutated 7 times   8e-02
+	 FAM104B all possible:  silent 213    nonsilent 840    silent/nonsilent 0.254    silent/(silent+nonsilent) 0.202 
+		 single: 11
+				 missense: 6
+				 stop_gained: 5
+		 silent/nonsilent = 0.000    expected = 0.254    pval = 8e-02
+
+  8 ZC3H11A     mutated 8 times   1e-01
+	 ZC3H11A all possible:  silent 1669    nonsilent 5630    silent/nonsilent 0.296    silent/(silent+nonsilent) 0.229 
+		 single: 9
+				 missense: 4
+				 stop_gained: 5
+		 silent/nonsilent = 0.000    expected = 0.296    pval = 1e-01
+
+  9 PIEZO1      mutated 15 times   1e-01
+	 PIEZO1 all possible:  silent 5589    nonsilent 17109    silent/nonsilent 0.327    silent/(silent+nonsilent) 0.246 
+		 single: 17
+				 missense: 17
+				 synonymous: 2
+		 silent/nonsilent = 0.118    expected = 0.327    pval = 1e-01
+
+ 10 KIAA0040    mutated 12 times   1e-01
+	 KIAA0040 all possible:  silent 183    nonsilent 717    silent/nonsilent 0.255    silent/(silent+nonsilent) 0.203 
+		 insertion: 7
+		 single: 9
+				 missense: 9
+		 silent/nonsilent = 0.000    expected = 0.255    pval = 1e-01
+
+ 11 FRG1        mutated 8 times   1e-01
+	 FRG1 all possible:  silent 470    nonsilent 1861    silent/nonsilent 0.253    silent/(silent+nonsilent) 0.202 
+		 single: 9
+				 missense: 9
+		 silent/nonsilent = 0.000    expected = 0.253    pval = 1e-01
+
+ 12 MUC4        mutated 45 times   1e-01
+	 MUC4 all possible:  silent 13680    nonsilent 35037    silent/nonsilent 0.390    silent/(silent+nonsilent) 0.281 
+		 insertion: 1
+		 single: 75
+				 missense: 75
+				 synonymous: 22
+		 silent/nonsilent = 0.293    expected = 0.390    pval = 1e-01
+
+ 13 LAMC3       mutated 6 times   1e-01
+	 LAMC3 all possible:  silent 3375    nonsilent 10809    silent/nonsilent 0.312    silent/(silent+nonsilent) 0.238 
+		 single: 7
+				 missense: 7
+		 silent/nonsilent = 0.000    expected = 0.312    pval = 1e-01
+
+ 14 DCHS1       mutated 6 times   2e-01
+	 DCHS1 all possible:  silent 8030    nonsilent 21661    silent/nonsilent 0.371    silent/(silent+nonsilent) 0.270 
+		 single: 6
+				 missense: 5
+				 stop_gained: 1
+		 silent/nonsilent = 0.000    expected = 0.371    pval = 2e-01
+
+ 15 MAGEC1      mutated 7 times   2e-01
+	 MAGEC1 all possible:  silent 2360    nonsilent 7927    silent/nonsilent 0.298    silent/(silent+nonsilent) 0.229 
+		 deletion: 3
+		 single: 7
+				 missense: 6
+				 stop_gained: 1
+		 silent/nonsilent = 0.000    expected = 0.298    pval = 2e-01
+
+ 16 CRB2        mutated 6 times   2e-01
+	 CRB2 all possible:  silent 2983    nonsilent 8591    silent/nonsilent 0.347    silent/(silent+nonsilent) 0.258 
+		 single: 6
+				 missense: 6
+		 silent/nonsilent = 0.000    expected = 0.347    pval = 2e-01
+
+ 17 EPAS1       mutated 7 times   2e-01
+	 EPAS1 all possible:  silent 1747    nonsilent 6092    silent/nonsilent 0.287    silent/(silent+nonsilent) 0.223 
+		 single: 7
+				 missense: 7
+		 silent/nonsilent = 0.000    expected = 0.287    pval = 2e-01
+
+ 18 AQP7        mutated 9 times   2e-01
+	 AQP7 all possible:  silent 763    nonsilent 2324    silent/nonsilent 0.328    silent/(silent+nonsilent) 0.247 
+		 insertion: 4
+		 single: 7
+				 missense: 6
+				 synonymous;missense: 1
+		 silent/nonsilent = 0.000    expected = 0.328    pval = 2e-01
+
+ 19 NRAS        mutated 7 times   2e-01
+	 NRAS all possible:  silent 367    nonsilent 1343    silent/nonsilent 0.273    silent/(silent+nonsilent) 0.215 
+		 single: 7
+				 missense: 7
+		 silent/nonsilent = 0.000    expected = 0.273    pval = 2e-01
+
+ 20 ANKRD36C    mutated 9 times   2e-01
+	 ANKRD36C all possible:  silent 3424    nonsilent 12587    silent/nonsilent 0.272    silent/(silent+nonsilent) 0.214 
+		 single: 9
+				 missense: 7
+				 splice_region: 2
+		 silent/nonsilent = 0.000    expected = 0.272    pval = 2e-01
+
+ 21 ERC1        mutated 7 times   2e-01
+	 ERC1 all possible:  silent 2112    nonsilent 7941    silent/nonsilent 0.266    silent/(silent+nonsilent) 0.210 
+		 single: 7
+				 missense: 7
+		 silent/nonsilent = 0.000    expected = 0.266    pval = 2e-01
+
+ 22 SEC63       mutated 7 times   2e-01
+	 SEC63 all possible:  silent 1413    nonsilent 5436    silent/nonsilent 0.260    silent/(silent+nonsilent) 0.206 
+		 single: 7
+				 missense: 1
+				 stop_gained: 6
+		 silent/nonsilent = 0.000    expected = 0.260    pval = 2e-01
+
+ 23 CDC27       mutated 19 times   2e-01
+	 CDC27 all possible:  silent 1631    nonsilent 5848    silent/nonsilent 0.279    silent/(silent+nonsilent) 0.218 
+		 single: 20
+				 missense: 18
+				 stop_gained: 3
+				 synonymous: 3
+		 silent/nonsilent = 0.143    expected = 0.279    pval = 2e-01
+
+ 24 PCMTD1      mutated 6 times   2e-01
+	 PCMTD1 all possible:  silent 657    nonsilent 2565    silent/nonsilent 0.256    silent/(silent+nonsilent) 0.204 
+		 single: 7
+				 missense: 7
+		 silent/nonsilent = 0.000    expected = 0.256    pval = 2e-01
+
+ 25 KMT2B       mutated 8 times   2e-01
+	 KMT2B all possible:  silent 6281    nonsilent 18163    silent/nonsilent 0.346    silent/(silent+nonsilent) 0.257 
+		 deletion: 3
+		 single: 5
+				 missense: 3
+				 stop_gained: 2
+		 silent/nonsilent = 0.000    expected = 0.346    pval = 2e-01
+
+ 26 HSF4        mutated 6 times   2e-01
+	 HSF4 all possible:  silent 1120    nonsilent 3317    silent/nonsilent 0.338    silent/(silent+nonsilent) 0.252 
+		 single: 6
+				 missense: 5
+				 synonymous;missense: 1
+		 silent/nonsilent = 0.000    expected = 0.338    pval = 2e-01
+
+ 27 TCHH        mutated 13 times   2e-01
+	 TCHH all possible:  silent 3473    nonsilent 14023    silent/nonsilent 0.248    silent/(silent+nonsilent) 0.199 
+		 deletion: 1
+		 insertion: 4
+		 single: 12
+				 missense: 12
+				 synonymous: 1
+		 silent/nonsilent = 0.083    expected = 0.248    pval = 2e-01
+
+ 28 CSGALNACT2  mutated 6 times   2e-01
+	 CSGALNACT2 all possible:  silent 1035    nonsilent 3852    silent/nonsilent 0.269    silent/(silent+nonsilent) 0.212 
+		 single: 6
+				 missense: 3
+				 stop_gained: 3
+		 silent/nonsilent = 0.000    expected = 0.269    pval = 2e-01
+
+ 29 HUWE1       mutated 9 times   3e-01
+	 HUWE1 all possible:  silent 9221    nonsilent 30154    silent/nonsilent 0.306    silent/(silent+nonsilent) 0.234 
+		 deletion: 4
+		 single: 5
+				 missense: 4
+				 stop_gained: 1
+		 silent/nonsilent = 0.000    expected = 0.306    pval = 3e-01
+
+ 30 CUX1        mutated 6 times   3e-01
+	 CUX1 all possible:  silent 3193    nonsilent 10460    silent/nonsilent 0.305    silent/(silent+nonsilent) 0.234 
+		 single: 6
+				 missense: 4
+				 splice_donor: 1
+				 stop_gained: 1
+		 silent/nonsilent = 0.000    expected = 0.305    pval = 3e-01
+
+ 31 CREBBP      mutated 6 times   3e-01
+	 CREBBP all possible:  silent 5016    nonsilent 16971    silent/nonsilent 0.296    silent/(silent+nonsilent) 0.228 
+		 deletion: 1
+		 single: 5
+				 missense: 5
+		 silent/nonsilent = 0.000    expected = 0.296    pval = 3e-01
+
+ 32 AR          mutated 12 times   3e-01
+	 AR all possible:  silent 1946    nonsilent 6343    silent/nonsilent 0.307    silent/(silent+nonsilent) 0.235 
+		 deletion: 3
+		 insertion: 2
+		 single: 12
+				 missense: 11
+				 stop_gained: 1
+				 synonymous: 2
+		 silent/nonsilent = 0.167    expected = 0.307    pval = 3e-01
+
+ 33 SP8         mutated 7 times   3e-01
+	 SP8 all possible:  silent 1191    nonsilent 3390    silent/nonsilent 0.351    silent/(silent+nonsilent) 0.260 
+		 single: 7
+				 missense: 7
+				 synonymous: 1
+		 silent/nonsilent = 0.143    expected = 0.351    pval = 3e-01
+
+ 34 CHD4        mutated 8 times   4e-01
+	 CHD4 all possible:  silent 3724    nonsilent 13493    silent/nonsilent 0.276    silent/(silent+nonsilent) 0.216 
+		 deletion: 4
+		 single: 4
+				 missense: 4
+		 silent/nonsilent = 0.000    expected = 0.276    pval = 4e-01
+
+ 35 HECTD4      mutated 9 times   4e-01
+	 HECTD4 all possible:  silent 9454    nonsilent 30299    silent/nonsilent 0.312    silent/(silent+nonsilent) 0.238 
+		 deletion: 2
+		 single: 7
+				 : 1
+				 missense: 7
+				 synonymous: 1
+		 silent/nonsilent = 0.143    expected = 0.312    pval = 4e-01
+
+ 36 KRT1        mutated 8 times   4e-01
+	 KRT1 all possible:  silent 1375    nonsilent 4430    silent/nonsilent 0.310    silent/(silent+nonsilent) 0.237 
+		 deletion: 1
+		 single: 7
+				 missense: 7
+				 synonymous: 1
+		 silent/nonsilent = 0.143    expected = 0.310    pval = 4e-01
+
+ 37 ANKLE1      mutated 23 times   4e-01
+	 ANKLE1 all possible:  silent 1575    nonsilent 4455    silent/nonsilent 0.354    silent/(silent+nonsilent) 0.261 
+		 deletion: 21
+		 single: 3
+				 missense: 3
+		 silent/nonsilent = 0.000    expected = 0.354    pval = 4e-01
+
+ 38 DMD         mutated 7 times   4e-01
+	 DMD all possible:  silent 6972    nonsilent 26202    silent/nonsilent 0.266    silent/(silent+nonsilent) 0.210 
+		 deletion: 1
+		 single: 8
+				 missense: 7
+				 stop_gained: 1
+				 synonymous: 1
+		 silent/nonsilent = 0.125    expected = 0.266    pval = 4e-01
+
+ 39 GRID2IP     mutated 6 times   4e-01
+	 GRID2IP all possible:  silent 2754    nonsilent 8154    silent/nonsilent 0.338    silent/(silent+nonsilent) 0.252 
+		 deletion: 3
+		 single: 3
+				 missense: 3
+		 silent/nonsilent = 0.000    expected = 0.338    pval = 4e-01
+
+ 40 CROCC       mutated 6 times   4e-01
+	 CROCC all possible:  silent 4643    nonsilent 13519    silent/nonsilent 0.343    silent/(silent+nonsilent) 0.256 
+		 single: 6
+				 missense: 6
+				 synonymous: 1
+		 silent/nonsilent = 0.167    expected = 0.343    pval = 4e-01
+
+ 41 HYDIN       mutated 7 times   4e-01
+	 HYDIN all possible:  silent 10317    nonsilent 35781    silent/nonsilent 0.288    silent/(silent+nonsilent) 0.224 
+		 single: 7
+				 missense: 6
+				 stop_gained: 1
+				 synonymous: 1
+		 silent/nonsilent = 0.143    expected = 0.288    pval = 4e-01
+
+ 42 DSCAML1     mutated 6 times   5e-01
+	 DSCAML1 all possible:  silent 4594    nonsilent 14432    silent/nonsilent 0.318    silent/(silent+nonsilent) 0.241 
+		 single: 6
+				 missense: 6
+				 synonymous: 1
+		 silent/nonsilent = 0.167    expected = 0.318    pval = 5e-01
+
+ 43 DYRK4       mutated 7 times   5e-01
+	 DYRK4 all possible:  silent 1011    nonsilent 3678    silent/nonsilent 0.275    silent/(silent+nonsilent) 0.216 
+		 deletion: 4
+		 single: 3
+				 missense: 3
+		 silent/nonsilent = 0.000    expected = 0.275    pval = 5e-01
+
+ 44 DDX11       mutated 9 times   5e-01
+	 DDX11 all possible:  silent 2034    nonsilent 6705    silent/nonsilent 0.303    silent/(silent+nonsilent) 0.233 
+		 deletion: 3
+		 single: 6
+				 missense: 6
+				 synonymous: 1
+		 silent/nonsilent = 0.167    expected = 0.303    pval = 5e-01
+
+ 45 MEF2A       mutated 6 times   5e-01
+	 MEF2A all possible:  silent 1059    nonsilent 3495    silent/nonsilent 0.303    silent/(silent+nonsilent) 0.233 
+		 single: 6
+				 missense: 6
+				 synonymous: 1
+		 silent/nonsilent = 0.167    expected = 0.303    pval = 5e-01
+
+ 46 DHFR        mutated 6 times   5e-01
+	 DHFR all possible:  silent 355    nonsilent 1337    silent/nonsilent 0.266    silent/(silent+nonsilent) 0.210 
+		 deletion: 1
+		 insertion: 2
+		 single: 3
+				 missense: 3
+		 silent/nonsilent = 0.000    expected = 0.266    pval = 5e-01
+
+ 47 PCLO        mutated 6 times   5e-01
+	 PCLO all possible:  silent 10648    nonsilent 35639    silent/nonsilent 0.299    silent/(silent+nonsilent) 0.230 
+		 single: 6
+				 missense: 6
+				 synonymous: 1
+		 silent/nonsilent = 0.167    expected = 0.299    pval = 5e-01

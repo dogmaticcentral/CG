@@ -20,6 +20,16 @@
 
 from icgc_utils.tcga import *
 
+#########################################
+def silent_nonsilent_retrieve(cursor, gene):
+	transcript_id = approved_symbol2ensembl_canonical_transcript(cursor, gene)
+	if not transcript_id: return -5, -5
+	qry = "select silent, nonsilent from ensembl_coding_seqs where transcript_id='%s' " % transcript_id
+	ret = error_intolerant_search(cursor, qry)
+	if ret:
+		return ret[0]
+	else:
+		return -6, -6
 
 #########################################
 

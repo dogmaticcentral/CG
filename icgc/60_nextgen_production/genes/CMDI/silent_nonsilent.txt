@@ -1,0 +1,37 @@
+
+=============================
+CMDI
+total donors: 136
+affected genes 274 
+
+  0 SF3B1       mutated 104 times   3e-12
+	 SF3B1 all possible:  silent 2648    nonsilent 9097    silent/nonsilent 0.291    silent/(silent+nonsilent) 0.225 
+		 multiple: 1
+		 single: 104
+				 missense: 104
+		 silent/nonsilent = 0.000    expected = 0.291    pval = 3e-12
+
+  1 DNMT3A      mutated 6 times   4e-01
+	 DNMT3A all possible:  silent 1856    nonsilent 6361    silent/nonsilent 0.292    silent/(silent+nonsilent) 0.226 
+		 deletion: 1
+		 insertion: 1
+		 single: 4
+				 missense: 3
+				 stop_gained: 1
+		 silent/nonsilent = 0.000    expected = 0.292    pval = 4e-01
+
+  2 TET2        mutated 5 times   5e-01
+	 TET2 all possible:  silent 3881    nonsilent 14146    silent/nonsilent 0.274    silent/(silent+nonsilent) 0.215 
+		 deletion: 3
+		 single: 3
+				 None: 1
+				 missense: 1
+				 stop_gained: 2
+		 silent/nonsilent = 0.000    expected = 0.274    pval = 5e-01
+
+  3 EZH2        mutated 3 times   5e-01
+	 EZH2 all possible:  silent 1400    nonsilent 5368    silent/nonsilent 0.261    silent/(silent+nonsilent) 0.207 
+		 deletion: 1
+		 single: 3
+				 missense: 3
+		 silent/nonsilent = 0.000    expected = 0.261    pval = 5e-01

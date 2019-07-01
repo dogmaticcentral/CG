@@ -1,0 +1,52 @@
+
+=============================
+WT
+total donors: 102
+affected genes 329 
+
+  0 TP53        mutated 15 times   2e-02
+	 TP53 all possible:  silent 831    nonsilent 2715    silent/nonsilent 0.306    silent/(silent+nonsilent) 0.234 
+		 single: 15
+				 missense: 13
+				 stop_gained: 2
+		 silent/nonsilent = 0.000    expected = 0.306    pval = 2e-02
+
+  1 DROSHA      mutated 6 times   2e-01
+	 DROSHA all possible:  silent 2678    nonsilent 9697    silent/nonsilent 0.276    silent/(silent+nonsilent) 0.216 
+		 single: 7
+				 missense: 5
+				 stop_gained: 2
+		 silent/nonsilent = 0.000    expected = 0.276    pval = 2e-01
+
+  2 CTNNB1      mutated 5 times   3e-01
+	 CTNNB1 all possible:  silent 1657    nonsilent 5381    silent/nonsilent 0.308    silent/(silent+nonsilent) 0.235 
+		 single: 5
+				 missense: 5
+		 silent/nonsilent = 0.000    expected = 0.308    pval = 3e-01
+
+  3 TMPRSS13    mutated 4 times   3e-01
+	 TMPRSS13 all possible:  silent 1246    nonsilent 3866    silent/nonsilent 0.322    silent/(silent+nonsilent) 0.244 
+		 deletion: 1
+		 single: 4
+				 missense: 4
+		 silent/nonsilent = 0.000    expected = 0.322    pval = 3e-01
+
+  4 HLA-DQB1    mutated 2 times   3e-01
+	 HLA-DQB1 all possible:  silent 579    nonsilent 1851    silent/nonsilent 0.313    silent/(silent+nonsilent) 0.238 
+		 single: 4
+				 missense: 4
+		 silent/nonsilent = 0.000    expected = 0.313    pval = 3e-01
+
+  5 SIX1        mutated 4 times   3e-01
+	 SIX1 all possible:  silent 602    nonsilent 1963    silent/nonsilent 0.307    silent/(silent+nonsilent) 0.235 
+		 single: 4
+				 missense: 4
+		 silent/nonsilent = 0.000    expected = 0.307    pval = 3e-01
+
+  6 WT1         mutated 4 times   4e-01
+	 WT1 all possible:  silent 1059    nonsilent 3468    silent/nonsilent 0.305    silent/(silent+nonsilent) 0.234 
+		 deletion: 1
+		 single: 3
+				 missense: 1
+				 stop_gained: 2
+		 silent/nonsilent = 0.000    expected = 0.305    pval = 4e-01
