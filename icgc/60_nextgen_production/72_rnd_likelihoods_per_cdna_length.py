@@ -122,7 +122,7 @@ def main():
 	table_sizes = get_table_size(cursor,'icgc',tables, as_list=True)
 
 	# we would like to store this run to our database, not to leave it laying around
-	stats_id = "RSSCcdna2"
+	stats_id = "RSSCcdna"
 	store_stats_description(cursor, stats_id)
 
 	# random sampling

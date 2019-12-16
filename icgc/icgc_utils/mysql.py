@@ -17,26 +17,6 @@ import MySQLdb, sys, os
 # 
 # Contact: ivana.mihalek@gmail.com
 #
-import traceback
-#
-# This source code is part of tcga, a TCGA processing pipeline, written by Ivana Mihalek.
-# Copyright (C) 2014-2016 Ivana Mihalek.
-# 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see<http://www.gnu.org/licenses/>.
-# 
-# Contact: ivana.mihalek@gmail.com
-#
 
 ########
 def set_autoincrement(cursor, db_name, table_name, column):
@@ -235,6 +215,8 @@ def column_exists (cursor, db_name, table_name, column_name):
 	else:
 		return False
 
+
+#########################################
 def add_column(cursor, db_name, table_name, column_name, col_type, default=None, after_col=None):
 	if not column_exists (cursor, db_name, table_name, column_name):
 		qry = "alter table  %s.%s add  %s %s  " %(db_name, table_name, column_name, col_type)
