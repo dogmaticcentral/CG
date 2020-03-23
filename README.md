@@ -1,3 +1,18 @@
+## Publication
+
+This pipeline is the basis of the computational work used in
+["Cancer-associated mutations in the ribosomal protein L5 gene 
+dysregulate the HDM2/p53-mediated 
+ribosome biogenesis checkpoint"](https://www.nature.com/articles/s41388-020-1231-6),
+Oncogene (2020). https://doi.org/10.1038/s41388-020-1231-6
+
+Please cite if you find it useful in your own work.
+
+For the statistical interpreation of the cancer-related mutations on the protein structure,
+used in the same work, see CodeOcean capsule
+ [0541628](https://codeocean.com/capsule/0541628/tree/v1).
+
+
 # CG
 
 CG is a set of scripts for extracting information about (localized) somatic 
