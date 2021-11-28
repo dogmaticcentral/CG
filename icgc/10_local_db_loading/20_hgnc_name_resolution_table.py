@@ -48,7 +48,7 @@ def make_hgnc_table(cursor, db_name, hgnc_table, header_names):
     for name in header_names:
         if name in ['approved_name', 'synonyms', 'refseq_ids']:
             charlen = 150
-        elif name == 'uniprot_ids':
+        elif name == 'uniprot_id_by_uniprot':
             charlen = 300
         elif name in ['approved_symbol', 'chromosome']: # chrom can have annotation such as "not on reference assembly"
             charlen = 30
